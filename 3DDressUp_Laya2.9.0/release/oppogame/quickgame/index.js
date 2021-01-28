@@ -1,0 +1,1 @@
+window.screenOrientation="landscape",require("./libs/laya.core.js"),require("./libs/laya.html.js"),require("./libs/laya.ui.js"),require("./libs/laya.d3.js"),require("./libs/laya.physics.js"),require("./libs/laya.physics3D.js"),require("./js/bundle.js"),require("./js/TJ.js");

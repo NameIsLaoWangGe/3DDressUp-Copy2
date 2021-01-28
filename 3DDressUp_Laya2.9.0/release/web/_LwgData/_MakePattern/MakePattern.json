@@ -1,0 +1,335 @@
+{ 
+"RECORDS": 
+[
+  {
+    "serial": 1,
+    "classify": "newYear",
+    "name": "newYear1",
+    "unlockWay": "check",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": true,
+    "reach": false
+  },
+  {
+    "serial": 2,
+    "classify": "newYear",
+    "name": "newYear2",
+    "unlockWay": "check",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 3,
+    "classify": "newYear",
+    "name": "newYear3",
+    "unlockWay": "check",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 4,
+    "classify": "newYear",
+    "name": "ads",
+    "unlockWay": "check",
+    "conditionNum": 0,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 5,
+    "classify": "newYear",
+    "name": "newYear4",
+    "unlockWay": "check",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 6,
+    "classify": "newYear",
+    "name": "newYear5",
+    "unlockWay": "check",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 1,
+    "classify": "basic",
+    "name": "basic1",
+    "unlockWay": "free",
+    "conditionNum": 5,
+    "degreeNum": 5,
+    "complete": true,
+    "pitch": true,
+    "reach": true
+  },
+  {
+    "serial": 2,
+    "classify": "basic",
+    "name": "basic2",
+    "unlockWay": "free",
+    "conditionNum": 5,
+    "degreeNum": 5,
+    "complete": true,
+    "pitch": false,
+    "reach": true
+  },
+  {
+    "serial": 3,
+    "classify": "basic",
+    "name": "basic3",
+    "unlockWay": "free",
+    "conditionNum": 5,
+    "degreeNum": 5,
+    "complete": true,
+    "pitch": false,
+    "reach": true
+  },
+  {
+    "serial": 4,
+    "classify": "basic",
+    "name": "ads",
+    "unlockWay": "",
+    "conditionNum": 0,
+    "degreeNum": 0,
+    "complete": true,
+    "pitch": false,
+    "reach": true
+  },
+  {
+    "serial": 5,
+    "classify": "basic",
+    "name": "basic4",
+    "unlockWay": "free",
+    "conditionNum": 5,
+    "degreeNum": 5,
+    "complete": true,
+    "pitch": false,
+    "reach": true
+  },
+  {
+    "serial": 6,
+    "classify": "basic",
+    "name": "basic5",
+    "unlockWay": "free",
+    "conditionNum": 5,
+    "degreeNum": 5,
+    "complete": true,
+    "pitch": false,
+    "reach": true
+  },
+  {
+    "serial": 1,
+    "classify": "cat",
+    "name": "cat1",
+    "unlockWay": "check",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": true,
+    "reach": false
+  },
+  {
+    "serial": 2,
+    "classify": "cat",
+    "name": "cat2",
+    "unlockWay": "check",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 3,
+    "classify": "cat",
+    "name": "cat3",
+    "unlockWay": "check",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 4,
+    "classify": "cat",
+    "name": "ads",
+    "unlockWay": "",
+    "conditionNum": 0,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 5,
+    "classify": "cat",
+    "name": "cat4",
+    "unlockWay": "check",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 6,
+    "classify": "cat",
+    "name": "cat5",
+    "unlockWay": "check",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 1,
+    "classify": "pink",
+    "name": "pink1",
+    "unlockWay": "ads",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": true,
+    "reach": false
+  },
+  {
+    "serial": 2,
+    "classify": "pink",
+    "name": "pink2",
+    "unlockWay": "ads",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 3,
+    "classify": "pink",
+    "name": "pink3",
+    "unlockWay": "ads",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 4,
+    "classify": "pink",
+    "name": "ads",
+    "unlockWay": "",
+    "conditionNum": 0,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 5,
+    "classify": "pink",
+    "name": "pink4",
+    "unlockWay": "ads",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 6,
+    "classify": "pink",
+    "name": "pink5",
+    "unlockWay": "ads",
+    "conditionNum": 1,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 1,
+    "classify": "expression",
+    "name": "expression1",
+    "unlockWay": "customs",
+    "conditionNum": 6,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": true,
+    "reach": false
+  },
+  {
+    "serial": 2,
+    "classify": "expression",
+    "name": "expression2",
+    "unlockWay": "customs",
+    "conditionNum": 6,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 3,
+    "classify": "expression",
+    "name": "expression3",
+    "unlockWay": "customs",
+    "conditionNum": 6,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 4,
+    "classify": "expression",
+    "name": "ads",
+    "unlockWay": "",
+    "conditionNum": 0,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 5,
+    "classify": "expression",
+    "name": "expression4",
+    "unlockWay": "customs",
+    "conditionNum": 6,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  },
+  {
+    "serial": 6,
+    "classify": "expression",
+    "name": "expression5",
+    "unlockWay": "customs",
+    "conditionNum": 6,
+    "degreeNum": 0,
+    "complete": false,
+    "pitch": false,
+    "reach": false
+  }
+]
+}

@@ -1,0 +1,7 @@
+{
+  "code": "import { DataAdmin } from \"./Lwg\";\r\nimport { _Res } from \"./_Res\";\r\nexport class _RankingData extends DataAdmin._Table {\r\n    constructor() {\r\n        super(...arguments);\r\n        this._otherPro = {\r\n            rankNum: 'rankNum',\r\n            fansNum: 'fansNum',\r\n            iconSkin: 'iconSkin',\r\n        };\r\n        this._classify = {\r\n            other: 'other',\r\n            self: 'self',\r\n        };\r\n    }\r\n    static _ins() {\r\n        if (!this.ins) {\r\n            this.ins = new _RankingData('RankingData', _Res._list.json.Ranking.dataArr, true);\r\n            if (!this.ins._arr[0]['iconSkin']) {\r\n                for (let index = 0; index < this.ins._arr.length; index++) {\r\n                    const element = this.ins._arr[index];\r\n                    element['iconSkin'] = `Game/UI/Ranking/IconSkin/avatar_${element[this.ins._property.index]}.png`;\r\n                }\r\n            }\r\n            this.ins._pitchName = '玩家';\r\n            this.ins._sortByProperty(this.ins._otherPro.fansNum, this.ins._otherPro.rankNum);\r\n        }\r\n        return this.ins;\r\n    }\r\n}\r\n",
+  "references": [
+    "D:/Game/project/3DDressUp/Copy/3DDressUp_Laya2.9.0/3DDressUp_Laya2.9.0/src/script/Lwg/Lwg.ts",
+    "D:/Game/project/3DDressUp/Copy/3DDressUp_Laya2.9.0/3DDressUp_Laya2.9.0/src/script/Lwg/_Res.ts"
+  ]
+}

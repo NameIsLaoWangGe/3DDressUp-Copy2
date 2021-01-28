@@ -1,0 +1,49 @@
+{ 
+"RECORDS": 
+[
+  {
+    "serial": 1,
+    "name": "第一天",
+    "rewardType": "diy_dress_003_final",
+    "reward": 1,
+    "otherRewardType": "newYear",
+    "otherRewardNum": 1,
+    "complete": false,
+    "otherComplete": false,
+    "arrange": 1
+  },
+  {
+    "serial": 2,
+    "name": "第二天",
+    "rewardType": "cat",
+    "reward": 1,
+    "otherRewardType": "diy_bottom_005_final",
+    "otherRewardNum": 1,
+    "complete": false,
+    "otherComplete": false,
+    "arrange": 2
+  },
+  {
+    "serial": 3,
+    "name": "第三天",
+    "rewardType": "diy_dress_007_final",
+    "reward": 50,
+    "otherRewardType": "diy_dress_006_final",
+    "otherRewardNum": 1,
+    "complete": false,
+    "otherComplete": false,
+    "arrange": 3
+  },
+  {
+    "serial": 4,
+    "name": "第四天",
+    "rewardType": "diy_top_004_final",
+    "reward": 50,
+    "otherRewardType": "diy_bottom_006_final",
+    "otherRewardNum": 1,
+    "complete": false,
+    "otherComplete": false,
+    "arrange": 4
+  }
+]
+}
