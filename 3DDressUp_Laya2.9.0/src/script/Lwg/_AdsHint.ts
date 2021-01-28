@@ -4,7 +4,7 @@ import { _GameAni } from "./_GameAni";
 export module _AdsHint {
     export class AdsHint extends Admin._SceneBase {
         adAction: any;
-        setCallBack(_adAction): void {
+        setCallBack(_adAction: any): void {
             this.adAction = _adAction;
         }
         lwgOpenAni(): number {

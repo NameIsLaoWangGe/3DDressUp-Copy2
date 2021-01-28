@@ -3,7 +3,6 @@ import { Adaptive, Admin, Animation2D, Click, DataAdmin, DateAdmin, Dialogue, Ef
 import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
-import { _GameEvent } from "./_GameEvent";
 import { _Guide } from "./_Guide";
 import { _MakePattern } from "./_MakePattern";
 import { _PersonalInfo } from "./_PersonalInfo";
@@ -26,7 +25,7 @@ export module _Tweeting_ChoosePhotos {
         lwgOpenAni(): number {
             return _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
                 !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
-                    this._evNotify(_GameEvent.Guide.TweetingChoosePhoto, [this._ImgVar('Photo1')._lwg.gPoint.x, this._ImgVar('Photo1')._lwg.gPoint.y]);
+                    this._evNotify(_GameData._Guide.event.TweetingChoosePhoto, [this._ImgVar('Photo1')._lwg.gPoint.x, this._ImgVar('Photo1')._lwg.gPoint.y]);
                 });
             });
         }
@@ -42,7 +41,7 @@ export module _Tweeting_ChoosePhotos {
                             _GameData._Tweeting._ins()._photoIndex = index;
                             Tick.visible = true;
                             const gPBtnSend = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnSend').x, this._ImgVar('BtnSend').y));
-                            !_GameData._Guide._complete && this._evNotify(_GameEvent.Guide.TweetingBtnSend, [gPBtnSend.x, gPBtnSend.y]);
+                            !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.TweetingBtnSend, [gPBtnSend.x, gPBtnSend.y]);
 
                         } else {
                             _element.scale(1, 1);
@@ -54,7 +53,7 @@ export module _Tweeting_ChoosePhotos {
             };
             this._btnUp(this._ImgVar('BtnSend'), () => {
                 if (this._ImgVar('BtnSend').skin == 'Game/UI/Tweeting/ChoosePhotos/anniu_fasong.png') {
-                    !_GameData._Guide._complete && this._evNotify(_GameEvent.Guide.closeGuide);
+                    !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.closeGuide);
                     this._closeScene();
                 } else {
                     Dialogue.createHint_Middle('还未选择照片哦！');

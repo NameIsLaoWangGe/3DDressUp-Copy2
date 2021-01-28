@@ -1,18 +1,26 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { Admin, Animation2D, AudioAdmin, DataAdmin, Effects2D, TimerAdmin, Tools } from "./Lwg";
+import Lwg, { Admin, Animation2D, AudioAdmin, DataAdmin, Effects2D, TimerAdmin, Tools } from "./Lwg";
 import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
-import { _GameEvent } from "./_GameEvent";
 import { _Guide } from "./_Guide";
 import { _PersonalInfo } from "./_PersonalInfo";
 import { _Res } from "./_Res";
 import { _Start } from "./_Start";
 
 export module _Ranking {
-    /**从哪里进来*/
-    export let _whereFrom: string = 'Start';
-    export class RankingItem extends DataAdmin._Item {
+
+    export type _otherPro = {
+        $rankNum: any;
+        $fansNum: any;
+    } & Lwg.DataAdmin._BaseProperty;
+    export class RankingItem extends DataAdmin._Item implements _otherPro {
+        get $rankNum(): string {
+            return this.$data ? this.$data['rankNum'] : null;
+        };
+        get $fansNum(): string {
+            return this.$data ? this.$data['fansNum'] : null;
+        };
         $render(): void {
             if (this.$data[_GameData._Ranking._ins()._property.$classify] === _GameData._Ranking._ins()._classify.self) {
                 this._ImgChild('Board').skin = `Game/UI/Ranking/x_di.png`;
@@ -21,8 +29,8 @@ export module _Ranking {
                 this._ImgChild('Board').skin = `Game/UI/Ranking/w_di.png`;
                 this._LableChild('Name').text = this.$data[_GameData._Ranking._ins()._property.$name];
             }
-            this._LableChild('RankNum').text = String(this.$data[_GameData._Ranking._ins()._otherPro.rankNum]);
-            this._LableChild('FansNum').text = String(this.$data[_GameData._Ranking._ins()._otherPro.fansNum]);
+            this._LableChild('RankNum').text = String(this.$rankNum);
+            this._LableChild('FansNum').text = String(this.$fansNum);
             const IconPic = this._LableChild('Icon').getChildAt(0) as Laya.Image;
             IconPic.skin = this.$data[_GameData._Ranking._ins()._otherPro.iconSkin];
         }
@@ -31,17 +39,17 @@ export module _Ranking {
         lwgOnAwake(): void {
             ADManager.TAPoint(TaT.PageShow, 'rankpage');
             _GameData._Ranking._ins()._List = this._ListVar('List');
-            if (_whereFrom === 'Tweeting') {
+            if (_GameData._Ranking._ins()._whereFrom === 'Tweeting') {
                 _GameData._Ranking._ins()._addProValueForAll(_GameData._Ranking._ins()._otherPro.fansNum, (): number => {
                     return Tools._Number.randomOneInt(100, 150);
                 })
             }
-            this._evNotify(_GameEvent.Start.updateRanking);
+            this._evNotify(_GameData._Start.event.updateRanking);
             _GameData._Ranking._ins()._listRenderScript = RankingItem;
         }
 
         lwgOpenAni(): number {
-            if (_whereFrom === 'Tweeting') {
+            if (_GameData._Ranking._ins()._whereFrom === 'Tweeting') {
                 _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('Background'));
             } else {
                 _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
@@ -50,22 +58,22 @@ export module _Ranking {
         }
 
         lwgOpenAniAfter(): void {
-            if (_whereFrom === 'Tweeting') {
+            if (_GameData._Ranking._ins()._whereFrom === 'Tweeting') {
                 _GameEffects2D._fireworksCelebrate(() => {
                     !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
                         this.BtnCloseClick();
                         const gP = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnClose').x, this._ImgVar('BtnClose').y));
-                        this._evNotify(_GameEvent.Guide.RankingCloseBtn, [gP.x, gP.y]);
+                        this._evNotify(_GameData._Guide.event.RankingCloseBtn, [gP.x, gP.y]);
                     }, this._Owner.zOrder + 1);
                 });
-                _whereFrom = 'Start';
+                _GameData._Ranking._ins()._whereFrom = 'Start';
             }
         }
         lwgOnStart(): void {
             if (_GameData._Ranking._ins()._getProperty(_GameData._Ranking._ins()._pitchName, _GameData._Ranking._ins()._otherPro.rankNum) === 1) {
                 _GameData._Ranking._ins()._List.scrollTo(0);
             } else {
-                if (_whereFrom === 'Tweeting') {
+                if (_GameData._Ranking._ins()._whereFrom === 'Tweeting') {
                     _GameData._Ranking._ins()._listScrollToLast();
                     _GameData._Ranking._ins()._listTweenToPitchChoose(-1, 1500);
                 } else {
@@ -79,8 +87,8 @@ export module _Ranking {
             this._btnUp(this._ImgVar('BtnClose'), () => {
                 this._closeScene();
                 if (!_GameData._Guide._complete) {
-                    this._evNotify(_GameEvent.Guide.closeGuide);
-                    this._evNotify(_GameEvent.Start.BtnPersonalInfo);
+                    this._evNotify(_GameData._Guide.event.closeGuide);
+                    this._evNotify(_GameData._Start.event.BtnPersonalInfo);
                 }
             })
         }

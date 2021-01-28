@@ -2654,40 +2654,40 @@ export module Lwg {
             $pitch: any;
         }
 
-        /**listItem脚本，此脚本中的$awake，$button替代所有流程方法，不要使用OnEnable，onstart禁用，因为渲染时会反复执行，只有onawake执行一次*/
+        /**listItem脚本，此脚本中的$awake，$button替代所有流程方法，不要使用OnEnable，onstart禁用，因为渲染时会反复执行，只有onawake执行一次,所有属性暂时不可赋值，因为赋值后需要调用$render方法和控制类进行刷新，索性直接通过控制类修改属性，这样更加统一*/
         export class _Item extends Admin._ObjectBase implements _BaseProperty {
             get $name(): string { return this.$data ? this.$data['name'] : null; }
-            set $name(_name: string) { this.$data['name'] = _name; }
+            // set $name(_name: string) { this.$data['name'] = _name; }
             get $serial(): number { return this.$data ? this.$data['serial'] : null; }
-            set $serial(_serial: number) { this.$data['serial'] = _serial; }
+            // set $serial(_serial: number) { this.$data['serial'] = _serial; }
             get $sort(): string { return this.$data ? this.$data['sort'] : null; }
-            set $sort(_sort: string) { this.$data['sort'] = _sort; }
+            // set $sort(_sort: string) { this.$data['sort'] = _sort; }
             get $chName(): string { return this.$data ? this.$data['chName'] : null; }
-            set $chName(_chName: string) { this.$data['chName'] = _chName; }
+            // set $chName(_chName: string) { this.$data['chName'] = _chName; }
             get $classify(): string { return this.$data ? this.$data['classify'] : null; }
-            set $classify(_classify: string) { this.$data['classify'] = _classify; }
+            // set $classify(_classify: string) { this.$data['classify'] = _classify; }
             get $unlockWay(): string { return this.$data ? this.$data['unlockWay'] : null; }
-            set $unlockWay(_unlockWay: string) { this.$data['unlockWay'] = _unlockWay; }
+            // set $unlockWay(_unlockWay: string) { this.$data['unlockWay'] = _unlockWay; }
             get $conditionNum(): number { return this.$data ? this.$data['conditionNum'] : null; }
-            set $conditionNum(_conditionNum: number) { this.$data['conditionNum'] = _conditionNum; }
+            // set $conditionNum(_conditionNum: number) { this.$data['conditionNum'] = _conditionNum; }
             get $degreeNum(): number { return this.$data ? this.$data['degreeNum'] : null; }
-            set $degreeNum(_degreeNum: number) { this.$data['degreeNum'] = _degreeNum; }
+            // set $degreeNum(_degreeNum: number) { this.$data['degreeNum'] = _degreeNum; }
             get $otherDegreeNum(): number { return this.$data ? this.$data['otherDegreeNum'] : null; }
-            set $otherDegreeNum(_degreeNum: number) { this.$data['otherDegreeNum'] = _degreeNum; }
+            // set $otherDegreeNum(_degreeNum: number) { this.$data['otherDegreeNum'] = _degreeNum; }
             get $complete(): boolean { return this.$data ? this.$data['complete'] : null; }
-            set $complete(_compelet: boolean) { this.$data['complete'] = _compelet; }
+            // set $complete(_compelet: boolean) { this.$data['complete'] = _compelet; }
             get $otherComplete(): boolean { return this.$data ? this.$data['otherComplete'] : null; }
-            set $otherComplete(_compelet: boolean) { this.$data['otherComplete'] = _compelet; }
+            // set $otherComplete(_compelet: boolean) { this.$data['otherComplete'] = _compelet; }
             get $getAward(): boolean { return this.$data ? this.$data['getAward'] : null; }
-            set $getAward(_getAward: boolean) { this.$data['getAward'] = _getAward; }
+            // set $getAward(_getAward: boolean) { this.$data['getAward'] = _getAward; }
             get $otherGetAward(): boolean { return this.$data ? this.$data['otherGetAward'] : null; }
-            set $otherGetAward(_getAward: boolean) { this.$data['otherGetAward'] = _getAward; }
+            // set $otherGetAward(_getAward: boolean) { this.$data['otherGetAward'] = _getAward; }
             get $rewardType(): string { return this.$data ? this.$data['rewardType'] : null; }
-            set $rewardType(_getAward: string) { this.$data['rewardType'] = _getAward; }
+            // set $rewardType(_getAward: string) { this.$data['rewardType'] = _getAward; }
             get $otherRewardType(): string { return this.$data ? this.$data['otherRewardType'] : null; }
-            set $otherRewardType(_getAward: string) { this.$data['otherRewardType'] = _getAward; }
+            // set $otherRewardType(_getAward: string) { this.$data['otherRewardType'] = _getAward; }
             get $pitch(): boolean { return this.$data ? this.$data['pitch'] : null; }
-            set $pitch(_pitch: boolean) { this.$data['pitch'] = _pitch; }
+            // set $pitch(_pitch: boolean) { this.$data['pitch'] = _pitch; }
             /**数据对象，通过item赋值*/
             get $data(): string {
                 if (!this['item/dataSource']) {
@@ -3119,6 +3119,16 @@ export module Lwg {
             /**所有对象完成*/
             _setAllComplete(): void {
                 this._setAllProPerty(this._property.$complete, true);
+                this._refreshAndStorage();
+            }
+            /**所有对象完成*/
+            _setCompleteName(name: string): void {
+                this._setProperty(name, this._property.$complete, true);
+                this._refreshAndStorage();
+            }
+            /**所有对象完成*/
+            _setOtherCompleteName(name: string): void {
+                this._setProperty(name, this._property.$otherComplete, true);
                 this._refreshAndStorage();
             }
             /**

@@ -2,7 +2,6 @@ import ADManager, { TaT } from "../../TJ/Admanager";
 import { Admin, Animation2D, Color, StorageAdmin, TimerAdmin } from "./Lwg";
 import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
-import { _GameEvent } from "./_GameEvent";
 import { _Guide } from "./_Guide";
 import { _Ranking } from "./_Ranking";
 
@@ -31,7 +30,7 @@ export module _PersonalInfo {
 
                 !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
                     const gP = this._ImgVar('Name').localToGlobal(new Laya.Point(this._ImgVar('NameValue').x, this._ImgVar('NameValue').y));
-                    this._evNotify(_GameEvent.Guide.PersonalInfoWriteName, [gP.x, gP.y]);
+                    this._evNotify(_GameData._Guide.event.PersonalInfoWriteName, [gP.x, gP.y]);
                 }, this._Owner.zOrder + 1);
 
                 TimerAdmin._frameLoop(200, this, () => {
@@ -47,7 +46,7 @@ export module _PersonalInfo {
 
         BtnCloseClick(): void {
             this._btnUp(this._ImgVar('BtnClose'), () => {
-                !_GameData._Guide._complete && this._evNotify(_GameEvent.Guide.vanishGuide);
+                !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.vanishGuide);
                 this._closeScene();
             })
         }
@@ -65,7 +64,7 @@ export module _PersonalInfo {
                 })
 
             this._TextInputVar('NameValue').on(Laya.Event.FOCUS, this, () => {
-                !_GameData._Guide._complete && this._evNotify(_GameEvent.Guide.vanishGuide);
+                !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.vanishGuide);
             });
             this._TextInputVar('NameValue').on(Laya.Event.INPUT, this, () => {
             });
@@ -82,7 +81,7 @@ export module _PersonalInfo {
                 if (!_GameData._Guide._complete) {
                     this.BtnCloseClick();
                     const gP = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnClose').x, this._ImgVar('BtnClose').y));
-                    this._evNotify(_GameEvent.Guide.PersonalInfoCloseBtn, [gP.x, gP.y]);
+                    this._evNotify(_GameData._Guide.event.PersonalInfoCloseBtn, [gP.x, gP.y]);
                 }
             });
             if (!_GameData._Guide._complete) return;
@@ -90,7 +89,7 @@ export module _PersonalInfo {
         }
         lwgCloseAni(): number {
             return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-                !_GameData._Guide._complete && this._evNotify(_GameEvent.Guide.DelayBtnCheckIn);
+                !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.DelayBtnCheckIn);
             });
         }
 

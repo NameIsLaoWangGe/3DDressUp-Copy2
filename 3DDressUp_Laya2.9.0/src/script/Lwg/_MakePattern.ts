@@ -5,19 +5,13 @@ import { _3D } from "./_3D";
 import { _Game } from "./_Game";
 import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
-import { _GameEvent } from "./_GameEvent";
 import { _Guide } from "./_Guide";
 import { _MakeUp } from "./_MakeUp";
 import { _Ranking } from "./_Ranking";
 import { _Res } from "./_Res";
 import { _Start } from "./_Start";
-import { _Tweeting } from "./_Tweeting";
 import { _UI } from "./_UI";
 export module _MakePattern {
-    export enum _Event {
-        close = '_MakePattern_close',
-        createImg = '_MakePattern_createImg',
-    }
     export class _Item extends DataAdmin._Item {
         fX: number;
         diffX: number = 0;
@@ -54,7 +48,7 @@ export module _MakePattern {
                     this.create = false;
                     this.diffX = 0;
                     this.fX = e.stageX;
-                    this._evNotify(_Event.close);
+                    this._evNotify(_GameData._MakePattern.event.close);
                 },
                 (e: Laya.Event) => {
                     if (this['Cancal']) {
@@ -63,7 +57,7 @@ export module _MakePattern {
                     if (!this.create) {
                         this.diffX = this.fX - e.stageX;
                         if (this.diffX >= 5) {
-                            this._evNotify(_Event.createImg, [this.$name, this._gPoint]);
+                            this._evNotify(_GameData._MakePattern.event.createImg, [this.$name, this._gPoint]);
                             this.create = true;
                         }
                     }
@@ -73,7 +67,7 @@ export module _MakePattern {
                         return;
                     }
                     this.create = true;
-                    this._evNotify(_Event.close);
+                    this._evNotify(_GameData._MakePattern.event.close);
                 },
                 () => {
                     if (this['Cancal']) {
@@ -152,7 +146,7 @@ export module _MakePattern {
         lwgOpenAniAfter(): void {
             TimerAdmin._frameOnce(60, this, () => {
                 !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
-                    this._evNotify(_GameEvent.Guide.MakePatternChooseClassify);
+                    this._evNotify(_GameData._Guide.event.MakePatternChooseClassify);
                 })
             })
         }
@@ -200,7 +194,7 @@ export module _MakePattern {
                 if (_name === element.name) {
                     if (!_GameData._Guide._complete) {
                         if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.ChooseClassify) {
-                            this._evNotify(_GameEvent.Guide.MakePatternPattern1);
+                            this._evNotify(_GameData._Guide.event.MakePatternPattern1);
                         }
                     }
                     element.scale(1.1, 1.1);
@@ -230,7 +224,7 @@ export module _MakePattern {
             this.UI.btnCompleteClick = () => {
                 if (!_GameData._Guide._complete) {
                     if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.BtnCom) {
-                        this._evNotify(_GameEvent.Guide.closeGuide);
+                        this._evNotify(_GameData._Guide.event.closeGuide);
                     } else {
                         return;
                     }
@@ -255,7 +249,7 @@ export module _MakePattern {
                         var close = () => {
                             // 这次绘制是为了过长动画
                             _3D._Scene._ins().cameraToSprite(this._Owner);
-                            _Start._whereFrom = 'MakePattern';
+                            _GameData._Start._whereFrom = 'MakePattern';
                             this._openScene('Start', true, true);
                         }
                         // if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
@@ -283,12 +277,12 @@ export module _MakePattern {
         }
 
         lwgEvent(): void {
-            this._evReg(_Event.createImg, (name: string, gPoint: Laya.Point) => {
+            this._evReg(_GameData._MakePattern.event.createImg, (name: string, gPoint: Laya.Point) => {
                 this.Tex.state = this.Tex.stateType.move;
                 this.Tex.createImg(name, gPoint);
                 this.Tex.turnFace();
             })
-            this._evReg(_Event.close, () => {
+            this._evReg(_GameData._MakePattern.event.close, () => {
                 if (!_GameData._Guide._complete) return;
                 this.Tex.close();
                 this.Tex.state = this.Tex.stateType.none;
@@ -328,7 +322,7 @@ export module _MakePattern {
             }
             StorageAdmin._array(`${_3D.DIYCloth._ins().name}/${_GameData._DIYClothes._ins()._otherPro.texF}`).value = fArr;
             StorageAdmin._array(`${_3D.DIYCloth._ins().name}/${_GameData._DIYClothes._ins()._otherPro.texR}`).value = rArr;
-            _Ranking._whereFrom = this._Owner.name;
+            _GameData._Ranking._ins()._whereFrom = this._Owner.name;
             // } else {
             //     // 绘制到两张只有一半的sp上，节省本地存储的内存
             //     this._SpriteVar('Front').scaleY = this._SpriteVar('Reverse').scaleY = 1;
@@ -610,9 +604,9 @@ export module _MakePattern {
                         this.Tex.state = this.Tex.stateType.addTex;
                         if (!_GameData._Guide._complete) {
                             if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.Frame1) {
-                                this._evNotify(_GameEvent.Guide.MakePatternTurnFace, [this._ImgVar('BtnTurnFace')._lwg.gPoint.x, this._ImgVar('BtnTurnFace')._lwg.gPoint.y]);
+                                this._evNotify(_GameData._Guide.event.MakePatternTurnFace, [this._ImgVar('BtnTurnFace')._lwg.gPoint.x, this._ImgVar('BtnTurnFace')._lwg.gPoint.y]);
                             } else if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.Frame2) {
-                                this._evNotify(_GameEvent.Guide.MakePatternBtnCom, [this._ImgVar('BtnComplete')._lwg.gPoint.x, this._ImgVar('BtnComplete')._lwg.gPoint.y]);
+                                this._evNotify(_GameData._Guide.event.MakePatternBtnCom, [this._ImgVar('BtnComplete')._lwg.gPoint.x, this._ImgVar('BtnComplete')._lwg.gPoint.y]);
                             }
                         }
                     })
@@ -620,7 +614,7 @@ export module _MakePattern {
                 this._btnUp(this._ImgVar('BtnTurnFace'), (e: Laya.Event) => {
                     if (!_GameData._Guide._complete) {
                         if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.TurnFace) {
-                            this._evNotify(_GameEvent.Guide.MakePatternPattern2);
+                            this._evNotify(_GameData._Guide.event.MakePatternPattern2);
                         } else {
                             return;
                         }
@@ -720,7 +714,7 @@ export module _MakePattern {
             this['slideFY'] = null;
             // 在可以移动图片的位置进行移动
             if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
-                this._evNotify(_Event.close);
+                this._evNotify(_GameData._MakePattern.event.close);
             } else {
                 // 在列表上抬起则关闭
                 if (!this.Tex.checkInside()) {
@@ -728,9 +722,9 @@ export module _MakePattern {
                 } else {
                     if (!_GameData._Guide._complete) {
                         if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.Pattern1) {
-                            this._evNotify(_GameEvent.Guide.MakePatternFrame1, [this._ImgVar('Wireframe')]);
+                            this._evNotify(_GameData._Guide.event.MakePatternFrame1, [this._ImgVar('Wireframe')]);
                         } else if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.Pattern2) {
-                            this._evNotify(_GameEvent.Guide.MakePatternFrame2, [this._ImgVar('Wireframe')]);
+                            this._evNotify(_GameData._Guide.event.MakePatternFrame2, [this._ImgVar('Wireframe')]);
                         }
                     };
                 }

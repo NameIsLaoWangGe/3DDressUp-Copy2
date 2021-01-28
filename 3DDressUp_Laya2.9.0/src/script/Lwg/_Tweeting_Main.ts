@@ -3,7 +3,6 @@ import { Admin, Animation2D, TimerAdmin, Tools } from "./Lwg";
 import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
-import { _GameEvent } from "./_GameEvent";
 import { _Guide } from "./_Guide";
 import { _MakePattern } from "./_MakePattern";
 import { _PersonalInfo } from "./_PersonalInfo";
@@ -85,7 +84,7 @@ export module _Tweeting_Main {
                     TimerAdmin._once(300, this, () => {
                         this.BtnChoosePhotosClick();
                         !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
-                            this._evNotify(_GameEvent.Guide.TweetingBtnChoosePhoto, [this._ImgVar('BtnChoosePhotos')._lwg.gPoint.x, this._ImgVar('BtnChoosePhotos')._lwg.gPoint.y, this._ImgVar('Photo2')._lwg.gPoint.x + 65, this._ImgVar('Photo2')._lwg.gPoint.y + 65]);
+                            this._evNotify(_GameData._Guide.event.TweetingBtnChoosePhoto, [this._ImgVar('BtnChoosePhotos')._lwg.gPoint.x, this._ImgVar('BtnChoosePhotos')._lwg.gPoint.y, this._ImgVar('Photo2')._lwg.gPoint.x + 65, this._ImgVar('Photo2')._lwg.gPoint.y + 65]);
                         })
                     })
                     _GameAni._fadeHint(this._ImgVar('BtnChoosePhotos').getChildByName('HintPic') as Laya.Image);

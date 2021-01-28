@@ -4,7 +4,6 @@ import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _GameEffects3D } from "./_GameEffects3D";
-import { _GameEvent } from "./_GameEvent";
 import { _Guide } from "./_Guide";
 import { _Res } from "./_Res";
 
@@ -15,7 +14,7 @@ export module _CheckIn {
                 if (!_GameData._CheckIn._ins()._todayCheckIn) {
                     if (_GameData._CheckIn._ins()._checkInNum + 1 === this.$serial) {
                         _GameData._CheckIn._ins()._lastCheckDate = DateAdmin._date.date;
-                        this.$complete = true;
+                        _GameData._CheckIn._ins()._setCompleteName(this.$name);
                         _GameData._CheckIn._ins()._checkInNum++;
 
                         if (this.$rewardType.substr(0, 3) === 'diy') {
@@ -29,7 +28,7 @@ export module _CheckIn {
                         }
                         if (!_GameData._Guide._complete) {
                             _GameData._Guide.CheckInCloseBtn = true;
-                            this._evNotify(_GameEvent.Guide.CheckInCloseBtn, [this._SceneImg('Content')._lwg.gPoint.x, this._SceneImg('Content')._lwg.gPoint.y]);
+                            this._evNotify(_GameData._Guide.event.CheckInCloseBtn, [this._SceneImg('BtnClose')._lwg.gPoint.x, this._SceneImg('BtnClose')._lwg.gPoint.y]);
                         }
                     }
                 } else {
@@ -39,7 +38,7 @@ export module _CheckIn {
 
             var func = (e: Laya.Event) => {
                 ADManager.ShowReward(() => {
-                    this.$otherComplete = true;
+                    _GameData._CheckIn._ins()._setOtherCompleteName(this.$name);
                     if (this.$otherRewardType.substr(0, 3) === 'diy') {
                         _GameData._DIYClothes._ins()._setCompleteByName(this.$otherRewardType);
                         Dialogue.createHint_Middle('恭喜获得新的裁剪服装');
@@ -140,7 +139,7 @@ export module _CheckIn {
             return _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
                 this._openScene('Guide', false, false, () => {
                     this.BtnCloseClick();
-                    !_GameData._Guide._complete && this._evNotify(_GameEvent.Guide.CheckInGetReward, [this._ImgVar('GuideTab1')._lwg.gPoint.x, this._ImgVar('GuideTab1')._lwg.gPoint.y]);
+                    !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.CheckInGetReward, [this._ImgVar('GuideTab1')._lwg.gPoint.x, this._ImgVar('GuideTab1')._lwg.gPoint.y]);
                 })
             });
         }
@@ -149,8 +148,8 @@ export module _CheckIn {
             this._btnUp(this._ImgVar('BtnClose'), () => {
                 if (!_GameData._Guide._complete && _GameData._Guide.CheckInCloseBtn) {
                     _GameData._Guide._complete = true;
-                    this._evNotify(_GameEvent.Guide.closeGuide);
-                    this._evNotify(_GameEvent.Guide.StartOtherBtnClick);
+                    this._evNotify(_GameData._Guide.event.closeGuide);
+                    this._evNotify(_GameData._Guide.event.StartOtherBtnClick);
                 }
                 this._closeScene();
             })

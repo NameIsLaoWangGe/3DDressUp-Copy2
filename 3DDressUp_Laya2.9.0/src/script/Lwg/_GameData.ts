@@ -4,6 +4,46 @@ import { _Res } from "./_Res";
 
 export module _GameData {
     export class _Guide {
+        static event = {
+            closeGuide: 'Guide' + 'closeGuide',
+            vanishGuide: 'Guide' + 'vanishGuide',
+
+            StartBtnDress: 'Guide' + 'StartBtnDress',
+
+            MakeTailorPulldown: 'Guide' + 'MakeTailorPulldown',
+            MakeTailorChangeCloth: 'Guide' + 'MakeTailorChangeCloth',
+            MakeTailorBtnCom: 'Guide' + 'MakeTailorBtnCom',
+            MakeTailorStartTailor: 'Guide' + 'MakeTailorStartTailor',
+            MakeTailorNewTailor: 'Guide' + 'MakeTailorNewTailor',
+            MakeTailorCloseTailor: 'Guide' + 'MakeTailorCloseTailor',
+            MakeTailorOpenTailor: 'Guide' + 'MakeTailorOpenTailor',
+
+            MakePatternChooseClassify: 'Guide' + 'MakePatternChooseClassify',
+            MakePatternPattern1: 'Guide' + 'MakePatternPattern1',
+            MakePatternFrame1: 'Guide' + 'MakePatternFrame1',
+            MakePatternTurnFace: 'Guide' + 'MakePatternTurnFace',
+            MakePatternFrame2: 'Guide' + 'MakePatternFrame2',
+            MakePatternPattern2: 'Guide' + 'MakePatternPattern2',
+            MakePatternBtnCom: 'Guide' + 'MakePatternBtnCom',
+
+            TweetingBtnChoosePhoto: 'Guide' + 'TweetingBtnChoosePhoto',
+            TweetingChoosePhoto: 'Guide' + 'TweetingChoosePhoto',
+            TweetingBtnSend: 'Guide' + 'TweetingBtnSend',
+            TweetingBtnDoubleFans: 'Guide' + 'TweetingBtnDoubleFans',
+
+            RankingCloseBtn: 'Guide' + 'RankingCloseBtn',
+
+            PersonalInfoBtn: 'Guide' + 'PersonalInfoBtn',
+            PersonalInfoWriteName: 'Guide' + 'PersonalInfoWriteName',
+            PersonalInfoCloseBtn: 'Guide' + 'PersonalInfoCloseBtn',
+
+            DelayBtnCheckIn: 'Start' + 'DelayBtnCheckIn',
+            BtnCheckIn: 'Guide' + 'BtnCheckIn',
+            CheckInGetReward: 'Guide' + 'CheckInGetReward',
+            CheckInCloseBtn: 'Guide' + 'CheckInBtnClose',
+
+            StartOtherBtnClick: 'Guide' + 'StartOtherBtnClick',
+        }
         /**引导是否完成*/
         static get _complete(): boolean {
             return StorageAdmin._bool('_Guide_complete').value;
@@ -14,48 +54,6 @@ export module _GameData {
         static MmakeTailorPulldownSwicth: boolean = false;
         static MmakeTailorBtnComSwicth: boolean = false;
 
-        // static get MakePatternPatternClassify(): boolean {
-        //     return this['/MakePatternPatternClassify'] == undefined ? true : this['MakePatternPatternClassify'];
-        // }
-        // static set MakePatternPatternClassify(bool: boolean) {
-        //     this['/MakePatternPatternClassify'] = bool;
-        // }
-        // static get MakePatternPattern1Swicth(): boolean {
-        //     return this['/MakePatternPattern1Swicth'];
-        // }
-        // static set MakePatternPattern1Swicth(bool: boolean) {
-        //     this['/MakePatternPattern1Swicth'] = bool;
-        // }
-        // static get MakePatternFrame1Swicth(): boolean {
-        //     return this['/MakePatternFrame1Swicth'];
-        // }
-        // static set MakePatternFrame1Swicth(bool: boolean) {
-        //     this['/MakePatternFrame1Swicth'] = bool;
-        // }
-        // static get MakePatternBtnTurnFaceSwicth(): boolean {
-        //     return this['/MakePatternBtnTurnFaceSwicth'];
-        // }
-        // static set MakePatternBtnTurnFaceSwicth(bool: boolean) {
-        //     this['/MakePatternBtnTurnFaceSwicth'] = bool;
-        // }
-        // static get MakePatternPattern2Swicth(): boolean {
-        //     return this['/MakePatternPattern2Swicth'];
-        // }
-        // static set MakePatternPattern2Swicth(bool: boolean) {
-        //     this['/MakePatternPattern2Swicth'] = bool;
-        // }
-        // static get MakePatternFrame2Swicth(): boolean {
-        //     return this['/MakePatternFrame2Swicth'];
-        // }
-        // static set MakePatternFrame2Swicth(bool: boolean) {
-        //     this['/MakePatternFrame2Swicth'] = bool;
-        // }
-        // static get MakePatternBtnComSwicth(): boolean {
-        //     return this['/MakePatternBtnComSwicth'];
-        // }
-        // static set MakePatternBtnComSwicth(bool: boolean) {
-        //     this['/MakePatternBtnComSwicth'] = bool;
-        // }
         static get MakePatternState(): string {
             return this['/MakePatternState'] ? this['/MakePatternState'] : 'ChooseClassify';
         };
@@ -63,7 +61,7 @@ export module _GameData {
             this['/MakePatternState'] = _state;
         }
         static MakePatternStateType = {
-            ChooseClassify: 'ChooseClassify',
+            ChooseClassify: `ChooseClassify`,
             Pattern1: 'Pattern1',
             Frame1: 'Frame1',
             TurnFace: 'TurnFace',
@@ -74,6 +72,15 @@ export module _GameData {
         }
 
         static CheckInCloseBtn: boolean = false;
+    }
+
+    export class _Start {
+        static _whereFrom: string;
+        static event = {
+            photo: 'Start' + 'photo',
+            updateRanking: 'Start' + 'updateRanking',
+            BtnPersonalInfo: 'Start' + 'BtnPersonalInfo',
+        }
     }
 
     export class _AllClothes extends DataAdmin._Table {
@@ -378,6 +385,8 @@ export module _GameData {
             }
             return this.ins;
         }
+        /**从哪个界面进来*/
+        _whereFrom: string = 'Start';
         _otherPro = {
             rankNum: 'rankNum',
             fansNum: 'fansNum',
@@ -388,7 +397,30 @@ export module _GameData {
             self: 'self',
         }
     }
-
+    export class _MakeTailor {
+        static event = {
+            scissorTrigger: '_MakeTailor_scissorTrigger',
+            completeEffcet: '_MakeTailor_completeAni',
+            changeClothes: '_MakeTailor_changeClothes',
+            scissorAppear: '_MakeTailor_scissorAppear',
+            scissorPlay: '_MakeTailor_scissorPlay',
+            scissorStop: '_MakeTailor_scissorStop',
+            scissorRotation: '_MakeTailor_scissorRotation',
+            scissorAgain: '_MakeTailor_scissorSitu',
+            scissorRemove: '_MakeTailor_scissorRemove',
+        }
+    }
+    export class _MakePattern {
+        static event = {
+            close: '_MakePattern_close',
+            createImg: '_MakePattern_createImg',
+        }
+    }
+    export class _DressingRoom {
+        static event = {
+            changeCloth: '_DressingRoom_ChangeCloth',
+        }
+    }
     export class _Tweeting {
         private static ins: _Tweeting;
         static _ins() {

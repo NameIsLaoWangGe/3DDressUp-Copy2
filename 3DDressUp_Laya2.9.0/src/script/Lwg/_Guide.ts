@@ -1,31 +1,9 @@
 import { Admin, Animation2D, Effects2D, Effects3D, EventAdmin, StorageAdmin, TimerAdmin, Tools, _SceneName } from "./Lwg";
 import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
-import { _GameEvent } from "./_GameEvent";
 /**测试模块,每个模块分开，默认导出一个类，这个类是默认挂载的脚本类，如果有多个脚本，
  * 那么在这个默认类中进行添加，或者在其他地方动态添加*/
 export module _Guide {
-    // /**对每一个界面的引导进行标记*/
-    // export let _complete = {
-    //     get value(): boolean {
-    //         return StorageAdmin._bool('_Guide_complete').value;
-    //     },
-    //     set value(val: boolean) {
-    //         StorageAdmin._bool('_Guide_complete').value = val;
-    //     }
-    // }
-    // export let MmakeTailorPulldownSwicth: boolean = false;
-    // export let MmakeTailorBtnComSwicth: boolean = false;
-
-    // export let MakePatternPattern1Swicth: boolean = false;
-    // export let MakePatternFrame1Swicth: boolean = true;
-    // export let MakePatternBtnTurnFaceSwicth: boolean = false;
-    // export let MakePatternPattern2Swicth: boolean = false;
-    // export let MakePatternFrame2Swicth: boolean = true;
-    // export let MakePatternBtnComSwicth: boolean = false;
-
-    // export let CheckInCloseBtn: boolean = false;
-
     /**裁剪界面的层级必须在最上面*/
     export class Guide extends Admin._SceneBase {
         lwgOpenAni(): number {
@@ -388,17 +366,17 @@ export module _Guide {
             }
 
             const radius = 80;
-            this._evReg(_GameEvent.Guide.StartBtnDress, (x: number, y: number) => {
+            this._evReg(_GameData._Guide.event.StartBtnDress, (x: number, y: number) => {
                 this.noMoveCircle(x, y, radius);
             })
 
-            this._evReg(_GameEvent.Guide.MakeTailorPulldown, () => {
+            this._evReg(_GameData._Guide.event.MakeTailorPulldown, () => {
                 const x = Laya.stage.width - 95;
                 const y = Laya.stage.height / 2;
                 this.slideUpAppear(x, y, 165, 450, 20);
             })
 
-            this._evReg(_GameEvent.Guide.MakeTailorChangeCloth, () => {
+            this._evReg(_GameData._Guide.event.MakeTailorChangeCloth, () => {
                 const gP = this._ImgVar('Slide').localToGlobal(new Laya.Point(this._ImgVar('SlideHand').x, this._ImgVar('SlideHand').y));
                 this._ImgVar('Hand').pos(gP.x, gP.y);
                 this._ImgVar('Hand').scale(1, 1);
@@ -408,7 +386,7 @@ export module _Guide {
                 this.moveCircleNoBg(x, y, radius);
             })
 
-            this._evReg(_GameEvent.Guide.MakeTailorBtnCom, () => {
+            this._evReg(_GameData._Guide.event.MakeTailorBtnCom, () => {
                 this._AniVar('Click').stop();
                 this.boreholeCircle([[this.btnComX, this.btnComY, radius], [Laya.stage.width / 2, Laya.stage.height / 2, 350]], null, null, () => {
                     this.handMove(this.btnComX, this.btnComY, () => {
@@ -416,35 +394,35 @@ export module _Guide {
                     });
                 });
             })
-            this._evReg(_GameEvent.Guide.MakeTailorStartTailor, (Scissor: Laya.Sprite) => {
+            this._evReg(_GameData._Guide.event.MakeTailorStartTailor, (Scissor: Laya.Sprite) => {
                 this.bgVanish();
                 this.handClear();
                 this.startScissorTailor(Scissor);
             })
-            this._evReg(_GameEvent.Guide.MakeTailorNewTailor, (LineName: string) => {
+            this._evReg(_GameData._Guide.event.MakeTailorNewTailor, (LineName: string) => {
                 this.newScissorTailor(LineName);
             })
-            this._evReg(_GameEvent.Guide.MakeTailorCloseTailor, () => {
+            this._evReg(_GameData._Guide.event.MakeTailorCloseTailor, () => {
                 if (!this.presentName) return;
                 this._closeLine = true;
                 this.handClear();
                 this._ImgVar('Hand').scale(0, 0);
             })
-            this._evReg(_GameEvent.Guide.MakeTailorOpenTailor, () => {
+            this._evReg(_GameData._Guide.event.MakeTailorOpenTailor, () => {
                 if (!this.presentName) return;
                 this._closeLine = false;
                 this.handClear();
                 this.scissorTailor();
             })
 
-            this._evReg(_GameEvent.Guide.MakePatternChooseClassify, () => {
+            this._evReg(_GameData._Guide.event.MakePatternChooseClassify, () => {
                 _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.ChooseClassify;
                 const x = Laya.stage.width - 53;
                 const y = 270;
                 this.noMoveCircle(x, y, 60);
             })
 
-            this._evReg(_GameEvent.Guide.MakePatternPattern1, () => {
+            this._evReg(_GameData._Guide.event.MakePatternPattern1, () => {
                 _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Pattern1;
                 this.handClear();
                 const x = Laya.stage.width - 152;
@@ -469,20 +447,20 @@ export module _Guide {
                 }
             })
 
-            this._evReg(_GameEvent.Guide.MakePatternFrame1, (Wireframe: Laya.Image) => {
+            this._evReg(_GameData._Guide.event.MakePatternFrame1, (Wireframe: Laya.Image) => {
                 _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Frame1;
                 if (Wireframe) this._Wireframe = Wireframe;
                 func();
             })
 
-            this._evReg(_GameEvent.Guide.MakePatternTurnFace, (x: number, y: number) => {
+            this._evReg(_GameData._Guide.event.MakePatternTurnFace, (x: number, y: number) => {
                 _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.TurnFace;
                 this._AniVar('Frame').stop();
                 this.handClear();
                 this.moveCircleBg(x, y, radius);
             })
 
-            this._evReg(_GameEvent.Guide.MakePatternPattern2, () => {
+            this._evReg(_GameData._Guide.event.MakePatternPattern2, () => {
                 _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Pattern2;
                 this.handClear();
                 this._AniVar('Click').stop();
@@ -495,70 +473,70 @@ export module _Guide {
                 })
             })
 
-            this._evReg(_GameEvent.Guide.MakePatternFrame2, (Wireframe: Laya.Image) => {
+            this._evReg(_GameData._Guide.event.MakePatternFrame2, (Wireframe: Laya.Image) => {
                 _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Frame2;
                 if (Wireframe) this._Wireframe = Wireframe;
                 func();
             })
 
-            this._evReg(_GameEvent.Guide.MakePatternBtnCom, (x: number, y: number) => {
+            this._evReg(_GameData._Guide.event.MakePatternBtnCom, (x: number, y: number) => {
                 _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.BtnCom;
                 this._AniVar('Frame').stop();
                 this._ImgVar('Handpic').scale(1, 1);
                 this.moveCircleBg(x, y, radius);
             })
 
-            this._evReg(_GameEvent.Guide.TweetingBtnChoosePhoto, (x: number, y: number, handX: number, handY: number) => {
+            this._evReg(_GameData._Guide.event.TweetingBtnChoosePhoto, (x: number, y: number, handX: number, handY: number) => {
                 this.noMoveRoundrect(x, y, Laya.stage.width - 320 - 260, 290, 20, 500, handX, handY);
             })
 
-            this._evReg(_GameEvent.Guide.TweetingChoosePhoto, (x: number, y: number) => {
+            this._evReg(_GameData._Guide.event.TweetingChoosePhoto, (x: number, y: number) => {
                 this.noMoveRoundrect(x, y, 260, 260, 20);
             })
 
-            this._evReg(_GameEvent.Guide.TweetingBtnSend, (x: number, y: number) => {
+            this._evReg(_GameData._Guide.event.TweetingBtnSend, (x: number, y: number) => {
                 this.moveRoundrectNoBg(x, y, 220, 120, 20);
             })
 
-            this._evReg(_GameEvent.Guide.TweetingBtnDoubleFans, (x: number, y: number) => {
+            this._evReg(_GameData._Guide.event.TweetingBtnDoubleFans, (x: number, y: number) => {
                 this.noMoveRoundrect(x, y, 230, 120, 20);
             })
 
-            this._evReg(_GameEvent.Guide.RankingCloseBtn, (x: number, y: number) => {
+            this._evReg(_GameData._Guide.event.RankingCloseBtn, (x: number, y: number) => {
                 this.noMoveCircle(x, y, radius);
             })
 
-            this._evReg(_GameEvent.Guide.PersonalInfoBtn, (x: number, y: number) => {
+            this._evReg(_GameData._Guide.event.PersonalInfoBtn, (x: number, y: number) => {
                 this.noMoveCircle(x, y, radius);
             })
 
-            this._evReg(_GameEvent.Guide.PersonalInfoWriteName, (x: number, y: number) => {
+            this._evReg(_GameData._Guide.event.PersonalInfoWriteName, (x: number, y: number) => {
                 this.noMoveCircle(x, y, radius);
             })
 
-            this._evReg(_GameEvent.Guide.PersonalInfoCloseBtn, (x: number, y: number) => {
+            this._evReg(_GameData._Guide.event.PersonalInfoCloseBtn, (x: number, y: number) => {
                 this.noMoveCircle(x, y, radius);
             })
 
-            this._evReg(_GameEvent.Guide.BtnCheckIn, (x: number, y: number) => {
+            this._evReg(_GameData._Guide.event.BtnCheckIn, (x: number, y: number) => {
                 this.noMoveCircle(x, y, radius);
             })
 
-            this._evReg(_GameEvent.Guide.CheckInGetReward, (x: number, y: number) => {
+            this._evReg(_GameData._Guide.event.CheckInGetReward, (x: number, y: number) => {
                 this.noMoveCircle(x, y, radius);
             })
 
-            this._evReg(_GameEvent.Guide.CheckInCloseBtn, (x: number, y: number) => {
+            this._evReg(_GameData._Guide.event.CheckInCloseBtn, (x: number, y: number) => {
                 this.moveCircleBg(x, y, radius);
             })
 
-            this._evReg(_GameEvent.Guide.vanishGuide, () => {
+            this._evReg(_GameData._Guide.event.vanishGuide, () => {
                 this._AniVar('Click').stop();
                 this.handVanish();
                 this.bgVanish();
             })
 
-            this._evReg(_GameEvent.Guide.closeGuide, () => {
+            this._evReg(_GameData._Guide.event.closeGuide, () => {
                 this._closeScene();
             })
         }

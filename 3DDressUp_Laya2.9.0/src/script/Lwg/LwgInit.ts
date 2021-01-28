@@ -10,7 +10,6 @@ import { _DressingRoom } from "./_DressingRoom";
 import { _MakePattern } from "./_MakePattern";
 import { _PersonalInfo } from "./_PersonalInfo";
 import { _Ranking } from "./_Ranking";
-import { _Tweeting } from "./_Tweeting";
 import { _AdsHint } from "./_AdsHint";
 import SubPkg from "./SubpackController";
 import { _BackHint } from "./_BackHint";
@@ -47,7 +46,6 @@ export default class LwgInit extends _LwgInitScene {
             _DressingRoom: _DressingRoom,
             _PersonalInfo: _PersonalInfo,
             _Ranking: _Ranking,
-            _Tweeting: _Tweeting,
             _BackHint: _BackHint,
             _Tweeting_Main: _Tweeting_Main,
             _Tweeting_ChoosePhotos: _Tweeting_ChoosePhotos,

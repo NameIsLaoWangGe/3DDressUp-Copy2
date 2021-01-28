@@ -9,10 +9,7 @@ import { _Res } from "./_Res";
 import { _UI } from "./_UI";
 
 export module _DressingRoom {
-    export enum _Event {
-        changeCloth = '_DressingRoom_ChangeCloth',
-    }
-
+    
     /**表格中的其他类型*/
     export type _otherPro = {
         $icon: any;

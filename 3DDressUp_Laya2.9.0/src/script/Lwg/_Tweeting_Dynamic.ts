@@ -3,7 +3,6 @@ import { Adaptive, Admin, Animation2D, Click, DataAdmin, DateAdmin, Dialogue, Ef
 import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
-import { _GameEvent } from "./_GameEvent";
 import { _Guide } from "./_Guide";
 import { _MakePattern } from "./_MakePattern";
 import { _PersonalInfo } from "./_PersonalInfo";

@@ -2,25 +2,11 @@ import ADManager, { TaT } from "../../TJ/Admanager";
 import lwg, { Admin, Animation2D, AudioAdmin, Click, DataAdmin, Dialogue, Effects2D, EventAdmin, SceneAnimation, TimerAdmin, Tools, _SceneName } from "./Lwg";
 import { _GameData } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
-import { _GameEvent } from "./_GameEvent";
 import { _Guide } from "./_Guide";
 import { _Res } from "./_Res";
-import { _Tweeting } from "./_Tweeting";
 
 import { _UI } from "./_UI";
-
 export module _MakeTailor {
-    export enum _Event {
-        scissorTrigger = '_MakeTailor_ scissorTrigger',
-        completeEffcet = '_MakeTailor_completeAni',
-        changeClothes = '_MakeTailor_changeClothes',
-        scissorAppear = '_MakeTailor_scissorAppear',
-        scissorPlay = '_MakeTailor_scissorPlay',
-        scissorStop = '_MakeTailor_scissorStop',
-        scissorRotation = '_MakeTailor_scissorRotation',
-        scissorAgain = '_MakeTailor_scissorSitu',
-        scissorRemove = '_MakeTailor_scissorRemove',
-    }
     /**当前任务服装数据*/
     export class _TaskClothes extends DataAdmin._Table {
         private static ins: _TaskClothes;
@@ -146,21 +132,21 @@ export module _MakeTailor {
             },
 
             event: () => {
-                this._evReg(_Event.scissorAppear, () => {
+                this._evReg(_GameData._MakeTailor.event.scissorAppear, () => {
                     let time = 800;
                     Animation2D.move_rotate(this._Owner, this._fRotation + 360, this._fPoint, time, 0, () => {
                         this._Owner.rotation = this._fRotation;
                         this.Move.switch = true;
-                        if (!_GameData._Guide._complete) this._evNotify(_GameEvent.Guide.MakeTailorStartTailor, [this._Owner]);
+                        if (!_GameData._Guide._complete) this._evNotify(_GameData._Guide.event.MakeTailorStartTailor, [this._Owner]);
                     })
                 })
-                this._evReg(_Event.scissorPlay, () => {
+                this._evReg(_GameData._MakeTailor.event.scissorPlay, () => {
                     this.Ani.paly();
                 })
-                this._evReg(_Event.scissorStop, () => {
+                this._evReg(_GameData._MakeTailor.event.scissorStop, () => {
                     this.Ani.stop();
                 })
-                this._evReg(_Event.scissorRemove, (func?: Function) => {
+                this._evReg(_GameData._MakeTailor.event.scissorRemove, (func?: Function) => {
                     this.Move.switch = false;
                     let disX = 1500;
                     let disY = -600;
@@ -178,13 +164,13 @@ export module _MakeTailor {
                     })
                 })
 
-                this._evReg(_Event.scissorAgain, () => {
+                this._evReg(_GameData._MakeTailor.event.scissorAgain, () => {
                     Animation2D.move_rotate(this._Owner, this._fRotation, this._fPoint, 600, 100, () => {
                         _TaskClothes._ins().again(this._Scene);
                     });
                 })
 
-                this._evReg(_Event.scissorRotation, (rotate: number) => {
+                this._evReg(_GameData._MakeTailor.event.scissorRotation, (rotate: number) => {
                     TimerAdmin._clearAll([this._Owner]);
                     const time = 10;
                     let angle: number;
@@ -217,14 +203,13 @@ export module _MakeTailor {
             touchP: null as Laya.Point,
             diffP: null as Laya.Point,
         }
-
         lwgButton(): void {
             this._btnFour(Laya.stage,
                 (e: Laya.Event) => {
                     if (this.Move.switch) {
-                        this._evNotify(_Event.scissorPlay);
+                        this._evNotify(_GameData._MakeTailor.event.scissorPlay);
                         this.Move.touchP = new Laya.Point(e.stageX, e.stageY);
-                        if (!_GameData._Guide._complete) this._evNotify(_GameEvent.Guide.MakeTailorCloseTailor, [this._Owner]);
+                        if (!_GameData._Guide._complete) this._evNotify(_GameData._Guide.event.MakeTailorCloseTailor, [this._Owner]);
                     }
                 },
                 (e: Laya.Event) => {
@@ -234,14 +219,14 @@ export module _MakeTailor {
                         this._Owner.y += this.Move.diffP.y;
                         Tools._Node.tieByStage(this._Owner);
                         this.Move.touchP = new Laya.Point(e.stageX, e.stageY);
-                        this._evNotify(_Event.scissorPlay);
+                        this._evNotify(_GameData._MakeTailor.event.scissorPlay);
                     }
                 },
                 (e: Laya.Event) => {
-                    this._evNotify(_Event.scissorStop);
+                    this._evNotify(_GameData._MakeTailor.event.scissorStop);
                     this.Move.touchP = null;
                     if (!_GameData._Guide._complete) {
-                        this._evNotify(_GameEvent.Guide.MakeTailorOpenTailor, [this._Owner]);
+                        this._evNotify(_GameData._Guide.event.MakeTailorOpenTailor, [this._Owner]);
 
                     }
                 })
@@ -249,9 +234,9 @@ export module _MakeTailor {
         onTriggerEnter(other: Laya.CircleCollider, _Owner: Laya.CircleCollider): void {
             if (!other['cut'] && this.Move.switch) {
                 other['cut'] = true;
-                this._evNotify(_Event.scissorPlay);
-                this._evNotify(_Event.scissorStop);
-                EventAdmin._notify(_Event.scissorTrigger, [other.owner]);
+                this._evNotify(_GameData._MakeTailor.event.scissorPlay);
+                this._evNotify(_GameData._MakeTailor.event.scissorStop);
+                EventAdmin._notify(_GameData._MakeTailor.event.scissorTrigger, [other.owner]);
                 this.Ani.effcts();
             }
         }
@@ -269,7 +254,7 @@ export module _MakeTailor {
                     // 如果已选中则不会更换选择
                     if (this.$name !== _GameData._DIYClothes._ins()._pitchName) {
                         _GameData._DIYClothes._ins()._setPitch(this.$name);
-                        this._evNotify(_Event.changeClothes);
+                        this._evNotify(_GameData._MakeTailor.event.changeClothes);
                     }
                 }
                 else {
@@ -285,7 +270,7 @@ export module _MakeTailor {
                                 if (_GameData._DIYClothes._ins()._checkCondition(this.$name)) {
                                     Dialogue.createHint_Middle('恭喜获得一件新服装！');
                                     _GameData._DIYClothes._ins()._setPitch(this.$name);
-                                    this._evNotify(_Event.changeClothes);
+                                    this._evNotify(_GameData._MakeTailor.event.changeClothes);
                                 }
                             })
                             break;
@@ -298,7 +283,7 @@ export module _MakeTailor {
                 }
                 if (!_GameData._Guide._complete && this.$name == 'diy_dress_002_final') {
                     _GameData._Guide.MmakeTailorBtnComSwicth = true;
-                    this._evNotify(_GameEvent.Guide.MakeTailorBtnCom);
+                    this._evNotify(_GameData._Guide.event.MakeTailorBtnCom);
                 };
             })
         }
@@ -377,7 +362,7 @@ export module _MakeTailor {
                 this.UI.btnBackAppear(() => {
                     !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
                         _GameData._Guide.MmakeTailorPulldownSwicth = true;
-                        this._evNotify(_GameEvent.Guide.MakeTailorPulldown);
+                        this._evNotify(_GameData._Guide.event.MakeTailorPulldown);
                     })
                 });
             })
@@ -397,7 +382,7 @@ export module _MakeTailor {
                     this.UI.btnAgainAppear();
                 }, 200);
                 TimerAdmin._frameOnce(30, this, () => {
-                    this._evNotify(_Event.scissorAppear);
+                    this._evNotify(_GameData._MakeTailor.event.scissorAppear);
                 })
             }
 
@@ -418,7 +403,7 @@ export module _MakeTailor {
                         if (_GameData._Guide.MmakeTailorPulldownSwicth && this['Pulldown'] && this['Pulldown'] > 2) {
                             _GameData._DIYClothes._ins()._List.tweenTo(4, 200, Laya.Handler.create(this, () => {
                                 _GameData._Guide.MmakeTailorPulldownSwicth = false;
-                                this._evNotify(_GameEvent.Guide.MakeTailorChangeCloth);
+                                this._evNotify(_GameData._Guide.event.MakeTailorChangeCloth);
                             }));
                         }
                         this['Pulldown'] = 1;
@@ -427,7 +412,7 @@ export module _MakeTailor {
                 return;
             }
             this.UI.btnAgainClick = () => {
-                this._evNotify(_Event.scissorRemove, [() => {
+                this._evNotify(_GameData._MakeTailor.event.scissorRemove, [() => {
                     _TaskClothes._ins().again(this._Owner);
                 }]);
                 Click._switch = false;
@@ -442,11 +427,11 @@ export module _MakeTailor {
         }
 
         lwgEvent(): void {
-            this._evReg(_Event.changeClothes, () => {
+            this._evReg(_GameData._MakeTailor.event.changeClothes, () => {
                 _TaskClothes._ins().changeClothes(this._Owner);
             })
 
-            this._evReg(_Event.scissorTrigger, (Dotted: Laya.Image) => {
+            this._evReg(_GameData._MakeTailor.event.scissorTrigger, (Dotted: Laya.Image) => {
                 const Parent = Dotted.parent as Laya.Sprite;
                 const value = _TaskClothes._ins()._checkCondition(Parent.name);
                 Dotted.visible = false;
@@ -460,7 +445,7 @@ export module _MakeTailor {
                 if (Parent.cacheAs !== "bitmap") Parent.cacheAs = "bitmap";
                 Eraser.graphics.drawCircle(Dotted.x, Dotted.y, 15, '#000000');
                 if (value) {
-                    if (!_GameData._Guide._complete) this._evNotify(_GameEvent.Guide.MakeTailorNewTailor, [Parent.name]);
+                    if (!_GameData._Guide._complete) this._evNotify(_GameData._Guide.event.MakeTailorNewTailor, [Parent.name]);
                     // 删除布料
                     for (let index = 0; index < _TaskClothes._ins().Clothes.getChildAt(0).numChildren; index++) {
                         const element = _TaskClothes._ins().Clothes.getChildAt(0).getChildAt(index) as Laya.Image;
@@ -513,9 +498,9 @@ export module _MakeTailor {
                     // 检测是否全部完成
                     if (_TaskClothes._ins()._checkAllCompelet()) {
                         Tools._Node.removeAllChildren(_TaskClothes._ins().LineParent);
-                        this._evNotify(_Event.scissorRemove);
+                        this._evNotify(_GameData._MakeTailor.event.scissorRemove);
                         TimerAdmin._frameOnce(80, this, () => {
-                            this._evNotify(_Event.completeEffcet);
+                            this._evNotify(_GameData._MakeTailor.event.completeEffcet);
                         })
                         TimerAdmin._frameOnce(280, this, () => {
                             _GameData._Tweeting._ins()._photo.take(this._Owner, 0);
@@ -527,20 +512,20 @@ export module _MakeTailor {
                 const gPos = (Dotted.parent as Laya.Image).localToGlobal(new Laya.Point(Dotted.x, Dotted.y));
                 if (Dotted.name == 'A') {
                     if (this._ImgVar('Scissor').x <= gPos.x) {
-                        this._evNotify(_Event.scissorRotation, [Dotted.rotation]);
+                        this._evNotify(_GameData._MakeTailor.event.scissorRotation, [Dotted.rotation]);
                     } else {
-                        this._evNotify(_Event.scissorRotation, [180 + Dotted.rotation]);
+                        this._evNotify(_GameData._MakeTailor.event.scissorRotation, [180 + Dotted.rotation]);
                     }
                 } else {
                     if (this._ImgVar('Scissor').y >= gPos.y) {
-                        this._evNotify(_Event.scissorRotation, [Dotted.rotation]);
+                        this._evNotify(_GameData._MakeTailor.event.scissorRotation, [Dotted.rotation]);
                     } else {
-                        this._evNotify(_Event.scissorRotation, [180 + Dotted.rotation]);
+                        this._evNotify(_GameData._MakeTailor.event.scissorRotation, [180 + Dotted.rotation]);
                     }
                 }
             })
 
-            this._evReg(_Event.completeEffcet, () => {
+            this._evReg(_GameData._MakeTailor.event.completeEffcet, () => {
                 this.UI.btnBackVinish();
                 this.UI.btnAgainVinish();
                 AudioAdmin._playVictorySound(null, null, null, 0.5);

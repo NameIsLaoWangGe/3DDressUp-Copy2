@@ -4,16 +4,11 @@ import { _3D } from "./_3D";
 import { _Game } from "./_Game";
 import { _GameData } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
-import { _GameEvent } from "./_GameEvent";
 import { _Guide } from "./_Guide";
-import { _Ranking } from "./_Ranking";
-import { _Tweeting } from "./_Tweeting";
-
 
 export module _Start {
     export function _init(): void {
     }
-    export let _whereFrom: string;
     export class Start extends Admin._SceneBase {
         lwgOnAwake(): void {
 
@@ -44,14 +39,14 @@ export module _Start {
                 Animation2D.bombs_Appear(element, 0, 1, 1.2, 0, 200, () => {
                     if (index === this._ImgVar('BtnParent').numChildren - 1) {
                         TimerAdmin._once(500, this, () => {
-                            if (_whereFrom == 'MakePattern') {
-                                this._evNotify(_GameEvent.Start.photo);
-                                _whereFrom = null;
+                            if (_GameData._Start._whereFrom === 'MakePattern') {
+                                this._evNotify(_GameData._Start.event.photo);
+                                _GameData._Start._whereFrom = null;
                             } else {
                                 if (!_GameData._Guide._complete) {
                                     this._openScene('Guide', false, false, () => {
                                         this.BtnDressClick();
-                                        this._evNotify(_GameEvent.Guide.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
+                                        this._evNotify(_GameData._Guide.event.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
                                     })
                                 } else {
                                     !_GameData._CheckIn._ins()._todayCheckIn && this._openScene('CheckIn', false);
@@ -64,24 +59,24 @@ export module _Start {
             }
         }
         lwgOnStart(): void {
-            this._evNotify(_GameEvent.Start.updateRanking);
+            this._evNotify(_GameData._Start.event.updateRanking);
         }
 
         lwgEvent(): void {
-            this._evReg(_GameEvent.Guide.DelayBtnCheckIn, () => {
+            this._evReg(_GameData._Guide.event.DelayBtnCheckIn, () => {
                 this.BtnCheckIn();
-                this._evNotify(_GameEvent.Guide.BtnCheckIn, [this._ImgVar('BtnCheckIn').x, this._ImgVar('BtnCheckIn').y]);
+                this._evNotify(_GameData._Guide.event.BtnCheckIn, [this._ImgVar('BtnCheckIn').x, this._ImgVar('BtnCheckIn').y]);
             })
 
-            this._evReg(_GameEvent.Guide.StartOtherBtnClick, () => {
+            this._evReg(_GameData._Guide.event.StartOtherBtnClick, () => {
                 this.lwgButton();
             })
 
-            this._evReg(_GameEvent.Start.updateRanking, () => {
+            this._evReg(_GameData._Start.event.updateRanking, () => {
                 let obj = _GameData._Ranking._ins()._getPitchObj();
                 this._LabelVar('RankNum').text = `${obj[_GameData._Ranking._ins()._otherPro.rankNum]}/50`;
             })
-            this._evReg(_GameEvent.Start.photo, () => {
+            this._evReg(_GameData._Start.event.photo, () => {
                 const sp = _3D._Scene._ins().cameraToSprite(this._Owner);
                 TimerAdmin._frameOnce(10, this, () => {
                     _GameData._Tweeting._ins()._photo.take(this._Owner, 2);
@@ -92,11 +87,11 @@ export module _Start {
                 })
             })
 
-            this._evReg(_GameEvent.Start.BtnPersonalInfo, () => {
+            this._evReg(_GameData._Start.event.BtnPersonalInfo, () => {
                 TimerAdmin._once(1000, this, () => {
                     this._openScene('Guide', false, false, () => {
                         this.BtnPersonalInfoClick();
-                        this._evNotify(_GameEvent.Guide.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
+                        this._evNotify(_GameData._Guide.event.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
                     })
                 })
             })
@@ -104,7 +99,7 @@ export module _Start {
 
         BtnDressClick(): void {
             this._btnUp(this._ImgVar('BtnDress'), () => {
-                this._evNotify(_GameEvent.Guide.closeGuide);
+                this._evNotify(_GameData._Guide.event.closeGuide);
                 let time = 0;
                 if (_GameData._Guide._complete) {
                     time = 300;
@@ -118,14 +113,14 @@ export module _Start {
 
         BtnPersonalInfoClick(): void {
             this._btnUp(this._ImgVar('BtnPersonalInfo'), () => {
-                !_GameData._Guide._complete && this._evNotify(_GameEvent.Guide.vanishGuide);
+                !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.vanishGuide);
                 this._openScene('PersonalInfo', false);
             })
         }
 
         BtnCheckIn(): void {
             this._btnUp(this._ImgVar('BtnCheckIn'), () => {
-                !_GameData._Guide._complete && this._evNotify(_GameEvent.Guide.vanishGuide);
+                !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.vanishGuide);
                 this._openScene('CheckIn', false);
             })
         }
@@ -154,7 +149,7 @@ export module _Start {
 
             this.BtnPersonalInfoClick();
             this._btnUp(this._ImgVar('BtnRanking'), () => {
-                _Ranking._whereFrom = 'Start';
+                _GameData._Ranking._ins()._whereFrom = 'Start';
                 this._openScene('Ranking', false);
             })
             this._btnUp(this._ImgVar('BtnDressingRoom'), () => {
