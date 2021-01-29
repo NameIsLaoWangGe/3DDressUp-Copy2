@@ -8337,7 +8337,7 @@ export module Lwg {
               * @param startAngle 扇形的初始角度
               * @param endAngle 扇形结束角度
              */
-            export function drawPieMask(parent, startAngle, endAngle): Laya.DrawPieCmd {
+            export function drawPieMask(parent: Laya.Sprite, startAngle: number, endAngle: number): Laya.DrawPieCmd {
                 // 父节点cacheAs模式必须为"bitmap"
                 parent.cacheAs = "bitmap";
                 //新建一个sprite作为绘制扇形节点
@@ -8371,9 +8371,8 @@ export module Lwg {
              * @export
              * @param {Laya.Camera} camera 摄像机
              * @param {Laya.Sprite} sprite 目标sprite,必须有宽高
-             * @param {boolean} clear 是否延时自动清除贴图，默认为
              */
-            export function cameraToSprite(camera: Laya.Camera, sprite: Laya.Sprite, clear?: boolean): void {
+            export function cameraToSprite(camera: Laya.Camera, sprite: Laya.Sprite): void {
                 // 赋值当前摄像机
                 const _camera = camera.clone() as Laya.Camera;
                 camera.scene.addChild(_camera);
@@ -8392,7 +8391,7 @@ export module Lwg {
                     _texArr[0].destroy();
                     _texArr.shift();
                 }
-                // 延迟销毁，因为渲染需要时间
+                // 延迟销毁照相机，因为渲染需要时间
                 TimerAdmin._frameOnce(5, this, () => {
                     _camera.destroy();
                 })

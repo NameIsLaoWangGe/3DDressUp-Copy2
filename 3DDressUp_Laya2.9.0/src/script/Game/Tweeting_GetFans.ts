@@ -1,7 +1,7 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { Adaptive, Admin, Animation2D, Click, DataAdmin, DateAdmin, Dialogue, Effects2D, StorageAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
+import { Admin, Animation2D, Dialogue, TimerAdmin, Tools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
-import { _GameData } from "./_GameData";
+import { _Guide, _Ranking, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 
 export default class Tweeting_GetFans extends Admin._SceneBase {
@@ -9,7 +9,7 @@ export default class Tweeting_GetFans extends Admin._SceneBase {
     fansNum = 0;
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.BtnShow, 'ADrank');
-        this.pitchObj = _GameData._Ranking._Table._getPitchObj();
+        this.pitchObj = _Ranking._Data._getPitchObj();
         this.fansNum = Tools._Number.randomOneInt(115, 383);
         this.pitchObj['fansNum'] += this.fansNum;
         this._FontClipVar('FansNum').value = this.fansNum.toString();
@@ -17,8 +17,8 @@ export default class Tweeting_GetFans extends Admin._SceneBase {
     lwgOpenAni(): number {
         _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
             _GameEffects2D._interfacePointJet();
-            !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
-                this._evNotify(_GameData._Guide.event.TweetingBtnDoubleFans, [this._ImgVar('BtnDouble')._lwg.gPoint.x, this._ImgVar('BtnDouble')._lwg.gPoint.y]);
+            !_Guide._complete && this._openScene('Guide', false, false, () => {
+                this._evNotify(_Guide.event.TweetingBtnDoubleFans, [this._ImgVar('BtnDouble')._lwg.gPoint.x, this._ImgVar('BtnDouble')._lwg.gPoint.y]);
             });
             TimerAdmin._loop(2000, this, () => {
                 Animation2D.bomb_LeftRight(this._ImgVar('BtnDouble'), 1.1, 250);
@@ -29,11 +29,11 @@ export default class Tweeting_GetFans extends Admin._SceneBase {
     lwgButton(): void {
         // 关闭需执行
         var closeBefore = () => {
-            _GameData._Ranking._whereFrom = 'Tweeting';
-            _GameData._Tweeting._photo.clear();
+            _Ranking._whereFrom = 'Tweeting';
+            _Tweeting._photo.clear();
             this._closeScene('Tweeting_Dynamic');
             this._closeScene();
-            !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.closeGuide);
+            !_Guide._complete && this._evNotify(_Guide.event.closeGuide);
         }
         this._btnUp(this._ImgVar('BtnOk'), () => {
             closeBefore();
@@ -45,7 +45,7 @@ export default class Tweeting_GetFans extends Admin._SceneBase {
         }
         this._btnUp(this._ImgVar('BtnDouble'), () => {
             // 新手引导的时候直接给予奖励
-            if (!_GameData._Guide._complete) {
+            if (!_Guide._complete) {
                 double();
             } else {
                 ADManager.TAPoint(TaT.BtnClick, 'ADrank');

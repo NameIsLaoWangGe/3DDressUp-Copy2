@@ -1,7 +1,7 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { Admin, Animation2D, TimerAdmin, Tools } from "../Lwg/Lwg";
+import { Admin, Animation2D, TimerAdmin, Tools, _PreLoadScene } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
-import { _GameData } from "./_GameData";
+import { _DIYClothes, _Guide, _PersonalInfo, _PreLoadCutIn, _Ranking, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 
 export default class Tweeting_Main extends Admin._SceneBase {
@@ -9,22 +9,22 @@ export default class Tweeting_Main extends Admin._SceneBase {
         ADManager.TAPoint(TaT.PageShow, 'weibopage');
         ADManager.TAPoint(TaT.BtnShow, 'photo_choose');
         // 正文
-        this._LabelVar('BodyText').text = _GameData._Tweeting._mainBody.getOne();
+        this._LabelVar('BodyText').text = _Tweeting._mainBody.getOne();
         // 名字
-        this._LabelVar('PlayerName').text = _GameData._PersonalInfo._name;
+        this._LabelVar('PlayerName').text = _PersonalInfo._name;
         // 玩家头部
         this._ImgVar('IconPic').skin = `Game/UI/Ranking/IconSkin/Ava.png`;
-        _GameData._Tweeting._attentionNum += Tools._Number.randomOneInt(50, 100);
-        this._LabelVar('AttentionNum').text = _GameData._Tweeting._attentionNum.toString();
-        this._LabelVar('FansNum').text = _GameData._Ranking._Table._getPitchProperty(_GameData._Ranking._Table._otherPro.fansNum);
+        _Tweeting._attentionNum += Tools._Number.randomOneInt(50, 100);
+        this._LabelVar('AttentionNum').text = _Tweeting._attentionNum.toString();
+        this._LabelVar('FansNum').text = _Ranking._Data._getPitchProperty(_Ranking._Data._otherPro.fansNum);
         // 完成次数增加也完成一些任务
-        _GameData._Tweeting._completeNum++;
-        _GameData._DIYClothes._ins()._checkConditionUnlockWay(_GameData._DIYClothes._ins()._unlockWay.$customs, 1);
-        this._LabelVar('CompleteNum').text = _GameData._Tweeting._completeNum.toString();
+        _Tweeting._completeNum++;
+        _DIYClothes._ins()._checkConditionUnlockWay(_DIYClothes._ins()._unlockWay.$customs, 1);
+        this._LabelVar('CompleteNum').text = _Tweeting._completeNum.toString();
         // 热门
         const heatArr = Tools._Number.randomCountBySection(20, 50, 3);
         heatArr.sort();
-        const briefArr = _GameData._Tweeting._brief.getThree();
+        const briefArr = _Tweeting._brief.getThree();
         const iconArr = Tools._Number.randomCountBySection(1, 20, 3);
         for (let index = 0; index < 3; index++) {
             const Rank = this._ImgVar('Hot').getChildByName(`Rank${index + 1}`) as Laya.Box;
@@ -33,8 +33,8 @@ export default class Tweeting_Main extends Admin._SceneBase {
             const Brief = Rank.getChildByName('Brief') as Laya.Label;
             const Heat = Rank.getChildByName('Heat') as Laya.Label;
             const Icon = Rank.getChildByName('HeadIcon').getChildByName('Icon') as Laya.Image;
-            const data =  _GameData._Ranking._Table._arr[index];
-            Name.text = data[ _GameData._Ranking._Table._property.$name];
+            const data = _Ranking._Data._arr[index];
+            Name.text = data[_Ranking._Data._property.$name];
             Tag.skin = `Game/UI/Tweeting/Main/${index + 1}.png`;
             Brief.text = briefArr[index];
             Heat.text = `本周热度 ${heatArr[index]}万`;
@@ -43,8 +43,8 @@ export default class Tweeting_Main extends Admin._SceneBase {
         // 照片位置
         for (let index = 0; index < 3; index++) {
             const element = this._ImgVar('BtnChoosePhotos').getChildByName(`Photo${index + 1}`).getChildAt(0) as Laya.Sprite;
-            if (_GameData._Tweeting._photo.arr[index]) {
-                element.texture = _GameData._Tweeting._photo.arr[index];
+            if (_Tweeting._photo.arr[index]) {
+                element.texture = _Tweeting._photo.arr[index];
             }
         }
         for (let index = 0; index < this._ImgVar('Content').numChildren; index++) {
@@ -79,8 +79,8 @@ export default class Tweeting_Main extends Admin._SceneBase {
             Animation2D.bombs_Appear(this._ImgVar('BtnChoosePhotos'), 0, 1, 1.08, 0, baseTime * 2, () => {
                 TimerAdmin._once(300, this, () => {
                     this.BtnChoosePhotosClick();
-                    !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
-                        this._evNotify(_GameData._Guide.event.TweetingBtnChoosePhoto, [this._ImgVar('BtnChoosePhotos')._lwg.gPoint.x, this._ImgVar('BtnChoosePhotos')._lwg.gPoint.y, this._ImgVar('Photo2')._lwg.gPoint.x + 65, this._ImgVar('Photo2')._lwg.gPoint.y + 65]);
+                    !_Guide._complete && this._openScene('Guide', false, false, () => {
+                        this._evNotify(_Guide.event.TweetingBtnChoosePhoto, [this._ImgVar('BtnChoosePhotos')._lwg.gPoint.x, this._ImgVar('BtnChoosePhotos')._lwg.gPoint.y, this._ImgVar('Photo2')._lwg.gPoint.x + 65, this._ImgVar('Photo2')._lwg.gPoint.y + 65]);
                     })
                 })
                 _GameAni._fadeHint(this._ImgVar('BtnChoosePhotos').getChildByName('HintPic') as Laya.Image);

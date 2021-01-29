@@ -1,11 +1,11 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import lwg, { Admin, Animation2D, DataAdmin, Dialogue, Effects3D, StorageAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
+import lwg, { Admin, DataAdmin, Dialogue, TimerAdmin, Tools } from "../Lwg/Lwg";
 import { LwgOPPO } from "../Lwg/LwgOPPO";
-import { _3D } from "./_3D";
-import { _GameData } from "./_GameData";
+import { _AllClothes } from "./_GameData";
 import { _GameEffects3D } from "./_GameEffects3D";
 import { _Res } from "./_Res";
 import { _UI } from "./_UI";
+import { _3DScene } from "./_3D";
 
 /**表格中的其他类型*/
 export type _otherPro = {
@@ -32,14 +32,14 @@ class _Item extends DataAdmin._Item implements _otherPro {
             if (this.$name === 'ads') {
                 return;
             }
-            if (_GameData._AllClothes._ins()._getProperty(this.$name, _GameData._AllClothes._ins()._property.$complete)) {
-                _GameData._AllClothes._ins().accurateChange(this.$data['part'], this.$name);
-                _GameEffects3D._showCloth(_3D._Scene._ins()._Owner);
+            if (_AllClothes._ins()._getProperty(this.$name, _AllClothes._ins()._property.$complete)) {
+                _AllClothes._ins().accurateChange(this.$data['part'], this.$name);
+                _GameEffects3D._showCloth(_3DScene._ins()._Owner);
             } else {
                 ADManager.ShowReward(() => {
-                    if (_GameData._AllClothes._ins()._checkCondition(this.$name)) {
+                    if (_AllClothes._ins()._checkCondition(this.$name)) {
                         Dialogue.createHint_Middle('恭喜获得新服装！');
-                        _GameData._AllClothes._ins().accurateChange(this.$data['part'], this.$name);
+                        _AllClothes._ins().accurateChange(this.$data['part'], this.$name);
                     }
                 })
             }
@@ -60,7 +60,7 @@ class _Item extends DataAdmin._Item implements _otherPro {
                 this._ImgChild('Board').skin = null;
             }
             // 如果是OPPO，直接获取图片，如果不是则获取表格中的图片数据
-            if (this.$classify === _GameData._AllClothes._ins()._classify.DIY) {
+            if (this.$classify === _AllClothes._ins()._classify.DIY) {
                 if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
                     this._ImgChild('Icon').skin = LwgOPPO._getStoragePic(this.$name);
                     this._ImgChild('Icon').size(110, 130);
@@ -71,7 +71,7 @@ class _Item extends DataAdmin._Item implements _otherPro {
             } else {
                 this._ImgChild('Icon').size(null, null);
                 this._ImgChild('Icon').scale(0.9, 0.9);
-                this._ImgChild('Icon').skin = _GameData._AllClothes._ins().getGeneralIcon(this.$name);
+                this._ImgChild('Icon').skin = _AllClothes._ins().getGeneralIcon(this.$name);
             }
         }
         if (this.$complete) {
@@ -86,11 +86,11 @@ export default class DressingRoom extends Admin._SceneBase {
 
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'changepage');
-        _3D._Scene._ins().openMirror(this._ImgVar('MirrorSurface'));
-        const copyDIYArr = _GameData._AllClothes._ins().collectDIY();
-        _GameData._AllClothes._ins()._List = this._ListVar('List');
-        _GameData._AllClothes._ins()._listRenderScript = _Item;
-        _GameData._AllClothes._ins()._listArray = _GameData._AllClothes._ins()._getArrByClassify(_GameData._AllClothes._ins()._classify.DIY);
+        _3DScene._ins().openMirror(this._ImgVar('MirrorSurface'));
+        const copyDIYArr = _AllClothes._ins().collectDIY();
+        _AllClothes._ins()._List = this._ListVar('List');
+        _AllClothes._ins()._listRenderScript = _Item;
+        _AllClothes._ins()._listArray = _AllClothes._ins()._getArrByClassify(_AllClothes._ins()._classify.DIY);
         if (copyDIYArr.length > 0) {
             this.switchClassify(this._ImgVar('DIY'));
         } else {
@@ -104,7 +104,7 @@ export default class DressingRoom extends Admin._SceneBase {
 
     UI: _UI;
     lwgOnStart(): void {
-        _GameData._AllClothes._ins()._List.refresh();
+        _AllClothes._ins()._List.refresh();
         this.UI = new _UI(this._Owner);
         TimerAdmin._frameOnce(10, this, () => {
             this.UI.operationAppear(() => {
@@ -114,8 +114,8 @@ export default class DressingRoom extends Admin._SceneBase {
         })
         this.UI.btnCompleteClick = () => {
             this.UI.operationVinish(() => {
-                _3D._Scene._ins().closeMirror();
-                _3D._Scene._ins().cameraToSprite(this._Owner);
+                _3DScene._ins().closeMirror();
+                _3DScene._ins().cameraToSprite(this._Owner);
                 Laya.Resource.destroyUnusedResources();
                 this._openScene('Start', true, true);
                 this.UI.btnBackVinish();
@@ -134,13 +134,13 @@ export default class DressingRoom extends Admin._SceneBase {
                 Icon.skin = `Game/UI/DressingRoom/PartIcon/${element.name}_s.png`;
                 // 如果是DIY那么直接是分类
                 if (_element.name === 'DIY') {
-                    arr = _GameData._AllClothes._ins()._getArrByClassify(_element.name);
+                    arr = _AllClothes._ins()._getArrByClassify(_element.name);
                 } else {
-                    let _arr = _GameData._AllClothes._ins()._getArrByClassify(_GameData._AllClothes._ins()._classify.General);
+                    let _arr = _AllClothes._ins()._getArrByClassify(_AllClothes._ins()._classify.General);
                     // 非DIY分部位
                     for (let index = 0; index < _arr.length; index++) {
                         const obj = _arr[index];
-                        if (obj[_GameData._AllClothes._ins()._otherPro.part] === _element.name) {
+                        if (obj[_AllClothes._ins()._otherPro.part] === _element.name) {
                             arr.push(obj);
                         }
                     }
@@ -149,7 +149,7 @@ export default class DressingRoom extends Admin._SceneBase {
                 element.skin = `Game/UI/Common/kuang_bai.png`;
                 Icon.skin = `Game/UI/DressingRoom/PartIcon/${element.name}.png`;
             }
-            _GameData._AllClothes._ins()._listArray = arr;
+            _AllClothes._ins()._listArray = arr;
         }
     }
 

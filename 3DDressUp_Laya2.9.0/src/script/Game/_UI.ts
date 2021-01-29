@@ -1,10 +1,11 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { Admin, Animation2D, AudioAdmin, Click, Effects2D, EventAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
-import { _3D } from "./_3D";
-import { _GameData } from "./_GameData";
+import { Admin, Animation2D, Click, Tools } from "../Lwg/Lwg";
+import { _3DScene } from "./_3D";
+import { _BackHint, _Guide } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
 
+/**通用UI*/
 export class _UI {
     constructor(_Scene: Laya.Scene) {
         if (!_Scene) {
@@ -27,18 +28,18 @@ export class _UI {
 
         this.BtnBack = Tools._Node.createPrefab(_Res._list.prefab2D.BtnBack.prefab, _Scene, [77, 79]) as Laya.Image;
         Click._on(Click._Use.value, this.BtnBack, this, null, null, () => {
-            if (!_GameData._Guide._complete) return;
+            if (!_Guide._complete) return;
             ADManager.TAPoint(TaT.BtnShow, 'back_main');
-            if (_3D._Scene._ins()._Owner.active) {
-                _GameData._BackHint._3dToSp = _3D._Scene._ins().cameraToSprite(this.Scene);
+            if (_3DScene._ins()._Owner.active) {
+                _BackHint._3dToSp = _3DScene._ins().cameraToSprite(this.Scene);
             }
-            _GameData._BackHint._fromScene = this.Scene;
+            _BackHint._fromScene = this.Scene;
             Admin._openScene('BackHint');
         })
 
         this.BtnRollback = Tools._Node.createPrefab(_Res._list.prefab2D.BtnRollback.prefab, _Scene, [200, 79]) as Laya.Image;
         Click._on(Click._Use.value, this.BtnRollback, this, null, null, () => {
-            if (!_GameData._Guide._complete) return;
+            if (!_Guide._complete) return;
             this.btnRollbackClick && this.btnRollbackClick();
         })
 

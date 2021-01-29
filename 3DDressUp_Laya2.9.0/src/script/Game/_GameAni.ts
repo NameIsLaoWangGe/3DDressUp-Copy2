@@ -1,5 +1,4 @@
-import { Animation2D, TimerAdmin, Tools } from "../Lwg/Lwg";
-
+import { Animation2D, TimerAdmin } from "../Lwg/Lwg";
 export class _GameAni {
     /**弹开*/
     static _dialogOpenPopup(Content: Laya.Sprite, Bg?: Laya.Sprite, func?: Function): number {

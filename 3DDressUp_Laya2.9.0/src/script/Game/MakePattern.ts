@@ -1,12 +1,13 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { Admin, Animation2D, Animation3D, Click, DataAdmin, Dialogue, EventAdmin, StorageAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
+import { Admin, Animation2D, Animation3D, DataAdmin, Dialogue, StorageAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
 import { LwgOPPO } from "../Lwg/LwgOPPO";
-import { _3D } from "./_3D";
+import { _3DDIYCloth, _3DScene } from "./_3D";
 import { _GameAni } from "./_GameAni";
-import { _GameData } from "./_GameData";
+import { _DIYClothes, _Guide, _MakePattern, _Ranking, _Start, _Tweeting } from "./_GameData";
 import { _Res } from "./_Res";
 import { _UI } from "./_UI";
-export class _Item extends DataAdmin._Item {
+
+class _Item extends DataAdmin._Item {
     fX: number;
     diffX: number = 0;
     create: boolean = false;
@@ -23,9 +24,9 @@ export class _Item extends DataAdmin._Item {
                             break;
                         case this.$unlockWayType.$ads:
                             ADManager.ShowReward(() => {
-                                if (_GameData._Pattern._ins()._checkCondition(this.$name)) {
+                                if (_MakePattern._Data._checkCondition(this.$name)) {
                                     Dialogue.createHint_Middle('恭喜获得新贴图！');
-                                    _GameData._Pattern._ins()._setProperty(this.$name, _GameData._Pattern._ins()._property.$complete, true);
+                                    _MakePattern._Data._setProperty(this.$name, _MakePattern._Data._property.$complete, true);
                                 }
                             })
                             break;
@@ -42,7 +43,7 @@ export class _Item extends DataAdmin._Item {
                 this.create = false;
                 this.diffX = 0;
                 this.fX = e.stageX;
-                this._evNotify(_GameData._MakePattern.event.close);
+                this._evNotify(_MakePattern._event.close);
             },
             (e: Laya.Event) => {
                 if (this['Cancal']) {
@@ -51,7 +52,7 @@ export class _Item extends DataAdmin._Item {
                 if (!this.create) {
                     this.diffX = this.fX - e.stageX;
                     if (this.diffX >= 5) {
-                        this._evNotify(_GameData._MakePattern.event.createImg, [this.$name, this._gPoint]);
+                        this._evNotify(_MakePattern._event.createImg, [this.$name, this._gPoint]);
                         this.create = true;
                     }
                 }
@@ -61,7 +62,7 @@ export class _Item extends DataAdmin._Item {
                     return;
                 }
                 this.create = true;
-                this._evNotify(_GameData._MakePattern.event.close);
+                this._evNotify(_MakePattern._event.close);
             },
             () => {
                 if (this['Cancal']) {
@@ -78,23 +79,23 @@ export class _Item extends DataAdmin._Item {
             this._LableChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = false;
         } else {
             if (!this.$complete) {
-                if (this.$unlockWay === _GameData._Pattern._ins()._unlockWay.$ads) {
+                if (this.$unlockWay === _MakePattern._Data._unlockWay.$ads) {
                     this._ImgChild('AdsSign').visible = true;
                     this._LableChild('UnlockWay').visible = false;
                 } else {
                     this._LableChild('AdsSign').visible = false;
                     this._LableChild('UnlockWay').visible = true;
                     switch (this.$unlockWay) {
-                        case _GameData._DIYClothes._ins()._unlockWay.$check:
+                        case _DIYClothes._ins()._unlockWay.$check:
                             this._LableChild('UnlockWay').text = '签到';
                             this._LableChild('UnlockWay').fontSize = 30;
                             this._LableChild('UnlockWayNum').visible = false;
                             break;
-                        case _GameData._DIYClothes._ins()._unlockWay.$customs:
+                        case _DIYClothes._ins()._unlockWay.$customs:
                             this._LableChild('UnlockWay').text = `制作衣服`;
                             this._LableChild('UnlockWay').fontSize = 25;
                             this._LableChild('UnlockWayNum').visible = true;
-                            this._LableChild('UnlockWayNum').text = `(${_GameData._Tweeting._completeNum} /${this.$conditionNum})`;
+                            this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum} /${this.$conditionNum})`;
                             break;
                         default:
                             break;
@@ -122,29 +123,29 @@ export default class MakePattern extends Admin._SceneBase {
 
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'tiehuapage');
-        ADManager.TAPoint(TaT.LevelStart, `level_${_3D.DIYCloth._ins().Present.name}`);
+        ADManager.TAPoint(TaT.LevelStart, `level_${_3DDIYCloth._ins().Present.name}`);
 
-        _GameData._Pattern._ins()._List = this._ListVar('List');
+        _MakePattern._Data._List = this._ListVar('List');
         // 如果第一有了，选中就在第一列，否则停在第二列
-        if (_GameData._Pattern._ins()._getProperty('newYear1', _GameData._Pattern._ins()._property.$complete) || !_GameData._Guide._complete) {
+        if (_MakePattern._Data._getProperty('newYear1', _MakePattern._Data._property.$complete) || !_Guide._complete) {
             this.switchClassify('newYear');
-            _GameData._Pattern._ins()._listArray = _GameData._Pattern._ins().newYearArr;
+            _MakePattern._Data._listArray = _MakePattern._Data.newYearArr;
         } else {
             this.switchClassify('basic');
-            _GameData._Pattern._ins()._listArray = _GameData._Pattern._ins().basicArr;
+            _MakePattern._Data._listArray = _MakePattern._Data.basicArr;
         }
-        _GameData._Pattern._ins()._List.scrollBar.touchScrollEnable = false;
-        _GameData._Pattern._ins()._listRenderScript = _Item;
-        this.Tex.fDiffX = _GameData._PatternDiff._ins().fDiffX;
-        this.Tex.fDiffY = _GameData._PatternDiff._ins().fDiffY;
-        this.Tex.rDiffX = _GameData._PatternDiff._ins().rDiffX;
-        this.Tex.rDiffY = _GameData._PatternDiff._ins().rDiffY;
+        _MakePattern._Data._List.scrollBar.touchScrollEnable = false;
+        _MakePattern._Data._listRenderScript = _Item;
+        this.Tex.fDiffX = _MakePattern._PatternDiff.fDiffX;
+        this.Tex.fDiffY = _MakePattern._PatternDiff.fDiffY;
+        this.Tex.rDiffX = _MakePattern._PatternDiff.rDiffX;
+        this.Tex.rDiffY = _MakePattern._PatternDiff.rDiffY;
     }
 
     lwgOpenAniAfter(): void {
         TimerAdmin._frameOnce(60, this, () => {
-            !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
-                this._evNotify(_GameData._Guide.event.MakePatternChooseClassify);
+            !_Guide._complete && this._openScene('Guide', false, false, () => {
+                this._evNotify(_Guide.event.MakePatternChooseClassify);
             })
         })
     }
@@ -156,10 +157,10 @@ export default class MakePattern extends Admin._SceneBase {
     UI: _UI;
     lwgOnStart(): void {
         // 设置皮肤
-        const url = _GameData._DIYClothes._ins().getPitchTexBasicUrl();
+        const url = _DIYClothes._ins().getPitchTexBasicUrl();
         this._ImgVar('Front').loadImage(url, Laya.Handler.create(this, () => {
             this._ImgVar('Reverse').loadImage(url, Laya.Handler.create(this, () => {
-                _3D.DIYCloth._ins().addTexture2D(this.Tex.getTex());
+                _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
             }));
         }));
 
@@ -178,26 +179,26 @@ export default class MakePattern extends Admin._SceneBase {
             this.UI.btnAgainAppear(null, 800);
         })
 
-        this._SpriteVar('Front').y = this._ImgVar('Reverse').y = this._SpriteVar('Front').height = this._ImgVar('Reverse').height = _3D.DIYCloth._ins().texHeight;
+        this._SpriteVar('Front').y = this._ImgVar('Reverse').y = this._SpriteVar('Front').height = this._ImgVar('Reverse').height = _3DDIYCloth._ins().texHeight;
     }
 
     /**设置分类*/
     switchClassify(_name: string): void {
-        if (!_GameData._Guide._complete && _name !== 'basic') {
+        if (!_Guide._complete && _name !== 'basic') {
             return;
         }
         for (let index = 0; index < this._ImgVar('Part').numChildren; index++) {
             const element = this._ImgVar('Part').getChildAt(index) as Laya.Image;
             const name = element.getChildAt(0) as Laya.Label;
             if (_name === element.name) {
-                if (!_GameData._Guide._complete) {
-                    if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.ChooseClassify) {
-                        this._evNotify(_GameData._Guide.event.MakePatternPattern1);
+                if (!_Guide._complete) {
+                    if (_Guide.MakePatternState === _Guide.MakePatternStateType.ChooseClassify) {
+                        this._evNotify(_Guide.event.MakePatternPattern1);
                     }
                 }
                 element.scale(1.1, 1.1);
-                _GameData._Pattern._ins()._listArray = _GameData._Pattern._ins()[`${element.name}Arr`];
-                _GameData._Pattern._ins()._pitchClassify = element.name;
+                _MakePattern._Data._listArray = _MakePattern._Data[`${element.name}Arr`];
+                _MakePattern._Data._pitchClassify = element.name;
                 element.skin = `Game/UI/Common/kuang_fen.png`;
                 name.color = '#fdfff4';
                 name.stroke = 5;
@@ -220,9 +221,9 @@ export default class MakePattern extends Admin._SceneBase {
 
         this.Tex.btn();
         this.UI.btnCompleteClick = () => {
-            if (!_GameData._Guide._complete) {
-                if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.BtnCom) {
-                    this._evNotify(_GameData._Guide.event.closeGuide);
+            if (!_Guide._complete) {
+                if (_Guide.MakePatternState === _Guide.MakePatternStateType.BtnCom) {
+                    this._evNotify(_Guide.event.closeGuide);
                 } else {
                     return;
                 }
@@ -231,9 +232,9 @@ export default class MakePattern extends Admin._SceneBase {
             this.Tex.dir = this.Tex.dirType.Front;
             this.Tex.turnFace(() => {
                 // 这次绘制是微博照片
-                _3D._Scene._ins().cameraToSprite(this._Owner);
+                _3DScene._ins().cameraToSprite(this._Owner);
                 TimerAdmin._frameOnce(5, this, () => {
-                    _GameData._Tweeting._photo.take(this._Owner, 1);
+                    _Tweeting._photo.take(this._Owner, 1);
                 })
                 this.texStorage();
                 Animation2D.fadeOut(this._ImgVar('BtnL'), 1, 0, 200);
@@ -246,16 +247,16 @@ export default class MakePattern extends Admin._SceneBase {
                     })
                     var close = () => {
                         // 这次绘制是为了过长动画
-                        _3D._Scene._ins().cameraToSprite(this._Owner);
-                        _GameData._Start._whereFrom = 'MakePattern';
+                        _3DScene._ins().cameraToSprite(this._Owner);
+                        _Start._whereFrom = 'MakePattern';
                         this._openScene('Start', true, true);
                     }
                     // if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
-                    //     _3D._Scene._ins().photoBg();
+                    //     _3DScene._ins().photoBg();
                     // }
                     if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
                         LwgOPPO._screenShootByRatio((data: any) => {
-                            LwgOPPO._picSave(data['tempFilePath'], _3D.DIYCloth._ins().name);
+                            LwgOPPO._picSave(data['tempFilePath'], _3DDIYCloth._ins().name);
                             close();
                         }, 0.28, null, 0.72, null, null, 0.1);
                     } else {
@@ -264,9 +265,9 @@ export default class MakePattern extends Admin._SceneBase {
                 }, 200);
             });
         }
-        if (!_GameData._Guide._complete) return;
+        if (!_Guide._complete) return;
         this.UI.btnRollbackClick = () => {
-            _3D._Scene._ins().cameraToSprite(this._Owner);
+            _3DScene._ins().cameraToSprite(this._Owner);
             this._openScene('MakeTailor', true, true);
         }
         this.UI.btnAgainClick = () => {
@@ -275,13 +276,13 @@ export default class MakePattern extends Admin._SceneBase {
     }
 
     lwgEvent(): void {
-        this._evReg(_GameData._MakePattern.event.createImg, (name: string, gPoint: Laya.Point) => {
+        this._evReg(_MakePattern._event.createImg, (name: string, gPoint: Laya.Point) => {
             this.Tex.state = this.Tex.stateType.move;
             this.Tex.createImg(name, gPoint);
             this.Tex.turnFace();
         })
-        this._evReg(_GameData._MakePattern.event.close, () => {
-            if (!_GameData._Guide._complete) return;
+        this._evReg(_MakePattern._event.close, () => {
+            if (!_Guide._complete) return;
             this.Tex.close();
             this.Tex.state = this.Tex.stateType.none;
         })
@@ -318,9 +319,9 @@ export default class MakePattern extends Admin._SceneBase {
             const element = this._SpriteVar('Reverse').getChildAt(index) as Laya.Image;
             rArr.push(obj(element));
         }
-        StorageAdmin._array(`${_3D.DIYCloth._ins().name}/${_GameData._DIYClothes._ins()._otherPro.texF}`).value = fArr;
-        StorageAdmin._array(`${_3D.DIYCloth._ins().name}/${_GameData._DIYClothes._ins()._otherPro.texR}`).value = rArr;
-        _GameData._Ranking._whereFrom = this._Owner.name;
+        StorageAdmin._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texF}`).value = fArr;
+        StorageAdmin._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texR}`).value = rArr;
+        _Ranking._whereFrom = this._Owner.name;
         // } else {
         //     // 绘制到两张只有一半的sp上，节省本地存储的内存
         //     this._SpriteVar('Front').scaleY = this._SpriteVar('Reverse').scaleY = 1;
@@ -332,8 +333,8 @@ export default class MakePattern extends Admin._SceneBase {
         //     TimerAdmin._frameOnce(5, this, () => {
         //         const base64F = Tools._Draw.screenshot(this._SpriteVar('DrawFront'), 0.1);
         //         const base64R = Tools._Draw.screenshot(this._SpriteVar('DrawReverse'), 0.1);
-        //         Laya.LocalStorage.setItem(`${_3D.DIYCloth._ins().name}/${_GameData._DIYClothes._ins()._otherPro.texF}`, base64F);
-        //         Laya.LocalStorage.setItem(`${_3D.DIYCloth._ins().name}/${_GameData._DIYClothes._ins()._otherPro.texR}`, base64R);
+        //         Laya.LocalStorage.setItem(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texF}`, base64F);
+        //         Laya.LocalStorage.setItem(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texR}`, base64R);
         //         _Ranking._whereFrom = this._Owner.name;
         //         texF.destroy();
         //         texR.destroy();
@@ -400,7 +401,7 @@ export default class MakePattern extends Admin._SceneBase {
             let indexArr: Array<Laya.Point> = [];
             let outArr: Laya.HitResult[] = [];
             for (let index = 0; index < posArr.length; index++) {
-                const out = Tools._3D.rayScanning(_3D._Scene._ins()._MainCamara, _3D._Scene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
+                const out = Tools._3D.rayScanning(_3DScene._ins()._MainCamara, _3DScene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
                 if (out) {
                     outArr.push(out);
                     indexArr.push(posArr[index]);
@@ -425,19 +426,19 @@ export default class MakePattern extends Admin._SceneBase {
                 let _width = this._ImgVar(this.Tex.dir).width;
                 let _height = this._ImgVar(this.Tex.dir).height;
                 //通过xz的角度计算x的比例，俯视
-                let angleXZ = Tools._Point.pointByAngle(_3D.DIYCloth._ins().ModelTap.transform.position.x - out.point.x, _3D.DIYCloth._ins().ModelTap.transform.position.z - out.point.z);
+                let angleXZ = Tools._Point.pointByAngle(_3DDIYCloth._ins().ModelTap.transform.position.x - out.point.x, _3DDIYCloth._ins().ModelTap.transform.position.z - out.point.z);
                 // let _angleY: number;
                 if (this.Tex.dir == this.Tex.dirType.Front) {
-                    // _angleY = angleXZ + _3D.DIYCloth._ins().simRY;
+                    // _angleY = angleXZ + _3DDIYCloth._ins().simRY;
                     this.Tex.Img.x = _width - _width / 180 * (angleXZ + 90);
                 } else {
-                    // _angleY = angleXZ + _3D.DIYCloth._ins().simRY - 180;
+                    // _angleY = angleXZ + _3DDIYCloth._ins().simRY - 180;
                     this.Tex.Img.x = - _width / 180 * (angleXZ - 90);
                 }
                 // console.log(this.Tex.Img.x);
                 // 通过xy计算y
-                let pH = out.point.y - _3D.DIYCloth._ins().ModelTap.transform.position.y;//扫描点位置
-                let _DirHeight = Tools._3D.getMeshSize(this.Tex.dir === this.Tex.dirType.Front ? _3D.DIYCloth._ins().Front : _3D.DIYCloth._ins().Reverse).y;
+                let pH = out.point.y - _3DDIYCloth._ins().ModelTap.transform.position.y;//扫描点位置
+                let _DirHeight = Tools._3D.getMeshSize(this.Tex.dir === this.Tex.dirType.Front ? _3DDIYCloth._ins().Front : _3DDIYCloth._ins().Reverse).y;
                 let ratio = 1 - pH / _DirHeight;//比例
                 this.Tex.Img.y = ratio * _height;
                 // 补上一些误差
@@ -456,8 +457,6 @@ export default class MakePattern extends Admin._SceneBase {
         setPosArr: (): Array<Laya.Point> => {
             let x = this._ImgVar('Wireframe').x;
             let y = this._ImgVar('Wireframe').y;
-            let _width = this._ImgVar('Wireframe').width;
-            let _height = this._ImgVar('Wireframe').height;
             return [
                 // new Laya.Point(0, 0),
                 // new Laya.Point(0, _height / 2),
@@ -481,7 +480,7 @@ export default class MakePattern extends Admin._SceneBase {
             let posArr = this.Tex.setPosArr();
             let bool = false;
             for (let index = 0; index < posArr.length; index++) {
-                const _out = Tools._3D.rayScanning(_3D._Scene._ins()._MainCamara, _3D._Scene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
+                const _out = Tools._3D.rayScanning(_3DScene._ins()._MainCamara, _3DScene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
                 if (_out) {
                     bool = true;
                 }
@@ -497,7 +496,7 @@ export default class MakePattern extends Admin._SceneBase {
             let gPoint = this.Tex.getDisGP();
             this._ImgVar('Wireframe').pos(gPoint.x, gPoint.y);
         },
-        move: (e: Laya.Event) => {
+        move: () => {
             this.Tex.disMove();
             this._ImgVar('Wireframe').visible = false;
             if (this.Tex.checkInside()) {
@@ -507,7 +506,7 @@ export default class MakePattern extends Admin._SceneBase {
                 this._SpriteVar('Dispaly').visible = false;
             }
         },
-        addTex: (e: Laya.Event) => {
+        addTex: () => {
             this.Tex.disMove();
             let out = this.Tex.setImgPos();
             if (!out) {
@@ -516,7 +515,7 @@ export default class MakePattern extends Admin._SceneBase {
                 this.Tex.Img.x = Laya.stage.width;
                 this._SpriteVar('Dispaly').visible = true;
             }
-            _3D.DIYCloth._ins().addTexture2D(this.Tex.getTex());
+            _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
         },
         scale: (e: Laya.Event): void => {
             if (!this.Tex.Img) {
@@ -531,21 +530,21 @@ export default class MakePattern extends Admin._SceneBase {
             const scaleheight = this._ImgVar('Wireframe').height - this.Tex.wireframeSize[1];
             this.Tex.DisImg.width = this.Tex.Img.width = this.Tex.imgSize[0] + scaleWidth;
             this.Tex.DisImg.height = this.Tex.Img.height = this.Tex.imgSize[1] + scaleheight;
-            _3D.DIYCloth._ins().addTexture2D(this.Tex.getTex());
+            _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
         },
-        rotate: (e: Laya.Event) => {
-            if (!_GameData._Guide._complete) return;
+        rotate: () => {
+            if (!_Guide._complete) return;
             if (this.Tex.diffP.x > 0) {
-                _3D.DIYCloth._ins().rotate(1);
+                _3DDIYCloth._ins().rotate(1);
             } else {
-                _3D.DIYCloth._ins().rotate(0);
+                _3DDIYCloth._ins().rotate(0);
             }
         },
         again: () => {
             Tools._Node.removeAllChildren(this._SpriteVar('Front'));
             Tools._Node.removeAllChildren(this._SpriteVar('Reverse'));
             this.Tex.turnFace();
-            _3D.DIYCloth._ins().addTexture2D(this.Tex.getTex());
+            _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
         },
         none: () => {
             return;
@@ -576,19 +575,19 @@ export default class MakePattern extends Admin._SceneBase {
             this.Tex.Img = null;
             this.Tex.state = this.Tex.stateType.none;
             this.Tex.touchP = null;
-            _3D.DIYCloth._ins().addTexture2D(this.Tex.getTex());
+            _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
         },
         turnFace: (func?: Function) => {
             let time: number;
             let angle: number;
             if (this.Tex.dir == this.Tex.dirType.Front) {
-                time = Math.abs(_3D.DIYCloth._ins().Present.transform.localRotationEulerY - 180) * 2;
+                time = Math.abs(_3DDIYCloth._ins().Present.transform.localRotationEulerY - 180) * 2;
                 angle = 180;
             } else {
-                time = Math.abs(_3D.DIYCloth._ins().Present.transform.localRotationEulerY) * 2;
+                time = Math.abs(_3DDIYCloth._ins().Present.transform.localRotationEulerY) * 2;
                 angle = 0;
             }
-            Animation3D.rotateTo(_3D.DIYCloth._ins().Present, new Laya.Vector3(0, angle, 0), time, this, null, () => {
+            Animation3D.rotateTo(_3DDIYCloth._ins().Present, new Laya.Vector3(0, angle, 0), time, this, null, () => {
                 func && func();
             });
         },
@@ -600,19 +599,19 @@ export default class MakePattern extends Admin._SceneBase {
                 , (e: Laya.Event) => {
                     e.stopPropagation();
                     this.Tex.state = this.Tex.stateType.addTex;
-                    if (!_GameData._Guide._complete) {
-                        if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.Frame1) {
-                            this._evNotify(_GameData._Guide.event.MakePatternTurnFace, [this._ImgVar('BtnTurnFace')._lwg.gPoint.x, this._ImgVar('BtnTurnFace')._lwg.gPoint.y]);
-                        } else if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.Frame2) {
-                            this._evNotify(_GameData._Guide.event.MakePatternBtnCom, [this._ImgVar('BtnComplete')._lwg.gPoint.x, this._ImgVar('BtnComplete')._lwg.gPoint.y]);
+                    if (!_Guide._complete) {
+                        if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame1) {
+                            this._evNotify(_Guide.event.MakePatternTurnFace, [this._ImgVar('BtnTurnFace')._lwg.gPoint.x, this._ImgVar('BtnTurnFace')._lwg.gPoint.y]);
+                        } else if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame2) {
+                            this._evNotify(_Guide.event.MakePatternBtnCom, [this._ImgVar('BtnComplete')._lwg.gPoint.x, this._ImgVar('BtnComplete')._lwg.gPoint.y]);
                         }
                     }
                 })
 
             this._btnUp(this._ImgVar('BtnTurnFace'), (e: Laya.Event) => {
-                if (!_GameData._Guide._complete) {
-                    if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.TurnFace) {
-                        this._evNotify(_GameData._Guide.event.MakePatternPattern2);
+                if (!_Guide._complete) {
+                    if (_Guide.MakePatternState === _Guide.MakePatternStateType.TurnFace) {
+                        this._evNotify(_Guide.event.MakePatternPattern2);
                     } else {
                         return;
                     }
@@ -633,27 +632,27 @@ export default class MakePattern extends Admin._SceneBase {
                 this.Tex.state = this.Tex.stateType.rotate;
             })
 
-            if (!_GameData._Guide._complete) return;
+            if (!_Guide._complete) return;
             this._btnUp(this._ImgVar('WClose'), (e: Laya.Event) => {
                 e.stopPropagation();
                 this.Tex.close();
             })
-            this._btnFour(this._ImgVar('BtnL'), (e: Laya.Event) => {
+            this._btnFour(this._ImgVar('BtnL'), () => {
                 this.Tex.frameRestore();
                 this.Tex.state = this.Tex.stateType.rotate;
                 TimerAdmin._frameLoop(1, this._ImgVar('BtnL'), () => {
-                    _3D.DIYCloth._ins().rotate(0);
+                    _3DDIYCloth._ins().rotate(0);
                 })
             }, null, () => {
                 Laya.timer.clearAll(this._ImgVar('BtnL'));
             }, () => {
                 Laya.timer.clearAll(this._ImgVar('BtnL'));
             })
-            this._btnFour(this._ImgVar('BtnR'), (e: Laya.Event) => {
+            this._btnFour(this._ImgVar('BtnR'), () => {
                 this.Tex.frameRestore();
                 this.Tex.state = this.Tex.stateType.rotate;
                 TimerAdmin._frameLoop(1, this._ImgVar('BtnR'), () => {
-                    _3D.DIYCloth._ins().rotate(1);
+                    _3DDIYCloth._ins().rotate(1);
                 })
             }, null, () => {
                 Laya.timer.clearAll(this._ImgVar('BtnR'));
@@ -669,7 +668,7 @@ export default class MakePattern extends Admin._SceneBase {
             this['slideFY'] = e.stageY;
         } else {
             // 点击位置离框子太远则消失
-            if (!_GameData._Guide._complete) {
+            if (!_Guide._complete) {
                 return;
             }
             const point = new Laya.Point(e.stageX, e.stageY);
@@ -689,16 +688,16 @@ export default class MakePattern extends Admin._SceneBase {
         this.Tex.operation(e);
         if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
             // 移动list
-            if (!_GameData._Guide._complete) return;
+            if (!_Guide._complete) return;
             if (this['slideFY']) {
                 let diffY = this['slideFY'] - e.stageY;
-                let index = _GameData._Pattern._ins()._List.startIndex;
+                let index = _MakePattern._Data._List.startIndex;
                 if (Math.abs(diffY) > 25) {
                     if (diffY > 0) {
-                        _GameData._Pattern._ins()._List.tweenTo(index + 1, 100);
+                        _MakePattern._Data._List.tweenTo(index + 1, 100);
                     }
                     if (diffY < 0) {
-                        _GameData._Pattern._ins()._List.tweenTo(index - 1, 100);
+                        _MakePattern._Data._List.tweenTo(index - 1, 100);
                     }
                     this['slideFY'] = null;
                 }
@@ -712,17 +711,17 @@ export default class MakePattern extends Admin._SceneBase {
         this['slideFY'] = null;
         // 在可以移动图片的位置进行移动
         if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
-            this._evNotify(_GameData._MakePattern.event.close);
+            this._evNotify(_MakePattern._event.close);
         } else {
             // 在列表上抬起则关闭
             if (!this.Tex.checkInside()) {
                 this.Tex.close();
             } else {
-                if (!_GameData._Guide._complete) {
-                    if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.Pattern1) {
-                        this._evNotify(_GameData._Guide.event.MakePatternFrame1, [this._ImgVar('Wireframe')]);
-                    } else if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.Pattern2) {
-                        this._evNotify(_GameData._Guide.event.MakePatternFrame2, [this._ImgVar('Wireframe')]);
+                if (!_Guide._complete) {
+                    if (_Guide.MakePatternState === _Guide.MakePatternStateType.Pattern1) {
+                        this._evNotify(_Guide.event.MakePatternFrame1, [this._ImgVar('Wireframe')]);
+                    } else if (_Guide.MakePatternState === _Guide.MakePatternStateType.Pattern2) {
+                        this._evNotify(_Guide.event.MakePatternFrame2, [this._ImgVar('Wireframe')]);
                     }
                 };
             }
@@ -731,6 +730,6 @@ export default class MakePattern extends Admin._SceneBase {
 
     lwgOnDisable(): void {
         ADManager.TAPoint(TaT.PageLeave, 'tiehuapage');
-        ADManager.TAPoint(TaT.LevelFinish, `level_${_3D.DIYCloth._ins().Present.name}`);
+        ADManager.TAPoint(TaT.LevelFinish, `level_${_3DDIYCloth._ins().Present.name}`);
     }
 }

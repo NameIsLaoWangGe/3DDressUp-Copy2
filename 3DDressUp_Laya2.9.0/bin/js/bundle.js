@@ -7295,7 +7295,7 @@
                 }
                 _Draw.screenshot = screenshot;
                 _Draw._texArr = [];
-                function cameraToSprite(camera, sprite, clear) {
+                function cameraToSprite(camera, sprite) {
                     const _camera = camera.clone();
                     camera.scene.addChild(_camera);
                     _camera.transform.position = camera.transform.position;
@@ -8392,906 +8392,879 @@
         }
     };
 
-    var _3D;
-    (function (_3D) {
-        class _Scene {
-            constructor() {
-                this.aniName = {
-                    Stand: 'Stand',
-                    Pose1: 'Pose1',
-                    Pose2: 'Pose2',
-                    DispalyCloth: 'DispalyCloth',
-                    Walk: 'Walk',
-                };
+    class _3DScene {
+        constructor() {
+            this.aniName = {
+                Stand: 'Stand',
+                Pose1: 'Pose1',
+                Pose2: 'Pose2',
+                DispalyCloth: 'DispalyCloth',
+                Walk: 'Walk',
+            };
+        }
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _3DScene();
+                this.ins._Owner = _Res._list.scene3D.MakeClothes.Scene;
+                Laya.stage.addChild(this.ins._Owner);
+                this.ins._Role = this.ins._Owner.getChildByName('Role');
+                this.ins._RoleFPos = new Laya.Vector3(this.ins._Role.transform.position.x, this.ins._Role.transform.position.y, this.ins._Role.transform.position.z);
+                this.ins._Root = this.ins._Role.getChildByName('Root');
+                this.ins._DIY = this.ins._Root.getChildByName('DIY');
+                this.ins._General = this.ins._Root.getChildByName('General');
+                this.ins._DBottoms = this.ins._DIY.getChildByName('Bottoms');
+                this.ins._DTop = this.ins._DIY.getChildByName('Top');
+                this.ins._DDress = this.ins._DIY.getChildByName('Dress');
+                this.ins._GBottoms = this.ins._General.getChildByName('Bottoms');
+                this.ins._GTop = this.ins._General.getChildByName('Top');
+                this.ins._GDress = this.ins._General.getChildByName('Dress');
+                this.ins._RoleAni = this.ins._Role.getComponent(Laya.Animator);
+                this.ins._MainCamara = this.ins._Owner.getChildByName('Main Camera');
+                this.ins._MirrorCamera = this.ins._Owner.getChildByName('MirrorCamera');
+                this.ins._Mirror = this.ins._Owner.getChildByName('Mirror');
+                this.ins._Bg1 = this.ins._Owner.getChildByName('Bg1');
+                this.ins._bg1Mat = this.ins._Bg1.meshRenderer.material;
+                this.ins._Bg2 = this.ins._Owner.getChildByName('Bg2');
+                this.ins._BtnDress = this.ins._Owner.getChildByName('BtnDress');
+                this.ins._BtnTop = this.ins._Owner.getChildByName('BtnTop');
+                this.ins._BtnBottoms = this.ins._Owner.getChildByName('BtnBottoms');
+                this.ins._BtnDressingRoom = this.ins._Owner.getChildByName('BtnDressingRoom');
+                this.ins._DIYHanger = this.ins._Owner.getChildByName('DIYHanger');
+                this.ins.fillLight_Right1 = this.ins._Owner.getChildByName('fillLight_Right1');
+                this.ins.fillLight_Right2 = this.ins._Owner.getChildByName('fillLight_Right2');
+                this.ins.fillLight_Left1 = this.ins._Owner.getChildByName('fillLight_Left1');
+                this.ins.fillLight_Left2 = this.ins._Owner.getChildByName('fillLight_Left2');
+                this.ins.fillLight_Back1 = this.ins._Owner.getChildByName('fillLight_Back1');
+                this.ins.fillLight_Bottom1 = this.ins._Owner.getChildByName('fillLight_Bottom1');
+                this.ins.fillLight_Bottom2 = this.ins._Owner.getChildByName('fillLight_Bottom2');
+                this.ins.fillLight_Left1.intensity = 0.15;
+                this.ins.fillLight_Right1.intensity = 0.15;
+                this.ins.fillLight_Bottom2.active = false;
+                this.ins.fillLight_Left2.intensity = 0.4;
+                this.ins.fillLight_Right2.intensity = 0.4;
             }
-            static _ins() {
-                if (!this.ins) {
-                    this.ins = new _Scene();
-                    this.ins._Owner = _Res._list.scene3D.MakeClothes.Scene;
-                    Laya.stage.addChild(this.ins._Owner);
-                    this.ins._Role = this.ins._Owner.getChildByName('Role');
-                    this.ins._RoleFPos = new Laya.Vector3(this.ins._Role.transform.position.x, this.ins._Role.transform.position.y, this.ins._Role.transform.position.z);
-                    this.ins._Root = this.ins._Role.getChildByName('Root');
-                    this.ins._DIY = this.ins._Root.getChildByName('DIY');
-                    this.ins._General = this.ins._Root.getChildByName('General');
-                    this.ins._DBottoms = this.ins._DIY.getChildByName('Bottoms');
-                    this.ins._DTop = this.ins._DIY.getChildByName('Top');
-                    this.ins._DDress = this.ins._DIY.getChildByName('Dress');
-                    this.ins._GBottoms = this.ins._General.getChildByName('Bottoms');
-                    this.ins._GTop = this.ins._General.getChildByName('Top');
-                    this.ins._GDress = this.ins._General.getChildByName('Dress');
-                    this.ins._RoleAni = this.ins._Role.getComponent(Laya.Animator);
-                    this.ins._MainCamara = this.ins._Owner.getChildByName('Main Camera');
-                    this.ins._MirrorCamera = this.ins._Owner.getChildByName('MirrorCamera');
-                    this.ins._Mirror = this.ins._Owner.getChildByName('Mirror');
-                    this.ins._Bg1 = this.ins._Owner.getChildByName('Bg1');
-                    this.ins._bg1Mat = this.ins._Bg1.meshRenderer.material;
-                    this.ins._Bg2 = this.ins._Owner.getChildByName('Bg2');
-                    this.ins._BtnDress = this.ins._Owner.getChildByName('BtnDress');
-                    this.ins._BtnTop = this.ins._Owner.getChildByName('BtnTop');
-                    this.ins._BtnBottoms = this.ins._Owner.getChildByName('BtnBottoms');
-                    this.ins._BtnDressingRoom = this.ins._Owner.getChildByName('BtnDressingRoom');
-                    this.ins._DIYHanger = this.ins._Owner.getChildByName('DIYHanger');
-                    this.ins.fillLight_Right1 = this.ins._Owner.getChildByName('fillLight_Right1');
-                    this.ins.fillLight_Right2 = this.ins._Owner.getChildByName('fillLight_Right2');
-                    this.ins.fillLight_Left1 = this.ins._Owner.getChildByName('fillLight_Left1');
-                    this.ins.fillLight_Left2 = this.ins._Owner.getChildByName('fillLight_Left2');
-                    this.ins.fillLight_Back1 = this.ins._Owner.getChildByName('fillLight_Back1');
-                    this.ins.fillLight_Bottom1 = this.ins._Owner.getChildByName('fillLight_Bottom1');
-                    this.ins.fillLight_Bottom2 = this.ins._Owner.getChildByName('fillLight_Bottom2');
-                    this.ins.fillLight_Left1.intensity = 0.15;
-                    this.ins.fillLight_Right1.intensity = 0.15;
-                    this.ins.fillLight_Bottom2.active = false;
-                    this.ins.fillLight_Left2.intensity = 0.4;
-                    this.ins.fillLight_Right2.intensity = 0.4;
-                }
-                return this.ins;
-            }
-            playDispalyAni() {
-                this._RoleAni.play(this.aniName.Stand);
-                this._RoleAni.play(this.aniName.DispalyCloth);
-                Laya.timer.clearAll(this._Role);
-                TimerAdmin._once(3200, this._Role, () => {
-                    this._RoleAni.crossFade(this.aniName.Stand, 0.3);
-                });
-            }
-            playPoss1Ani() {
-                this._RoleAni.crossFade(this.aniName.Pose1, 0.3);
-                Laya.timer.clearAll(this._Role);
-                TimerAdmin._once(3200, this._Role, () => {
-                    this._RoleAni.crossFade(this.aniName.Stand, 0.3);
-                });
-            }
-            playPoss2Ani() {
-                this._RoleAni.crossFade(this.aniName.Pose2, 0.3);
-                Laya.timer.clearAll(this._Role);
-                TimerAdmin._once(3200, this._Role, () => {
-                    this._RoleAni.crossFade(this.aniName.Stand, 0.3);
-                });
-            }
-            playStandAni() {
-                Laya.timer.clearAll(this);
-                Laya.timer.clearAll(this._Role);
+            return this.ins;
+        }
+        playDispalyAni() {
+            this._RoleAni.play(this.aniName.Stand);
+            this._RoleAni.play(this.aniName.DispalyCloth);
+            Laya.timer.clearAll(this._Role);
+            TimerAdmin._once(3200, this._Role, () => {
                 this._RoleAni.crossFade(this.aniName.Stand, 0.3);
+            });
+        }
+        playPoss1Ani() {
+            this._RoleAni.crossFade(this.aniName.Pose1, 0.3);
+            Laya.timer.clearAll(this._Role);
+            TimerAdmin._once(3200, this._Role, () => {
+                this._RoleAni.crossFade(this.aniName.Stand, 0.3);
+            });
+        }
+        playPoss2Ani() {
+            this._RoleAni.crossFade(this.aniName.Pose2, 0.3);
+            Laya.timer.clearAll(this._Role);
+            TimerAdmin._once(3200, this._Role, () => {
+                this._RoleAni.crossFade(this.aniName.Stand, 0.3);
+            });
+        }
+        playStandAni() {
+            Laya.timer.clearAll(this);
+            Laya.timer.clearAll(this._Role);
+            this._RoleAni.crossFade(this.aniName.Stand, 0.3);
+        }
+        playRandomPose() {
+            TimerAdmin._frameLoop(500, this, () => {
+                Tools._Number.randomOneHalf() == 0 ? _3DScene._ins().playPoss1Ani() : _3DScene._ins().playPoss2Ani();
+            }, true);
+        }
+        get btnDressPos() {
+            return Tools._3D.posToScreen(this._BtnDress.transform.position, this._MainCamara);
+        }
+        get btnTopPos() {
+            return Tools._3D.posToScreen(this._BtnTop.transform.position, this._MainCamara);
+        }
+        get btnBottomsPos() {
+            return Tools._3D.posToScreen(this._BtnBottoms.transform.position, this._MainCamara);
+        }
+        get btnDressingRoomPos() {
+            return Tools._3D.posToScreen(this._BtnDressingRoom.transform.position, this._MainCamara);
+        }
+        cameraToSprite(scene) {
+            _3DScene._ins().mirrorSurface = false;
+            const Sp = new Laya.Sprite;
+            Sp.zOrder = -1;
+            scene.addChild(Sp)['size'](Laya.stage.width, Laya.stage.height);
+            Tools._Draw.cameraToSprite(this._MainCamara, Sp);
+            return Sp;
+        }
+        openStartAni(func) {
+            func();
+            this.playRandomPose();
+            this._DIYHanger.active = false;
+            this._Role.active = true;
+            this._MirrorCamera.active = false;
+        }
+        intoStart(whereFrom) {
+            this.playStandAni();
+            this._Owner.active = true;
+            this._DIYHanger.active = false;
+            this.fillLight_Left1.active = false;
+            this.fillLight_Right1.active = false;
+            this._MirrorCamera.active = false;
+            if (whereFrom == 'preload') {
+                this._bg1Mat.albedoTexture = _Res._list.texture2D.bgStart.texture2D;
             }
-            playRandomPose() {
-                TimerAdmin._frameLoop(500, this, () => {
-                    Tools._Number.randomOneHalf() == 0 ? _3D._Scene._ins().playPoss1Ani() : _3D._Scene._ins().playPoss2Ani();
-                }, true);
-            }
-            get btnDressPos() {
-                return Tools._3D.posToScreen(this._BtnDress.transform.position, this._MainCamara);
-            }
-            get btnTopPos() {
-                return Tools._3D.posToScreen(this._BtnTop.transform.position, this._MainCamara);
-            }
-            get btnBottomsPos() {
-                return Tools._3D.posToScreen(this._BtnBottoms.transform.position, this._MainCamara);
-            }
-            get btnDressingRoomPos() {
-                return Tools._3D.posToScreen(this._BtnDressingRoom.transform.position, this._MainCamara);
-            }
-            cameraToSprite(scene) {
-                _3D._Scene._ins().mirrorSurface = false;
-                const Sp = new Laya.Sprite;
-                Sp.zOrder = -1;
-                scene.addChild(Sp)['size'](Laya.stage.width, Laya.stage.height);
-                Tools._Draw.cameraToSprite(this._MainCamara, Sp);
-                return Sp;
-            }
-            openStartAni(func) {
-                func();
-                this.playRandomPose();
-                this._DIYHanger.active = false;
-                this._Role.active = true;
-                this._MirrorCamera.active = false;
-            }
-            intoStart(whereFrom) {
-                this.playStandAni();
-                this._Owner.active = true;
-                this._DIYHanger.active = false;
-                this.fillLight_Left1.active = false;
-                this.fillLight_Right1.active = false;
-                this._MirrorCamera.active = false;
-                if (whereFrom == 'preload') {
-                    this._bg1Mat.albedoTexture = _Res._list.texture2D.bgStart.texture2D;
-                }
-                else {
-                    this._bg1Mat.albedoTexture = _CutInRes.Start.texture2D.bgStart.texture2D;
-                }
-            }
-            intogeDressingRoom() {
-                _3D._Scene._ins().playStandAni();
-                this._MirrorCamera.active = true;
-                this._bg1Mat.albedoTexture = _CutInRes.DressingRoom.texture2D.bgDressingRoom.texture2D;
-            }
-            get mirrorSurface() {
-                return this['_mirrorSurface'];
-            }
-            ;
-            set mirrorSurface(bool) {
-                this['_mirrorSurface'] = bool;
-            }
-            openMirror(_Sp) {
-                this.mirrorSurface = true;
-                TimerAdmin._clearAll([this._Mirror]);
-                TimerAdmin._frameLoop(1, this._Mirror, () => {
-                    if (this.mirrorSurface) {
-                        this._MirrorCamera.renderTarget = new Laya.RenderTexture(_Sp.width, _Sp.height);
-                        this._MirrorCamera.renderingOrder = -1;
-                        this._MirrorCamera.clearFlag = Laya.CameraClearFlags.Sky;
-                        this.mirrortex && this.mirrortex.destroy();
-                        this.mirrortex = new Laya.Texture(this._MirrorCamera.renderTarget, Laya.Texture.DEF_UV);
-                        _Sp.graphics.drawTexture(this.mirrortex);
-                    }
-                });
-            }
-            closeMirror() {
-                this.mirrorSurface = false;
-            }
-            intoMakePattern() {
-                this._Owner.active = true;
-                this.fillLight_Left1.active = true;
-                this.fillLight_Right1.active = true;
-                this._bg1Mat.albedoTexture = _CutInRes.MakePattern.texture2D.bgMakePattern.texture2D;
-            }
-            intoMakeTailor() {
-                _3D._Scene._ins()._Owner.active = false;
-            }
-            photoBg() {
-                this._bg1Mat.albedoTexture = _CutInRes.MakePattern.texture2D.bgPhoto.texture2D;
-            }
-            displayDress() {
-                this._GBottoms.active = this._GTop.active = this._DBottoms.active = this._DTop.active = false;
-            }
-            displayTopAndBotton() {
-                this._GDress.active = this._DDress.active = false;
+            else {
+                this._bg1Mat.albedoTexture = _CutInRes.Start.texture2D.bgStart.texture2D;
             }
         }
-        _3D._Scene = _Scene;
-        class DIYCloth {
-            constructor() {
-            }
-            static _ins() {
-                if (!this.ins) {
-                    this.ins = new DIYCloth();
-                }
-                return this.ins;
-            }
-            remake(classify, pitchName) {
-                this.name = pitchName;
-                _Scene._ins()._DIYHanger.active = true;
-                _Scene._ins()._Role.active = false;
-                const Classify = _Scene._ins()._DIYHanger.getChildByName(classify);
-                Tools._Node.showExcludedChild3D(_3D._Scene._ins()._DIYHanger, [Classify.name]);
-                this.Present = Classify.getChildByName(pitchName);
-                Tools._Node.showExcludedChild3D(Classify, [this.Present.name]);
-                this.Present.transform.localRotationEulerY = 180;
-                this.Front = this.Present.getChildByName(`${this.Present.name}_0`);
-                this.frontMat = this.Front.meshRenderer.material;
-                this.Reverse = this.Present.getChildByName(`${this.Present.name}_1`);
-                this.reverseMat = this.Reverse.meshRenderer.material;
-                this.ModelTap = this.Present.getChildByName('ModelTap');
-                this.ModelTap.transform.position = new Laya.Vector3(this.Present.transform.position.x, this.ModelTap.transform.position.y, this.Present.transform.position.z);
-                this.hanger = this.Present.getChildByName('hanger');
-                this.hanger.active = true;
-                let center = this.Front.meshRenderer.bounds.getCenter();
-                let extent = this.Front.meshRenderer.bounds.getExtent();
-                let p1 = new Laya.Vector3(center.x, center.y + extent.y, center.z);
-                let p2 = new Laya.Vector3(center.x, center.y - extent.y, center.z);
-                let point1 = Tools._3D.posToScreen(p1, _Scene._ins()._MainCamara);
-                let point2 = Tools._3D.posToScreen(p2, _Scene._ins()._MainCamara);
-                this.texHeight = point2.y - point1.y;
-            }
-            addTexture2D(arr) {
-                this.frontMat.albedoTexture && this.frontMat.albedoTexture.destroy();
-                this.frontMat.albedoTexture = arr[0];
-                this.reverseMat.albedoTexture && this.reverseMat.albedoTexture.destroy();
-                this.reverseMat.albedoTexture = arr[1];
-            }
-            rotate(num) {
-                if (num == 1) {
-                    this.Present.transform.localRotationEulerY++;
-                }
-                else {
-                    this.Present.transform.localRotationEulerY--;
-                }
-            }
+        intogeDressingRoom() {
+            _3DScene._ins().playStandAni();
+            this._MirrorCamera.active = true;
+            this._bg1Mat.albedoTexture = _CutInRes.DressingRoom.texture2D.bgDressingRoom.texture2D;
         }
-        _3D.DIYCloth = DIYCloth;
-    })(_3D || (_3D = {}));
-
-    class _GameData1 {
+        get mirrorSurface() {
+            return this['_mirrorSurface'];
+        }
+        ;
+        set mirrorSurface(bool) {
+            this['_mirrorSurface'] = bool;
+        }
+        openMirror(_Sp) {
+            this.mirrorSurface = true;
+            TimerAdmin._clearAll([this._Mirror]);
+            TimerAdmin._frameLoop(1, this._Mirror, () => {
+                if (this.mirrorSurface) {
+                    this._MirrorCamera.renderTarget = new Laya.RenderTexture(_Sp.width, _Sp.height);
+                    this._MirrorCamera.renderingOrder = -1;
+                    this._MirrorCamera.clearFlag = Laya.CameraClearFlags.Sky;
+                    this.mirrortex && this.mirrortex.destroy();
+                    this.mirrortex = new Laya.Texture(this._MirrorCamera.renderTarget, Laya.Texture.DEF_UV);
+                    _Sp.graphics.drawTexture(this.mirrortex);
+                }
+            });
+        }
+        closeMirror() {
+            this.mirrorSurface = false;
+        }
+        intoMakePattern() {
+            this._Owner.active = true;
+            this.fillLight_Left1.active = true;
+            this.fillLight_Right1.active = true;
+            this._bg1Mat.albedoTexture = _CutInRes.MakePattern.texture2D.bgMakePattern.texture2D;
+        }
+        intoMakeTailor() {
+            _3DScene._ins()._Owner.active = false;
+        }
+        photoBg() {
+            this._bg1Mat.albedoTexture = _CutInRes.MakePattern.texture2D.bgPhoto.texture2D;
+        }
+        displayDress() {
+            this._GBottoms.active = this._GTop.active = this._DBottoms.active = this._DTop.active = false;
+        }
+        displayTopAndBotton() {
+            this._GDress.active = this._DDress.active = false;
+        }
     }
-    var _GameData;
-    (function (_GameData) {
-        class _Guide {
-            static get _complete() {
-                return StorageAdmin._bool('_Guide_complete').value;
+    class _3DDIYCloth {
+        constructor() {
+        }
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _3DDIYCloth();
             }
-            ;
-            static set _complete(val) {
-                StorageAdmin._bool('_Guide_complete').value = val;
+            return this.ins;
+        }
+        remake(classify, pitchName) {
+            this.name = pitchName;
+            _3DScene._ins()._DIYHanger.active = true;
+            _3DScene._ins()._Role.active = false;
+            const Classify = _3DScene._ins()._DIYHanger.getChildByName(classify);
+            Tools._Node.showExcludedChild3D(_3DScene._ins()._DIYHanger, [Classify.name]);
+            this.Present = Classify.getChildByName(pitchName);
+            Tools._Node.showExcludedChild3D(Classify, [this.Present.name]);
+            this.Present.transform.localRotationEulerY = 180;
+            this.Front = this.Present.getChildByName(`${this.Present.name}_0`);
+            this.frontMat = this.Front.meshRenderer.material;
+            this.Reverse = this.Present.getChildByName(`${this.Present.name}_1`);
+            this.reverseMat = this.Reverse.meshRenderer.material;
+            this.ModelTap = this.Present.getChildByName('ModelTap');
+            this.ModelTap.transform.position = new Laya.Vector3(this.Present.transform.position.x, this.ModelTap.transform.position.y, this.Present.transform.position.z);
+            this.hanger = this.Present.getChildByName('hanger');
+            this.hanger.active = true;
+            let center = this.Front.meshRenderer.bounds.getCenter();
+            let extent = this.Front.meshRenderer.bounds.getExtent();
+            let p1 = new Laya.Vector3(center.x, center.y + extent.y, center.z);
+            let p2 = new Laya.Vector3(center.x, center.y - extent.y, center.z);
+            let point1 = Tools._3D.posToScreen(p1, _3DScene._ins()._MainCamara);
+            let point2 = Tools._3D.posToScreen(p2, _3DScene._ins()._MainCamara);
+            this.texHeight = point2.y - point1.y;
+        }
+        addTexture2D(arr) {
+            this.frontMat.albedoTexture && this.frontMat.albedoTexture.destroy();
+            this.frontMat.albedoTexture = arr[0];
+            this.reverseMat.albedoTexture && this.reverseMat.albedoTexture.destroy();
+            this.reverseMat.albedoTexture = arr[1];
+        }
+        rotate(num) {
+            if (num == 1) {
+                this.Present.transform.localRotationEulerY++;
             }
-            static get MakePatternState() {
-                return this['/MakePatternState'] ? this['/MakePatternState'] : 'ChooseClassify';
-            }
-            ;
-            static set MakePatternState(_state) {
-                this['/MakePatternState'] = _state;
+            else {
+                this.Present.transform.localRotationEulerY--;
             }
         }
-        _Guide.event = {
-            closeGuide: 'Guide' + 'closeGuide',
-            vanishGuide: 'Guide' + 'vanishGuide',
-            StartBtnDress: 'Guide' + 'StartBtnDress',
-            MakeTailorPulldown: 'Guide' + 'MakeTailorPulldown',
-            MakeTailorChangeCloth: 'Guide' + 'MakeTailorChangeCloth',
-            MakeTailorBtnCom: 'Guide' + 'MakeTailorBtnCom',
-            MakeTailorStartTailor: 'Guide' + 'MakeTailorStartTailor',
-            MakeTailorNewTailor: 'Guide' + 'MakeTailorNewTailor',
-            MakeTailorCloseTailor: 'Guide' + 'MakeTailorCloseTailor',
-            MakeTailorOpenTailor: 'Guide' + 'MakeTailorOpenTailor',
-            MakePatternChooseClassify: 'Guide' + 'MakePatternChooseClassify',
-            MakePatternPattern1: 'Guide' + 'MakePatternPattern1',
-            MakePatternFrame1: 'Guide' + 'MakePatternFrame1',
-            MakePatternTurnFace: 'Guide' + 'MakePatternTurnFace',
-            MakePatternFrame2: 'Guide' + 'MakePatternFrame2',
-            MakePatternPattern2: 'Guide' + 'MakePatternPattern2',
-            MakePatternBtnCom: 'Guide' + 'MakePatternBtnCom',
-            TweetingBtnChoosePhoto: 'Guide' + 'TweetingBtnChoosePhoto',
-            TweetingChoosePhoto: 'Guide' + 'TweetingChoosePhoto',
-            TweetingBtnSend: 'Guide' + 'TweetingBtnSend',
-            TweetingBtnDoubleFans: 'Guide' + 'TweetingBtnDoubleFans',
-            RankingCloseBtn: 'Guide' + 'RankingCloseBtn',
-            PersonalInfoBtn: 'Guide' + 'PersonalInfoBtn',
-            PersonalInfoWriteName: 'Guide' + 'PersonalInfoWriteName',
-            PersonalInfoCloseBtn: 'Guide' + 'PersonalInfoCloseBtn',
-            DelayBtnCheckIn: 'Start' + 'DelayBtnCheckIn',
-            BtnCheckIn: 'Guide' + 'BtnCheckIn',
-            CheckInGetReward: 'Guide' + 'CheckInGetReward',
-            CheckInCloseBtn: 'Guide' + 'CheckInBtnClose',
-            StartOtherBtnClick: 'Guide' + 'StartOtherBtnClick',
-        };
-        _Guide.MmakeTailorPulldownSwicth = false;
-        _Guide.MmakeTailorBtnComSwicth = false;
-        _Guide.MakePatternStateType = {
-            ChooseClassify: `ChooseClassify`,
-            Pattern1: 'Pattern1',
-            Frame1: 'Frame1',
-            TurnFace: 'TurnFace',
-            Frame2: 'Frame2',
-            Pattern2: 'Pattern2',
-            BtnCom: 'BtnCom',
-            closeGuide: 'closeGuide',
-        };
-        _Guide.CheckInCloseBtn = false;
-        _GameData._Guide = _Guide;
-        class _PersonalInfo {
-            static get _name() {
-                return StorageAdmin._str('playerName', null, 'You').value;
-            }
-            ;
-            static set _name(str) {
-                StorageAdmin._str('playerName').value = str;
-            }
+    }
+
+    class _RankingData extends DataAdmin._Table {
+        constructor() {
+            super(...arguments);
+            this._otherPro = {
+                rankNum: 'rankNum',
+                fansNum: 'fansNum',
+                iconSkin: 'iconSkin',
+            };
+            this._classify = {
+                other: 'other',
+                self: 'self',
+            };
         }
-        _GameData._PersonalInfo = _PersonalInfo;
-        class _BackHint {
-        }
-        _GameData._BackHint = _BackHint;
-        class _PreLoadCutIn {
-        }
-        _PreLoadCutIn._fromBack = false;
-        _GameData._PreLoadCutIn = _PreLoadCutIn;
-        class _Start {
-        }
-        _Start.event = {
-            photo: 'Start' + 'photo',
-            updateRanking: 'Start' + 'updateRanking',
-            BtnPersonalInfo: 'Start' + 'BtnPersonalInfo',
-        };
-        _GameData._Start = _Start;
-        class _AllClothes extends DataAdmin._Table {
-            constructor() {
-                super(...arguments);
-                this._classify = {
-                    DIY: 'DIY',
-                    General: 'General',
-                };
-                this._part = {
-                    Dress: 'Dress',
-                    Top: 'Top',
-                    Bottoms: 'Bottoms',
-                    FaceMask: 'FaceMask',
-                    Accessories: 'Accessories',
-                    Shoes: 'Shoes',
-                    Hair: 'Hair',
-                };
-                this._otherPro = {
-                    putOn: 'putOn',
-                    part: 'part'
-                };
-            }
-            static _ins() {
-                if (!this.ins) {
-                    this.ins = new _AllClothes('ClothesGeneral', _Res._list.json.GeneralClothes.dataArr, true);
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _RankingData('RankingData', _Res._list.json.Ranking.dataArr, true);
+                if (!this.ins._arr[0]['iconSkin']) {
+                    for (let index = 0; index < this.ins._arr.length; index++) {
+                        const element = this.ins._arr[index];
+                        element['iconSkin'] = `Game/UI/Ranking/IconSkin/avatar_${element[this.ins._property.$serial]}.png`;
+                    }
                 }
-                return this.ins;
+                this.ins._pitchName = '玩家';
+                this.ins._sortByProperty(this.ins._otherPro.fansNum, this.ins._otherPro.rankNum);
             }
-            getDIYTexBasicUrl(clothesName) {
-                return `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/DIYTexbasic/${clothesName.substr(0, clothesName.length - 5)}basic.png`;
+            return this.ins;
+        }
+    }
+    class _Ranking {
+        static get _Data() {
+            return _RankingData._ins();
+        }
+    }
+    _Ranking._whereFrom = 'Start';
+    class _Guide {
+        static get _complete() {
+            return StorageAdmin._bool('_Guide_complete').value;
+        }
+        ;
+        static set _complete(val) {
+            StorageAdmin._bool('_Guide_complete').value = val;
+        }
+        static get MakePatternState() {
+            return this['/MakePatternState'] ? this['/MakePatternState'] : 'ChooseClassify';
+        }
+        ;
+        static set MakePatternState(_state) {
+            this['/MakePatternState'] = _state;
+        }
+    }
+    _Guide.event = {
+        closeGuide: 'Guide' + 'closeGuide',
+        vanishGuide: 'Guide' + 'vanishGuide',
+        StartBtnDress: 'Guide' + 'StartBtnDress',
+        MakeTailorPulldown: 'Guide' + 'MakeTailorPulldown',
+        MakeTailorChangeCloth: 'Guide' + 'MakeTailorChangeCloth',
+        MakeTailorBtnCom: 'Guide' + 'MakeTailorBtnCom',
+        MakeTailorStartTailor: 'Guide' + 'MakeTailorStartTailor',
+        MakeTailorNewTailor: 'Guide' + 'MakeTailorNewTailor',
+        MakeTailorCloseTailor: 'Guide' + 'MakeTailorCloseTailor',
+        MakeTailorOpenTailor: 'Guide' + 'MakeTailorOpenTailor',
+        MakePatternChooseClassify: 'Guide' + 'MakePatternChooseClassify',
+        MakePatternPattern1: 'Guide' + 'MakePatternPattern1',
+        MakePatternFrame1: 'Guide' + 'MakePatternFrame1',
+        MakePatternTurnFace: 'Guide' + 'MakePatternTurnFace',
+        MakePatternFrame2: 'Guide' + 'MakePatternFrame2',
+        MakePatternPattern2: 'Guide' + 'MakePatternPattern2',
+        MakePatternBtnCom: 'Guide' + 'MakePatternBtnCom',
+        TweetingBtnChoosePhoto: 'Guide' + 'TweetingBtnChoosePhoto',
+        TweetingChoosePhoto: 'Guide' + 'TweetingChoosePhoto',
+        TweetingBtnSend: 'Guide' + 'TweetingBtnSend',
+        TweetingBtnDoubleFans: 'Guide' + 'TweetingBtnDoubleFans',
+        RankingCloseBtn: 'Guide' + 'RankingCloseBtn',
+        PersonalInfoBtn: 'Guide' + 'PersonalInfoBtn',
+        PersonalInfoWriteName: 'Guide' + 'PersonalInfoWriteName',
+        PersonalInfoCloseBtn: 'Guide' + 'PersonalInfoCloseBtn',
+        DelayBtnCheckIn: 'Start' + 'DelayBtnCheckIn',
+        BtnCheckIn: 'Guide' + 'BtnCheckIn',
+        CheckInGetReward: 'Guide' + 'CheckInGetReward',
+        CheckInCloseBtn: 'Guide' + 'CheckInBtnClose',
+        StartOtherBtnClick: 'Guide' + 'StartOtherBtnClick',
+    };
+    _Guide.MmakeTailorPulldownSwicth = false;
+    _Guide.MmakeTailorBtnComSwicth = false;
+    _Guide.MakePatternStateType = {
+        ChooseClassify: `ChooseClassify`,
+        Pattern1: 'Pattern1',
+        Frame1: 'Frame1',
+        TurnFace: 'TurnFace',
+        Frame2: 'Frame2',
+        Pattern2: 'Pattern2',
+        BtnCom: 'BtnCom',
+        closeGuide: 'closeGuide',
+    };
+    _Guide.CheckInCloseBtn = false;
+    class _PersonalInfo {
+        static get _name() {
+            return StorageAdmin._str('playerName', null, 'You').value;
+        }
+        ;
+        static set _name(str) {
+            StorageAdmin._str('playerName').value = str;
+        }
+    }
+    class _BackHint {
+    }
+    class _PreLoadCutIn {
+    }
+    _PreLoadCutIn._fromBack = false;
+    class _Start {
+    }
+    _Start._event = {
+        photo: 'Start' + 'photo',
+        updateRanking: 'Start' + 'updateRanking',
+        BtnPersonalInfo: 'Start' + 'BtnPersonalInfo',
+    };
+    class _AllClothes extends DataAdmin._Table {
+        constructor() {
+            super(...arguments);
+            this._classify = {
+                DIY: 'DIY',
+                General: 'General',
+            };
+            this._part = {
+                Dress: 'Dress',
+                Top: 'Top',
+                Bottoms: 'Bottoms',
+                FaceMask: 'FaceMask',
+                Accessories: 'Accessories',
+                Shoes: 'Shoes',
+                Hair: 'Hair',
+            };
+            this._otherPro = {
+                putOn: 'putOn',
+                part: 'part'
+            };
+        }
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _AllClothes('ClothesGeneral', _Res._list.json.GeneralClothes.dataArr, true);
             }
-            getGeneralIcon(clothesName) {
-                return `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Icon/General/${clothesName}.png`;
-            }
-            ;
-            collectDIY() {
-                let DIYArr = _DIYClothes._ins()._getArrByNoProperty(_DIYClothes._ins()._otherPro.icon, "");
-                const copyArr = Tools._ObjArray.arrCopy(DIYArr);
-                Tools._ObjArray.modifyProValue(copyArr, this._property.$classify, 'DIY');
-                this._addObjectArr(copyArr);
-                return copyArr;
-            }
-            changeAfterMaking() {
-                this.collectDIY();
-                this.accurateChange(_DIYClothes._ins()._getPitchProperty('part'), _DIYClothes._ins()._pitchName);
-            }
-            changeClass(classify, partArr, playAni, start) {
-                const _classify = _3D._Scene._ins()._Root.getChildByName(classify);
-                for (let i = 0; i < _classify.numChildren; i++) {
-                    const _classifySp = _classify.getChildAt(i);
-                    _classifySp.active = false;
-                    for (let j = 0; j < partArr.length; j++) {
-                        const obj = partArr[j];
-                        if (obj[this._otherPro.part] === _classifySp.name) {
-                            _classifySp.active = true;
-                            for (let k = 0; k < _classifySp.numChildren; k++) {
-                                const cloth = _classifySp.getChildAt(k);
-                                if (cloth.name === obj[this._property.$name]) {
-                                    cloth.active = true;
-                                    const delay = start ? 40 : 15;
-                                    if (classify === 'DIY') {
-                                        const url = this.getDIYTexBasicUrl(cloth.name);
-                                        const fSp = new Laya.Sprite;
-                                        fSp.visible = false;
-                                        Laya.stage.addChild(fSp);
-                                        fSp.zOrder = 1000;
-                                        fSp.size(512, 512);
-                                        fSp.scale(1, -1);
-                                        fSp.pos(0, 512);
-                                        const FImg = new Laya.Image;
-                                        FImg.skin = url;
-                                        fSp.addChild(FImg);
-                                        FImg.size(512, 512);
-                                        FImg.pos(0, 0);
-                                        const ftexData = StorageAdmin._array(`${cloth.name}/${_DIYClothes._ins()._otherPro.texF}`).value;
-                                        for (let index = 0; index < ftexData.length; index++) {
-                                            const data = ftexData[index];
-                                            const Img = new Laya.Image;
-                                            fSp.addChild(Img);
-                                            Img.skin = `Pattern/${data['name']}.png`;
-                                            Img.x = data['x'];
-                                            Img.y = data['y'];
-                                            Img.anchorX = data['anchorX'];
-                                            Img.anchorY = data['anchorY'];
-                                            Img.width = data['width'];
-                                            Img.height = data['height'];
-                                            Img.height = data['height'];
-                                            Img.rotation = data['rotation'];
-                                            Img.zOrder = data['zOrder'];
-                                        }
-                                        const front = cloth.getChildByName(`${cloth.name}_0`);
-                                        const matF = front.skinnedMeshRenderer.material;
-                                        TimerAdmin._frameOnce(delay, this, () => {
-                                            matF.albedoTexture && matF.albedoTexture.destroy();
-                                            matF.albedoTexture = fSp.drawToTexture(fSp.width, fSp.height, fSp.x, fSp.y + fSp.height);
-                                            fSp.removeSelf();
-                                        });
-                                        const rSp = new Laya.Sprite;
-                                        rSp.visible = false;
-                                        Laya.stage.addChild(rSp);
-                                        rSp.zOrder = 1000;
-                                        rSp.size(512, 512);
-                                        rSp.scale(1, -1);
-                                        const RImg = new Laya.Image;
-                                        RImg.skin = url;
-                                        rSp.addChild(RImg);
-                                        RImg.size(512, 512);
-                                        rSp.pos(512, 0);
-                                        const rtexData = StorageAdmin._array(`${cloth.name}/${_DIYClothes._ins()._otherPro.texR}`).value;
-                                        for (let index = 0; index < rtexData.length; index++) {
-                                            const data = rtexData[index];
-                                            const Img = new Laya.Image;
-                                            rSp.addChild(Img);
-                                            Img.skin = `Pattern/${data['name']}.png`;
-                                            Img.x = data['x'];
-                                            Img.y = data['y'];
-                                            Img.anchorX = data['anchorX'];
-                                            Img.anchorY = data['anchorY'];
-                                            Img.width = data['width'];
-                                            Img.height = data['height'];
-                                            Img.height = data['height'];
-                                            Img.rotation = data['rotation'];
-                                            Img.zOrder = data['zOrder'];
-                                        }
-                                        const reverse = cloth.getChildByName(`${cloth.name}_1`);
-                                        const matR = reverse.skinnedMeshRenderer.material;
-                                        TimerAdmin._frameOnce(delay, this, () => {
-                                            matR.albedoTexture && matR.albedoTexture.destroy();
-                                            matR.albedoTexture = rSp.drawToTexture(rSp.width, rSp.height, rSp.x, rSp.y + rSp.height);
-                                            rSp.removeSelf();
-                                        });
+            return this.ins;
+        }
+        getDIYTexBasicUrl(clothesName) {
+            return `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/DIYTexbasic/${clothesName.substr(0, clothesName.length - 5)}basic.png`;
+        }
+        getGeneralIcon(clothesName) {
+            return `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Icon/General/${clothesName}.png`;
+        }
+        ;
+        collectDIY() {
+            let DIYArr = _DIYClothes._ins()._getArrByNoProperty(_DIYClothes._ins()._otherPro.icon, "");
+            const copyArr = Tools._ObjArray.arrCopy(DIYArr);
+            Tools._ObjArray.modifyProValue(copyArr, this._property.$classify, 'DIY');
+            this._addObjectArr(copyArr);
+            return copyArr;
+        }
+        changeAfterMaking() {
+            this.collectDIY();
+            this.accurateChange(_DIYClothes._ins()._getPitchProperty('part'), _DIYClothes._ins()._pitchName);
+        }
+        changeClass(classify, partArr, playAni, start) {
+            const _classify = _3DScene._ins()._Root.getChildByName(classify);
+            for (let i = 0; i < _classify.numChildren; i++) {
+                const _classifySp = _classify.getChildAt(i);
+                _classifySp.active = false;
+                for (let j = 0; j < partArr.length; j++) {
+                    const obj = partArr[j];
+                    if (obj[this._otherPro.part] === _classifySp.name) {
+                        _classifySp.active = true;
+                        for (let k = 0; k < _classifySp.numChildren; k++) {
+                            const cloth = _classifySp.getChildAt(k);
+                            if (cloth.name === obj[this._property.$name]) {
+                                cloth.active = true;
+                                const delay = start ? 40 : 15;
+                                if (classify === 'DIY') {
+                                    const url = this.getDIYTexBasicUrl(cloth.name);
+                                    const fSp = new Laya.Sprite;
+                                    fSp.visible = false;
+                                    Laya.stage.addChild(fSp);
+                                    fSp.zOrder = 1000;
+                                    fSp.size(512, 512);
+                                    fSp.scale(1, -1);
+                                    fSp.pos(0, 512);
+                                    const FImg = new Laya.Image;
+                                    FImg.skin = url;
+                                    fSp.addChild(FImg);
+                                    FImg.size(512, 512);
+                                    FImg.pos(0, 0);
+                                    const ftexData = StorageAdmin._array(`${cloth.name}/${_DIYClothes._ins()._otherPro.texF}`).value;
+                                    for (let index = 0; index < ftexData.length; index++) {
+                                        const data = ftexData[index];
+                                        const Img = new Laya.Image;
+                                        fSp.addChild(Img);
+                                        Img.skin = `Pattern/${data['name']}.png`;
+                                        Img.x = data['x'];
+                                        Img.y = data['y'];
+                                        Img.anchorX = data['anchorX'];
+                                        Img.anchorY = data['anchorY'];
+                                        Img.width = data['width'];
+                                        Img.height = data['height'];
+                                        Img.height = data['height'];
+                                        Img.rotation = data['rotation'];
+                                        Img.zOrder = data['zOrder'];
                                     }
+                                    const front = cloth.getChildByName(`${cloth.name}_0`);
+                                    const matF = front.skinnedMeshRenderer.material;
+                                    TimerAdmin._frameOnce(delay, this, () => {
+                                        matF.albedoTexture && matF.albedoTexture.destroy();
+                                        matF.albedoTexture = fSp.drawToTexture(fSp.width, fSp.height, fSp.x, fSp.y + fSp.height);
+                                        fSp.removeSelf();
+                                    });
+                                    const rSp = new Laya.Sprite;
+                                    rSp.visible = false;
+                                    Laya.stage.addChild(rSp);
+                                    rSp.zOrder = 1000;
+                                    rSp.size(512, 512);
+                                    rSp.scale(1, -1);
+                                    const RImg = new Laya.Image;
+                                    RImg.skin = url;
+                                    rSp.addChild(RImg);
+                                    RImg.size(512, 512);
+                                    rSp.pos(512, 0);
+                                    const rtexData = StorageAdmin._array(`${cloth.name}/${_DIYClothes._ins()._otherPro.texR}`).value;
+                                    for (let index = 0; index < rtexData.length; index++) {
+                                        const data = rtexData[index];
+                                        const Img = new Laya.Image;
+                                        rSp.addChild(Img);
+                                        Img.skin = `Pattern/${data['name']}.png`;
+                                        Img.x = data['x'];
+                                        Img.y = data['y'];
+                                        Img.anchorX = data['anchorX'];
+                                        Img.anchorY = data['anchorY'];
+                                        Img.width = data['width'];
+                                        Img.height = data['height'];
+                                        Img.height = data['height'];
+                                        Img.rotation = data['rotation'];
+                                        Img.zOrder = data['zOrder'];
+                                    }
+                                    const reverse = cloth.getChildByName(`${cloth.name}_1`);
+                                    const matR = reverse.skinnedMeshRenderer.material;
+                                    TimerAdmin._frameOnce(delay, this, () => {
+                                        matR.albedoTexture && matR.albedoTexture.destroy();
+                                        matR.albedoTexture = rSp.drawToTexture(rSp.width, rSp.height, rSp.x, rSp.y + rSp.height);
+                                        rSp.removeSelf();
+                                    });
                                 }
-                                else {
-                                    cloth.active = false;
-                                }
+                            }
+                            else {
+                                cloth.active = false;
                             }
                         }
                     }
                 }
-                playAni && _3D._Scene._ins().playDispalyAni();
             }
-            changeClothStart() {
-                this.collectDIY();
-                const arr = this._getArrByProperty(this._otherPro.putOn, true);
-                this.changeClass(this._classify.DIY, arr, false, true);
-                this.changeClass(this._classify.General, arr, false, true);
-                this.startSpecialSet();
+            playAni && _3DScene._ins().playDispalyAni();
+        }
+        changeClothStart() {
+            this.collectDIY();
+            const arr = this._getArrByProperty(this._otherPro.putOn, true);
+            this.changeClass(this._classify.DIY, arr, false, true);
+            this.changeClass(this._classify.General, arr, false, true);
+            this.startSpecialSet();
+        }
+        changeCloth() {
+            const arr = this._getArrByProperty(this._otherPro.putOn, true);
+            this.changeClass(this._classify.DIY, arr, true);
+            this.changeClass(this._classify.General, arr, true);
+        }
+        startSpecialSet() {
+            if (StorageAdmin._bool('DressState').value) {
+                _3DScene._ins()._GBottoms.active = _3DScene._ins()._GTop.active = _3DScene._ins()._DBottoms.active = _3DScene._ins()._DTop.active = false;
             }
-            changeCloth() {
-                const arr = this._getArrByProperty(this._otherPro.putOn, true);
-                this.changeClass(this._classify.DIY, arr, true);
-                this.changeClass(this._classify.General, arr, true);
+            else {
+                _3DScene._ins()._GDress.active = _3DScene._ins()._DDress.active = false;
             }
-            startSpecialSet() {
-                if (StorageAdmin._bool('DressState').value) {
-                    _3D._Scene._ins()._GBottoms.active = _3D._Scene._ins()._GTop.active = _3D._Scene._ins()._DBottoms.active = _3D._Scene._ins()._DTop.active = false;
+        }
+        specialSet(part) {
+            if (part === this._part.Dress) {
+                StorageAdmin._bool('DressState').value = true;
+            }
+            else if (part === this._part.Top || part === this._part.Bottoms) {
+                StorageAdmin._bool('DressState').value = false;
+            }
+            if (StorageAdmin._bool('DressState').value) {
+                _3DScene._ins().displayDress();
+            }
+            else {
+                _3DScene._ins().displayTopAndBotton();
+            }
+        }
+        accurateChange(partValue, name) {
+            const arr = _AllClothes._ins()._getArrByProperty('part', partValue);
+            for (let index = 0; index < arr.length; index++) {
+                const element = arr[index];
+                if (name === element['name']) {
+                    element['putOn'] = true;
                 }
                 else {
-                    _3D._Scene._ins()._GDress.active = _3D._Scene._ins()._DDress.active = false;
+                    element['putOn'] = false;
                 }
             }
-            specialSet(part) {
-                if (part === this._part.Dress) {
-                    StorageAdmin._bool('DressState').value = true;
-                }
-                else if (part === this._part.Top || part === this._part.Bottoms) {
-                    StorageAdmin._bool('DressState').value = false;
-                }
-                if (StorageAdmin._bool('DressState').value) {
-                    _3D._Scene._ins().displayDress();
-                }
-                else {
-                    _3D._Scene._ins().displayTopAndBotton();
-                }
+            _DIYClothes._ins()._setProperty(_DIYClothes._ins()._pitchName, 'putOn', true);
+            _AllClothes._ins().changeCloth();
+            _AllClothes._ins().specialSet(partValue);
+            _AllClothes._ins()._refreshAndStorage();
+        }
+    }
+    class _DIYClothes extends DataAdmin._Table {
+        constructor() {
+            super(...arguments);
+            this._classify = {
+                Dress: 'Dress',
+                Top: 'Top',
+                Bottoms: 'Bottoms',
+                ads: 'ads',
+            };
+            this._otherPro = {
+                color: 'color',
+                icon: 'icon',
+                diffX: 'diffX',
+                diffY: 'diffY',
+                texR: 'texR',
+                texF: 'texF',
+            };
+        }
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _DIYClothes('DIYClothes', _Res._list.json.DIYClothes.dataArr, true);
             }
-            accurateChange(partValue, name) {
-                const arr = _AllClothes._ins()._getArrByProperty('part', partValue);
-                for (let index = 0; index < arr.length; index++) {
-                    const element = arr[index];
-                    if (name === element['name']) {
-                        element['putOn'] = true;
+            return this.ins;
+        }
+        ;
+        getPitchTexBasicUrl() {
+            return `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/DIYTexbasic/${this._pitchName.substr(0, this._pitchName.length - 5)}basic.png`;
+        }
+        getDIYCutIcon(name) {
+            return `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Icon/DIY/${name.substr(0, name.length - 5)}cut.png`;
+        }
+        getColor() {
+            let obj = this._getPitchObj();
+            return [obj[`${this._otherPro.color}1`], obj[`${this._otherPro.color}2`]];
+        }
+        getClothesArr() {
+            if (!this.ClothesArr) {
+                this.ClothesArr = [];
+                const dataArr = _DIYClothes._ins()._arr;
+                for (let index = 0; index < dataArr.length; index++) {
+                    if (`${dataArr[index]['name']}` !== 'ads') {
+                        let CloBox = this.createClothes(`${dataArr[index]['name']}`);
+                        this.ClothesArr.push(CloBox);
                     }
                     else {
-                        element['putOn'] = false;
                     }
                 }
-                _DIYClothes._ins()._setProperty(_DIYClothes._ins()._pitchName, 'putOn', true);
-                _AllClothes._ins().changeCloth();
-                _AllClothes._ins().specialSet(partValue);
-                _AllClothes._ins()._refreshAndStorage();
             }
+            return this.ClothesArr;
         }
-        _GameData._AllClothes = _AllClothes;
-        class _DIYClothes extends DataAdmin._Table {
-            constructor() {
-                super(...arguments);
-                this._classify = {
-                    Dress: 'Dress',
-                    Top: 'Top',
-                    Bottoms: 'Bottoms',
-                    ads: 'ads',
-                };
-                this._otherPro = {
-                    color: 'color',
-                    icon: 'icon',
-                    diffX: 'diffX',
-                    diffY: 'diffY',
-                    texR: 'texR',
-                    texF: 'texF',
-                };
+        createClothes(name, Scene) {
+            const Cloth = Tools._Node.createPrefab(_Res._list.prefab2D[name]['prefab']);
+            const CloBox = new Laya.Sprite;
+            CloBox.width = Laya.stage.width;
+            CloBox.height = Laya.stage.height;
+            CloBox.pivotX = CloBox.width / 2;
+            CloBox.pivotY = CloBox.height / 2;
+            CloBox.x = Laya.stage.width / 2;
+            CloBox.y = Laya.stage.height / 2;
+            CloBox.addChild(Cloth);
+            CloBox.name = name;
+            if (Scene) {
+                Scene.addChild(CloBox);
+                CloBox.zOrder = 20;
             }
-            static _ins() {
-                if (!this.ins) {
-                    this.ins = new _DIYClothes('DIYClothes', _Res._list.json.DIYClothes.dataArr, true);
-                }
-                return this.ins;
-            }
-            ;
-            getPitchTexBasicUrl() {
-                return `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/DIYTexbasic/${this._pitchName.substr(0, this._pitchName.length - 5)}basic.png`;
-            }
-            getDIYCutIcon(name) {
-                return `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Icon/DIY/${name.substr(0, name.length - 5)}cut.png`;
-            }
-            getColor() {
-                let obj = this._getPitchObj();
-                return [obj[`${this._otherPro.color}1`], obj[`${this._otherPro.color}2`]];
-            }
-            getClothesArr() {
-                if (!this.ClothesArr) {
-                    this.ClothesArr = [];
-                    const dataArr = _DIYClothes._ins()._arr;
-                    for (let index = 0; index < dataArr.length; index++) {
-                        if (`${dataArr[index]['name']}` !== 'ads') {
-                            let CloBox = this.createClothes(`${dataArr[index]['name']}`);
-                            this.ClothesArr.push(CloBox);
-                        }
-                        else {
-                        }
-                    }
-                }
-                return this.ClothesArr;
-            }
-            createClothes(name, Scene) {
-                const Cloth = Tools._Node.createPrefab(_Res._list.prefab2D[name]['prefab']);
-                const CloBox = new Laya.Sprite;
-                CloBox.width = Laya.stage.width;
-                CloBox.height = Laya.stage.height;
-                CloBox.pivotX = CloBox.width / 2;
-                CloBox.pivotY = CloBox.height / 2;
-                CloBox.x = Laya.stage.width / 2;
-                CloBox.y = Laya.stage.height / 2;
-                CloBox.addChild(Cloth);
-                CloBox.name = name;
-                if (Scene) {
-                    Scene.addChild(CloBox);
-                    CloBox.zOrder = 20;
-                }
-                return CloBox;
-            }
+            return CloBox;
         }
-        _GameData._DIYClothes = _DIYClothes;
-        class _RankingData extends DataAdmin._Table {
-            constructor() {
-                super(...arguments);
-                this._otherPro = {
-                    rankNum: 'rankNum',
-                    fansNum: 'fansNum',
-                    iconSkin: 'iconSkin',
-                };
-                this._classify = {
-                    other: 'other',
-                    self: 'self',
-                };
-            }
-            static _ins() {
-                if (!this.ins) {
-                    this.ins = new _RankingData('RankingData', _Res._list.json.Ranking.dataArr, true);
-                    if (!this.ins._arr[0]['iconSkin']) {
-                        for (let index = 0; index < this.ins._arr.length; index++) {
-                            const element = this.ins._arr[index];
-                            element['iconSkin'] = `Game/UI/Ranking/IconSkin/avatar_${element[this.ins._property.$serial]}.png`;
-                        }
-                    }
-                    this.ins._pitchName = '玩家';
-                    this.ins._sortByProperty(this.ins._otherPro.fansNum, this.ins._otherPro.rankNum);
-                }
-                return this.ins;
-            }
+    }
+    class _MakeTailor {
+    }
+    _MakeTailor._event = {
+        scissorTrigger: '_MakeTailor_scissorTrigger',
+        completeEffcet: '_MakeTailor_completeAni',
+        changeClothes: '_MakeTailor_changeClothes',
+        scissorAppear: '_MakeTailor_scissorAppear',
+        scissorPlay: '_MakeTailor_scissorPlay',
+        scissorStop: '_MakeTailor_scissorStop',
+        scissorRotation: '_MakeTailor_scissorRotation',
+        scissorAgain: '_MakeTailor_scissorSitu',
+        scissorRemove: '_MakeTailor_scissorRemove',
+    };
+    class _PatternData extends DataAdmin._Table {
+        constructor() {
+            super(...arguments);
+            this._classify = {
+                newYear: 'newYear',
+                basic: 'basic',
+                cat: 'cat',
+                pink: 'pink',
+                expression: 'expression',
+            };
         }
-        class _Ranking {
-            static get _Table() {
-                return this['_RankingData'] ? this['_RankingData'] : _RankingData._ins();
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _PatternData('_Pattern', _Res._list.json.MakePattern.dataArr, true);
+                this.ins._pitchClassify = this.ins._classify.newYear;
+                this.ins.newYearArr = this.ins._getArrByClassify(this.ins._classify.newYear);
+                this.ins.newYearArr.push({}, {});
+                this.ins.basicArr = this.ins._getArrByClassify(this.ins._classify.basic);
+                this.ins.basicArr.push({}, {});
+                this.ins.catArr = this.ins._getArrByClassify(this.ins._classify.cat);
+                this.ins.catArr.push({}, {});
+                this.ins.pinkArr = this.ins._getArrByClassify(this.ins._classify.pink);
+                this.ins.pinkArr.push({}, {});
+                this.ins.expressionArr = this.ins._getArrByClassify(this.ins._classify.expression);
+                this.ins.expressionArr.push({}, {});
             }
-            static set _Table(v) {
-                this['_RankingData'] = _RankingData._ins();
-            }
+            return this.ins;
         }
-        _Ranking._whereFrom = 'Start';
-        _GameData._Ranking = _Ranking;
-        class _MakeTailor {
+    }
+    class _PatternDiff extends DataAdmin._Table {
+        constructor() {
+            super(...arguments);
+            this._otherPro = {
+                fDiffX: 'fDiffX',
+                fDiffY: 'fDiffY',
+                rDiffX: 'rDiffX',
+                rDiffY: 'rDiffY',
+            };
         }
-        _MakeTailor.event = {
-            scissorTrigger: '_MakeTailor_scissorTrigger',
-            completeEffcet: '_MakeTailor_completeAni',
-            changeClothes: '_MakeTailor_changeClothes',
-            scissorAppear: '_MakeTailor_scissorAppear',
-            scissorPlay: '_MakeTailor_scissorPlay',
-            scissorStop: '_MakeTailor_scissorStop',
-            scissorRotation: '_MakeTailor_scissorRotation',
-            scissorAgain: '_MakeTailor_scissorSitu',
-            scissorRemove: '_MakeTailor_scissorRemove',
-        };
-        _GameData._MakeTailor = _MakeTailor;
-        class _MakePattern {
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _PatternDiff('_DIYClothesDiff', _Res._list.json.DIYClothesDiff.dataArr, false);
+            }
+            return this.ins;
         }
-        _MakePattern.event = {
-            close: '_MakePattern_close',
-            createImg: '_MakePattern_createImg',
-        };
-        _GameData._MakePattern = _MakePattern;
-        class _DressingRoom {
+        get fDiffX() {
+            return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'fDiffX');
         }
-        _DressingRoom.event = {
-            changeCloth: '_DressingRoom_ChangeCloth',
-        };
-        _GameData._DressingRoom = _DressingRoom;
-        class _Tweeting {
-            static get _attentionNum() {
-                return StorageAdmin._num('_MakePattern/attention', null, 180).value;
-            }
-            ;
-            static set _attentionNum(val) {
-                StorageAdmin._num('_MakePattern/attention').value = val;
-            }
-            static get _completeNum() {
-                return StorageAdmin._num('_MakePattern/completeNum').value;
-            }
-            ;
-            static set _completeNum(val) {
-                StorageAdmin._num('_MakePattern/completeNum').value = val;
-            }
-            static get _forwardedNum() {
-                return StorageAdmin._num('Tweeting/forwarded', null, Tools._Number.randomOneBySection(75, 125, true)).value;
-            }
-            ;
-            static set _forwardedNum(val) {
-                StorageAdmin._num('Tweeting/forwarded').value = val;
-            }
-            static get _commentNum() {
-                return StorageAdmin._num('Tweeting/Comment', null, Tools._Number.randomOneBySection(100, 150, true)).value;
-            }
-            ;
-            static set _commentNum(val) {
-                StorageAdmin._num('Tweeting/Comment').value = val;
-            }
-            static get _likeNum() {
-                return StorageAdmin._num('Tweeting/like', null, Tools._Number.randomOneBySection(200, 250, true)).value;
-            }
-            ;
-            static set _likeNum(val) {
-                StorageAdmin._num('Tweeting/like').value = val;
-            }
+        ;
+        get fDiffY() {
+            return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'fDiffY');
         }
-        _Tweeting._photo = {
-            arr: [],
-            take: (Scene, index) => {
-                _Tweeting._photo.arr[index] && _Tweeting._photo.arr[index].destroy();
-                _Tweeting._photo.arr[index] = Scene.drawToTexture(Laya.stage.width, Laya.stage.height, 0, 0);
-            },
-            clear: () => {
-                for (let index = 0; index < _Tweeting._photo.arr.length; index++) {
-                    const element = _Tweeting._photo.arr[index];
-                    element && element.destroy();
-                }
-                _Tweeting._photo.arr = [];
-                Laya.Resource.destroyUnusedResources();
-            }
-        };
-        _Tweeting._brief = {
-            getThree: () => {
-                return Tools._Array.randomGetOut(_Tweeting._brief.all, 3);
-            },
-            getOne: () => {
-                return Tools._Array.randomGetOut(_Tweeting._brief.all);
-            },
-            all: [
-                '世界很烦，但我要很可爱',
-                '生活就是见招拆招',
-                '忠于自己，热爱生活',
-                '我很有个性，但我不想签名',
-                'T^T	',
-                '你最怕什么',
-                '宁缺毋滥',
-                '围脖红人',
-                '剪裁大师',
-                '剪裁王',
-            ]
-        };
-        _Tweeting._mainBody = {
-            getOne: () => {
-                _Tweeting._mainBody.present = Tools._Array.randomGetOne(_Tweeting._mainBody.all);
-                return _Tweeting._mainBody.present;
-            },
-            present: null,
-            all: [
-                '不管几岁，反正少女心万岁≧▽≦',
-                '此处可爱贩卖机  24小时正常营业	',
-                '欢迎光临我的手工小店，我会制作更多大家喜欢的衣服哦',
-                '现在一定有个很可爱的人，在看我的这句话',
-                '辛辛苦苦做了好久，结果很满意，好喜欢哦',
-                '大家觉得我这套衣服怎么样',
-                '闲来无事，做了一套衣服，感觉还不错',
-                '我觉得吧，这次发挥的一般，下次会更好，敬请期待',
-                '浮游于这个世界所产生的热能 也比不过喜欢你的热忱	',
-                '时间会把对你最好的人留在最后，毕竟喜欢是一阵风，而爱是细水长流',
-                '人生难免遇上些许不如意，翻过这一页就会发现生活处处有美好',
-                '也许，只有制作衣服的时候，才会让自己的心静下来',
-                '讲道理，我觉得我的手艺还不错，我是不是可以考虑开一家店了？',
-                '技术还不太行，需要多多磨炼，再努力做几件衣服吧~',
-                '今天心情好，早早地起来做衣服了，我是可爱的小裁缝~啦啦啦~',
-                '给妈妈做了件衣服，妈妈说好喜欢~',
-                '还有什么可以比做自己喜欢的事更加让人开心的呢~',
-                '一些些自己的小设计，就可以让一件衣服焕发生机',
-                '也许只是一瞬间的灵感，我将会付之于行动来实现它',
-                '对于剪裁和搭配的热情，我不会输给任何人的~',
-                '加油，我会成为最好的设计师的，我会爆火！~',
-                '坚持不懈，认真对待自己的，努力成为最好的设计师！~',
-                '感谢大家的支持，我会努力的',
-            ]
-        };
-        _Tweeting._reply = {
-            getTow: () => {
-                return Tools._Array.randomGetOut(_Tweeting._reply.all, 2);
-            },
-            all: [
-                '加油，坚持，我看好你哦',
-                '好好看，我也想要',
-                '那么请问在哪里可以买到呢',
-                '有一说一，真的还可以',
-                '感觉，你做的越来越好了',
-                '我也想和你一样拥有如此灵巧的双手',
-                '真的好看，加油',
-                '我的天，这也太美了吧',
-                'OMG，买他买他！~',
-                '沙发~~',
-                '点赞这条回复，你会好运连连',
-                '求翻牌，你这也太美了吧',
-                '太适合仙女了吧',
-                '我也想学学，能教教我吗',
-                '感觉你能火，坚持，加油',
-                '感觉没有什么可以难倒你',
-                '我想和你一样心灵手巧',
-                '我的天，这是真的太好看了',
-                ' U1S1，是真漂亮~',
-                '我觉得你还可以更优秀~',
-                '不是我杠精，你这个真的，真可以，没的杠',
-                '好看是真好看，难也是真的难',
-                '感觉我学不会，咋办，好美',
-                '仙女穿起来也太好看了吧',
-                '花痴脸~这也太美了',
-                '坚持，我看好你哦，感觉你能火',
-                '天哪，这也太美了吧',
-            ]
-        };
-        _Tweeting._photoIndex = 0;
-        _GameData._Tweeting = _Tweeting;
-        class _CheckInData extends DataAdmin._Table {
-            constructor() {
-                super(...arguments);
-                this._otherPro = {
-                    checkAddition: 'checkAddition',
-                    otherRewardType: 'otherRewardType',
-                    otherRewardNum: 'otherRewardNum',
-                    otherCompelet: 'otherCompelet',
-                };
-            }
-            static _ins() {
-                if (!this.ins) {
-                    this.ins = new _CheckIn('CheckIn', _Res._list.json.CheckIn.dataArr, true);
-                }
-                return this.ins;
-            }
+        ;
+        get rDiffX() {
+            return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'rDiffX');
         }
-        class _CheckIn extends DataAdmin._Table {
-            static get _Table() {
-                return _CheckInData._ins();
-            }
-            static get _immediately() {
-                return StorageAdmin._num('_CheckIn/immediately').value;
-            }
-            ;
-            static set _immediately(val) {
-                StorageAdmin._num('_CheckIn/immediately').value = val;
-            }
-            static get _checkInNum() {
-                return StorageAdmin._num('_CheckIn/checkInNum').value;
-            }
-            ;
-            static set _checkInNum(val) {
-                StorageAdmin._num('_CheckIn/checkInNum').value = val;
-            }
-            static get _lastCheckDate() {
-                return StorageAdmin._num('_CheckIn/lastCheckDate').value;
-            }
-            ;
-            static set _lastCheckDate(val) {
-                StorageAdmin._num('_CheckIn/lastCheckDate').value = val;
-            }
-            static get _todayCheckIn() {
-                return this._lastCheckDate == DateAdmin._date.date ? true : false;
-            }
-            ;
+        ;
+        get rDiffY() {
+            return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'rDiffY');
         }
-        _GameData._CheckIn = _CheckIn;
-        class _Pattern extends DataAdmin._Table {
-            constructor() {
-                super(...arguments);
-                this._classify = {
-                    newYear: 'newYear',
-                    basic: 'basic',
-                    cat: 'cat',
-                    pink: 'pink',
-                    expression: 'expression',
-                };
-            }
-            static _ins() {
-                if (!this.ins) {
-                    this.ins = new _Pattern('_Pattern', _Res._list.json.MakePattern.dataArr, true);
-                    this.ins._pitchClassify = this.ins._classify.newYear;
-                    this.ins.newYearArr = this.ins._getArrByClassify(this.ins._classify.newYear);
-                    this.ins.newYearArr.push({}, {});
-                    this.ins.basicArr = this.ins._getArrByClassify(this.ins._classify.basic);
-                    this.ins.basicArr.push({}, {});
-                    this.ins.catArr = this.ins._getArrByClassify(this.ins._classify.cat);
-                    this.ins.catArr.push({}, {});
-                    this.ins.pinkArr = this.ins._getArrByClassify(this.ins._classify.pink);
-                    this.ins.pinkArr.push({}, {});
-                    this.ins.expressionArr = this.ins._getArrByClassify(this.ins._classify.expression);
-                    this.ins.expressionArr.push({}, {});
-                }
-                return this.ins;
-            }
+        ;
+    }
+    class _MakePattern {
+        static get _Data() {
+            return _PatternData._ins();
         }
-        _GameData._Pattern = _Pattern;
-        class _PatternDiff extends DataAdmin._Table {
-            constructor() {
-                super(...arguments);
-                this._otherPro = {
-                    fDiffX: 'fDiffX',
-                    fDiffY: 'fDiffY',
-                    rDiffX: 'rDiffX',
-                    rDiffY: 'rDiffY',
-                };
-            }
-            static _ins() {
-                if (!this.ins) {
-                    this.ins = new _PatternDiff('_DIYClothesDiff', _Res._list.json.DIYClothesDiff.dataArr, false);
-                }
-                return this.ins;
-            }
-            get fDiffX() {
-                return _GameData._PatternDiff._ins()._getProperty(_3D.DIYCloth._ins().name, 'fDiffX');
-            }
-            ;
-            get fDiffY() {
-                return _GameData._PatternDiff._ins()._getProperty(_3D.DIYCloth._ins().name, 'fDiffY');
-            }
-            ;
-            get rDiffX() {
-                return _GameData._PatternDiff._ins()._getProperty(_3D.DIYCloth._ins().name, 'rDiffX');
-            }
-            ;
-            get rDiffY() {
-                return _GameData._PatternDiff._ins()._getProperty(_3D.DIYCloth._ins().name, 'rDiffY');
-            }
-            ;
+        static get _PatternDiff() {
+            return _PatternDiff._ins();
         }
-        _GameData._PatternDiff = _PatternDiff;
-    })(_GameData || (_GameData = {}));
+    }
+    _MakePattern._event = {
+        close: '_MakePattern_close',
+        createImg: '_MakePattern_createImg',
+    };
+    class _Tweeting {
+        static get _attentionNum() {
+            return StorageAdmin._num('_MakePattern/attention', null, 180).value;
+        }
+        ;
+        static set _attentionNum(val) {
+            StorageAdmin._num('_MakePattern/attention').value = val;
+        }
+        static get _completeNum() {
+            return StorageAdmin._num('_MakePattern/completeNum').value;
+        }
+        ;
+        static set _completeNum(val) {
+            StorageAdmin._num('_MakePattern/completeNum').value = val;
+        }
+        static get _forwardedNum() {
+            return StorageAdmin._num('Tweeting/forwarded', null, Tools._Number.randomOneBySection(75, 125, true)).value;
+        }
+        ;
+        static set _forwardedNum(val) {
+            StorageAdmin._num('Tweeting/forwarded').value = val;
+        }
+        static get _commentNum() {
+            return StorageAdmin._num('Tweeting/Comment', null, Tools._Number.randomOneBySection(100, 150, true)).value;
+        }
+        ;
+        static set _commentNum(val) {
+            StorageAdmin._num('Tweeting/Comment').value = val;
+        }
+        static get _likeNum() {
+            return StorageAdmin._num('Tweeting/like', null, Tools._Number.randomOneBySection(200, 250, true)).value;
+        }
+        ;
+        static set _likeNum(val) {
+            StorageAdmin._num('Tweeting/like').value = val;
+        }
+    }
+    _Tweeting._photo = {
+        arr: [],
+        take: (Scene, index) => {
+            _Tweeting._photo.arr[index] && _Tweeting._photo.arr[index].destroy();
+            _Tweeting._photo.arr[index] = Scene.drawToTexture(Laya.stage.width, Laya.stage.height, 0, 0);
+        },
+        clear: () => {
+            for (let index = 0; index < _Tweeting._photo.arr.length; index++) {
+                const element = _Tweeting._photo.arr[index];
+                element && element.destroy();
+            }
+            _Tweeting._photo.arr = [];
+            Laya.Resource.destroyUnusedResources();
+        }
+    };
+    _Tweeting._brief = {
+        getThree: () => {
+            return Tools._Array.randomGetOut(_Tweeting._brief.all, 3);
+        },
+        getOne: () => {
+            return Tools._Array.randomGetOut(_Tweeting._brief.all);
+        },
+        all: [
+            '世界很烦，但我要很可爱',
+            '生活就是见招拆招',
+            '忠于自己，热爱生活',
+            '我很有个性，但我不想签名',
+            'T^T	',
+            '你最怕什么',
+            '宁缺毋滥',
+            '围脖红人',
+            '剪裁大师',
+            '剪裁王',
+        ]
+    };
+    _Tweeting._mainBody = {
+        getOne: () => {
+            _Tweeting._mainBody.present = Tools._Array.randomGetOne(_Tweeting._mainBody.all);
+            return _Tweeting._mainBody.present;
+        },
+        present: null,
+        all: [
+            '不管几岁，反正少女心万岁≧▽≦',
+            '此处可爱贩卖机  24小时正常营业	',
+            '欢迎光临我的手工小店，我会制作更多大家喜欢的衣服哦',
+            '现在一定有个很可爱的人，在看我的这句话',
+            '辛辛苦苦做了好久，结果很满意，好喜欢哦',
+            '大家觉得我这套衣服怎么样',
+            '闲来无事，做了一套衣服，感觉还不错',
+            '我觉得吧，这次发挥的一般，下次会更好，敬请期待',
+            '浮游于这个世界所产生的热能 也比不过喜欢你的热忱	',
+            '时间会把对你最好的人留在最后，毕竟喜欢是一阵风，而爱是细水长流',
+            '人生难免遇上些许不如意，翻过这一页就会发现生活处处有美好',
+            '也许，只有制作衣服的时候，才会让自己的心静下来',
+            '讲道理，我觉得我的手艺还不错，我是不是可以考虑开一家店了？',
+            '技术还不太行，需要多多磨炼，再努力做几件衣服吧~',
+            '今天心情好，早早地起来做衣服了，我是可爱的小裁缝~啦啦啦~',
+            '给妈妈做了件衣服，妈妈说好喜欢~',
+            '还有什么可以比做自己喜欢的事更加让人开心的呢~',
+            '一些些自己的小设计，就可以让一件衣服焕发生机',
+            '也许只是一瞬间的灵感，我将会付之于行动来实现它',
+            '对于剪裁和搭配的热情，我不会输给任何人的~',
+            '加油，我会成为最好的设计师的，我会爆火！~',
+            '坚持不懈，认真对待自己的，努力成为最好的设计师！~',
+            '感谢大家的支持，我会努力的',
+        ]
+    };
+    _Tweeting._reply = {
+        getTow: () => {
+            return Tools._Array.randomGetOut(_Tweeting._reply.all, 2);
+        },
+        all: [
+            '加油，坚持，我看好你哦',
+            '好好看，我也想要',
+            '那么请问在哪里可以买到呢',
+            '有一说一，真的还可以',
+            '感觉，你做的越来越好了',
+            '我也想和你一样拥有如此灵巧的双手',
+            '真的好看，加油',
+            '我的天，这也太美了吧',
+            'OMG，买他买他！~',
+            '沙发~~',
+            '点赞这条回复，你会好运连连',
+            '求翻牌，你这也太美了吧',
+            '太适合仙女了吧',
+            '我也想学学，能教教我吗',
+            '感觉你能火，坚持，加油',
+            '感觉没有什么可以难倒你',
+            '我想和你一样心灵手巧',
+            '我的天，这是真的太好看了',
+            ' U1S1，是真漂亮~',
+            '我觉得你还可以更优秀~',
+            '不是我杠精，你这个真的，真可以，没的杠',
+            '好看是真好看，难也是真的难',
+            '感觉我学不会，咋办，好美',
+            '仙女穿起来也太好看了吧',
+            '花痴脸~这也太美了',
+            '坚持，我看好你哦，感觉你能火',
+            '天哪，这也太美了吧',
+        ]
+    };
+    _Tweeting._photoIndex = 0;
+    class _CheckInData extends DataAdmin._Table {
+        constructor() {
+            super(...arguments);
+            this._otherPro = {
+                checkAddition: 'checkAddition',
+                otherRewardType: 'otherRewardType',
+                otherRewardNum: 'otherRewardNum',
+                otherCompelet: 'otherCompelet',
+            };
+        }
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _CheckInData('CheckIn', _Res._list.json.CheckIn.dataArr, true);
+            }
+            return this.ins;
+        }
+    }
+    class _CheckIn {
+        static get _Data() {
+            return _CheckInData._ins();
+        }
+        static get _immediately() {
+            return StorageAdmin._num('_CheckIn/immediately').value;
+        }
+        ;
+        static set _immediately(val) {
+            StorageAdmin._num('_CheckIn/immediately').value = val;
+        }
+        static get _checkInNum() {
+            return StorageAdmin._num('_CheckIn/checkInNum').value;
+        }
+        ;
+        static set _checkInNum(val) {
+            StorageAdmin._num('_CheckIn/checkInNum').value = val;
+        }
+        static get _lastCheckDate() {
+            return StorageAdmin._num('_CheckIn/lastCheckDate').value;
+        }
+        ;
+        static set _lastCheckDate(val) {
+            StorageAdmin._num('_CheckIn/lastCheckDate').value = val;
+        }
+        static get _todayCheckIn() {
+            return this._lastCheckDate == DateAdmin._date.date ? true : false;
+        }
+        ;
+    }
 
     class PreLoadCutIn extends _LwgPreLoad._PreLoadScene {
         lwgOpenAniAfter() {
@@ -9308,9 +9281,9 @@
         lwgAllComplete() {
             switch (Admin._PreLoadCutIn.openName) {
                 case 'MakePattern':
-                    _3D.DIYCloth._ins().remake(_GameData._DIYClothes._ins()._pitchClassify, _GameData._DIYClothes._ins()._pitchName);
-                    _3D._Scene._ins().intoMakePattern();
-                    this._ImgVar('Front').loadImage(_GameData._DIYClothes._ins().getPitchTexBasicUrl(), Laya.Handler.create(this, () => {
+                    _3DDIYCloth._ins().remake(_DIYClothes._ins()._pitchClassify, _DIYClothes._ins()._pitchName);
+                    _3DScene._ins().intoMakePattern();
+                    this._ImgVar('Front').loadImage(_DIYClothes._ins().getPitchTexBasicUrl(), Laya.Handler.create(this, () => {
                         var getTex = () => {
                             let ImgF = this._ImgVar('Front');
                             const tex = this._ImgVar('Front').drawToTexture(ImgF.width, ImgF.height, ImgF.x, ImgF.y + ImgF.height);
@@ -9319,24 +9292,24 @@
                                 tex
                             ];
                         };
-                        _3D.DIYCloth._ins().addTexture2D(getTex());
+                        _3DDIYCloth._ins().addTexture2D(getTex());
                     }));
                     break;
                 case 'MakeTailor':
-                    _3D._Scene._ins().intoMakeTailor();
-                    _GameData._DIYClothes._ins().ClothesArr = null;
-                    _GameData._DIYClothes._ins().getClothesArr();
+                    _3DScene._ins().intoMakeTailor();
+                    _DIYClothes._ins().ClothesArr = null;
+                    _DIYClothes._ins().getClothesArr();
                     break;
                 case 'Start':
-                    if (Admin._PreLoadCutIn.closeName === 'MakePattern' && !_GameData._PreLoadCutIn._fromBack) {
+                    if (Admin._PreLoadCutIn.closeName === 'MakePattern' && !_PreLoadCutIn._fromBack) {
                         this.iconPhoto();
                     }
                     else {
-                        _3D._Scene._ins().intoStart();
+                        _3DScene._ins().intoStart();
                     }
                     break;
                 case 'DressingRoom':
-                    _3D._Scene._ins().intogeDressingRoom();
+                    _3DScene._ins().intogeDressingRoom();
                 default:
                     break;
             }
@@ -9347,27 +9320,27 @@
         }
         iconPhoto() {
             if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
-                _3D._Scene._ins().intoStart();
-                _GameData._DIYClothes._ins()._setPitchProperty(_GameData._DIYClothes._ins()._otherPro.icon, 'have');
-                _GameData._AllClothes._ins().changeAfterMaking();
+                _3DScene._ins().intoStart();
+                _DIYClothes._ins()._setPitchProperty(_DIYClothes._ins()._otherPro.icon, 'have');
+                _AllClothes._ins().changeAfterMaking();
             }
             else {
-                _3D._Scene._ins().photoBg();
-                _3D.DIYCloth._ins().hanger.active = false;
-                _3D.DIYCloth._ins().Present.transform.localRotationEulerY = 180;
+                _3DScene._ins().photoBg();
+                _3DDIYCloth._ins().hanger.active = false;
+                _3DDIYCloth._ins().Present.transform.localRotationEulerY = 180;
                 const sp = new Laya.Sprite;
                 this._Owner.addChild(sp)['size'](126, 146);
-                Tools._Draw.cameraToSprite(_3D._Scene._ins()._MainCamara, sp);
+                Tools._Draw.cameraToSprite(_3DScene._ins()._MainCamara, sp);
                 TimerAdmin._frameOnce(5, this, () => {
                     const base64Icon = Tools._Draw.screenshot(sp, 0.5);
-                    _GameData._DIYClothes._ins()._setPitchProperty(_GameData._DIYClothes._ins()._otherPro.icon, base64Icon);
-                    _GameData._AllClothes._ins().changeAfterMaking();
-                    _3D._Scene._ins().intoStart();
+                    _DIYClothes._ins()._setPitchProperty(_DIYClothes._ins()._otherPro.icon, base64Icon);
+                    _AllClothes._ins().changeAfterMaking();
+                    _3DScene._ins().intoStart();
                 });
             }
         }
         lwgOnDisable() {
-            _GameData._PreLoadCutIn._fromBack = false;
+            _PreLoadCutIn._fromBack = false;
         }
     }
 
@@ -9683,7 +9656,7 @@
                 });
             });
         }
-        moveRoundrectNoBg(x, y, width, height, radius, delay) {
+        moveRoundrectNoBg(x, y, width, height, radius) {
             this.boreholeRoundrect([[x, y, width, height, radius]], null, null, () => {
                 this.handMove(x, y, () => {
                     this._AniVar('Click').play();
@@ -9823,15 +9796,15 @@
                 });
             }
             const radius = 80;
-            this._evReg(_GameData._Guide.event.StartBtnDress, (x, y) => {
+            this._evReg(_Guide.event.StartBtnDress, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_GameData._Guide.event.MakeTailorPulldown, () => {
+            this._evReg(_Guide.event.MakeTailorPulldown, () => {
                 const x = Laya.stage.width - 95;
                 const y = Laya.stage.height / 2;
                 this.slideUpAppear(x, y, 165, 450, 20);
             });
-            this._evReg(_GameData._Guide.event.MakeTailorChangeCloth, () => {
+            this._evReg(_Guide.event.MakeTailorChangeCloth, () => {
                 this._ImgVar('Hand').pos(this._ImgVar('SlideHand')._lwg.gPoint.x, this._ImgVar('SlideHand')._lwg.gPoint.y);
                 this._ImgVar('Hand').scale(1, 1);
                 this._ImgVar('Slide').scale(0, 0);
@@ -9839,7 +9812,7 @@
                 const y = 370;
                 this.moveCircleNoBg(x, y, radius);
             });
-            this._evReg(_GameData._Guide.event.MakeTailorBtnCom, () => {
+            this._evReg(_Guide.event.MakeTailorBtnCom, () => {
                 this._AniVar('Click').stop();
                 this.boreholeCircle([[this.btnComX, this.btnComY, radius], [Laya.stage.width / 2, Laya.stage.height / 2, 350]], null, null, () => {
                     this.handMove(this.btnComX, this.btnComY, () => {
@@ -9847,36 +9820,36 @@
                     });
                 });
             });
-            this._evReg(_GameData._Guide.event.MakeTailorStartTailor, (Scissor) => {
+            this._evReg(_Guide.event.MakeTailorStartTailor, (Scissor) => {
                 this.bgVanish();
                 this.handClear();
                 this.startScissorTailor(Scissor);
             });
-            this._evReg(_GameData._Guide.event.MakeTailorNewTailor, (LineName) => {
+            this._evReg(_Guide.event.MakeTailorNewTailor, (LineName) => {
                 this.newScissorTailor(LineName);
             });
-            this._evReg(_GameData._Guide.event.MakeTailorCloseTailor, () => {
+            this._evReg(_Guide.event.MakeTailorCloseTailor, () => {
                 if (!this.presentName)
                     return;
                 this._closeLine = true;
                 this.handClear();
                 this._ImgVar('Hand').scale(0, 0);
             });
-            this._evReg(_GameData._Guide.event.MakeTailorOpenTailor, () => {
+            this._evReg(_Guide.event.MakeTailorOpenTailor, () => {
                 if (!this.presentName)
                     return;
                 this._closeLine = false;
                 this.handClear();
                 this.scissorTailor();
             });
-            this._evReg(_GameData._Guide.event.MakePatternChooseClassify, () => {
-                _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.ChooseClassify;
+            this._evReg(_Guide.event.MakePatternChooseClassify, () => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.ChooseClassify;
                 const x = Laya.stage.width - 53;
                 const y = 270;
                 this.noMoveCircle(x, y, 60);
             });
-            this._evReg(_GameData._Guide.event.MakePatternPattern1, () => {
-                _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Pattern1;
+            this._evReg(_Guide.event.MakePatternPattern1, () => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.Pattern1;
                 const x = Laya.stage.width - 152;
                 const y = 310;
                 this.pattenAni(x, y, Laya.stage.width / 2, y);
@@ -9896,74 +9869,74 @@
                     }
                 }
             });
-            this._evReg(_GameData._Guide.event.MakePatternFrame1, (Wireframe) => {
-                _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Frame1;
+            this._evReg(_Guide.event.MakePatternFrame1, (Wireframe) => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.Frame1;
                 if (Wireframe)
                     this._Wireframe = Wireframe;
                 frameFunc();
             });
-            this._evReg(_GameData._Guide.event.MakePatternTurnFace, (x, y) => {
-                _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.TurnFace;
+            this._evReg(_Guide.event.MakePatternTurnFace, (x, y) => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.TurnFace;
                 this.handClear();
                 this.moveCircleBg(x, y, radius);
             });
-            this._evReg(_GameData._Guide.event.MakePatternPattern2, () => {
-                _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Pattern2;
+            this._evReg(_Guide.event.MakePatternPattern2, () => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.Pattern2;
                 const x = Laya.stage.width - 152;
                 const y = 420;
                 this.pattenAni(x, y, Laya.stage.width / 2, y);
                 this.bgVanish();
             });
-            this._evReg(_GameData._Guide.event.MakePatternFrame2, (Wireframe) => {
-                _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Frame2;
+            this._evReg(_Guide.event.MakePatternFrame2, (Wireframe) => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.Frame2;
                 if (Wireframe)
                     this._Wireframe = Wireframe;
                 frameFunc();
             });
-            this._evReg(_GameData._Guide.event.MakePatternBtnCom, (x, y) => {
-                _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.BtnCom;
+            this._evReg(_Guide.event.MakePatternBtnCom, (x, y) => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.BtnCom;
                 this.handClear();
                 this.moveCircleBg(x, y, radius);
             });
-            this._evReg(_GameData._Guide.event.TweetingBtnChoosePhoto, (x, y, handX, handY) => {
+            this._evReg(_Guide.event.TweetingBtnChoosePhoto, (x, y, handX, handY) => {
                 this.noMoveRoundrect(x, y, Laya.stage.width - 320 - 260, 290, 20, 500, handX, handY);
             });
-            this._evReg(_GameData._Guide.event.TweetingChoosePhoto, (x, y) => {
+            this._evReg(_Guide.event.TweetingChoosePhoto, (x, y) => {
                 this.noMoveRoundrect(x, y, 260, 260, 20);
             });
-            this._evReg(_GameData._Guide.event.TweetingBtnSend, (x, y) => {
+            this._evReg(_Guide.event.TweetingBtnSend, (x, y) => {
                 this.moveRoundrectNoBg(x, y, 220, 120, 20);
             });
-            this._evReg(_GameData._Guide.event.TweetingBtnDoubleFans, (x, y) => {
+            this._evReg(_Guide.event.TweetingBtnDoubleFans, (x, y) => {
                 this.noMoveRoundrect(x, y, 230, 120, 20);
             });
-            this._evReg(_GameData._Guide.event.RankingCloseBtn, (x, y) => {
+            this._evReg(_Guide.event.RankingCloseBtn, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_GameData._Guide.event.PersonalInfoBtn, (x, y) => {
+            this._evReg(_Guide.event.PersonalInfoBtn, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_GameData._Guide.event.PersonalInfoWriteName, (x, y) => {
+            this._evReg(_Guide.event.PersonalInfoWriteName, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_GameData._Guide.event.PersonalInfoCloseBtn, (x, y) => {
+            this._evReg(_Guide.event.PersonalInfoCloseBtn, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_GameData._Guide.event.BtnCheckIn, (x, y) => {
+            this._evReg(_Guide.event.BtnCheckIn, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_GameData._Guide.event.CheckInGetReward, (x, y) => {
+            this._evReg(_Guide.event.CheckInGetReward, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_GameData._Guide.event.CheckInCloseBtn, (x, y) => {
+            this._evReg(_Guide.event.CheckInCloseBtn, (x, y) => {
                 this.moveCircleBg(x, y, radius);
             });
-            this._evReg(_GameData._Guide.event.vanishGuide, () => {
+            this._evReg(_Guide.event.vanishGuide, () => {
                 this._AniVar('Click').stop();
                 this.handVanish();
                 this.bgVanish();
             });
-            this._evReg(_GameData._Guide.event.closeGuide, () => {
+            this._evReg(_Guide.event.closeGuide, () => {
                 this._closeScene();
             });
         }
@@ -10353,8 +10326,8 @@
                     }
                 }
             });
-            _GameData._AllClothes._ins().changeClothStart();
-            _3D._Scene._ins().intoStart('preload');
+            _AllClothes._ins().changeClothStart();
+            _3DScene._ins().intoStart('preload');
             return 2000;
         }
         lwgCloseAni() {
@@ -10388,18 +10361,18 @@
             });
             this.BtnBack = Tools._Node.createPrefab(_Res._list.prefab2D.BtnBack.prefab, _Scene, [77, 79]);
             Click._on(Click._Use.value, this.BtnBack, this, null, null, () => {
-                if (!_GameData._Guide._complete)
+                if (!_Guide._complete)
                     return;
                 ADManager.TAPoint(TaT.BtnShow, 'back_main');
-                if (_3D._Scene._ins()._Owner.active) {
-                    _GameData._BackHint._3dToSp = _3D._Scene._ins().cameraToSprite(this.Scene);
+                if (_3DScene._ins()._Owner.active) {
+                    _BackHint._3dToSp = _3DScene._ins().cameraToSprite(this.Scene);
                 }
-                _GameData._BackHint._fromScene = this.Scene;
+                _BackHint._fromScene = this.Scene;
                 Admin._openScene('BackHint');
             });
             this.BtnRollback = Tools._Node.createPrefab(_Res._list.prefab2D.BtnRollback.prefab, _Scene, [200, 79]);
             Click._on(Click._Use.value, this.BtnRollback, this, null, null, () => {
-                if (!_GameData._Guide._complete)
+                if (!_Guide._complete)
                     return;
                 this.btnRollbackClick && this.btnRollbackClick();
             });
@@ -10519,13 +10492,13 @@
             return this.ins;
         }
         again(Scene) {
-            const clothesArr = _GameData._DIYClothes._ins().getClothesArr();
-            const name = _GameData._DIYClothes._ins()._pitchName ? _GameData._DIYClothes._ins()._pitchName : clothesArr[0]['name'];
+            const clothesArr = _DIYClothes._ins().getClothesArr();
+            const name = _DIYClothes._ins()._pitchName ? _DIYClothes._ins()._pitchName : clothesArr[0]['name'];
             for (let index = 0; index < clothesArr.length; index++) {
                 const element = clothesArr[index];
                 if (element.name === name) {
                     this.LastClothes = element;
-                    clothesArr[index] = this.Clothes = _GameData._DIYClothes._ins().createClothes(name, Scene);
+                    clothesArr[index] = this.Clothes = _DIYClothes._ins().createClothes(name, Scene);
                     this.LineParent = this.Clothes.getChildAt(0).getChildByName('LineParent');
                     this.setData();
                 }
@@ -10542,14 +10515,14 @@
             Animation2D.move_rotate(this.Clothes, 0, new Laya.Point(Laya.stage.width / 2, Laya.stage.height / 2), time);
         }
         changeClothes(Scene) {
-            const clothesArr = _GameData._DIYClothes._ins().getClothesArr();
-            const name = _GameData._DIYClothes._ins()._pitchName ? _GameData._DIYClothes._ins()._pitchName : clothesArr[0]['name'];
-            const lastName = _GameData._DIYClothes._ins()._lastPitchName;
+            const clothesArr = _DIYClothes._ins().getClothesArr();
+            const name = _DIYClothes._ins()._pitchName ? _DIYClothes._ins()._pitchName : clothesArr[0]['name'];
+            const lastName = _DIYClothes._ins()._lastPitchName;
             for (let index = 0; index < clothesArr.length; index++) {
                 const element = clothesArr[index];
                 if (element.name == name) {
                     element.removeSelf();
-                    this.Clothes = clothesArr[index] = _GameData._DIYClothes._ins().createClothes(name, Scene);
+                    this.Clothes = clothesArr[index] = _DIYClothes._ins().createClothes(name, Scene);
                     this.LineParent = this.Clothes.getChildAt(0).getChildByName('LineParent');
                     this.setData();
                 }
@@ -10622,22 +10595,22 @@
                     });
                 },
                 event: () => {
-                    this._evReg(_GameData._MakeTailor.event.scissorAppear, () => {
+                    this._evReg(_MakeTailor._event.scissorAppear, () => {
                         let time = 800;
                         Animation2D.move_rotate(this._Owner, this._fRotation + 360, this._fPoint, time, 0, () => {
                             this._Owner.rotation = this._fRotation;
                             this.Move.switch = true;
-                            if (!_GameData._Guide._complete)
-                                this._evNotify(_GameData._Guide.event.MakeTailorStartTailor, [this._Owner]);
+                            if (!_Guide._complete)
+                                this._evNotify(_Guide.event.MakeTailorStartTailor, [this._Owner]);
                         });
                     });
-                    this._evReg(_GameData._MakeTailor.event.scissorPlay, () => {
+                    this._evReg(_MakeTailor._event.scissorPlay, () => {
                         this.Ani.paly();
                     });
-                    this._evReg(_GameData._MakeTailor.event.scissorStop, () => {
+                    this._evReg(_MakeTailor._event.scissorStop, () => {
                         this.Ani.stop();
                     });
-                    this._evReg(_GameData._MakeTailor.event.scissorRemove, (func) => {
+                    this._evReg(_MakeTailor._event.scissorRemove, (func) => {
                         this.Move.switch = false;
                         let disX = 1500;
                         let disY = -600;
@@ -10654,12 +10627,12 @@
                             });
                         });
                     });
-                    this._evReg(_GameData._MakeTailor.event.scissorAgain, () => {
+                    this._evReg(_MakeTailor._event.scissorAgain, () => {
                         Animation2D.move_rotate(this._Owner, this._fRotation, this._fPoint, 600, 100, () => {
                             _TaskClothes._ins().again(this._Scene);
                         });
                     });
-                    this._evReg(_GameData._MakeTailor.event.scissorRotation, (rotate) => {
+                    this._evReg(_MakeTailor._event.scissorRotation, (rotate) => {
                         TimerAdmin._clearAll([this._Owner]);
                         const time = 10;
                         let angle;
@@ -10677,9 +10650,8 @@
                 },
                 effcts: () => {
                     const num = Tools._Number.randomOneInt(3, 6);
-                    const color1 = _GameData._DIYClothes._ins().getColor()[0];
-                    const color2 = _GameData._DIYClothes._ins().getColor()[1];
-                    const color = Tools._Number.randomOneHalf() === 0 ? color1 : color2;
+                    const color1 = _DIYClothes._ins().getColor()[0];
+                    const color2 = _DIYClothes._ins().getColor()[1];
                     for (let index = 0; index < num; index++) {
                         Effects2D._Particle._spray(this._Scene, this._point, [10, 30], null, [0, 360], [Effects2D._SkinUrl.三角形1], [color1, color2], [20, 90], null, null, [1, 3], [0.1, 0.2], this._Owner.zOrder - 1);
                     }
@@ -10700,10 +10672,10 @@
         lwgButton() {
             this._btnFour(Laya.stage, (e) => {
                 if (this.Move.switch) {
-                    this._evNotify(_GameData._MakeTailor.event.scissorPlay);
+                    this._evNotify(_MakeTailor._event.scissorPlay);
                     this.Move.touchP = new Laya.Point(e.stageX, e.stageY);
-                    if (!_GameData._Guide._complete)
-                        this._evNotify(_GameData._Guide.event.MakeTailorCloseTailor, [this._Owner]);
+                    if (!_Guide._complete)
+                        this._evNotify(_Guide.event.MakeTailorCloseTailor, [this._Owner]);
                 }
             }, (e) => {
                 if (this.Move.touchP && this.Move.switch) {
@@ -10712,22 +10684,22 @@
                     this._Owner.y += this.Move.diffP.y;
                     Tools._Node.tieByStage(this._Owner);
                     this.Move.touchP = new Laya.Point(e.stageX, e.stageY);
-                    this._evNotify(_GameData._MakeTailor.event.scissorPlay);
+                    this._evNotify(_MakeTailor._event.scissorPlay);
                 }
-            }, (e) => {
-                this._evNotify(_GameData._MakeTailor.event.scissorStop);
+            }, () => {
+                this._evNotify(_MakeTailor._event.scissorStop);
                 this.Move.touchP = null;
-                if (!_GameData._Guide._complete) {
-                    this._evNotify(_GameData._Guide.event.MakeTailorOpenTailor, [this._Owner]);
+                if (!_Guide._complete) {
+                    this._evNotify(_Guide.event.MakeTailorOpenTailor, [this._Owner]);
                 }
             });
         }
         onTriggerEnter(other, _Owner) {
             if (!other['cut'] && this.Move.switch) {
                 other['cut'] = true;
-                this._evNotify(_GameData._MakeTailor.event.scissorPlay);
-                this._evNotify(_GameData._MakeTailor.event.scissorStop);
-                EventAdmin._notify(_GameData._MakeTailor.event.scissorTrigger, [other.owner]);
+                this._evNotify(_MakeTailor._event.scissorPlay);
+                this._evNotify(_MakeTailor._event.scissorStop);
+                EventAdmin._notify(_MakeTailor._event.scissorTrigger, [other.owner]);
                 this.Ani.effcts();
                 ADManager.VibrateShort();
             }
@@ -10738,15 +10710,15 @@
         ;
         $button() {
             this._btnUp(this._Owner, () => {
-                if (!_GameData._Guide._complete && this.$name !== 'diy_dress_002_final')
+                if (!_Guide._complete && this.$name !== 'diy_dress_002_final')
                     return;
                 if (this.$name === 'ads') {
                     return;
                 }
                 if (this.$complete) {
-                    if (this.$name !== _GameData._DIYClothes._ins()._pitchName) {
-                        _GameData._DIYClothes._ins()._setPitch(this.$name);
-                        this._evNotify(_GameData._MakeTailor.event.changeClothes);
+                    if (this.$name !== _DIYClothes._ins()._pitchName) {
+                        _DIYClothes._ins()._setPitch(this.$name);
+                        this._evNotify(_MakeTailor._event.changeClothes);
                     }
                 }
                 else {
@@ -10759,10 +10731,10 @@
                             break;
                         case this.$unlockWayType.$ads:
                             ADManager.ShowReward(() => {
-                                if (_GameData._DIYClothes._ins()._checkCondition(this.$name)) {
+                                if (_DIYClothes._ins()._checkCondition(this.$name)) {
                                     Dialogue.createHint_Middle('恭喜获得一件新服装！');
-                                    _GameData._DIYClothes._ins()._setPitch(this.$name);
-                                    this._evNotify(_GameData._MakeTailor.event.changeClothes);
+                                    _DIYClothes._ins()._setPitch(this.$name);
+                                    this._evNotify(_MakeTailor._event.changeClothes);
                                 }
                             });
                             break;
@@ -10773,9 +10745,9 @@
                             break;
                     }
                 }
-                if (!_GameData._Guide._complete && this.$name == 'diy_dress_002_final') {
-                    _GameData._Guide.MmakeTailorBtnComSwicth = true;
-                    this._evNotify(_GameData._Guide.event.MakeTailorBtnCom);
+                if (!_Guide._complete && this.$name == 'diy_dress_002_final') {
+                    _Guide.MmakeTailorBtnComSwicth = true;
+                    this._evNotify(_Guide.event.MakeTailorBtnCom);
                 }
                 ;
             });
@@ -10790,7 +10762,7 @@
             }
             else {
                 if (!this.$complete) {
-                    if (this.$unlockWay === _GameData._DIYClothes._ins()._unlockWay.$ads) {
+                    if (this.$unlockWay === _DIYClothes._ins()._unlockWay.$ads) {
                         this._ImgChild('AdsSign').visible = true;
                         this._LableChild('UnlockWay').visible = false;
                         this._ImgChild('Mask').visible = false;
@@ -10799,16 +10771,16 @@
                         this._ImgChild('AdsSign').visible = false;
                         this._LableChild('UnlockWay').visible = true;
                         switch (this.$unlockWay) {
-                            case _GameData._DIYClothes._ins()._unlockWay.$check:
+                            case _DIYClothes._ins()._unlockWay.$check:
                                 this._LableChild('UnlockWay').text = '签到';
                                 this._LableChild('UnlockWay').fontSize = 30;
                                 this._LableChild('UnlockWayNum').visible = false;
                                 break;
-                            case _GameData._DIYClothes._ins()._unlockWay.$customs:
+                            case _DIYClothes._ins()._unlockWay.$customs:
                                 this._LableChild('UnlockWay').text = `制作衣服`;
                                 this._LableChild('UnlockWay').fontSize = 25;
                                 this._LableChild('UnlockWayNum').visible = true;
-                                this._LableChild('UnlockWayNum').text = `(${_GameData._Tweeting._completeNum} /${this.$conditionNum})`;
+                                this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum} /${this.$conditionNum})`;
                                 break;
                             default:
                                 break;
@@ -10823,7 +10795,7 @@
                 if (this._BoxChild('NativeRoot'))
                     this._BoxChild('NativeRoot').destroy();
                 this._ImgChild('Icon').visible = this._ImgChild('Board').visible = true;
-                this._ImgChild('Icon').skin = _GameData._DIYClothes._ins().getDIYCutIcon(this.$name);
+                this._ImgChild('Icon').skin = _DIYClothes._ins().getDIYCutIcon(this.$name);
                 this._ImgChild('Board').skin = `Lwg/UI/ui_orthogon_green.png`;
                 if (this.$pitch) {
                     this._ImgChild('Board').skin = `Game/UI/Common/xuanzhong.png`;
@@ -10840,13 +10812,13 @@
             this._ImgVar('BG1').skin = `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/MakeTailorBG1.png`;
             this._ImgVar('BG2').skin = `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/MakeTailorBG2.png`;
             this._ImgVar('Scissor').addComponent(_Scissor);
-            _GameData._DIYClothes._ins()._listRenderScript = _Item;
-            _GameData._DIYClothes._ins()._List = this._ListVar('List');
-            const arr = _GameData._DIYClothes._ins()._getArrByPitchClassify();
-            _GameData._DIYClothes._ins()._listArray = arr;
-            _GameData._DIYClothes._ins()._setPitch(arr[0][_GameData._DIYClothes._ins()._property.$name]);
-            if (!_GameData._Guide._complete)
-                _GameData._DIYClothes._ins()._List.scrollBar.touchScrollEnable = false;
+            _DIYClothes._ins()._listRenderScript = _Item;
+            _DIYClothes._ins()._List = this._ListVar('List');
+            const arr = _DIYClothes._ins()._getArrByPitchClassify();
+            _DIYClothes._ins()._listArray = arr;
+            _DIYClothes._ins()._setPitch(arr[0][_DIYClothes._ins()._property.$name]);
+            if (!_Guide._complete)
+                _DIYClothes._ins()._List.scrollBar.touchScrollEnable = false;
         }
         lwgOnStart() {
             this.UI = new _UI(this._Owner);
@@ -10856,9 +10828,9 @@
                     this.UI.btnCompleteAppear(null, 400);
                 });
                 this.UI.btnBackAppear(() => {
-                    !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
-                        _GameData._Guide.MmakeTailorPulldownSwicth = true;
-                        this._evNotify(_GameData._Guide.event.MakeTailorPulldown);
+                    !_Guide._complete && this._openScene('Guide', false, false, () => {
+                        _Guide.MmakeTailorPulldownSwicth = true;
+                        this._evNotify(_Guide.event.MakeTailorPulldown);
                     });
                 });
             });
@@ -10869,8 +10841,8 @@
         }
         lwgButton() {
             this.UI.btnCompleteClick = () => {
-                if (!_GameData._Guide._complete) {
-                    if (!_GameData._Guide.MmakeTailorBtnComSwicth) {
+                if (!_Guide._complete) {
+                    if (!_Guide.MmakeTailorBtnComSwicth) {
                         return;
                     }
                 }
@@ -10878,12 +10850,12 @@
                     this.UI.btnAgainAppear();
                 }, 200);
                 TimerAdmin._frameOnce(30, this, () => {
-                    this._evNotify(_GameData._MakeTailor.event.scissorAppear);
+                    this._evNotify(_MakeTailor._event.scissorAppear);
                 });
             };
-            if (!_GameData._Guide._complete) {
-                this._btnFour(_GameData._DIYClothes._ins()._List, () => {
-                    if (_GameData._Guide.MmakeTailorPulldownSwicth) {
+            if (!_Guide._complete) {
+                this._btnFour(_DIYClothes._ins()._List, () => {
+                    if (_Guide.MmakeTailorPulldownSwicth) {
                         if (!this['Pulldown']) {
                             this['Pulldown'] = 1;
                         }
@@ -10892,10 +10864,10 @@
                     if (this['Pulldown'])
                         this['Pulldown']++;
                 }, () => {
-                    if (_GameData._Guide.MmakeTailorPulldownSwicth && this['Pulldown'] && this['Pulldown'] > 2) {
-                        _GameData._DIYClothes._ins()._List.tweenTo(4, 200, Laya.Handler.create(this, () => {
-                            _GameData._Guide.MmakeTailorPulldownSwicth = false;
-                            this._evNotify(_GameData._Guide.event.MakeTailorChangeCloth);
+                    if (_Guide.MmakeTailorPulldownSwicth && this['Pulldown'] && this['Pulldown'] > 2) {
+                        _DIYClothes._ins()._List.tweenTo(4, 200, Laya.Handler.create(this, () => {
+                            _Guide.MmakeTailorPulldownSwicth = false;
+                            this._evNotify(_Guide.event.MakeTailorChangeCloth);
                         }));
                     }
                     this['Pulldown'] = 1;
@@ -10903,7 +10875,7 @@
                 return;
             }
             this.UI.btnAgainClick = () => {
-                this._evNotify(_GameData._MakeTailor.event.scissorRemove, [() => {
+                this._evNotify(_MakeTailor._event.scissorRemove, [() => {
                         _TaskClothes._ins().again(this._Owner);
                     }]);
                 Click._switch = false;
@@ -10917,10 +10889,10 @@
             };
         }
         lwgEvent() {
-            this._evReg(_GameData._MakeTailor.event.changeClothes, () => {
+            this._evReg(_MakeTailor._event.changeClothes, () => {
                 _TaskClothes._ins().changeClothes(this._Owner);
             });
-            this._evReg(_GameData._MakeTailor.event.scissorTrigger, (Dotted) => {
+            this._evReg(_MakeTailor._event.scissorTrigger, (Dotted) => {
                 const Parent = Dotted.parent;
                 const value = _TaskClothes._ins()._checkCondition(Parent.name);
                 Dotted.visible = false;
@@ -10935,8 +10907,8 @@
                     Parent.cacheAs = "bitmap";
                 Eraser.graphics.drawCircle(Dotted.x, Dotted.y, 15, '#000000');
                 if (value) {
-                    if (!_GameData._Guide._complete)
-                        this._evNotify(_GameData._Guide.event.MakeTailorNewTailor, [Parent.name]);
+                    if (!_Guide._complete)
+                        this._evNotify(_Guide.event.MakeTailorNewTailor, [Parent.name]);
                     for (let index = 0; index < _TaskClothes._ins().Clothes.getChildAt(0).numChildren; index++) {
                         const element = _TaskClothes._ins().Clothes.getChildAt(0).getChildAt(index);
                         if (element.name.substr(5, 2) == Dotted.parent.name.substr(4, 2)) {
@@ -10985,12 +10957,12 @@
                     }
                     if (_TaskClothes._ins()._checkAllCompelet()) {
                         Tools._Node.removeAllChildren(_TaskClothes._ins().LineParent);
-                        this._evNotify(_GameData._MakeTailor.event.scissorRemove);
+                        this._evNotify(_MakeTailor._event.scissorRemove);
                         TimerAdmin._frameOnce(80, this, () => {
-                            this._evNotify(_GameData._MakeTailor.event.completeEffcet);
+                            this._evNotify(_MakeTailor._event.completeEffcet);
                         });
                         TimerAdmin._frameOnce(280, this, () => {
-                            _GameData._Tweeting._photo.take(this._Owner, 0);
+                            _Tweeting._photo.take(this._Owner, 0);
                             this._openScene('MakePattern', true, true);
                         });
                     }
@@ -10998,22 +10970,22 @@
                 const gPos = Dotted.parent.localToGlobal(new Laya.Point(Dotted.x, Dotted.y));
                 if (Dotted.name == 'A') {
                     if (this._ImgVar('Scissor').x <= gPos.x) {
-                        this._evNotify(_GameData._MakeTailor.event.scissorRotation, [Dotted.rotation]);
+                        this._evNotify(_MakeTailor._event.scissorRotation, [Dotted.rotation]);
                     }
                     else {
-                        this._evNotify(_GameData._MakeTailor.event.scissorRotation, [180 + Dotted.rotation]);
+                        this._evNotify(_MakeTailor._event.scissorRotation, [180 + Dotted.rotation]);
                     }
                 }
                 else {
                     if (this._ImgVar('Scissor').y >= gPos.y) {
-                        this._evNotify(_GameData._MakeTailor.event.scissorRotation, [Dotted.rotation]);
+                        this._evNotify(_MakeTailor._event.scissorRotation, [Dotted.rotation]);
                     }
                     else {
-                        this._evNotify(_GameData._MakeTailor.event.scissorRotation, [180 + Dotted.rotation]);
+                        this._evNotify(_MakeTailor._event.scissorRotation, [180 + Dotted.rotation]);
                     }
                 }
             });
-            this._evReg(_GameData._MakeTailor.event.completeEffcet, () => {
+            this._evReg(_MakeTailor._event.completeEffcet, () => {
                 this.UI.btnBackVinish();
                 this.UI.btnAgainVinish();
                 AudioAdmin._playVictorySound(null, null, null, 0.5);
@@ -11058,11 +11030,11 @@
             ADManager.TAPoint(TaT.BtnShow, 'xzmaker');
             ADManager.TAPoint(TaT.BtnShow, 'change');
             Tools._Node.childrenVisible2D(this._ImgVar('BtnParent'), false);
-            _3D._Scene._ins().openStartAni(() => {
-                this._ImgVar('BtnTop').pos(_3D._Scene._ins().btnTopPos.x, _3D._Scene._ins().btnTopPos.y);
-                this._ImgVar('BtnDress').pos(_3D._Scene._ins().btnDressPos.x, _3D._Scene._ins().btnDressPos.y);
-                this._ImgVar('BtnBottoms').pos(_3D._Scene._ins().btnBottomsPos.x, _3D._Scene._ins().btnBottomsPos.y);
-                this._ImgVar('BtnDressingRoom').pos(_3D._Scene._ins().btnDressingRoomPos.x, _3D._Scene._ins().btnDressingRoomPos.y);
+            _3DScene._ins().openStartAni(() => {
+                this._ImgVar('BtnTop').pos(_3DScene._ins().btnTopPos.x, _3DScene._ins().btnTopPos.y);
+                this._ImgVar('BtnDress').pos(_3DScene._ins().btnDressPos.x, _3DScene._ins().btnDressPos.y);
+                this._ImgVar('BtnBottoms').pos(_3DScene._ins().btnBottomsPos.x, _3DScene._ins().btnBottomsPos.y);
+                this._ImgVar('BtnDressingRoom').pos(_3DScene._ins().btnDressingRoomPos.x, _3DScene._ins().btnDressingRoomPos.y);
                 for (let index = 0; index < this._ImgVar('BtnParent').numChildren; index++) {
                     const element = this._ImgVar('BtnParent').getChildAt(index);
                     element.visible = false;
@@ -11077,19 +11049,19 @@
                 Animation2D.bombs_Appear(element, 0, 1, 1.2, 0, 200, () => {
                     if (index === this._ImgVar('BtnParent').numChildren - 1) {
                         TimerAdmin._once(500, this, () => {
-                            if (_GameData._Start._whereFrom === 'MakePattern') {
-                                this._evNotify(_GameData._Start.event.photo);
-                                _GameData._Start._whereFrom = null;
+                            if (_Start._whereFrom === 'MakePattern') {
+                                this._evNotify(_Start._event.photo);
+                                _Start._whereFrom = null;
                             }
                             else {
-                                if (!_GameData._Guide._complete) {
+                                if (!_Guide._complete) {
                                     this._openScene('Guide', false, false, () => {
                                         this.BtnDressClick();
-                                        this._evNotify(_GameData._Guide.event.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
+                                        this._evNotify(_Guide.event.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
                                     });
                                 }
                                 else {
-                                    !_GameData._CheckIn._todayCheckIn && this._openScene('CheckIn', false);
+                                    !_CheckIn._todayCheckIn && this._openScene('CheckIn', false);
                                 }
                             }
                         });
@@ -11099,44 +11071,44 @@
             }
         }
         lwgOnStart() {
-            this._evNotify(_GameData._Start.event.updateRanking);
+            this._evNotify(_Start._event.updateRanking);
         }
         lwgEvent() {
-            this._evReg(_GameData._Guide.event.DelayBtnCheckIn, () => {
+            this._evReg(_Guide.event.DelayBtnCheckIn, () => {
                 this.BtnCheckIn();
-                this._evNotify(_GameData._Guide.event.BtnCheckIn, [this._ImgVar('BtnCheckIn').x, this._ImgVar('BtnCheckIn').y]);
+                this._evNotify(_Guide.event.BtnCheckIn, [this._ImgVar('BtnCheckIn').x, this._ImgVar('BtnCheckIn').y]);
             });
-            this._evReg(_GameData._Guide.event.StartOtherBtnClick, () => {
+            this._evReg(_Guide.event.StartOtherBtnClick, () => {
                 this.lwgButton();
             });
-            this._evReg(_GameData._Start.event.updateRanking, () => {
-                let obj = _GameData._Ranking._Table._getPitchObj();
-                this._LabelVar('RankNum').text = `${obj[_GameData._Ranking._Table._otherPro.rankNum]}/50`;
+            this._evReg(_Start._event.updateRanking, () => {
+                let obj = _Ranking._Data._getPitchObj();
+                this._LabelVar('RankNum').text = `${obj[_Ranking._Data._otherPro.rankNum]}/50`;
             });
-            this._evReg(_GameData._Start.event.photo, () => {
-                const sp = _3D._Scene._ins().cameraToSprite(this._Owner);
+            this._evReg(_Start._event.photo, () => {
+                const sp = _3DScene._ins().cameraToSprite(this._Owner);
                 TimerAdmin._frameOnce(10, this, () => {
-                    _GameData._Tweeting._photo.take(this._Owner, 2);
+                    _Tweeting._photo.take(this._Owner, 2);
                     sp.destroy();
                     TimerAdmin._frameOnce(10, this, () => {
                         this._openScene('Tweeting_Main', false);
                     });
                 });
             });
-            this._evReg(_GameData._Start.event.BtnPersonalInfo, () => {
+            this._evReg(_Start._event.BtnPersonalInfo, () => {
                 TimerAdmin._once(1000, this, () => {
                     this._openScene('Guide', false, false, () => {
                         this.BtnPersonalInfoClick();
-                        this._evNotify(_GameData._Guide.event.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
+                        this._evNotify(_Guide.event.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
                     });
                 });
             });
         }
         BtnDressClick() {
             this._btnUp(this._ImgVar('BtnDress'), () => {
-                this._evNotify(_GameData._Guide.event.closeGuide);
+                this._evNotify(_Guide.event.closeGuide);
                 let time = 0;
-                if (_GameData._Guide._complete) {
+                if (_Guide._complete) {
                     time = 300;
                 }
                 TimerAdmin._once(time, this, () => {
@@ -11147,26 +11119,26 @@
         }
         BtnPersonalInfoClick() {
             this._btnUp(this._ImgVar('BtnPersonalInfo'), () => {
-                !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.vanishGuide);
+                !_Guide._complete && this._evNotify(_Guide.event.vanishGuide);
                 this._openScene('PersonalInfo', false);
             });
         }
         BtnCheckIn() {
             this._btnUp(this._ImgVar('BtnCheckIn'), () => {
-                !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.vanishGuide);
+                !_Guide._complete && this._evNotify(_Guide.event.vanishGuide);
                 this._openScene('CheckIn', false);
             });
         }
         openMakeTailor(_classify) {
-            _GameData._DIYClothes._ins()._pitchClassify = _classify;
-            _3D._Scene._ins().cameraToSprite(this._Owner);
+            _DIYClothes._ins()._pitchClassify = _classify;
+            _3DScene._ins().cameraToSprite(this._Owner);
             this._openScene('MakeTailor', true, true);
         }
         lwgButton() {
-            if (!_GameData._Guide._complete)
+            if (!_Guide._complete)
                 return;
             this.BtnDressClick();
-            const Clothes = _GameData._DIYClothes._ins();
+            const Clothes = _DIYClothes._ins();
             this._btnUp(this._ImgVar('BtnTop'), () => {
                 Clothes._pitchClassify = Clothes._classify.Top;
                 this.openMakeTailor('Top');
@@ -11179,12 +11151,12 @@
             });
             this.BtnPersonalInfoClick();
             this._btnUp(this._ImgVar('BtnRanking'), () => {
-                _GameData._Ranking._whereFrom = 'Start';
+                _Ranking._whereFrom = 'Start';
                 this._openScene('Ranking', false);
             });
             this._btnUp(this._ImgVar('BtnDressingRoom'), () => {
                 ADManager.TAPoint(TaT.BtnClick, 'change');
-                _3D._Scene._ins().cameraToSprite(this._Owner);
+                _3DScene._ins().cameraToSprite(this._Owner);
                 this._openScene('DressingRoom', true, true);
             });
             this.BtnCheckIn();
@@ -11319,9 +11291,9 @@
                             break;
                         case this.$unlockWayType.$ads:
                             ADManager.ShowReward(() => {
-                                if (_GameData._Pattern._ins()._checkCondition(this.$name)) {
+                                if (_MakePattern._Data._checkCondition(this.$name)) {
                                     Dialogue.createHint_Middle('恭喜获得新贴图！');
-                                    _GameData._Pattern._ins()._setProperty(this.$name, _GameData._Pattern._ins()._property.$complete, true);
+                                    _MakePattern._Data._setProperty(this.$name, _MakePattern._Data._property.$complete, true);
                                 }
                             });
                             break;
@@ -11339,7 +11311,7 @@
                 this.create = false;
                 this.diffX = 0;
                 this.fX = e.stageX;
-                this._evNotify(_GameData._MakePattern.event.close);
+                this._evNotify(_MakePattern._event.close);
             }, (e) => {
                 if (this['Cancal']) {
                     return;
@@ -11347,7 +11319,7 @@
                 if (!this.create) {
                     this.diffX = this.fX - e.stageX;
                     if (this.diffX >= 5) {
-                        this._evNotify(_GameData._MakePattern.event.createImg, [this.$name, this._gPoint]);
+                        this._evNotify(_MakePattern._event.createImg, [this.$name, this._gPoint]);
                         this.create = true;
                     }
                 }
@@ -11356,7 +11328,7 @@
                     return;
                 }
                 this.create = true;
-                this._evNotify(_GameData._MakePattern.event.close);
+                this._evNotify(_MakePattern._event.close);
             }, () => {
                 if (this['Cancal']) {
                     return;
@@ -11372,7 +11344,7 @@
             }
             else {
                 if (!this.$complete) {
-                    if (this.$unlockWay === _GameData._Pattern._ins()._unlockWay.$ads) {
+                    if (this.$unlockWay === _MakePattern._Data._unlockWay.$ads) {
                         this._ImgChild('AdsSign').visible = true;
                         this._LableChild('UnlockWay').visible = false;
                     }
@@ -11380,16 +11352,16 @@
                         this._LableChild('AdsSign').visible = false;
                         this._LableChild('UnlockWay').visible = true;
                         switch (this.$unlockWay) {
-                            case _GameData._DIYClothes._ins()._unlockWay.$check:
+                            case _DIYClothes._ins()._unlockWay.$check:
                                 this._LableChild('UnlockWay').text = '签到';
                                 this._LableChild('UnlockWay').fontSize = 30;
                                 this._LableChild('UnlockWayNum').visible = false;
                                 break;
-                            case _GameData._DIYClothes._ins()._unlockWay.$customs:
+                            case _DIYClothes._ins()._unlockWay.$customs:
                                 this._LableChild('UnlockWay').text = `制作衣服`;
                                 this._LableChild('UnlockWay').fontSize = 25;
                                 this._LableChild('UnlockWayNum').visible = true;
-                                this._LableChild('UnlockWayNum').text = `(${_GameData._Tweeting._completeNum} /${this.$conditionNum})`;
+                                this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum} /${this.$conditionNum})`;
                                 break;
                             default:
                                 break;
@@ -11473,7 +11445,7 @@
                     let indexArr = [];
                     let outArr = [];
                     for (let index = 0; index < posArr.length; index++) {
-                        const out = Tools._3D.rayScanning(_3D._Scene._ins()._MainCamara, _3D._Scene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
+                        const out = Tools._3D.rayScanning(_3DScene._ins()._MainCamara, _3DScene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
                         if (out) {
                             outArr.push(out);
                             indexArr.push(posArr[index]);
@@ -11484,15 +11456,15 @@
                         this._SpriteVar(this.Tex.dir).addChild(this.Tex.Img);
                         let _width = this._ImgVar(this.Tex.dir).width;
                         let _height = this._ImgVar(this.Tex.dir).height;
-                        let angleXZ = Tools._Point.pointByAngle(_3D.DIYCloth._ins().ModelTap.transform.position.x - out.point.x, _3D.DIYCloth._ins().ModelTap.transform.position.z - out.point.z);
+                        let angleXZ = Tools._Point.pointByAngle(_3DDIYCloth._ins().ModelTap.transform.position.x - out.point.x, _3DDIYCloth._ins().ModelTap.transform.position.z - out.point.z);
                         if (this.Tex.dir == this.Tex.dirType.Front) {
                             this.Tex.Img.x = _width - _width / 180 * (angleXZ + 90);
                         }
                         else {
                             this.Tex.Img.x = -_width / 180 * (angleXZ - 90);
                         }
-                        let pH = out.point.y - _3D.DIYCloth._ins().ModelTap.transform.position.y;
-                        let _DirHeight = Tools._3D.getMeshSize(this.Tex.dir === this.Tex.dirType.Front ? _3D.DIYCloth._ins().Front : _3D.DIYCloth._ins().Reverse).y;
+                        let pH = out.point.y - _3DDIYCloth._ins().ModelTap.transform.position.y;
+                        let _DirHeight = Tools._3D.getMeshSize(this.Tex.dir === this.Tex.dirType.Front ? _3DDIYCloth._ins().Front : _3DDIYCloth._ins().Reverse).y;
                         let ratio = 1 - pH / _DirHeight;
                         this.Tex.Img.y = ratio * _height;
                         if (this.Tex.dir === this.Tex.dirType.Front) {
@@ -11512,8 +11484,6 @@
                 setPosArr: () => {
                     let x = this._ImgVar('Wireframe').x;
                     let y = this._ImgVar('Wireframe').y;
-                    let _width = this._ImgVar('Wireframe').width;
-                    let _height = this._ImgVar('Wireframe').height;
                     return [
                         new Laya.Point(x, y),
                     ];
@@ -11522,7 +11492,7 @@
                     let posArr = this.Tex.setPosArr();
                     let bool = false;
                     for (let index = 0; index < posArr.length; index++) {
-                        const _out = Tools._3D.rayScanning(_3D._Scene._ins()._MainCamara, _3D._Scene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
+                        const _out = Tools._3D.rayScanning(_3DScene._ins()._MainCamara, _3DScene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
                         if (_out) {
                             bool = true;
                         }
@@ -11538,7 +11508,7 @@
                     let gPoint = this.Tex.getDisGP();
                     this._ImgVar('Wireframe').pos(gPoint.x, gPoint.y);
                 },
-                move: (e) => {
+                move: () => {
                     this.Tex.disMove();
                     this._ImgVar('Wireframe').visible = false;
                     if (this.Tex.checkInside()) {
@@ -11548,7 +11518,7 @@
                         this._SpriteVar('Dispaly').visible = false;
                     }
                 },
-                addTex: (e) => {
+                addTex: () => {
                     this.Tex.disMove();
                     let out = this.Tex.setImgPos();
                     if (!out) {
@@ -11557,7 +11527,7 @@
                         this.Tex.Img.x = Laya.stage.width;
                         this._SpriteVar('Dispaly').visible = true;
                     }
-                    _3D.DIYCloth._ins().addTexture2D(this.Tex.getTex());
+                    _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
                 },
                 scale: (e) => {
                     if (!this.Tex.Img) {
@@ -11572,23 +11542,23 @@
                     const scaleheight = this._ImgVar('Wireframe').height - this.Tex.wireframeSize[1];
                     this.Tex.DisImg.width = this.Tex.Img.width = this.Tex.imgSize[0] + scaleWidth;
                     this.Tex.DisImg.height = this.Tex.Img.height = this.Tex.imgSize[1] + scaleheight;
-                    _3D.DIYCloth._ins().addTexture2D(this.Tex.getTex());
+                    _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
                 },
-                rotate: (e) => {
-                    if (!_GameData._Guide._complete)
+                rotate: () => {
+                    if (!_Guide._complete)
                         return;
                     if (this.Tex.diffP.x > 0) {
-                        _3D.DIYCloth._ins().rotate(1);
+                        _3DDIYCloth._ins().rotate(1);
                     }
                     else {
-                        _3D.DIYCloth._ins().rotate(0);
+                        _3DDIYCloth._ins().rotate(0);
                     }
                 },
                 again: () => {
                     Tools._Node.removeAllChildren(this._SpriteVar('Front'));
                     Tools._Node.removeAllChildren(this._SpriteVar('Reverse'));
                     this.Tex.turnFace();
-                    _3D.DIYCloth._ins().addTexture2D(this.Tex.getTex());
+                    _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
                 },
                 none: () => {
                     return;
@@ -11617,20 +11587,20 @@
                     this.Tex.Img = null;
                     this.Tex.state = this.Tex.stateType.none;
                     this.Tex.touchP = null;
-                    _3D.DIYCloth._ins().addTexture2D(this.Tex.getTex());
+                    _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
                 },
                 turnFace: (func) => {
                     let time;
                     let angle;
                     if (this.Tex.dir == this.Tex.dirType.Front) {
-                        time = Math.abs(_3D.DIYCloth._ins().Present.transform.localRotationEulerY - 180) * 2;
+                        time = Math.abs(_3DDIYCloth._ins().Present.transform.localRotationEulerY - 180) * 2;
                         angle = 180;
                     }
                     else {
-                        time = Math.abs(_3D.DIYCloth._ins().Present.transform.localRotationEulerY) * 2;
+                        time = Math.abs(_3DDIYCloth._ins().Present.transform.localRotationEulerY) * 2;
                         angle = 0;
                     }
-                    Animation3D.rotateTo(_3D.DIYCloth._ins().Present, new Laya.Vector3(0, angle, 0), time, this, null, () => {
+                    Animation3D.rotateTo(_3DDIYCloth._ins().Present, new Laya.Vector3(0, angle, 0), time, this, null, () => {
                         func && func();
                     });
                 },
@@ -11641,19 +11611,19 @@
                     }, null, (e) => {
                         e.stopPropagation();
                         this.Tex.state = this.Tex.stateType.addTex;
-                        if (!_GameData._Guide._complete) {
-                            if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.Frame1) {
-                                this._evNotify(_GameData._Guide.event.MakePatternTurnFace, [this._ImgVar('BtnTurnFace')._lwg.gPoint.x, this._ImgVar('BtnTurnFace')._lwg.gPoint.y]);
+                        if (!_Guide._complete) {
+                            if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame1) {
+                                this._evNotify(_Guide.event.MakePatternTurnFace, [this._ImgVar('BtnTurnFace')._lwg.gPoint.x, this._ImgVar('BtnTurnFace')._lwg.gPoint.y]);
                             }
-                            else if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.Frame2) {
-                                this._evNotify(_GameData._Guide.event.MakePatternBtnCom, [this._ImgVar('BtnComplete')._lwg.gPoint.x, this._ImgVar('BtnComplete')._lwg.gPoint.y]);
+                            else if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame2) {
+                                this._evNotify(_Guide.event.MakePatternBtnCom, [this._ImgVar('BtnComplete')._lwg.gPoint.x, this._ImgVar('BtnComplete')._lwg.gPoint.y]);
                             }
                         }
                     });
                     this._btnUp(this._ImgVar('BtnTurnFace'), (e) => {
-                        if (!_GameData._Guide._complete) {
-                            if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.TurnFace) {
-                                this._evNotify(_GameData._Guide.event.MakePatternPattern2);
+                        if (!_Guide._complete) {
+                            if (_Guide.MakePatternState === _Guide.MakePatternStateType.TurnFace) {
+                                this._evNotify(_Guide.event.MakePatternPattern2);
                             }
                             else {
                                 return;
@@ -11675,28 +11645,28 @@
                         this._ImgVar('Wireframe').visible = false;
                         this.Tex.state = this.Tex.stateType.rotate;
                     });
-                    if (!_GameData._Guide._complete)
+                    if (!_Guide._complete)
                         return;
                     this._btnUp(this._ImgVar('WClose'), (e) => {
                         e.stopPropagation();
                         this.Tex.close();
                     });
-                    this._btnFour(this._ImgVar('BtnL'), (e) => {
+                    this._btnFour(this._ImgVar('BtnL'), () => {
                         this.Tex.frameRestore();
                         this.Tex.state = this.Tex.stateType.rotate;
                         TimerAdmin._frameLoop(1, this._ImgVar('BtnL'), () => {
-                            _3D.DIYCloth._ins().rotate(0);
+                            _3DDIYCloth._ins().rotate(0);
                         });
                     }, null, () => {
                         Laya.timer.clearAll(this._ImgVar('BtnL'));
                     }, () => {
                         Laya.timer.clearAll(this._ImgVar('BtnL'));
                     });
-                    this._btnFour(this._ImgVar('BtnR'), (e) => {
+                    this._btnFour(this._ImgVar('BtnR'), () => {
                         this.Tex.frameRestore();
                         this.Tex.state = this.Tex.stateType.rotate;
                         TimerAdmin._frameLoop(1, this._ImgVar('BtnR'), () => {
-                            _3D.DIYCloth._ins().rotate(1);
+                            _3DDIYCloth._ins().rotate(1);
                         });
                     }, null, () => {
                         Laya.timer.clearAll(this._ImgVar('BtnR'));
@@ -11708,27 +11678,27 @@
         }
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'tiehuapage');
-            ADManager.TAPoint(TaT.LevelStart, `level_${_3D.DIYCloth._ins().Present.name}`);
-            _GameData._Pattern._ins()._List = this._ListVar('List');
-            if (_GameData._Pattern._ins()._getProperty('newYear1', _GameData._Pattern._ins()._property.$complete) || !_GameData._Guide._complete) {
+            ADManager.TAPoint(TaT.LevelStart, `level_${_3DDIYCloth._ins().Present.name}`);
+            _MakePattern._Data._List = this._ListVar('List');
+            if (_MakePattern._Data._getProperty('newYear1', _MakePattern._Data._property.$complete) || !_Guide._complete) {
                 this.switchClassify('newYear');
-                _GameData._Pattern._ins()._listArray = _GameData._Pattern._ins().newYearArr;
+                _MakePattern._Data._listArray = _MakePattern._Data.newYearArr;
             }
             else {
                 this.switchClassify('basic');
-                _GameData._Pattern._ins()._listArray = _GameData._Pattern._ins().basicArr;
+                _MakePattern._Data._listArray = _MakePattern._Data.basicArr;
             }
-            _GameData._Pattern._ins()._List.scrollBar.touchScrollEnable = false;
-            _GameData._Pattern._ins()._listRenderScript = _Item$1;
-            this.Tex.fDiffX = _GameData._PatternDiff._ins().fDiffX;
-            this.Tex.fDiffY = _GameData._PatternDiff._ins().fDiffY;
-            this.Tex.rDiffX = _GameData._PatternDiff._ins().rDiffX;
-            this.Tex.rDiffY = _GameData._PatternDiff._ins().rDiffY;
+            _MakePattern._Data._List.scrollBar.touchScrollEnable = false;
+            _MakePattern._Data._listRenderScript = _Item$1;
+            this.Tex.fDiffX = _MakePattern._PatternDiff.fDiffX;
+            this.Tex.fDiffY = _MakePattern._PatternDiff.fDiffY;
+            this.Tex.rDiffX = _MakePattern._PatternDiff.rDiffX;
+            this.Tex.rDiffY = _MakePattern._PatternDiff.rDiffY;
         }
         lwgOpenAniAfter() {
             TimerAdmin._frameOnce(60, this, () => {
-                !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
-                    this._evNotify(_GameData._Guide.event.MakePatternChooseClassify);
+                !_Guide._complete && this._openScene('Guide', false, false, () => {
+                    this._evNotify(_Guide.event.MakePatternChooseClassify);
                 });
             });
         }
@@ -11736,10 +11706,10 @@
             this._adaWidth([this._ImgVar('BtnR'), this._ImgVar('BtnL')]);
         }
         lwgOnStart() {
-            const url = _GameData._DIYClothes._ins().getPitchTexBasicUrl();
+            const url = _DIYClothes._ins().getPitchTexBasicUrl();
             this._ImgVar('Front').loadImage(url, Laya.Handler.create(this, () => {
                 this._ImgVar('Reverse').loadImage(url, Laya.Handler.create(this, () => {
-                    _3D.DIYCloth._ins().addTexture2D(this.Tex.getTex());
+                    _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
                 }));
             }));
             Animation2D.fadeOut(this._ImgVar('BtnL'), 0, 1, 200, 200);
@@ -11755,24 +11725,24 @@
                 this.UI.btnRollbackAppear(null, 600);
                 this.UI.btnAgainAppear(null, 800);
             });
-            this._SpriteVar('Front').y = this._ImgVar('Reverse').y = this._SpriteVar('Front').height = this._ImgVar('Reverse').height = _3D.DIYCloth._ins().texHeight;
+            this._SpriteVar('Front').y = this._ImgVar('Reverse').y = this._SpriteVar('Front').height = this._ImgVar('Reverse').height = _3DDIYCloth._ins().texHeight;
         }
         switchClassify(_name) {
-            if (!_GameData._Guide._complete && _name !== 'basic') {
+            if (!_Guide._complete && _name !== 'basic') {
                 return;
             }
             for (let index = 0; index < this._ImgVar('Part').numChildren; index++) {
                 const element = this._ImgVar('Part').getChildAt(index);
                 const name = element.getChildAt(0);
                 if (_name === element.name) {
-                    if (!_GameData._Guide._complete) {
-                        if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.ChooseClassify) {
-                            this._evNotify(_GameData._Guide.event.MakePatternPattern1);
+                    if (!_Guide._complete) {
+                        if (_Guide.MakePatternState === _Guide.MakePatternStateType.ChooseClassify) {
+                            this._evNotify(_Guide.event.MakePatternPattern1);
                         }
                     }
                     element.scale(1.1, 1.1);
-                    _GameData._Pattern._ins()._listArray = _GameData._Pattern._ins()[`${element.name}Arr`];
-                    _GameData._Pattern._ins()._pitchClassify = element.name;
+                    _MakePattern._Data._listArray = _MakePattern._Data[`${element.name}Arr`];
+                    _MakePattern._Data._pitchClassify = element.name;
                     element.skin = `Game/UI/Common/kuang_fen.png`;
                     name.color = '#fdfff4';
                     name.stroke = 5;
@@ -11794,9 +11764,9 @@
             }
             this.Tex.btn();
             this.UI.btnCompleteClick = () => {
-                if (!_GameData._Guide._complete) {
-                    if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.BtnCom) {
-                        this._evNotify(_GameData._Guide.event.closeGuide);
+                if (!_Guide._complete) {
+                    if (_Guide.MakePatternState === _Guide.MakePatternStateType.BtnCom) {
+                        this._evNotify(_Guide.event.closeGuide);
                     }
                     else {
                         return;
@@ -11805,9 +11775,9 @@
                 this.Tex.frameRestore();
                 this.Tex.dir = this.Tex.dirType.Front;
                 this.Tex.turnFace(() => {
-                    _3D._Scene._ins().cameraToSprite(this._Owner);
+                    _3DScene._ins().cameraToSprite(this._Owner);
                     TimerAdmin._frameOnce(5, this, () => {
-                        _GameData._Tweeting._photo.take(this._Owner, 1);
+                        _Tweeting._photo.take(this._Owner, 1);
                     });
                     this.texStorage();
                     Animation2D.fadeOut(this._ImgVar('BtnL'), 1, 0, 200);
@@ -11819,13 +11789,13 @@
                         this.UI.btnAgainVinish(() => {
                         });
                         var close = () => {
-                            _3D._Scene._ins().cameraToSprite(this._Owner);
-                            _GameData._Start._whereFrom = 'MakePattern';
+                            _3DScene._ins().cameraToSprite(this._Owner);
+                            _Start._whereFrom = 'MakePattern';
                             this._openScene('Start', true, true);
                         };
                         if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
                             LwgOPPO._screenShootByRatio((data) => {
-                                LwgOPPO._picSave(data['tempFilePath'], _3D.DIYCloth._ins().name);
+                                LwgOPPO._picSave(data['tempFilePath'], _3DDIYCloth._ins().name);
                                 close();
                             }, 0.28, null, 0.72, null, null, 0.1);
                         }
@@ -11835,10 +11805,10 @@
                     }, 200);
                 });
             };
-            if (!_GameData._Guide._complete)
+            if (!_Guide._complete)
                 return;
             this.UI.btnRollbackClick = () => {
-                _3D._Scene._ins().cameraToSprite(this._Owner);
+                _3DScene._ins().cameraToSprite(this._Owner);
                 this._openScene('MakeTailor', true, true);
             };
             this.UI.btnAgainClick = () => {
@@ -11846,13 +11816,13 @@
             };
         }
         lwgEvent() {
-            this._evReg(_GameData._MakePattern.event.createImg, (name, gPoint) => {
+            this._evReg(_MakePattern._event.createImg, (name, gPoint) => {
                 this.Tex.state = this.Tex.stateType.move;
                 this.Tex.createImg(name, gPoint);
                 this.Tex.turnFace();
             });
-            this._evReg(_GameData._MakePattern.event.close, () => {
-                if (!_GameData._Guide._complete)
+            this._evReg(_MakePattern._event.close, () => {
+                if (!_Guide._complete)
                     return;
                 this.Tex.close();
                 this.Tex.state = this.Tex.stateType.none;
@@ -11888,9 +11858,9 @@
                 const element = this._SpriteVar('Reverse').getChildAt(index);
                 rArr.push(obj(element));
             }
-            StorageAdmin._array(`${_3D.DIYCloth._ins().name}/${_GameData._DIYClothes._ins()._otherPro.texF}`).value = fArr;
-            StorageAdmin._array(`${_3D.DIYCloth._ins().name}/${_GameData._DIYClothes._ins()._otherPro.texR}`).value = rArr;
-            _GameData._Ranking._whereFrom = this._Owner.name;
+            StorageAdmin._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texF}`).value = fArr;
+            StorageAdmin._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texR}`).value = rArr;
+            _Ranking._whereFrom = this._Owner.name;
         }
         onStageMouseDown(e) {
             this.Tex.touchP = new Laya.Point(e.stageX, e.stageY);
@@ -11898,7 +11868,7 @@
                 this['slideFY'] = e.stageY;
             }
             else {
-                if (!_GameData._Guide._complete) {
+                if (!_Guide._complete) {
                     return;
                 }
                 const point = new Laya.Point(e.stageX, e.stageY);
@@ -11918,17 +11888,17 @@
         onStageMouseMove(e) {
             this.Tex.operation(e);
             if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
-                if (!_GameData._Guide._complete)
+                if (!_Guide._complete)
                     return;
                 if (this['slideFY']) {
                     let diffY = this['slideFY'] - e.stageY;
-                    let index = _GameData._Pattern._ins()._List.startIndex;
+                    let index = _MakePattern._Data._List.startIndex;
                     if (Math.abs(diffY) > 25) {
                         if (diffY > 0) {
-                            _GameData._Pattern._ins()._List.tweenTo(index + 1, 100);
+                            _MakePattern._Data._List.tweenTo(index + 1, 100);
                         }
                         if (diffY < 0) {
-                            _GameData._Pattern._ins()._List.tweenTo(index - 1, 100);
+                            _MakePattern._Data._List.tweenTo(index - 1, 100);
                         }
                         this['slideFY'] = null;
                     }
@@ -11941,19 +11911,19 @@
         onStageMouseUp(e) {
             this['slideFY'] = null;
             if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
-                this._evNotify(_GameData._MakePattern.event.close);
+                this._evNotify(_MakePattern._event.close);
             }
             else {
                 if (!this.Tex.checkInside()) {
                     this.Tex.close();
                 }
                 else {
-                    if (!_GameData._Guide._complete) {
-                        if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.Pattern1) {
-                            this._evNotify(_GameData._Guide.event.MakePatternFrame1, [this._ImgVar('Wireframe')]);
+                    if (!_Guide._complete) {
+                        if (_Guide.MakePatternState === _Guide.MakePatternStateType.Pattern1) {
+                            this._evNotify(_Guide.event.MakePatternFrame1, [this._ImgVar('Wireframe')]);
                         }
-                        else if (_GameData._Guide.MakePatternState === _GameData._Guide.MakePatternStateType.Pattern2) {
-                            this._evNotify(_GameData._Guide.event.MakePatternFrame2, [this._ImgVar('Wireframe')]);
+                        else if (_Guide.MakePatternState === _Guide.MakePatternStateType.Pattern2) {
+                            this._evNotify(_Guide.event.MakePatternFrame2, [this._ImgVar('Wireframe')]);
                         }
                     }
                     ;
@@ -11962,7 +11932,7 @@
         }
         lwgOnDisable() {
             ADManager.TAPoint(TaT.PageLeave, 'tiehuapage');
-            ADManager.TAPoint(TaT.LevelFinish, `level_${_3D.DIYCloth._ins().Present.name}`);
+            ADManager.TAPoint(TaT.LevelFinish, `level_${_3DDIYCloth._ins().Present.name}`);
         }
     }
 
@@ -11992,7 +11962,7 @@
                 });
                 TimerAdmin._frameNumLoop(1, 15, this, () => {
                     for (let index = 0; index < 1; index++) {
-                        Effects3D._Particle._starsShine(_3D._Scene._ins()._Owner, [0, 0.5, 0.8], [[0, 0, 0], [0.4, 0.6, 0.4]]);
+                        Effects3D._Particle._starsShine(_3DScene._ins()._Owner, [0, 0.5, 0.8], [[0, 0, 0], [0.4, 0.6, 0.4]]);
                     }
                 });
                 return _parent;
@@ -12019,15 +11989,15 @@
                 if (this.$name === 'ads') {
                     return;
                 }
-                if (_GameData._AllClothes._ins()._getProperty(this.$name, _GameData._AllClothes._ins()._property.$complete)) {
-                    _GameData._AllClothes._ins().accurateChange(this.$data['part'], this.$name);
-                    _GameEffects3D._showCloth(_3D._Scene._ins()._Owner);
+                if (_AllClothes._ins()._getProperty(this.$name, _AllClothes._ins()._property.$complete)) {
+                    _AllClothes._ins().accurateChange(this.$data['part'], this.$name);
+                    _GameEffects3D._showCloth(_3DScene._ins()._Owner);
                 }
                 else {
                     ADManager.ShowReward(() => {
-                        if (_GameData._AllClothes._ins()._checkCondition(this.$name)) {
+                        if (_AllClothes._ins()._checkCondition(this.$name)) {
                             Dialogue.createHint_Middle('恭喜获得新服装！');
-                            _GameData._AllClothes._ins().accurateChange(this.$data['part'], this.$name);
+                            _AllClothes._ins().accurateChange(this.$data['part'], this.$name);
                         }
                     });
                 }
@@ -12047,7 +12017,7 @@
                 else {
                     this._ImgChild('Board').skin = null;
                 }
-                if (this.$classify === _GameData._AllClothes._ins()._classify.DIY) {
+                if (this.$classify === _AllClothes._ins()._classify.DIY) {
                     if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
                         this._ImgChild('Icon').skin = LwgOPPO._getStoragePic(this.$name);
                         this._ImgChild('Icon').size(110, 130);
@@ -12060,7 +12030,7 @@
                 else {
                     this._ImgChild('Icon').size(null, null);
                     this._ImgChild('Icon').scale(0.9, 0.9);
-                    this._ImgChild('Icon').skin = _GameData._AllClothes._ins().getGeneralIcon(this.$name);
+                    this._ImgChild('Icon').skin = _AllClothes._ins().getGeneralIcon(this.$name);
                 }
             }
             if (this.$complete) {
@@ -12074,11 +12044,11 @@
     class DressingRoom extends Admin._SceneBase {
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'changepage');
-            _3D._Scene._ins().openMirror(this._ImgVar('MirrorSurface'));
-            const copyDIYArr = _GameData._AllClothes._ins().collectDIY();
-            _GameData._AllClothes._ins()._List = this._ListVar('List');
-            _GameData._AllClothes._ins()._listRenderScript = _Item$2;
-            _GameData._AllClothes._ins()._listArray = _GameData._AllClothes._ins()._getArrByClassify(_GameData._AllClothes._ins()._classify.DIY);
+            _3DScene._ins().openMirror(this._ImgVar('MirrorSurface'));
+            const copyDIYArr = _AllClothes._ins().collectDIY();
+            _AllClothes._ins()._List = this._ListVar('List');
+            _AllClothes._ins()._listRenderScript = _Item$2;
+            _AllClothes._ins()._listArray = _AllClothes._ins()._getArrByClassify(_AllClothes._ins()._classify.DIY);
             if (copyDIYArr.length > 0) {
                 this.switchClassify(this._ImgVar('DIY'));
             }
@@ -12090,7 +12060,7 @@
             this._SpriteVar('Mirror').x = Laya.stage.width * 0.234;
         }
         lwgOnStart() {
-            _GameData._AllClothes._ins()._List.refresh();
+            _AllClothes._ins()._List.refresh();
             this.UI = new _UI(this._Owner);
             TimerAdmin._frameOnce(10, this, () => {
                 this.UI.operationAppear(() => {
@@ -12100,8 +12070,8 @@
             });
             this.UI.btnCompleteClick = () => {
                 this.UI.operationVinish(() => {
-                    _3D._Scene._ins().closeMirror();
-                    _3D._Scene._ins().cameraToSprite(this._Owner);
+                    _3DScene._ins().closeMirror();
+                    _3DScene._ins().cameraToSprite(this._Owner);
                     Laya.Resource.destroyUnusedResources();
                     this._openScene('Start', true, true);
                     this.UI.btnBackVinish();
@@ -12117,13 +12087,13 @@
                     element.skin = `Game/UI/Common/kuang_fen.png`;
                     Icon.skin = `Game/UI/DressingRoom/PartIcon/${element.name}_s.png`;
                     if (_element.name === 'DIY') {
-                        arr = _GameData._AllClothes._ins()._getArrByClassify(_element.name);
+                        arr = _AllClothes._ins()._getArrByClassify(_element.name);
                     }
                     else {
-                        let _arr = _GameData._AllClothes._ins()._getArrByClassify(_GameData._AllClothes._ins()._classify.General);
+                        let _arr = _AllClothes._ins()._getArrByClassify(_AllClothes._ins()._classify.General);
                         for (let index = 0; index < _arr.length; index++) {
                             const obj = _arr[index];
-                            if (obj[_GameData._AllClothes._ins()._otherPro.part] === _element.name) {
+                            if (obj[_AllClothes._ins()._otherPro.part] === _element.name) {
                                 arr.push(obj);
                             }
                         }
@@ -12133,7 +12103,7 @@
                     element.skin = `Game/UI/Common/kuang_bai.png`;
                     Icon.skin = `Game/UI/DressingRoom/PartIcon/${element.name}.png`;
                 }
-                _GameData._AllClothes._ins()._listArray = arr;
+                _AllClothes._ins()._listArray = arr;
             }
         }
         lwgButton() {
@@ -12152,16 +12122,16 @@
     class PersonalInfo extends Admin._SceneBase {
         lwgOnAwake() {
             ADManager.TAPoint(TaT.BtnShow, 'changename');
-            this._TextInputVar('NameValue').text = _GameData._PersonalInfo._name;
-            const obj = _GameData._Ranking._Table._getPitchObj();
-            this._LabelVar('RankValue').text = obj[_GameData._Ranking._Table._otherPro.rankNum];
-            this._LabelVar('FansValue').text = obj[_GameData._Ranking._Table._otherPro.fansNum];
+            this._TextInputVar('NameValue').text = _PersonalInfo._name;
+            const obj = _Ranking._Data._getPitchObj();
+            this._LabelVar('RankValue').text = obj[_Ranking._Data._otherPro.rankNum];
+            this._LabelVar('FansValue').text = obj[_Ranking._Data._otherPro.fansNum];
         }
         lwgOpenAni() {
             return _GameAni._dialogOpenFadeOut(this._ImgVar('Background'), this._ImgVar('Content'), () => {
-                !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
+                !_Guide._complete && this._openScene('Guide', false, false, () => {
                     const gP = this._ImgVar('Name').localToGlobal(new Laya.Point(this._ImgVar('NameValue').x, this._ImgVar('NameValue').y));
-                    this._evNotify(_GameData._Guide.event.PersonalInfoWriteName, [gP.x, gP.y]);
+                    this._evNotify(_Guide.event.PersonalInfoWriteName, [gP.x, gP.y]);
                 }, this._Owner.zOrder + 1);
                 TimerAdmin._frameLoop(200, this, () => {
                     this._AniVar('ani1').play(0, false);
@@ -12175,7 +12145,7 @@
         }
         BtnCloseClick() {
             this._btnUp(this._ImgVar('BtnClose'), () => {
-                !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.vanishGuide);
+                !_Guide._complete && this._evNotify(_Guide.event.vanishGuide);
                 this._closeScene();
             });
         }
@@ -12190,7 +12160,7 @@
                 this._ImgVar('BtnWrite').scale(1, 1);
             });
             this._TextInputVar('NameValue').on(Laya.Event.FOCUS, this, () => {
-                !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.vanishGuide);
+                !_Guide._complete && this._evNotify(_Guide.event.vanishGuide);
             });
             this._TextInputVar('NameValue').on(Laya.Event.INPUT, this, () => {
             });
@@ -12204,20 +12174,20 @@
                 else {
                     this._TextInputVar('NameValue').fontSize = 24;
                 }
-                _GameData._PersonalInfo._name = this._TextInputVar('NameValue').text;
-                if (!_GameData._Guide._complete) {
+                _PersonalInfo._name = this._TextInputVar('NameValue').text;
+                if (!_Guide._complete) {
                     this.BtnCloseClick();
                     const gP = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnClose').x, this._ImgVar('BtnClose').y));
-                    this._evNotify(_GameData._Guide.event.PersonalInfoCloseBtn, [gP.x, gP.y]);
+                    this._evNotify(_Guide.event.PersonalInfoCloseBtn, [gP.x, gP.y]);
                 }
             });
-            if (!_GameData._Guide._complete)
+            if (!_Guide._complete)
                 return;
             this.BtnCloseClick();
         }
         lwgCloseAni() {
             return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-                !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.DelayBtnCheckIn);
+                !_Guide._complete && this._evNotify(_Guide.event.DelayBtnCheckIn);
             });
         }
         lwgOnDisable() {
@@ -12235,34 +12205,34 @@
         }
         ;
         $render() {
-            if (this.$data[_GameData._Ranking._Table._property.$classify] === _GameData._Ranking._Table._classify.self) {
+            if (this.$data[_Ranking._Data._property.$classify] === _Ranking._Data._classify.self) {
                 this._ImgChild('Board').skin = `Game/UI/Ranking/x_di.png`;
-                this._LableChild('Name').text = _GameData._PersonalInfo._name;
+                this._LableChild('Name').text = _PersonalInfo._name;
             }
             else {
                 this._ImgChild('Board').skin = `Game/UI/Ranking/w_di.png`;
-                this._LableChild('Name').text = this.$data[_GameData._Ranking._Table._property.$name];
+                this._LableChild('Name').text = this.$data[_Ranking._Data._property.$name];
             }
             this._LableChild('RankNum').text = String(this.$rankNum);
             this._LableChild('FansNum').text = String(this.$fansNum);
             const IconPic = this._LableChild('Icon').getChildAt(0);
-            IconPic.skin = this.$data[_GameData._Ranking._Table._otherPro.iconSkin];
+            IconPic.skin = this.$data[_Ranking._Data._otherPro.iconSkin];
         }
     }
     class Ranking extends Admin._SceneBase {
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'rankpage');
-            _GameData._Ranking._Table._List = this._ListVar('List');
-            if (_GameData._Ranking._whereFrom === 'Tweeting') {
-                _GameData._Ranking._Table._addProValueForAll(_GameData._Ranking._Table._otherPro.fansNum, () => {
+            _Ranking._Data._List = this._ListVar('List');
+            if (_Ranking._whereFrom === 'Tweeting') {
+                _Ranking._Data._addProValueForAll(_Ranking._Data._otherPro.fansNum, () => {
                     return Tools._Number.randomOneInt(100, 150);
                 });
             }
-            this._evNotify(_GameData._Start.event.updateRanking);
-            _GameData._Ranking._Table._listRenderScript = RankingItem;
+            this._evNotify(_Start._event.updateRanking);
+            _Ranking._Data._listRenderScript = RankingItem;
         }
         lwgOpenAni() {
-            if (_GameData._Ranking._whereFrom === 'Tweeting') {
+            if (_Ranking._whereFrom === 'Tweeting') {
                 _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('Background'));
             }
             else {
@@ -12271,49 +12241,49 @@
             return 200;
         }
         lwgOpenAniAfter() {
-            if (_GameData._Ranking._whereFrom === 'Tweeting') {
+            if (_Ranking._whereFrom === 'Tweeting') {
                 _GameEffects2D._fireworksCelebrate(() => {
-                    !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
+                    !_Guide._complete && this._openScene('Guide', false, false, () => {
                         this.BtnCloseClick();
                         const gP = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnClose').x, this._ImgVar('BtnClose').y));
-                        this._evNotify(_GameData._Guide.event.RankingCloseBtn, [gP.x, gP.y]);
+                        this._evNotify(_Guide.event.RankingCloseBtn, [gP.x, gP.y]);
                     }, this._Owner.zOrder + 1);
                 });
-                _GameData._Ranking._whereFrom = 'Start';
+                _Ranking._whereFrom = 'Start';
             }
         }
         lwgOnStart() {
-            if (_GameData._Ranking._Table._getProperty(_GameData._Ranking._Table._pitchName, _GameData._Ranking._Table._otherPro.rankNum) === 1) {
-                _GameData._Ranking._Table._List.scrollTo(0);
+            if (_Ranking._Data._getProperty(_Ranking._Data._pitchName, _Ranking._Data._otherPro.rankNum) === 1) {
+                _Ranking._Data._List.scrollTo(0);
             }
             else {
-                if (_GameData._Ranking._whereFrom === 'Tweeting') {
-                    _GameData._Ranking._Table._listScrollToLast();
-                    _GameData._Ranking._Table._listTweenToPitchChoose(-1, 1500);
+                if (_Ranking._whereFrom === 'Tweeting') {
+                    _Ranking._Data._listScrollToLast();
+                    _Ranking._Data._listTweenToPitchChoose(-1, 1500);
                 }
                 else {
-                    _GameData._Ranking._Table._listScrollToLast();
-                    _GameData._Ranking._Table._listTweenToPitchChoose(-1, 600);
+                    _Ranking._Data._listScrollToLast();
+                    _Ranking._Data._listTweenToPitchChoose(-1, 600);
                 }
             }
         }
         BtnCloseClick() {
             this._btnUp(this._ImgVar('BtnClose'), () => {
                 this._closeScene();
-                if (!_GameData._Guide._complete) {
-                    this._evNotify(_GameData._Guide.event.closeGuide);
-                    this._evNotify(_GameData._Start.event.BtnPersonalInfo);
+                if (!_Guide._complete) {
+                    this._evNotify(_Guide.event.closeGuide);
+                    this._evNotify(_Start._event.BtnPersonalInfo);
                 }
             });
         }
         lwgButton() {
-            if (!_GameData._Guide._complete)
+            if (!_Guide._complete)
                 return;
             this.BtnCloseClick();
         }
         lwgCloseAni() {
             return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-                _GameData._Guide._complete && !_GameData._CheckIn._todayCheckIn && this._openScene('CheckIn', false);
+                _Guide._complete && !_CheckIn._todayCheckIn && this._openScene('CheckIn', false);
             });
         }
         lwgOnDisable() {
@@ -12325,18 +12295,18 @@
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'weibopage');
             ADManager.TAPoint(TaT.BtnShow, 'photo_choose');
-            this._LabelVar('BodyText').text = _GameData._Tweeting._mainBody.getOne();
-            this._LabelVar('PlayerName').text = _GameData._PersonalInfo._name;
+            this._LabelVar('BodyText').text = _Tweeting._mainBody.getOne();
+            this._LabelVar('PlayerName').text = _PersonalInfo._name;
             this._ImgVar('IconPic').skin = `Game/UI/Ranking/IconSkin/Ava.png`;
-            _GameData._Tweeting._attentionNum += Tools._Number.randomOneInt(50, 100);
-            this._LabelVar('AttentionNum').text = _GameData._Tweeting._attentionNum.toString();
-            this._LabelVar('FansNum').text = _GameData._Ranking._Table._getPitchProperty(_GameData._Ranking._Table._otherPro.fansNum);
-            _GameData._Tweeting._completeNum++;
-            _GameData._DIYClothes._ins()._checkConditionUnlockWay(_GameData._DIYClothes._ins()._unlockWay.$customs, 1);
-            this._LabelVar('CompleteNum').text = _GameData._Tweeting._completeNum.toString();
+            _Tweeting._attentionNum += Tools._Number.randomOneInt(50, 100);
+            this._LabelVar('AttentionNum').text = _Tweeting._attentionNum.toString();
+            this._LabelVar('FansNum').text = _Ranking._Data._getPitchProperty(_Ranking._Data._otherPro.fansNum);
+            _Tweeting._completeNum++;
+            _DIYClothes._ins()._checkConditionUnlockWay(_DIYClothes._ins()._unlockWay.$customs, 1);
+            this._LabelVar('CompleteNum').text = _Tweeting._completeNum.toString();
             const heatArr = Tools._Number.randomCountBySection(20, 50, 3);
             heatArr.sort();
-            const briefArr = _GameData._Tweeting._brief.getThree();
+            const briefArr = _Tweeting._brief.getThree();
             const iconArr = Tools._Number.randomCountBySection(1, 20, 3);
             for (let index = 0; index < 3; index++) {
                 const Rank = this._ImgVar('Hot').getChildByName(`Rank${index + 1}`);
@@ -12345,8 +12315,8 @@
                 const Brief = Rank.getChildByName('Brief');
                 const Heat = Rank.getChildByName('Heat');
                 const Icon = Rank.getChildByName('HeadIcon').getChildByName('Icon');
-                const data = _GameData._Ranking._Table._arr[index];
-                Name.text = data[_GameData._Ranking._Table._property.$name];
+                const data = _Ranking._Data._arr[index];
+                Name.text = data[_Ranking._Data._property.$name];
                 Tag.skin = `Game/UI/Tweeting/Main/${index + 1}.png`;
                 Brief.text = briefArr[index];
                 Heat.text = `本周热度 ${heatArr[index]}万`;
@@ -12354,8 +12324,8 @@
             }
             for (let index = 0; index < 3; index++) {
                 const element = this._ImgVar('BtnChoosePhotos').getChildByName(`Photo${index + 1}`).getChildAt(0);
-                if (_GameData._Tweeting._photo.arr[index]) {
-                    element.texture = _GameData._Tweeting._photo.arr[index];
+                if (_Tweeting._photo.arr[index]) {
+                    element.texture = _Tweeting._photo.arr[index];
                 }
             }
             for (let index = 0; index < this._ImgVar('Content').numChildren; index++) {
@@ -12389,8 +12359,8 @@
                 Animation2D.bombs_Appear(this._ImgVar('BtnChoosePhotos'), 0, 1, 1.08, 0, baseTime * 2, () => {
                     TimerAdmin._once(300, this, () => {
                         this.BtnChoosePhotosClick();
-                        !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
-                            this._evNotify(_GameData._Guide.event.TweetingBtnChoosePhoto, [this._ImgVar('BtnChoosePhotos')._lwg.gPoint.x, this._ImgVar('BtnChoosePhotos')._lwg.gPoint.y, this._ImgVar('Photo2')._lwg.gPoint.x + 65, this._ImgVar('Photo2')._lwg.gPoint.y + 65]);
+                        !_Guide._complete && this._openScene('Guide', false, false, () => {
+                            this._evNotify(_Guide.event.TweetingBtnChoosePhoto, [this._ImgVar('BtnChoosePhotos')._lwg.gPoint.x, this._ImgVar('BtnChoosePhotos')._lwg.gPoint.y, this._ImgVar('Photo2')._lwg.gPoint.x + 65, this._ImgVar('Photo2')._lwg.gPoint.y + 65]);
                         });
                     });
                     _GameAni._fadeHint(this._ImgVar('BtnChoosePhotos').getChildByName('HintPic'));
@@ -12419,15 +12389,15 @@
             this.photoArr = [this._ImgVar('Photo1'), this._ImgVar('Photo2'), this._ImgVar('Photo3')];
             for (let index = 0; index < this.photoArr.length; index++) {
                 const Pic = this.photoArr[index].getChildByName('Pic');
-                if (_GameData._Tweeting._photo.arr[index]) {
-                    Pic.texture = _GameData._Tweeting._photo.arr[index];
+                if (_Tweeting._photo.arr[index]) {
+                    Pic.texture = _Tweeting._photo.arr[index];
                 }
             }
         }
         lwgOpenAni() {
             return _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
-                !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
-                    this._evNotify(_GameData._Guide.event.TweetingChoosePhoto, [this._ImgVar('Photo1')._lwg.gPoint.x, this._ImgVar('Photo1')._lwg.gPoint.y]);
+                !_Guide._complete && this._openScene('Guide', false, false, () => {
+                    this._evNotify(_Guide.event.TweetingChoosePhoto, [this._ImgVar('Photo1')._lwg.gPoint.x, this._ImgVar('Photo1')._lwg.gPoint.y]);
                 });
             });
         }
@@ -12440,10 +12410,10 @@
                         const Tick = _element.getChildByName('Tick');
                         if (element == _element) {
                             _element.scale(1.05, 1.05);
-                            _GameData._Tweeting._photoIndex = index;
+                            _Tweeting._photoIndex = index;
                             Tick.visible = true;
                             const gPBtnSend = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnSend').x, this._ImgVar('BtnSend').y));
-                            !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.TweetingBtnSend, [gPBtnSend.x, gPBtnSend.y]);
+                            !_Guide._complete && this._evNotify(_Guide.event.TweetingBtnSend, [gPBtnSend.x, gPBtnSend.y]);
                         }
                         else {
                             _element.scale(1, 1);
@@ -12456,7 +12426,7 @@
             ;
             this._btnUp(this._ImgVar('BtnSend'), () => {
                 if (this._ImgVar('BtnSend').skin == 'Game/UI/Tweeting/ChoosePhotos/anniu_fasong.png') {
-                    !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.closeGuide);
+                    !_Guide._complete && this._evNotify(_Guide.event.closeGuide);
                     this._closeScene();
                 }
                 else {
@@ -12480,7 +12450,7 @@
             this.baseDelay = 200;
         }
         lwgOpenAni() {
-            this._ImgVar('Photo').texture = _GameData._Tweeting._photo.arr[_GameData._Tweeting._photoIndex];
+            this._ImgVar('Photo').texture = _Tweeting._photo.arr[_Tweeting._photoIndex];
             _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), null, () => {
                 Animation2D.scale(this._ImgVar('Head'), 0, 0, 1, 1, this.baseTime * 2, this.baseDelay * 1.5, () => {
                     this._closeScene('Tweeting_Main');
@@ -12497,13 +12467,13 @@
         }
         bodyTextAppear(func) {
             const Body = this._ImgVar('Head').getChildByName('Body');
-            _GameAni._charactersEffect(Body, _GameData._Tweeting._mainBody.present, () => {
+            _GameAni._charactersEffect(Body, _Tweeting._mainBody.present, () => {
                 func();
             });
         }
         ;
         replyAppear() {
-            const twoReply = _GameData._Tweeting._reply.getTow();
+            const twoReply = _Tweeting._reply.getTow();
             const time = 500;
             Animation2D.move(this._ImgVar('Reply1'), this._ImgVar('Reply1').x, this._ImgVar('Reply1').y - 500, time, () => {
                 _GameAni._charactersEffect(this._LabelVar('Reply1Body'), twoReply[0], () => {
@@ -12538,23 +12508,23 @@
             this._ImgVar('Head').width = this._Owner.width - 160;
             const Icon = this._ImgVar('Head').getChildByName('HeadIcon').getChildAt(0);
             Icon.skin = `Game/UI/Ranking/IconSkin/Ava.png`;
-            this._LabelVar('Brief').text = _GameData._Tweeting._brief.getOne()[0].toString();
-            this._LabelVar('PlayerName').text = _GameData._PersonalInfo._name;
+            this._LabelVar('Brief').text = _Tweeting._brief.getOne()[0].toString();
+            this._LabelVar('PlayerName').text = _PersonalInfo._name;
             const left = 120;
             this._ImgVar('Middle').width = this._Owner.width - 160;
             this._ImgVar('Collect').x = (this._ImgVar('Middle').width - left * 2) * 0 / 4 + left;
-            _GameData._Tweeting._forwardedNum += 50;
-            this._ImgVar('Forwarded').getChildAt(0).text = _GameData._Tweeting._forwardedNum.toString();
+            _Tweeting._forwardedNum += 50;
+            this._ImgVar('Forwarded').getChildAt(0).text = _Tweeting._forwardedNum.toString();
             this._ImgVar('Forwarded').x = (this._ImgVar('Middle').width - left * 2) * 1 / 4 + left;
-            _GameData._Tweeting._commentNum += 50;
-            this._ImgVar('Comment').getChildAt(0).text = _GameData._Tweeting._commentNum.toString();
+            _Tweeting._commentNum += 50;
+            this._ImgVar('Comment').getChildAt(0).text = _Tweeting._commentNum.toString();
             this._ImgVar('Comment').x = (this._ImgVar('Middle').width - left * 2) * 2 / 4 + left;
-            _GameData._Tweeting._likeNum += 100;
-            this._ImgVar('Like').getChildAt(0).text = _GameData._Tweeting._likeNum.toString();
+            _Tweeting._likeNum += 100;
+            this._ImgVar('Like').getChildAt(0).text = _Tweeting._likeNum.toString();
             this._ImgVar('Like').x = (this._ImgVar('Middle').width - left * 2) * 3 / 4 + left;
             this._ImgVar('Bottom').width = this._Owner.width - 160;
             const iconArr = Tools._Number.randomCountBySection(1, 20, 2);
-            const twoObj = _GameData._Ranking._Table._randomCountObj(2);
+            const twoObj = _Ranking._Data._randomCountObj(2);
             for (let index = 0; index < 2; index++) {
                 const Reply = this._ImgVar(`Reply${index + 1}`);
                 const Icon1 = Reply.getChildByName('HeadIcon').getChildAt(0);
@@ -12594,7 +12564,7 @@
         }
         lwgOnAwake() {
             ADManager.TAPoint(TaT.BtnShow, 'ADrank');
-            this.pitchObj = _GameData._Ranking._Table._getPitchObj();
+            this.pitchObj = _Ranking._Data._getPitchObj();
             this.fansNum = Tools._Number.randomOneInt(115, 383);
             this.pitchObj['fansNum'] += this.fansNum;
             this._FontClipVar('FansNum').value = this.fansNum.toString();
@@ -12602,8 +12572,8 @@
         lwgOpenAni() {
             _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
                 _GameEffects2D._interfacePointJet();
-                !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
-                    this._evNotify(_GameData._Guide.event.TweetingBtnDoubleFans, [this._ImgVar('BtnDouble')._lwg.gPoint.x, this._ImgVar('BtnDouble')._lwg.gPoint.y]);
+                !_Guide._complete && this._openScene('Guide', false, false, () => {
+                    this._evNotify(_Guide.event.TweetingBtnDoubleFans, [this._ImgVar('BtnDouble')._lwg.gPoint.x, this._ImgVar('BtnDouble')._lwg.gPoint.y]);
                 });
                 TimerAdmin._loop(2000, this, () => {
                     Animation2D.bomb_LeftRight(this._ImgVar('BtnDouble'), 1.1, 250);
@@ -12613,11 +12583,11 @@
         }
         lwgButton() {
             var closeBefore = () => {
-                _GameData._Ranking._whereFrom = 'Tweeting';
-                _GameData._Tweeting._photo.clear();
+                _Ranking._whereFrom = 'Tweeting';
+                _Tweeting._photo.clear();
                 this._closeScene('Tweeting_Dynamic');
                 this._closeScene();
-                !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.closeGuide);
+                !_Guide._complete && this._evNotify(_Guide.event.closeGuide);
             };
             this._btnUp(this._ImgVar('BtnOk'), () => {
                 closeBefore();
@@ -12628,7 +12598,7 @@
                 closeBefore();
             };
             this._btnUp(this._ImgVar('BtnDouble'), () => {
-                if (!_GameData._Guide._complete) {
+                if (!_Guide._complete) {
                     double();
                 }
                 else {
@@ -12674,24 +12644,24 @@
     class _Item$3 extends DataAdmin._Item {
         $button() {
             this._btnUp(this._ImgChild('Reward'), (e) => {
-                if (!_GameData._CheckIn._todayCheckIn) {
-                    if (_GameData._CheckIn._checkInNum + 1 === this.$serial) {
-                        _GameData._CheckIn._lastCheckDate = DateAdmin._date.date;
-                        _GameData._CheckIn._Table._setCompleteName(this.$name);
-                        _GameData._CheckIn._checkInNum++;
+                if (!_CheckIn._todayCheckIn) {
+                    if (_CheckIn._checkInNum + 1 === this.$serial) {
+                        _CheckIn._lastCheckDate = DateAdmin._date.date;
+                        _CheckIn._Data._setCompleteName(this.$name);
+                        _CheckIn._checkInNum++;
                         if (this.$rewardType.substr(0, 3) === 'diy') {
-                            _GameData._DIYClothes._ins()._setCompleteByName(this.$rewardType);
+                            _DIYClothes._ins()._setCompleteByName(this.$rewardType);
                             Dialogue.createHint_Middle('恭喜获得新的裁剪服装');
                             _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                         }
                         else if (this.$rewardType === 'cat') {
-                            _GameData._Pattern._ins()._setCompleteByClassify(this.$rewardType);
+                            _MakePattern._Data._setCompleteByClassify(this.$rewardType);
                             Dialogue.createHint_Middle('恭喜获得猫咪贴图一套');
                             _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                         }
-                        if (!_GameData._Guide._complete) {
-                            _GameData._Guide.CheckInCloseBtn = true;
-                            this._evNotify(_GameData._Guide.event.CheckInCloseBtn, [this._SceneImg('BtnClose')._lwg.gPoint.x, this._SceneImg('BtnClose')._lwg.gPoint.y]);
+                        if (!_Guide._complete) {
+                            _Guide.CheckInCloseBtn = true;
+                            this._evNotify(_Guide.event.CheckInCloseBtn, [this._SceneImg('BtnClose')._lwg.gPoint.x, this._SceneImg('BtnClose')._lwg.gPoint.y]);
                         }
                     }
                 }
@@ -12701,13 +12671,13 @@
             });
             var func = (e) => {
                 ADManager.ShowReward(() => {
-                    _GameData._CheckIn._Table._setOtherCompleteName(this.$name);
+                    _CheckIn._Data._setOtherCompleteName(this.$name);
                     if (this.$otherRewardType.substr(0, 3) === 'diy') {
-                        _GameData._DIYClothes._ins()._setCompleteByName(this.$otherRewardType);
+                        _DIYClothes._ins()._setCompleteByName(this.$otherRewardType);
                         Dialogue.createHint_Middle('恭喜获得新的裁剪服装');
                     }
                     else if (this.$otherRewardType === 'newYear') {
-                        _GameData._Pattern._ins()._setCompleteByClassify(this.$otherRewardType);
+                        _MakePattern._Data._setCompleteByClassify(this.$otherRewardType);
                         Dialogue.createHint_Middle('恭喜获得新年贴图一套');
                     }
                     _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
@@ -12715,13 +12685,13 @@
             };
             var adsClick = (e) => {
                 if (!this.$otherComplete) {
-                    if (!_GameData._CheckIn._todayCheckIn) {
-                        if (_GameData._CheckIn._checkInNum + 1 === this.$serial) {
+                    if (!_CheckIn._todayCheckIn) {
+                        if (_CheckIn._checkInNum + 1 === this.$serial) {
                             func(e);
                         }
                     }
                     else {
-                        if (_GameData._CheckIn._checkInNum >= this.$serial) {
+                        if (_CheckIn._checkInNum >= this.$serial) {
                             func(e);
                         }
                     }
@@ -12738,7 +12708,7 @@
             const Already = this._ImgChild('Reward').getChildByName('Already');
             const Icon = this._ImgChild('Reward').getChildByName('Icon');
             if (this.$rewardType.substr(0, 3) === 'diy') {
-                Icon.skin = _GameData._DIYClothes._ins().getDIYCutIcon(this.$rewardType);
+                Icon.skin = _DIYClothes._ins().getDIYCutIcon(this.$rewardType);
                 Icon.scale(0.55, 0.55);
             }
             else if (this.$rewardType === 'cat') {
@@ -12747,8 +12717,8 @@
             }
             Already.visible = this.$complete;
             if (!this.$complete) {
-                if (_GameData._CheckIn._checkInNum + 1 === this.$serial) {
-                    if (_GameData._CheckIn._todayCheckIn) {
+                if (_CheckIn._checkInNum + 1 === this.$serial) {
+                    if (_CheckIn._todayCheckIn) {
                         this._ImgChild('Reward').skin = 'Game/UI/ChekIn/k_nei.png';
                     }
                     else {
@@ -12765,7 +12735,7 @@
             const AdsAlready = this._ImgChild('AdsReward').getChildByName('Already');
             const AdsIcon = this._ImgChild('AdsReward').getChildByName('Icon');
             if (this.$otherRewardType.substr(0, 3) === 'diy') {
-                AdsIcon.skin = _GameData._DIYClothes._ins().getDIYCutIcon(this.$otherRewardType);
+                AdsIcon.skin = _DIYClothes._ins().getDIYCutIcon(this.$otherRewardType);
                 AdsIcon.scale(0.55, 0.55);
             }
             else if (this.$otherRewardType === 'newYear') {
@@ -12774,8 +12744,8 @@
             }
             AdsAlready.visible = this.$otherComplete;
             if (!this.$otherComplete) {
-                if (!_GameData._CheckIn._todayCheckIn) {
-                    if (_GameData._CheckIn._checkInNum + 1 === this.$serial) {
+                if (!_CheckIn._todayCheckIn) {
+                    if (_CheckIn._checkInNum + 1 === this.$serial) {
                         this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                     }
                     else {
@@ -12783,7 +12753,7 @@
                     }
                 }
                 else {
-                    if (_GameData._CheckIn._checkInNum >= this.$serial) {
+                    if (_CheckIn._checkInNum >= this.$serial) {
                         this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                     }
                     else {
@@ -12799,11 +12769,11 @@
     }
     class CheckIn extends Admin._SceneBase {
         lwgOnAwake() {
-            _GameData._CheckIn._Table._List = this._ListVar('List');
-            _GameData._CheckIn._Table._listRenderScript = _Item$3;
-            _GameData._CheckIn._Table._List.scrollBar.touchScrollEnable = false;
-            this._LabelVar('ImmediatelyNum').text = `${_GameData._CheckIn._immediately} / 4`;
-            if (_GameData._CheckIn._immediately >= 4 || _GameData._CheckIn._checkInNum >= 4) {
+            _CheckIn._Data._List = this._ListVar('List');
+            _CheckIn._Data._listRenderScript = _Item$3;
+            _CheckIn._Data._List.scrollBar.touchScrollEnable = false;
+            this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately} / 4`;
+            if (_CheckIn._immediately >= 4 || _CheckIn._checkInNum >= 4) {
                 this._ImgVar('BtnImmediately').visible = false;
                 this._LabelVar('Tip').text = `奖励已经全部领取！`;
             }
@@ -12812,34 +12782,34 @@
             return _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
                 this._openScene('Guide', false, false, () => {
                     this.BtnCloseClick();
-                    !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.CheckInGetReward, [this._ImgVar('GuideTab1')._lwg.gPoint.x, this._ImgVar('GuideTab1')._lwg.gPoint.y]);
+                    !_Guide._complete && this._evNotify(_Guide.event.CheckInGetReward, [this._ImgVar('GuideTab1')._lwg.gPoint.x, this._ImgVar('GuideTab1')._lwg.gPoint.y]);
                 });
             });
         }
         BtnCloseClick() {
             this._btnUp(this._ImgVar('BtnClose'), () => {
-                if (!_GameData._Guide._complete && _GameData._Guide.CheckInCloseBtn) {
-                    _GameData._Guide._complete = true;
+                if (!_Guide._complete && _Guide.CheckInCloseBtn) {
+                    _Guide._complete = true;
                     Dialogue.createHint_Middle('开启你的女神之路吧!');
-                    this._evNotify(_GameData._Guide.event.closeGuide);
-                    this._evNotify(_GameData._Guide.event.StartOtherBtnClick);
+                    this._evNotify(_Guide.event.closeGuide);
+                    this._evNotify(_Guide.event.StartOtherBtnClick);
                 }
                 this._closeScene();
             });
         }
         lwgButton() {
-            if (!_GameData._Guide._complete)
+            if (!_Guide._complete)
                 return;
             this.BtnCloseClick();
             this._btnUp(this._ImgVar('BtnImmediately'), () => {
-                if (_GameData._CheckIn._immediately < 4) {
+                if (_CheckIn._immediately < 4) {
                     ADManager.ShowReward(() => {
-                        _GameData._CheckIn._immediately++;
-                        this._LabelVar('ImmediatelyNum').text = `${_GameData._CheckIn._immediately} / 4 `;
-                        if (_GameData._CheckIn._immediately >= 4) {
+                        _CheckIn._immediately++;
+                        this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately} / 4 `;
+                        if (_CheckIn._immediately >= 4) {
                             this._ImgVar('BtnImmediately').visible = false;
                             const gP1 = this._ImgVar('GuideTab1')._lwg.gPoint;
-                            _GameData._CheckIn._Table._setAllCompleteDelay(300, (com) => {
+                            _CheckIn._Data._setAllCompleteDelay(300, (com) => {
                                 const copyP1 = new Laya.Point(gP1.x, gP1.y);
                                 if (!com) {
                                     _GameEffects2D._oneFireworks(copyP1);
@@ -12847,7 +12817,7 @@
                                 gP1.x += 165;
                             }, null, null);
                             const gP2 = this._ImgVar('GuideTab2')._lwg.gPoint;
-                            _GameData._CheckIn._Table._setAllOtherCompleteDelay(300, (com) => {
+                            _CheckIn._Data._setAllOtherCompleteDelay(300, (com) => {
                                 const copyP2 = new Laya.Point(gP2.x, gP2.y);
                                 if (!com) {
                                     _GameEffects2D._oneFireworks(copyP2);
@@ -12856,9 +12826,9 @@
                             }, null, () => {
                                 Dialogue.createHint_Middle('奖励已经全部获得，快去制作服装吧！');
                             });
-                            _GameData._DIYClothes._ins()._setCompleteByNameArr(['diy_dress_003_final', 'diy_dress_007_final', 'diy_top_004_final', 'diy_bottom_005_final', 'diy_dress_006_final', 'diy_bottom_006_final']);
-                            _GameData._Pattern._ins()._setCompleteByClassify('cat');
-                            _GameData._Pattern._ins()._setCompleteByClassify('newYear');
+                            _DIYClothes._ins()._setCompleteByNameArr(['diy_dress_003_final', 'diy_dress_007_final', 'diy_top_004_final', 'diy_bottom_005_final', 'diy_dress_006_final', 'diy_bottom_006_final']);
+                            _MakePattern._Data._setCompleteByClassify('cat');
+                            _MakePattern._Data._setCompleteByClassify('newYear');
                         }
                     });
                 }
@@ -12882,15 +12852,15 @@
         }
         lwgButton() {
             this._btnUp(this._ImgVar('BtnLeave'), () => {
-                _GameData._PreLoadCutIn._fromBack = true;
+                _PreLoadCutIn._fromBack = true;
                 _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
                     this._Owner.close();
-                    _GameData._BackHint._fromScene[_GameData._BackHint._fromScene.name]._openScene('Start', true, true);
+                    _BackHint._fromScene[_BackHint._fromScene.name]._openScene('Start', true, true);
                 });
             });
             var close = () => {
                 this.closeAniType = 100;
-                _GameData._BackHint._3dToSp && _GameData._BackHint._3dToSp.destroy();
+                _BackHint._3dToSp && _BackHint._3dToSp.destroy();
                 _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
                     this._Owner.close();
                 });

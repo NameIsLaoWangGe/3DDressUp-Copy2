@@ -1,5 +1,5 @@
 import ADManager from "../../TJ/Admanager";
-import { Admin, Click } from "../Lwg/Lwg";
+import { Admin } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 export default class AdsHint extends Admin._SceneBase {
     adAction: any;

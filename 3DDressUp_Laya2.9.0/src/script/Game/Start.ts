@@ -1,7 +1,7 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import lwg, { Admin, Animation2D, TimerAdmin, _SceneName, Tools, Effects2D, EventAdmin, StorageAdmin, Effects3D, } from "../Lwg/Lwg";
-import { _3D } from "./_3D";
-import { _GameData } from "./_GameData";
+import { Admin, Animation2D, TimerAdmin, _SceneName, Tools } from "../Lwg/Lwg";
+import { _3DScene } from "./_3D";
+import { _CheckIn, _DIYClothes, _Guide, _Ranking, _Start, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 export default class Start extends Admin._SceneBase {
     lwgOnAwake(): void {
@@ -12,11 +12,11 @@ export default class Start extends Admin._SceneBase {
         ADManager.TAPoint(TaT.BtnShow, 'change');
 
         Tools._Node.childrenVisible2D(this._ImgVar('BtnParent'), false);
-        _3D._Scene._ins().openStartAni(() => {
-            this._ImgVar('BtnTop').pos(_3D._Scene._ins().btnTopPos.x, _3D._Scene._ins().btnTopPos.y);
-            this._ImgVar('BtnDress').pos(_3D._Scene._ins().btnDressPos.x, _3D._Scene._ins().btnDressPos.y);
-            this._ImgVar('BtnBottoms').pos(_3D._Scene._ins().btnBottomsPos.x, _3D._Scene._ins().btnBottomsPos.y);
-            this._ImgVar('BtnDressingRoom').pos(_3D._Scene._ins().btnDressingRoomPos.x, _3D._Scene._ins().btnDressingRoomPos.y);
+        _3DScene._ins().openStartAni(() => {
+            this._ImgVar('BtnTop').pos(_3DScene._ins().btnTopPos.x, _3DScene._ins().btnTopPos.y);
+            this._ImgVar('BtnDress').pos(_3DScene._ins().btnDressPos.x, _3DScene._ins().btnDressPos.y);
+            this._ImgVar('BtnBottoms').pos(_3DScene._ins().btnBottomsPos.x, _3DScene._ins().btnBottomsPos.y);
+            this._ImgVar('BtnDressingRoom').pos(_3DScene._ins().btnDressingRoomPos.x, _3DScene._ins().btnDressingRoomPos.y);
 
             for (let index = 0; index < this._ImgVar('BtnParent').numChildren; index++) {
                 const element = this._ImgVar('BtnParent').getChildAt(index) as Laya.Image;
@@ -32,17 +32,17 @@ export default class Start extends Admin._SceneBase {
             Animation2D.bombs_Appear(element, 0, 1, 1.2, 0, 200, () => {
                 if (index === this._ImgVar('BtnParent').numChildren - 1) {
                     TimerAdmin._once(500, this, () => {
-                        if (_GameData._Start._whereFrom === 'MakePattern') {
-                            this._evNotify(_GameData._Start.event.photo);
-                            _GameData._Start._whereFrom = null;
+                        if (_Start._whereFrom === 'MakePattern') {
+                            this._evNotify(_Start._event.photo);
+                            _Start._whereFrom = null;
                         } else {
-                            if (!_GameData._Guide._complete) {
+                            if (!_Guide._complete) {
                                 this._openScene('Guide', false, false, () => {
                                     this.BtnDressClick();
-                                    this._evNotify(_GameData._Guide.event.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
+                                    this._evNotify(_Guide.event.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
                                 })
                             } else {
-                                !_GameData._CheckIn._todayCheckIn && this._openScene('CheckIn', false);
+                                !_CheckIn._todayCheckIn && this._openScene('CheckIn', false);
                             }
                         }
                     })
@@ -52,27 +52,27 @@ export default class Start extends Admin._SceneBase {
         }
     }
     lwgOnStart(): void {
-        this._evNotify(_GameData._Start.event.updateRanking);
+        this._evNotify(_Start._event.updateRanking);
     }
 
     lwgEvent(): void {
-        this._evReg(_GameData._Guide.event.DelayBtnCheckIn, () => {
+        this._evReg(_Guide.event.DelayBtnCheckIn, () => {
             this.BtnCheckIn();
-            this._evNotify(_GameData._Guide.event.BtnCheckIn, [this._ImgVar('BtnCheckIn').x, this._ImgVar('BtnCheckIn').y]);
+            this._evNotify(_Guide.event.BtnCheckIn, [this._ImgVar('BtnCheckIn').x, this._ImgVar('BtnCheckIn').y]);
         })
 
-        this._evReg(_GameData._Guide.event.StartOtherBtnClick, () => {
+        this._evReg(_Guide.event.StartOtherBtnClick, () => {
             this.lwgButton();
         })
 
-        this._evReg(_GameData._Start.event.updateRanking, () => {
-            let obj = _GameData._Ranking._Table._getPitchObj();
-            this._LabelVar('RankNum').text = `${obj[_GameData._Ranking._Table._otherPro.rankNum]}/50`;
+        this._evReg(_Start._event.updateRanking, () => {
+            let obj = _Ranking._Data._getPitchObj();
+            this._LabelVar('RankNum').text = `${obj[_Ranking._Data._otherPro.rankNum]}/50`;
         })
-        this._evReg(_GameData._Start.event.photo, () => {
-            const sp = _3D._Scene._ins().cameraToSprite(this._Owner);
+        this._evReg(_Start._event.photo, () => {
+            const sp = _3DScene._ins().cameraToSprite(this._Owner);
             TimerAdmin._frameOnce(10, this, () => {
-                _GameData._Tweeting._photo.take(this._Owner, 2);
+                _Tweeting._photo.take(this._Owner, 2);
                 sp.destroy();
                 TimerAdmin._frameOnce(10, this, () => {
                     this._openScene('Tweeting_Main', false);
@@ -80,11 +80,11 @@ export default class Start extends Admin._SceneBase {
             })
         })
 
-        this._evReg(_GameData._Start.event.BtnPersonalInfo, () => {
+        this._evReg(_Start._event.BtnPersonalInfo, () => {
             TimerAdmin._once(1000, this, () => {
                 this._openScene('Guide', false, false, () => {
                     this.BtnPersonalInfoClick();
-                    this._evNotify(_GameData._Guide.event.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
+                    this._evNotify(_Guide.event.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
                 })
             })
         })
@@ -92,9 +92,9 @@ export default class Start extends Admin._SceneBase {
 
     BtnDressClick(): void {
         this._btnUp(this._ImgVar('BtnDress'), () => {
-            this._evNotify(_GameData._Guide.event.closeGuide);
+            this._evNotify(_Guide.event.closeGuide);
             let time = 0;
-            if (_GameData._Guide._complete) {
+            if (_Guide._complete) {
                 time = 300;
             }
             TimerAdmin._once(time, this, () => {
@@ -106,28 +106,28 @@ export default class Start extends Admin._SceneBase {
 
     BtnPersonalInfoClick(): void {
         this._btnUp(this._ImgVar('BtnPersonalInfo'), () => {
-            !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.vanishGuide);
+            !_Guide._complete && this._evNotify(_Guide.event.vanishGuide);
             this._openScene('PersonalInfo', false);
         })
     }
 
     BtnCheckIn(): void {
         this._btnUp(this._ImgVar('BtnCheckIn'), () => {
-            !_GameData._Guide._complete && this._evNotify(_GameData._Guide.event.vanishGuide);
+            !_Guide._complete && this._evNotify(_Guide.event.vanishGuide);
             this._openScene('CheckIn', false);
         })
     }
 
     openMakeTailor(_classify: string): void {
-        _GameData._DIYClothes._ins()._pitchClassify = _classify;
-        _3D._Scene._ins().cameraToSprite(this._Owner);
+        _DIYClothes._ins()._pitchClassify = _classify;
+        _3DScene._ins().cameraToSprite(this._Owner);
         this._openScene('MakeTailor', true, true);
     }
 
     lwgButton(): void {
-        if (!_GameData._Guide._complete) return;
+        if (!_Guide._complete) return;
         this.BtnDressClick();
-        const Clothes = _GameData._DIYClothes._ins();
+        const Clothes = _DIYClothes._ins();
         this._btnUp(this._ImgVar('BtnTop'), () => {
             Clothes._pitchClassify = Clothes._classify.Top;
             this.openMakeTailor('Top');
@@ -142,17 +142,16 @@ export default class Start extends Admin._SceneBase {
 
         this.BtnPersonalInfoClick();
         this._btnUp(this._ImgVar('BtnRanking'), () => {
-            _GameData._Ranking._whereFrom = 'Start';
+            _Ranking._whereFrom = 'Start';
             this._openScene('Ranking', false);
         })
         this._btnUp(this._ImgVar('BtnDressingRoom'), () => {
             ADManager.TAPoint(TaT.BtnClick, 'change');
-            _3D._Scene._ins().cameraToSprite(this._Owner);
+            _3DScene._ins().cameraToSprite(this._Owner);
             this._openScene('DressingRoom', true, true);
         })
         this.BtnCheckIn();
     }
-
 
     lwgOnDisable(): void {
         ADManager.TAPoint(TaT.PageLeave, 'mainpage');

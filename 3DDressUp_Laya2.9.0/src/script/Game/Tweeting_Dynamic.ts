@@ -1,16 +1,14 @@
-import ADManager, { TaT } from "../../TJ/Admanager";
-import { Adaptive, Admin, Animation2D, Click, DataAdmin, DateAdmin, Dialogue, Effects2D, StorageAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
+import { Admin, Animation2D, DateAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
-import { _GameData } from "./_GameData";
+import { _PersonalInfo, _Ranking, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
-
 
 export default class Tweeting_Dynamic extends Admin._SceneBase {
     baseTime = 150;
     baseDelay = 200;
 
     lwgOpenAni(): number {
-        this._ImgVar('Photo').texture = _GameData._Tweeting._photo.arr[_GameData._Tweeting._photoIndex];
+        this._ImgVar('Photo').texture = _Tweeting._photo.arr[_Tweeting._photoIndex];
         _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), null, () => {
             Animation2D.scale(this._ImgVar('Head'), 0, 0, 1, 1, this.baseTime * 2, this.baseDelay * 1.5, () => {
                 this._closeScene('Tweeting_Main');
@@ -27,12 +25,12 @@ export default class Tweeting_Dynamic extends Admin._SceneBase {
     }
     bodyTextAppear(func: Function): void {
         const Body = this._ImgVar('Head').getChildByName('Body') as Laya.Label;
-        _GameAni._charactersEffect(Body, _GameData._Tweeting._mainBody.present, () => {
+        _GameAni._charactersEffect(Body, _Tweeting._mainBody.present, () => {
             func();
         });
     };
     replyAppear(): void {
-        const twoReply = _GameData._Tweeting._reply.getTow();
+        const twoReply = _Tweeting._reply.getTow();
         const time = 500;
         Animation2D.move(this._ImgVar('Reply1'), this._ImgVar('Reply1').x, this._ImgVar('Reply1').y - 500, time, () => {
             _GameAni._charactersEffect(this._LabelVar('Reply1Body'), twoReply[0], () => {
@@ -68,28 +66,28 @@ export default class Tweeting_Dynamic extends Admin._SceneBase {
         const Icon = this._ImgVar('Head').getChildByName('HeadIcon').getChildAt(0) as Laya.Image;
         Icon.skin = `Game/UI/Ranking/IconSkin/Ava.png`;
 
-        this._LabelVar('Brief').text = _GameData._Tweeting._brief.getOne()[0].toString();
+        this._LabelVar('Brief').text = _Tweeting._brief.getOne()[0].toString();
 
-        this._LabelVar('PlayerName').text = _GameData._PersonalInfo._name;
+        this._LabelVar('PlayerName').text = _PersonalInfo._name;
         const left = 120;
         this._ImgVar('Middle').width = this._Owner.width - 160;
         this._ImgVar('Collect').x = (this._ImgVar('Middle').width - left * 2) * 0 / 4 + left;
 
-        _GameData._Tweeting._forwardedNum += 50;
-        (this._ImgVar('Forwarded').getChildAt(0) as Laya.Label).text = _GameData._Tweeting._forwardedNum.toString();
+        _Tweeting._forwardedNum += 50;
+        (this._ImgVar('Forwarded').getChildAt(0) as Laya.Label).text = _Tweeting._forwardedNum.toString();
         this._ImgVar('Forwarded').x = (this._ImgVar('Middle').width - left * 2) * 1 / 4 + left;
 
-        _GameData._Tweeting._commentNum += 50;
-        (this._ImgVar('Comment').getChildAt(0) as Laya.Label).text = _GameData._Tweeting._commentNum.toString();
+        _Tweeting._commentNum += 50;
+        (this._ImgVar('Comment').getChildAt(0) as Laya.Label).text = _Tweeting._commentNum.toString();
         this._ImgVar('Comment').x = (this._ImgVar('Middle').width - left * 2) * 2 / 4 + left;
 
-        _GameData._Tweeting._likeNum += 100;
-        (this._ImgVar('Like').getChildAt(0) as Laya.Label).text = _GameData._Tweeting._likeNum.toString();
+        _Tweeting._likeNum += 100;
+        (this._ImgVar('Like').getChildAt(0) as Laya.Label).text = _Tweeting._likeNum.toString();
         this._ImgVar('Like').x = (this._ImgVar('Middle').width - left * 2) * 3 / 4 + left;
 
         this._ImgVar('Bottom').width = this._Owner.width - 160;
         const iconArr = Tools._Number.randomCountBySection(1, 20, 2);
-        const twoObj = _GameData._Ranking._Table._randomCountObj(2);
+        const twoObj = _Ranking._Data._randomCountObj(2);
         for (let index = 0; index < 2; index++) {
             const Reply = this._ImgVar(`Reply${index + 1}`)
             const Icon1 = Reply.getChildByName('HeadIcon').getChildAt(0) as Laya.Image;
