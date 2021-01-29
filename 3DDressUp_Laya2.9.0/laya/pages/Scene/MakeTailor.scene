@@ -1,14 +1,14 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":2,
-    "selecteID":778,
+    "selectedBox":783,
+    "selecteID":6839,
     "searchKey":"Scene",
     "referenceLines":[
         ],
     "props":{"width":1280,"sceneColor":"#000000","height":720},
     "nodeParent":-1,
-    "maxID":6838,
+    "maxID":6840,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -274,8 +274,23 @@
                                 {
                                     "x":60,
                                     "type":"Label",
+                                    "searchKey":"Label,UnlockWayNum",
+                                    "props":{"y":101,"x":23,"wordWrap":true,"width":115,"valign":"middle","text":"（3/3）","strokeColor":"#101638","stroke":3,"overflow":"visible","name":"UnlockWayNum","leading":5,"height":39,"fontSize":28,"color":"#ffffff","centerY":33,"centerX":0,"bold":true,"align":"center"},
+                                    "nodeParent":783,
+                                    "label":"UnlockWayNum",
+                                    "isOpen":true,
+                                    "isDirectory":false,
+                                    "isAniNode":false,
+                                    "hasChild":false,
+                                    "compId":6839,
+                                    "child":[
+                                        ]
+                                },
+                                {
+                                    "x":60,
+                                    "type":"Label",
                                     "searchKey":"Label,UnlockWay",
-                                    "props":{"wordWrap":true,"width":115,"valign":"middle","text":"制作衣服（3/3）","strokeColor":"#101638","stroke":3,"overflow":"visible","name":"UnlockWay","leading":5,"height":65,"fontSize":28,"color":"#ffffff","centerY":0,"centerX":0,"bold":true,"align":"center"},
+                                    "props":{"wordWrap":true,"width":115,"valign":"middle","text":"制作衣服","strokeColor":"#101638","stroke":3,"overflow":"visible","name":"UnlockWay","leading":5,"height":55,"fontSize":28,"color":"#ffffff","centerY":0,"centerX":0,"bold":true,"align":"center"},
                                     "nodeParent":783,
                                     "label":"UnlockWay",
                                     "isOpen":true,

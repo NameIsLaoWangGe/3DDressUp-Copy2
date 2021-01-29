@@ -110,9 +110,7 @@ export module Lwg {
         /**场景控制,访问特定场景用_sceneControl[name]访问*/
         export let _SceneControl = {};
         /**和场景名称一样的脚本,这个脚本唯一，不可随意调用*/
-        export let _sceneScript = {};
-        /**场景模块*/
-        export let _Moudel = {};
+        export let _SceneScript = {};
         /**常用场景的名称，和脚本默认导出类名保持一致*/
         export enum _SceneName {
             PreLoad = 'PreLoad',
@@ -238,14 +236,12 @@ export module Lwg {
                     } else {
                         Laya.stage.addChild(this._openScene);
                     }
-                    if (_Moudel[`_${this._openScene.name}`]) {
-                        if (_Moudel[`_${this._openScene.name}`][this._openScene.name]) {
-                            if (!this._openScene.getComponent(_Moudel[`_${this._openScene.name}`][this._openScene.name])) {
-                                this._openScene.addComponent(_Moudel[`_${this._openScene.name}`][this._openScene.name]);
-                            }
+                    if (_SceneScript[this._openScene.name]) {
+                        if (!this._openScene.getComponent(_SceneScript[this._openScene.name])) {
+                            this._openScene.addComponent(_SceneScript[this._openScene.name]);
                         }
                     } else {
-                        console.log(`${this._openScene.name}场景没有同名脚本！,需在LwgInit脚本中导入该模块！`);
+                        console.log(`${this._openScene.name}场景没有同名脚本！,需在LwgInit脚本中导入该脚本！`);
                     }
                     this._openZOderUp();
                     this._openFunc();
@@ -9026,16 +9022,16 @@ export module Lwg {
                             // console.log('预加载完毕开始打开界面！')
                         } else {
                             //游戏开始前
-                            for (const key in Admin._Moudel) {
-                                if (Object.prototype.hasOwnProperty.call(Admin._Moudel, key)) {
-                                    const element = Admin._Moudel[key];
-                                    if (element['_init']) {
-                                        element['_init']();
-                                    } else {
-                                        console.log(element, '模块没有初始化函数！');
-                                    }
-                                }
-                            }
+                            // for (const key in Admin._Moudel) {
+                            //     if (Object.prototype.hasOwnProperty.call(Admin._Moudel, key)) {
+                            //         const element = Admin._Moudel[key];
+                            //         if (element['_init']) {
+                            //             element['_init']();
+                            //         } else {
+                            //             console.log(element, '模块没有初始化函数！');
+                            //         }
+                            //     }
+                            // }
                             AudioAdmin._playMusic();
                             // 页面前
                             this._openScene(_SceneName.Start, true, false, () => {

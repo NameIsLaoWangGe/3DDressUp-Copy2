@@ -1,14 +1,14 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":2,
-    "selecteID":4432,
+    "selectedBox":4436,
+    "selecteID":4645,
     "searchKey":"View",
     "referenceLines":[
         ],
     "props":{"width":1280,"sceneColor":"#a4a4a4","height":720},
     "nodeParent":-1,
-    "maxID":4644,
+    "maxID":4646,
     "label":"View",
     "isOpen":true,
     "isDirectory":true,
@@ -439,21 +439,6 @@
                                 },
                                 {
                                     "x":60,
-                                    "type":"Label",
-                                    "searchKey":"Label,UnlockWay",
-                                    "props":{"y":29,"x":7,"wordWrap":true,"width":115,"valign":"middle","text":"制作衣服（3/3）","strokeColor":"#101638","stroke":3,"overflow":"visible","name":"UnlockWay","leading":5,"height":65,"fontSize":25,"color":"#ffffff","centerY":0,"centerX":0,"bold":true,"align":"center"},
-                                    "nodeParent":4436,
-                                    "label":"UnlockWay",
-                                    "isOpen":true,
-                                    "isDirectory":false,
-                                    "isAniNode":false,
-                                    "hasChild":false,
-                                    "compId":4641,
-                                    "child":[
-                                        ]
-                                },
-                                {
-                                    "x":60,
                                     "type":"Image",
                                     "searchKey":"Image,AdsSign",
                                     "props":{"width":36,"visible":false,"skin":"Game/UI/Common/shipin.png","name":"AdsSign","centerY":0,"centerX":0},
@@ -466,6 +451,36 @@
                                     "child":[
                                         ],
                                     "$HIDDEN":false
+                                },
+                                {
+                                    "x":60,
+                                    "type":"Label",
+                                    "searchKey":"Label,UnlockWayNum",
+                                    "props":{"y":75,"x":7,"wordWrap":true,"width":115,"valign":"middle","text":"（3/3）","strokeColor":"#101638","stroke":3,"overflow":"visible","name":"UnlockWayNum","leading":5,"height":39,"fontSize":28,"color":"#ffffff","centerY":33,"centerX":0,"bold":true,"align":"center"},
+                                    "nodeParent":4436,
+                                    "label":"UnlockWayNum",
+                                    "isOpen":true,
+                                    "isDirectory":false,
+                                    "isAniNode":false,
+                                    "hasChild":false,
+                                    "compId":4645,
+                                    "child":[
+                                        ]
+                                },
+                                {
+                                    "x":60,
+                                    "type":"Label",
+                                    "searchKey":"Label,UnlockWay",
+                                    "props":{"y":0,"x":0,"wordWrap":true,"width":115,"valign":"middle","text":"制作衣服","strokeColor":"#101638","stroke":3,"overflow":"visible","name":"UnlockWay","leading":5,"height":55,"fontSize":28,"color":"#ffffff","centerY":0,"centerX":0,"bold":true,"align":"center"},
+                                    "nodeParent":4436,
+                                    "label":"UnlockWay",
+                                    "isOpen":true,
+                                    "isDirectory":false,
+                                    "isAniNode":false,
+                                    "hasChild":false,
+                                    "compId":4644,
+                                    "child":[
+                                        ]
                                 }]
                         }]
                 },

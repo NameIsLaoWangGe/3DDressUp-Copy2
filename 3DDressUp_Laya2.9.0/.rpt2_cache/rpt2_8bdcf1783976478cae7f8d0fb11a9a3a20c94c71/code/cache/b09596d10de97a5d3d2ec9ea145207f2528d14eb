@@ -1,0 +1,8 @@
+{
+  "code": "import { Admin } from \"../Lwg/Lwg\";\r\nimport { _GameAni } from \"./_GameAni\";\r\nimport { _GameData } from \"./_GameData\";\r\nexport class BackHint extends Admin._SceneBase {\r\n    constructor() {\r\n        super(...arguments);\r\n        this.closeAniType = null;\r\n    }\r\n    lwgOpenAni() {\r\n        return _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));\r\n    }\r\n    lwgButton() {\r\n        this._btnUp(this._ImgVar('BtnLeave'), () => {\r\n            _GameData._PreLoadCutIn._fromBack = true;\r\n            _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {\r\n                this._Owner.close();\r\n                _GameData._BackHint._fromScene[_GameData._BackHint._fromScene.name]._openScene('Start', true, true);\r\n            });\r\n        });\r\n        var close = () => {\r\n            this.closeAniType = 100;\r\n            _GameData._BackHint._3dToSp && _GameData._BackHint._3dToSp.destroy();\r\n            _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {\r\n                this._Owner.close();\r\n            });\r\n        };\r\n        this._btnUp(this._ImgVar('BtnContinue'), () => {\r\n            close();\r\n        });\r\n        this._btnUp(this._ImgVar('BtnClose'), () => {\r\n            close();\r\n        });\r\n    }\r\n    lwgCloseAni() {\r\n        return this.closeAniType;\r\n    }\r\n}\r\n",
+  "references": [
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Lwg/Lwg.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/_GameAni.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/_GameData.ts"
+  ]
+}

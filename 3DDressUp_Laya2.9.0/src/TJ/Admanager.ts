@@ -1,6 +1,4 @@
 import { Admin, AudioAdmin, Dialogue, EventAdmin, Platform, Setting, _SceneName } from "../script/Lwg/Lwg";
-import { _Task } from "../script/Lwg/_Task";
-
 export default class ADManager {
 
     public static ShowBanner() {
@@ -47,7 +45,6 @@ export default class ADManager {
                 AudioAdmin._playMusic(AudioAdmin._voiceUrl.bgm, 0, 1000);
                 if (rewardAction != null) {
                     rewardAction();
-                    EventAdmin._notify(_Task._Event.adsTime);
                 }
             });
 

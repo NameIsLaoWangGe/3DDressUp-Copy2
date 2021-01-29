@@ -1,0 +1,24 @@
+{
+  "code": "import { Adaptive, Admin, Click, Platform, SceneAnimation, _LwgInit, _LwgInitScene } from \"./Lwg\";\r\nimport { _Guide } from \"./_Guide\";\r\nimport { _PreLoad } from \"./_PreLoad\";\r\nimport { _PreLoadCutIn } from \"./_PreLoadCutIn\";\r\nimport { _Start } from \"./_Start\";\r\nimport { _MakeUp } from \"./_MakeUp\";\r\nimport { _MakeTailor } from \"../Game/_MakeTailor\";\r\nimport { _DressingRoom } from \"../Game/_DressingRoom\";\r\nimport { _MakePattern } from \"../Game/_MakePattern\";\r\nimport { _PersonalInfo } from \"./_PersonalInfo\";\r\nimport { _Ranking } from \"./_Ranking\";\r\nimport { _AdsHint } from \"../Game/_AdsHint\";\r\nimport SubPkg from \"./SubpackController\";\r\nimport { _BackHint } from \"../Game/_BackHint\";\r\nimport { _Tweeting_Main } from \"../Game/_Tweeting_Main\";\r\nimport { _Tweeting_ChoosePhotos } from \"../Game/_Tweeting_ChoosePhotos\";\r\nimport { _Tweeting_Dynamic } from \"../Game/_Tweeting_Dynamic\";\r\nimport { _Tweeting_GetFans } from \"../Game/_Tweeting_GetFans\";\r\nimport { _CheckIn } from \"../Game/_CheckIn\";\r\nexport default class LwgInit extends _LwgInitScene {\r\n    lwgOnAwake() {\r\n        Platform._Ues.value = Platform._Tpye.OPPO;\r\n        SceneAnimation._closeSwitch.value = true;\r\n        SceneAnimation._Use.value = {\r\n            class: SceneAnimation._shutters.Close,\r\n            type: SceneAnimation._shutters.Close._type.random,\r\n        };\r\n        Click._Use.value = Click._Type.reduce;\r\n        Adaptive._Use.value = [1280, 720];\r\n        Admin._Moudel = {\r\n            _LwgInit: _LwgInit,\r\n            _PreLoad: _PreLoad,\r\n            _PreLoadCutIn: _PreLoadCutIn,\r\n            _Guide: _Guide,\r\n            _Start: _Start,\r\n            _MakeTailor: _MakeTailor,\r\n            _MakePattern: _MakePattern,\r\n            _MakeUp: _MakeUp,\r\n            _DressingRoom: _DressingRoom,\r\n            _PersonalInfo: _PersonalInfo,\r\n            _Ranking: _Ranking,\r\n            _BackHint: _BackHint,\r\n            _Tweeting_Main: _Tweeting_Main,\r\n            _Tweeting_ChoosePhotos: _Tweeting_ChoosePhotos,\r\n            _Tweeting_Dynamic: _Tweeting_Dynamic,\r\n            _Tweeting_GetFans: _Tweeting_GetFans,\r\n            _AdsHint: _AdsHint,\r\n            _CheckIn: _CheckIn,\r\n        };\r\n    }\r\n    lwgOnStart() {\r\n        if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {\r\n            let subPkg = new SubPkg();\r\n            subPkg.init();\r\n            this._Owner.close();\r\n        }\r\n        else {\r\n            this._openScene('PreLoad');\r\n        }\r\n    }\r\n}\r\n",
+  "references": [
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Lwg/Lwg.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Lwg/_Guide.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Lwg/_PreLoad.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Lwg/_PreLoadCutIn.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Lwg/_Start.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Lwg/_MakeUp.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/_MakeTailor.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/_DressingRoom.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/_MakePattern.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Lwg/_PersonalInfo.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Lwg/_Ranking.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/_AdsHint.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Lwg/SubpackController.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/_BackHint.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/_Tweeting_Main.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/_Tweeting_ChoosePhotos.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/_Tweeting_Dynamic.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/_Tweeting_GetFans.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/_CheckIn.ts"
+  ]
+}

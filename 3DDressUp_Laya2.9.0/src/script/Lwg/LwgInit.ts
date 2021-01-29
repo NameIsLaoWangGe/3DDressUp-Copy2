@@ -1,30 +1,28 @@
 import { Adaptive, Admin, Click, Platform, SceneAnimation, _LwgInit, _LwgInitScene } from "./Lwg";
-import { _Game } from "./_Game";
-import { _Guide } from "./_Guide";
-import { _PreLoad } from "./_PreLoad";
-import { _PreLoadCutIn } from "./_PreLoadCutIn";
-import { _Start } from "./_Start";
-import { _MakeUp } from "./_MakeUp";
-import { _MakeTailor } from "./_MakeTailor";
-import { _DressingRoom } from "./_DressingRoom";
-import { _MakePattern } from "./_MakePattern";
-import { _PersonalInfo } from "./_PersonalInfo";
-import { _Ranking } from "./_Ranking";
-import { _AdsHint } from "./_AdsHint";
+import PreLoadCutIn from "../Game/PreLoadCutIn";
 import SubPkg from "./SubpackController";
-import { _BackHint } from "./_BackHint";
-import { _Tweeting_Main } from "./_Tweeting_Main";
-import { _Tweeting_ChoosePhotos } from "./_Tweeting_ChoosePhotos";
-import { _Tweeting_Dynamic } from "./_Tweeting_Dynamic";
-import { _Tweeting_GetFans } from "./_Tweeting_GetFans";
-import { _CheckIn } from "./_CheckIn";
+import Guide from "../Game/Guide";
+import PreLoad from "../Game/PreLoad";
+import { MakeTailor } from "../Game/MakeTailor";
+import Start from "../Game/Start";
+import MakePattern from "../Game/MakePattern";
+import DressingRoom from "../Game/DressingRoom";
+import PersonalInfo from "../Game/PersonalInfo";
+import Ranking from "../Game/Ranking";
+import { BackHint } from "../Game/BackHint";
+import Tweeting_Main from "../Game/Tweeting_Main";
+import Tweeting_ChoosePhotos from "../Game/Tweeting_ChoosePhotos";
+import Tweeting_Dynamic from "../Game/Tweeting_Dynamic";
+import Tweeting_GetFans from "../Game/Tweeting_GetFans";
+import AdsHint from "../Game/AdsHint";
+import CheckIn from "../Game/CheckIn";
 export default class LwgInit extends _LwgInitScene {
     lwgOnAwake(): void {
         // _LwgInit._pkgInfo = [
         //     { name: "res", root: "res/" },
         //     { name: "Game", root: "Game/" },
         // ];
-        Platform._Ues.value = Platform._Tpye.OPPOTest;
+        Platform._Ues.value = Platform._Tpye.OPPO;
         // Laya.Stat.show();
         SceneAnimation._closeSwitch.value = true;
         SceneAnimation._Use.value = {
@@ -33,26 +31,23 @@ export default class LwgInit extends _LwgInitScene {
         };
         Click._Use.value = Click._Type.reduce;
         Adaptive._Use.value = [1280, 720];
-        Admin._Moudel = {
-            _LwgInit: _LwgInit,
-            _PreLoad: _PreLoad,
-            _PreLoadCutIn: _PreLoadCutIn,
-            _Guide: _Guide,
-            _Start: _Start,
-            _Game: _Game,
-            _MakeTailor: _MakeTailor,
-            _MakePattern: _MakePattern,
-            _MakeUp: _MakeUp,
-            _DressingRoom: _DressingRoom,
-            _PersonalInfo: _PersonalInfo,
-            _Ranking: _Ranking,
-            _BackHint: _BackHint,
-            _Tweeting_Main: _Tweeting_Main,
-            _Tweeting_ChoosePhotos: _Tweeting_ChoosePhotos,
-            _Tweeting_Dynamic: _Tweeting_Dynamic,
-            _Tweeting_GetFans: _Tweeting_GetFans,
-            _AdsHint: _AdsHint,
-            _CheckIn: _CheckIn,
+        Admin._SceneScript = {
+            PreLoad: PreLoad,
+            PreLoadCutIn: PreLoadCutIn,
+            Guide: Guide,
+            Start: Start,
+            MakeTailor: MakeTailor,
+            MakePattern: MakePattern,
+            DressingRoom: DressingRoom,
+            PersonalInfo: PersonalInfo,
+            Ranking: Ranking,
+            BackHint: BackHint,
+            Tweeting_Main: Tweeting_Main,
+            Tweeting_ChoosePhotos: Tweeting_ChoosePhotos,
+            Tweeting_Dynamic: Tweeting_Dynamic,
+            Tweeting_GetFans: Tweeting_GetFans,
+            AdsHint: AdsHint,
+            CheckIn: CheckIn,
         };
     }
     lwgOnStart(): void {
