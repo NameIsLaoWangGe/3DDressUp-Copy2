@@ -2,7 +2,7 @@ import ADManager, { TaT } from "../../TJ/Admanager";
 import { Animation2D, AudioAdmin, Color, SceneAnimation, TimerAdmin, Tools, _LwgPreLoad, _SceneName } from "../Lwg/Lwg";
 import { _3D } from "./_3D";
 import { _GameData } from "./_GameData";
-import { _GameEffects2D } from "./GameEffects2D";
+import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
 
 export default class PreLoad extends _LwgPreLoad._PreLoadScene {

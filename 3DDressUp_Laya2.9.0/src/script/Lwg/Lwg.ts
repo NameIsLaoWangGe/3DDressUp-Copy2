@@ -2649,59 +2649,57 @@ export module Lwg {
             /**是否被选中*/
             $pitch: any;
         }
+        /**基础获取途径*/
+        export type _BaseUnlockWay = {
+            $ads: string;
+            $gold: string;
+            $customs: string;
+            $diamond: string;
+            $free: string;
+            $check: string;
+        }
 
         /**listItem脚本，此脚本中的$awake，$button替代所有流程方法，不要使用OnEnable，onstart禁用，因为渲染时会反复执行，只有onawake执行一次,所有属性暂时不可赋值，因为赋值后需要调用$render方法和控制类进行刷新，索性直接通过控制类修改属性，这样更加统一*/
         export class _Item extends Admin._ObjectBase implements _BaseProperty {
             get $name(): string { return this.$data ? this.$data['name'] : null; }
-            // set $name(_name: string) { this.$data['name'] = _name; }
             get $serial(): number { return this.$data ? this.$data['serial'] : null; }
-            // set $serial(_serial: number) { this.$data['serial'] = _serial; }
             get $sort(): string { return this.$data ? this.$data['sort'] : null; }
-            // set $sort(_sort: string) { this.$data['sort'] = _sort; }
             get $chName(): string { return this.$data ? this.$data['chName'] : null; }
-            // set $chName(_chName: string) { this.$data['chName'] = _chName; }
             get $classify(): string { return this.$data ? this.$data['classify'] : null; }
-            // set $classify(_classify: string) { this.$data['classify'] = _classify; }
             get $unlockWay(): string { return this.$data ? this.$data['unlockWay'] : null; }
-            // set $unlockWay(_unlockWay: string) { this.$data['unlockWay'] = _unlockWay; }
             get $conditionNum(): number { return this.$data ? this.$data['conditionNum'] : null; }
-            // set $conditionNum(_conditionNum: number) { this.$data['conditionNum'] = _conditionNum; }
             get $degreeNum(): number { return this.$data ? this.$data['degreeNum'] : null; }
-            // set $degreeNum(_degreeNum: number) { this.$data['degreeNum'] = _degreeNum; }
             get $otherDegreeNum(): number { return this.$data ? this.$data['otherDegreeNum'] : null; }
-            // set $otherDegreeNum(_degreeNum: number) { this.$data['otherDegreeNum'] = _degreeNum; }
             get $complete(): boolean { return this.$data ? this.$data['complete'] : null; }
-            // set $complete(_compelet: boolean) { this.$data['complete'] = _compelet; }
             get $otherComplete(): boolean { return this.$data ? this.$data['otherComplete'] : null; }
-            // set $otherComplete(_compelet: boolean) { this.$data['otherComplete'] = _compelet; }
             get $getAward(): boolean { return this.$data ? this.$data['getAward'] : null; }
-            // set $getAward(_getAward: boolean) { this.$data['getAward'] = _getAward; }
             get $otherGetAward(): boolean { return this.$data ? this.$data['otherGetAward'] : null; }
-            // set $otherGetAward(_getAward: boolean) { this.$data['otherGetAward'] = _getAward; }
             get $rewardType(): string { return this.$data ? this.$data['rewardType'] : null; }
-            // set $rewardType(_getAward: string) { this.$data['rewardType'] = _getAward; }
             get $otherRewardType(): string { return this.$data ? this.$data['otherRewardType'] : null; }
-            // set $otherRewardType(_getAward: string) { this.$data['otherRewardType'] = _getAward; }
             get $pitch(): boolean { return this.$data ? this.$data['pitch'] : null; }
-            // set $pitch(_pitch: boolean) { this.$data['pitch'] = _pitch; }
             /**数据对象，通过item赋值*/
-            get $data(): string {
+            get $data(): any {
                 if (!this['item/dataSource']) {
-                    console.log('data没有赋值！也可能是数据源赋值给Data延时！');
+                    console.log('data没有赋值！也可能是数据源赋值给data延时！');
                 }
                 return this['item/dataSource'];
             }
-            set $data(data: string) { this['item/dataSource'] = data; }
+            set $data(data: any) { this['item/dataSource'] = data; }
             /**数据源在数组中的序号*/
             get $dataIndex(): number { return this['item/dataIndex']; }
             set $dataIndex(_dataIndex: number) { this['item/dataIndex'] = _dataIndex; }
-            /**整个_arr表格，不是listArr，一般不会做操作*/
-            get $dataArr(): any[] { return this['item/_dataArr']; }
-            set $dataArr(arr: any[]) { this['item/_dataArr'] = arr; }
             /**整个_arr数据表名称*/
             get $dataArrName(): string { return this['item/dataArrName']; }
             set $dataArrName(name: string) {
                 this['item/dataArrName'] = name;
+            }
+            $unlockWayType: _BaseUnlockWay = {
+                $ads: 'ads',
+                $gold: 'gold',
+                $customs: 'customs',
+                $diamond: 'diamond',
+                $free: 'free',
+                $check: 'check',
             }
             /**渲染内容*/
             $render(): void { };
@@ -2739,13 +2737,13 @@ export module Lwg {
             /**其他属性枚举重写添加*/
             _otherPro: any;
             /**一般解锁方式枚举*/
-            _unlockWay = {
-                ads: 'ads',
-                gold: 'gold',
-                customs: 'customs',
-                diamond: 'diamond',
-                free: 'free',
-                check: 'check',
+            _unlockWay: _BaseUnlockWay = {
+                $ads: 'ads',
+                $gold: 'gold',
+                $customs: 'customs',
+                $diamond: 'diamond',
+                $free: 'free',
+                $check: 'check',
             }
             /**奖励类型*/
             _rewardType: any;
@@ -2783,7 +2781,6 @@ export module Lwg {
                             _item = cell.addComponent(this._listRenderScript);
                         }
                         _item.$dataArrName = this._tableName;
-                        _item.$dataArr = this._arr;
                         _item.$dataIndex = index;
                         _item.$data = this._listArray[index];
                         _item.$render();
@@ -2839,8 +2836,7 @@ export module Lwg {
                     }
                 }
             }
-
-            /**设置存储*/
+            /**设置存储和刷新*/
             _refreshAndStorage(): void {
                 if (this._localStorage) {
                     Laya.LocalStorage.setJSON(this._tableName, JSON.stringify(this._arr));
@@ -3771,13 +3767,12 @@ export module Lwg {
         * @param g
         * @param b
          */
-        export function HexStringToRGB(str: string): Array<number> {
-            let arr = [];
-            // let r, g, b;
-            // r = (0xff << 16 & str) >> 16
-            // g = (0xff << 8 & str) >> 8
-            // b = 0xff & str
-            return arr
+        export function HexStringToRGB(str: any): Array<number> {
+            let r: number, g: number, b: number;
+            r = (0xff << 16 & str) >> 16;
+            g = (0xff << 8 & str) >> 8;
+            b = 0xff & str;
+            return [r, g, b];
         }
 
         /**
@@ -9230,89 +9225,12 @@ export module Lwg {
     }
     /**配置模块，拉去资源，分包等*/
     export module _LwgInit {
-        /**分包加载步骤*/
-        export let _pkgStep: number = 0;
-        /**分包信息*/
-        export let _pkgInfo = [
-            { name: "sp1", root: "res" },
-        ];
-        /**开始*/
-        export function _22init() {
-            // switch (Platform._Ues.value) {
-            //     case Platform._Tpye.WeChat:
-            //         _loadPkg_Wechat();
-            //         break;
-            //     case Platform._Tpye.OPPO || Platform._Tpye.VIVO:
-            //         _loadPkg_VIVO();
-            //         break;
-            //     default:
-            //         break;
-            // }
-            // console.log('-------------------------开始分包！');
-            // if (TJ.API.AppInfo.Channel() === TJ.Define.Channel.AppRt.WX_AppRt) {
-            //     _loadPkg_Wechat();
-            // } else if (TJ.API.AppInfo.Channel() === TJ.Define.Channel.AppRt.OPPO_AppRt) {
-            console.log('------------------------开始分包！');
-            _loadPkg_VIVO();
-            // } else {
-            //     Admin._openScene(_SceneName.PreLoad);
-            // }
-        }
-        /**OV*/
-        export function _loadPkg_VIVO() {
-            if (_pkgStep === _pkgInfo.length) {
-                Admin._openScene(_SceneName.PreLoad);
-            } else {
-                let info = _pkgInfo[_pkgStep];
-                let name = info.name;
-                Laya.Browser.window.qg.loadSubpackage({
-                    name: name,
-                    success: (res: any) => {
-                        console.log('++++++++++++++++++++++++++++++++++++++分包成功！', res, _pkgStep);
-                        _pkgStep++;
-                        _loadPkg_VIVO();
-                    },
-                    fail: (res: any) => {
-                        console.error(`load ${name} err: `, res);
-                    },
-                })
-            }
-        }
-        /**WX*/
-        export function _loadPkg_Wechat() {
-            if (_pkgStep === _pkgInfo.length) {
-                Admin._openScene(_SceneName.PreLoad);
-            } else {
-                let info = _pkgInfo[_pkgStep];
-                let name = info.name;
-                let root = info.root;
-                Laya.Browser.window.wx.loadSubpackage({
-                    name: name,
-                    success: (res: any) => {
-                        console.log(`load ${name} suc`);
-                        Laya.MiniAdpter.subNativeFiles[name] = root;
-                        Laya.MiniAdpter.nativefiles.push(root);
-                        _pkgStep++;
-                        console.log("加载次数", _pkgStep);
-                        _loadPkg_Wechat();
-                    },
-                    fail: (res: any) => {
-                        console.error(`load ${name} err: `, res);
-                    },
-                });
-            }
-        }
         export class _LwgInitScene extends Admin._SceneBase {
             lwgOpenAni(): number {
-                return 1;
-            }
-            moduleOnAwake(): void {
+                return 100;
             }
             moduleOnStart(): void {
-                // Admin._openScene(_SceneName.PreLoad);
-                // this._Owner.close();
                 DateAdmin._init();
-                // this._Owner.close();
             };
         }
     }
@@ -9322,35 +9240,35 @@ export module Lwg {
         /**当前剩余行动力的数量*/
         export let _execution = {
             get value(): number {
-                if (!this['_Execution_executionNum']) {
-                    return Laya.LocalStorage.getItem('_Execution_executionNum') ? Number(Laya.LocalStorage.getItem('_Execution_executionNum')) : 15;
+                if (!this['Execution/executionNum']) {
+                    return Laya.LocalStorage.getItem('Execution/executionNumm') ? Number(Laya.LocalStorage.getItem('Execution/executionNum')) : 15;
                 }
-                return this['_Execution_executionNum'];
+                return this['Execution/executionNum'];
             },
             set value(val: number) {
                 console.log(val);
-                this['_Execution_executionNum'] = val;
-                Laya.LocalStorage.setItem('_Execution_executionNum', val.toString());
+                this['Execution/executionNum'] = val;
+                Laya.LocalStorage.setItem('Execution/executionNum', val.toString());
             }
         };
         export let _addExDate = {
             get value(): number {
-                if (!this['_Execution_addExDate']) {
-                    return Laya.LocalStorage.getItem('_Execution_addExDate') ? Number(Laya.LocalStorage.getItem('_Execution_addExDate')) : (new Date()).getDay();
+                if (!this['Execution/addExDate']) {
+                    return Laya.LocalStorage.getItem('Execution/addExDate') ? Number(Laya.LocalStorage.getItem('Execution/addExDate')) : (new Date()).getDay();
                 }
-                return this['_Execution_addExDate'];
+                return this['Execution/addExDate'];
             },
             set value(val: number) {
-                this['_Execution_addExDate'] = val;
-                Laya.LocalStorage.setItem('_Execution_addExDate', val.toString());
+                this['Execution/addExDate'] = val;
+                Laya.LocalStorage.setItem('Execution/addExDate', val.toString());
             }
         };
         export let _addExHours = {
             get value(): number {
-                if (!this['_Execution_addExHours']) {
-                    return Laya.LocalStorage.getItem('_Execution_addExHours') ? Number(Laya.LocalStorage.getItem('_Execution_addExHours')) : (new Date()).getHours();
+                if (!this['Execution/addExHours']) {
+                    return Laya.LocalStorage.getItem('Execution/addExHours') ? Number(Laya.LocalStorage.getItem('Execution/addExHours')) : (new Date()).getHours();
                 }
-                return this['_Execution_addExHours'];
+                return this['Execution/addExHours'];
             },
             set value(val: number) {
                 this['_Execution_addExHours'] = val;
@@ -9419,14 +9337,14 @@ export module Lwg {
             }));
         }
         /**
-         * 创建体力消耗动画
-         * @param  subEx 消耗多少体力值
+         * 创建体力增减动画
+         * @param  subEx 增减多少体力值
          */
-        export function createConsumeEx(subEx): void {
+        export function createConsumeEx(subEx: number): void {
             let label = Laya.Pool.getItemByClass('label', Laya.Label) as Laya.Label;
             label.name = 'label';//标识符和名称一样
             Laya.stage.addChild(label);
-            label.text = '-2';
+            label.text = `${subEx}`;
             label.fontSize = 40;
             label.bold = true;
             label.color = '#59245c';
@@ -9474,6 +9392,8 @@ export module Lwg {
                 _addMinutes.value = d.getMinutes();
             }
 
+            /**计时器开关，超过体力上限值则停止*/
+            timeSwitch: boolean = true;
             /**计时器*/
             time: number = 0;
             /**时钟当前秒数*/
@@ -9501,21 +9421,22 @@ export module Lwg {
                     }
                 }
             }
-            timeSwitch: boolean = true;
-            lwgOnUpdate(): void {
-                if (Number(this.Num.value) >= 15) {
-                    if (this.timeSwitch) {
-                        _execution.value = 15;
-                        this.Num.value = _execution.value.toString();
-                        this.CountDown.text = '00:00';
-                        this.CountDown_board.text = this.CountDown.text;
-                        this.countNum = 60;
-                        this.timeSwitch = false;
+            lwgOnStart(): void {
+                TimerAdmin._frameLoop(1, this, () => {
+                    if (Number(this.Num.value) >= 15) {
+                        if (this.timeSwitch) {
+                            _execution.value = 15;
+                            this.Num.value = _execution.value.toString();
+                            this.CountDown.text = '00:00';
+                            this.CountDown_board.text = this.CountDown.text;
+                            this.countNum = 60;
+                            this.timeSwitch = false;
+                        }
+                    } else {
+                        this.timeSwitch = true;
+                        this.countDownAddEx();
                     }
-                } else {
-                    this.timeSwitch = true;
-                    this.countDownAddEx();
-                }
+                })
             }
         }
     }

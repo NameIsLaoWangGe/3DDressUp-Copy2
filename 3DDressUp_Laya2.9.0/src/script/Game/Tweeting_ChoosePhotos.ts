@@ -2,7 +2,7 @@ import ADManager, { TaT } from "../../TJ/Admanager";
 import { Adaptive, Admin, Animation2D, Click, DataAdmin, DateAdmin, Dialogue, Effects2D, StorageAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
-import { _GameEffects2D } from "./GameEffects2D";
+import { _GameEffects2D } from "./_GameEffects2D";
 
     export default class Tweeting_ChoosePhotos extends Admin._SceneBase {
         photoArr: Laya.Image[];

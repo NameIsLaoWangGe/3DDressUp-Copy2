@@ -8,9 +8,9 @@ export default class PersonalInfo extends Admin._SceneBase {
         ADManager.TAPoint(TaT.BtnShow, 'changename');
 
         this._TextInputVar('NameValue').text = _GameData._PersonalInfo._name;
-        const obj = _GameData._Ranking._ins()._getPitchObj();
-        this._LabelVar('RankValue').text = obj[_GameData._Ranking._ins()._otherPro.rankNum];
-        this._LabelVar('FansValue').text = obj[_GameData._Ranking._ins()._otherPro.fansNum];
+        const obj = _GameData._Ranking._Table._getPitchObj();
+        this._LabelVar('RankValue').text = obj[ _GameData._Ranking._Table._otherPro.rankNum];
+        this._LabelVar('FansValue').text = obj[ _GameData._Ranking._Table._otherPro.fansNum];
     }
 
     lwgOpenAni(): number {

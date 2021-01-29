@@ -2,14 +2,14 @@ import ADManager, { TaT } from "../../TJ/Admanager";
 import { Adaptive, Admin, Animation2D, Click, DataAdmin, DateAdmin, Dialogue, Effects2D, StorageAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
-import { _GameEffects2D } from "./GameEffects2D";
+import { _GameEffects2D } from "./_GameEffects2D";
 
 export default class Tweeting_GetFans extends Admin._SceneBase {
     pitchObj: any;
     fansNum = 0;
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.BtnShow, 'ADrank');
-        this.pitchObj = _GameData._Ranking._ins()._getPitchObj();
+        this.pitchObj = _GameData._Ranking._Table._getPitchObj();
         this.fansNum = Tools._Number.randomOneInt(115, 383);
         this.pitchObj['fansNum'] += this.fansNum;
         this._FontClipVar('FansNum').value = this.fansNum.toString();
@@ -29,7 +29,7 @@ export default class Tweeting_GetFans extends Admin._SceneBase {
     lwgButton(): void {
         // 关闭需执行
         var closeBefore = () => {
-            _GameData._Ranking._ins()._whereFrom = 'Tweeting';
+            _GameData._Ranking._whereFrom = 'Tweeting';
             _GameData._Tweeting._photo.clear();
             this._closeScene('Tweeting_Dynamic');
             this._closeScene();

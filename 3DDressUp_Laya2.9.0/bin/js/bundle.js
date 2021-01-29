@@ -3224,6 +3224,17 @@
         let DataAdmin;
         (function (DataAdmin) {
             class _Item extends Admin._ObjectBase {
+                constructor() {
+                    super(...arguments);
+                    this.$unlockWayType = {
+                        $ads: 'ads',
+                        $gold: 'gold',
+                        $customs: 'customs',
+                        $diamond: 'diamond',
+                        $free: 'free',
+                        $check: 'check',
+                    };
+                }
                 get $name() { return this.$data ? this.$data['name'] : null; }
                 get $serial() { return this.$data ? this.$data['serial'] : null; }
                 get $sort() { return this.$data ? this.$data['sort'] : null; }
@@ -3242,15 +3253,13 @@
                 get $pitch() { return this.$data ? this.$data['pitch'] : null; }
                 get $data() {
                     if (!this['item/dataSource']) {
-                        console.log('data没有赋值！也可能是数据源赋值给Data延时！');
+                        console.log('data没有赋值！也可能是数据源赋值给data延时！');
                     }
                     return this['item/dataSource'];
                 }
                 set $data(data) { this['item/dataSource'] = data; }
                 get $dataIndex() { return this['item/dataIndex']; }
                 set $dataIndex(_dataIndex) { this['item/dataIndex'] = _dataIndex; }
-                get $dataArr() { return this['item/_dataArr']; }
-                set $dataArr(arr) { this['item/_dataArr'] = arr; }
                 get $dataArrName() { return this['item/dataArrName']; }
                 set $dataArrName(name) {
                     this['item/dataArrName'] = name;
@@ -3288,12 +3297,12 @@
                         $otherRewardType: 'otherRewardType',
                     };
                     this._unlockWay = {
-                        ads: 'ads',
-                        gold: 'gold',
-                        customs: 'customs',
-                        diamond: 'diamond',
-                        free: 'free',
-                        check: 'check',
+                        $ads: 'ads',
+                        $gold: 'gold',
+                        $customs: 'customs',
+                        $diamond: 'diamond',
+                        $free: 'free',
+                        $check: 'check',
                     };
                     this._tableName = 'name';
                     this._lastArr = [];
@@ -3339,7 +3348,6 @@
                                 _item = cell.addComponent(this._listRenderScript);
                             }
                             _item.$dataArrName = this._tableName;
-                            _item.$dataArr = this._arr;
                             _item.$dataIndex = index;
                             _item.$data = this._listArray[index];
                             _item.$render();
@@ -4035,8 +4043,11 @@
             }
             Color.RGBToHexString = RGBToHexString;
             function HexStringToRGB(str) {
-                let arr = [];
-                return arr;
+                let r, g, b;
+                r = (0xff << 16 & str) >> 16;
+                g = (0xff << 8 & str) >> 8;
+                b = 0xff & str;
+                return [r, g, b];
             }
             Color.HexStringToRGB = HexStringToRGB;
             function _colour(node, RGBA, vanishtime) {
@@ -7976,66 +7987,9 @@
         })(LwgPreLoad = Lwg.LwgPreLoad || (Lwg.LwgPreLoad = {}));
         let _LwgInit;
         (function (_LwgInit) {
-            _LwgInit._pkgStep = 0;
-            _LwgInit._pkgInfo = [
-                { name: "sp1", root: "res" },
-            ];
-            function _22init() {
-                console.log('------------------------开始分包！');
-                _loadPkg_VIVO();
-            }
-            _LwgInit._22init = _22init;
-            function _loadPkg_VIVO() {
-                if (_LwgInit._pkgStep === _LwgInit._pkgInfo.length) {
-                    Admin._openScene(_SceneName.PreLoad);
-                }
-                else {
-                    let info = _LwgInit._pkgInfo[_LwgInit._pkgStep];
-                    let name = info.name;
-                    Laya.Browser.window.qg.loadSubpackage({
-                        name: name,
-                        success: (res) => {
-                            console.log('++++++++++++++++++++++++++++++++++++++分包成功！', res, _LwgInit._pkgStep);
-                            _LwgInit._pkgStep++;
-                            _loadPkg_VIVO();
-                        },
-                        fail: (res) => {
-                            console.error(`load ${name} err: `, res);
-                        },
-                    });
-                }
-            }
-            _LwgInit._loadPkg_VIVO = _loadPkg_VIVO;
-            function _loadPkg_Wechat() {
-                if (_LwgInit._pkgStep === _LwgInit._pkgInfo.length) {
-                    Admin._openScene(_SceneName.PreLoad);
-                }
-                else {
-                    let info = _LwgInit._pkgInfo[_LwgInit._pkgStep];
-                    let name = info.name;
-                    let root = info.root;
-                    Laya.Browser.window.wx.loadSubpackage({
-                        name: name,
-                        success: (res) => {
-                            console.log(`load ${name} suc`);
-                            Laya.MiniAdpter.subNativeFiles[name] = root;
-                            Laya.MiniAdpter.nativefiles.push(root);
-                            _LwgInit._pkgStep++;
-                            console.log("加载次数", _LwgInit._pkgStep);
-                            _loadPkg_Wechat();
-                        },
-                        fail: (res) => {
-                            console.error(`load ${name} err: `, res);
-                        },
-                    });
-                }
-            }
-            _LwgInit._loadPkg_Wechat = _loadPkg_Wechat;
             class _LwgInitScene extends Admin._SceneBase {
                 lwgOpenAni() {
-                    return 1;
-                }
-                moduleOnAwake() {
+                    return 100;
                 }
                 moduleOnStart() {
                     DateAdmin._init();
@@ -8048,35 +8002,35 @@
         (function (Execution) {
             Execution._execution = {
                 get value() {
-                    if (!this['_Execution_executionNum']) {
-                        return Laya.LocalStorage.getItem('_Execution_executionNum') ? Number(Laya.LocalStorage.getItem('_Execution_executionNum')) : 15;
+                    if (!this['Execution/executionNum']) {
+                        return Laya.LocalStorage.getItem('Execution/executionNumm') ? Number(Laya.LocalStorage.getItem('Execution/executionNum')) : 15;
                     }
-                    return this['_Execution_executionNum'];
+                    return this['Execution/executionNum'];
                 },
                 set value(val) {
                     console.log(val);
-                    this['_Execution_executionNum'] = val;
-                    Laya.LocalStorage.setItem('_Execution_executionNum', val.toString());
+                    this['Execution/executionNum'] = val;
+                    Laya.LocalStorage.setItem('Execution/executionNum', val.toString());
                 }
             };
             Execution._addExDate = {
                 get value() {
-                    if (!this['_Execution_addExDate']) {
-                        return Laya.LocalStorage.getItem('_Execution_addExDate') ? Number(Laya.LocalStorage.getItem('_Execution_addExDate')) : (new Date()).getDay();
+                    if (!this['Execution/addExDate']) {
+                        return Laya.LocalStorage.getItem('Execution/addExDate') ? Number(Laya.LocalStorage.getItem('Execution/addExDate')) : (new Date()).getDay();
                     }
-                    return this['_Execution_addExDate'];
+                    return this['Execution/addExDate'];
                 },
                 set value(val) {
-                    this['_Execution_addExDate'] = val;
-                    Laya.LocalStorage.setItem('_Execution_addExDate', val.toString());
+                    this['Execution/addExDate'] = val;
+                    Laya.LocalStorage.setItem('Execution/addExDate', val.toString());
                 }
             };
             Execution._addExHours = {
                 get value() {
-                    if (!this['_Execution_addExHours']) {
-                        return Laya.LocalStorage.getItem('_Execution_addExHours') ? Number(Laya.LocalStorage.getItem('_Execution_addExHours')) : (new Date()).getHours();
+                    if (!this['Execution/addExHours']) {
+                        return Laya.LocalStorage.getItem('Execution/addExHours') ? Number(Laya.LocalStorage.getItem('Execution/addExHours')) : (new Date()).getHours();
                     }
-                    return this['_Execution_addExHours'];
+                    return this['Execution/addExHours'];
                 },
                 set value(val) {
                     this['_Execution_addExHours'] = val;
@@ -8138,7 +8092,7 @@
                 let label = Laya.Pool.getItemByClass('label', Laya.Label);
                 label.name = 'label';
                 Laya.stage.addChild(label);
-                label.text = '-2';
+                label.text = `${subEx}`;
                 label.fontSize = 40;
                 label.bold = true;
                 label.color = '#59245c';
@@ -8155,9 +8109,9 @@
             class ExecutionNode extends Admin._ObjectBase {
                 constructor() {
                     super(...arguments);
+                    this.timeSwitch = true;
                     this.time = 0;
                     this.countNum = 59;
-                    this.timeSwitch = true;
                 }
                 lwgOnAwake() {
                     this.Num = this._Owner.getChildByName('Num');
@@ -8209,21 +8163,23 @@
                         }
                     }
                 }
-                lwgOnUpdate() {
-                    if (Number(this.Num.value) >= 15) {
-                        if (this.timeSwitch) {
-                            Execution._execution.value = 15;
-                            this.Num.value = Execution._execution.value.toString();
-                            this.CountDown.text = '00:00';
-                            this.CountDown_board.text = this.CountDown.text;
-                            this.countNum = 60;
-                            this.timeSwitch = false;
+                lwgOnStart() {
+                    TimerAdmin._frameLoop(1, this, () => {
+                        if (Number(this.Num.value) >= 15) {
+                            if (this.timeSwitch) {
+                                Execution._execution.value = 15;
+                                this.Num.value = Execution._execution.value.toString();
+                                this.CountDown.text = '00:00';
+                                this.CountDown_board.text = this.CountDown.text;
+                                this.countNum = 60;
+                                this.timeSwitch = false;
+                            }
                         }
-                    }
-                    else {
-                        this.timeSwitch = true;
-                        this.countDownAddEx();
-                    }
+                        else {
+                            this.timeSwitch = true;
+                            this.countDownAddEx();
+                        }
+                    });
                 }
             }
             Execution.ExecutionNode = ExecutionNode;
@@ -8258,185 +8214,183 @@
     let _LwgInit = Lwg._LwgInit;
     let _LwgInitScene = Lwg._LwgInit._LwgInitScene;
 
-    var _Res;
-    (function (_Res) {
-        _Res._list = {
-            scene3D: {
-                MakeClothes: {
-                    url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/_Lwg3D/_Scene/LayaScene_3DDressUp/Conventional/3DDressUp.ls`,
-                    Scene: null,
-                },
+    class _Res {
+    }
+    _Res._list = {
+        scene3D: {
+            MakeClothes: {
+                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/_Lwg3D/_Scene/LayaScene_3DDressUp/Conventional/3DDressUp.ls`,
+                Scene: null,
             },
-            pic2D: {
-                Effects: "res/atlas/lwg/Effects.png",
+        },
+        pic2D: {
+            Effects: "res/atlas/lwg/Effects.png",
+        },
+        prefab2D: {
+            NativeRoot: {
+                url: 'Prefab/NativeRoot.json',
+                prefab: new Laya.Prefab,
             },
-            prefab2D: {
-                NativeRoot: {
-                    url: 'Prefab/NativeRoot.json',
-                    prefab: new Laya.Prefab,
-                },
-                BtnAgain: {
-                    url: 'Prefab/BtnAGainTow.json',
-                    prefab: new Laya.Prefab,
-                },
-                BtnBack: {
-                    url: 'Prefab/BtnBack3.json',
-                    prefab: new Laya.Prefab,
-                },
-                BtnRollback: {
-                    url: 'Prefab/BtnRollback.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_bottom_002_final: {
-                    url: 'Prefab/diy_bottom_002_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_bottom_003_final: {
-                    url: 'Prefab/diy_bottom_003_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_bottom_004_final: {
-                    url: 'Prefab/diy_bottom_004_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_bottom_005_final: {
-                    url: 'Prefab/diy_bottom_005_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_bottom_006_final: {
-                    url: 'Prefab/diy_bottom_006_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_dress_001_final: {
-                    url: 'Prefab/diy_dress_001_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_dress_002_final: {
-                    url: 'Prefab/diy_dress_002_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_dress_003_final: {
-                    url: 'Prefab/diy_dress_003_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_dress_004_final: {
-                    url: 'Prefab/diy_dress_004_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_dress_005_final: {
-                    url: 'Prefab/diy_dress_005_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_dress_006_final: {
-                    url: 'Prefab/diy_dress_006_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_dress_007_final: {
-                    url: 'Prefab/diy_dress_007_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_dress_008_final: {
-                    url: 'Prefab/diy_dress_008_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_top_003_final: {
-                    url: 'Prefab/diy_top_003_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_top_004_final: {
-                    url: 'Prefab/diy_top_004_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_top_005_final: {
-                    url: 'Prefab/diy_top_005_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_top_006_final: {
-                    url: 'Prefab/diy_top_006_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_top_007_final: {
-                    url: 'Prefab/diy_top_007_final.json',
-                    prefab: new Laya.Prefab,
-                },
-                diy_top_008_final: {
-                    url: 'Prefab/diy_top_008_final.json',
-                    prefab: new Laya.Prefab,
-                },
+            BtnAgain: {
+                url: 'Prefab/BtnAGainTow.json',
+                prefab: new Laya.Prefab,
             },
-            texture: {},
-            texture2D: {
-                bgStart: {
-                    url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgStart.jpg`,
-                    texture2D: null,
-                },
+            BtnBack: {
+                url: 'Prefab/BtnBack3.json',
+                prefab: new Laya.Prefab,
             },
-            scene2D: {
-                Start: `Scene/${'Start'}.json`,
-                Guide: `Scene/${'Guide'}.json`,
-                PreLoadStep: `Scene/${'PreLoadCutIn'}.json`,
-                MakePattern: `Scene/${'MakePattern'}.json`,
-                MakeTailor: `Scene/${'MakeTailor'}.json`,
+            BtnRollback: {
+                url: 'Prefab/BtnRollback.json',
+                prefab: new Laya.Prefab,
             },
-            json: {
-                GeneralClothes: {
-                    url: `_LwgData/_DressingRoom/GeneralClothes.json`,
-                    dataArr: new Array,
-                },
-                DIYClothes: {
-                    url: `_LwgData/_MakeTailor/DIYClothes.json`,
-                    dataArr: new Array,
-                },
-                DIYClothesDiff: {
-                    url: `_LwgData/_MakeTailor/DIYClothesDiff.json`,
-                    dataArr: new Array,
-                },
-                MakePattern: {
-                    url: `_LwgData/_MakePattern/MakePattern.json`,
-                    dataArr: new Array,
-                },
-                Ranking: {
-                    url: `_LwgData/_Ranking/Ranking.json`,
-                    dataArr: new Array,
-                },
-                CheckIn: {
-                    url: `_LwgData/_CheckIn/CheckIn.json`,
-                    dataArr: new Array,
-                }
+            diy_bottom_002_final: {
+                url: 'Prefab/diy_bottom_002_final.json',
+                prefab: new Laya.Prefab,
             },
-        };
-    })(_Res || (_Res = {}));
-    var _CutInRes;
-    (function (_CutInRes) {
-        _CutInRes.Start = {
-            texture2D: {
-                bgStart: {
-                    url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgStart.jpg`,
-                    texture2D: null,
-                },
+            diy_bottom_003_final: {
+                url: 'Prefab/diy_bottom_003_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_bottom_004_final: {
+                url: 'Prefab/diy_bottom_004_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_bottom_005_final: {
+                url: 'Prefab/diy_bottom_005_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_bottom_006_final: {
+                url: 'Prefab/diy_bottom_006_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_001_final: {
+                url: 'Prefab/diy_dress_001_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_002_final: {
+                url: 'Prefab/diy_dress_002_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_003_final: {
+                url: 'Prefab/diy_dress_003_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_004_final: {
+                url: 'Prefab/diy_dress_004_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_005_final: {
+                url: 'Prefab/diy_dress_005_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_006_final: {
+                url: 'Prefab/diy_dress_006_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_007_final: {
+                url: 'Prefab/diy_dress_007_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_008_final: {
+                url: 'Prefab/diy_dress_008_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_top_003_final: {
+                url: 'Prefab/diy_top_003_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_top_004_final: {
+                url: 'Prefab/diy_top_004_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_top_005_final: {
+                url: 'Prefab/diy_top_005_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_top_006_final: {
+                url: 'Prefab/diy_top_006_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_top_007_final: {
+                url: 'Prefab/diy_top_007_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_top_008_final: {
+                url: 'Prefab/diy_top_008_final.json',
+                prefab: new Laya.Prefab,
+            },
+        },
+        texture: {},
+        texture2D: {
+            bgStart: {
+                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgStart.jpg`,
+                texture2D: null,
+            },
+        },
+        scene2D: {
+            Start: `Scene/${'Start'}.json`,
+            Guide: `Scene/${'Guide'}.json`,
+            PreLoadStep: `Scene/${'PreLoadCutIn'}.json`,
+            MakePattern: `Scene/${'MakePattern'}.json`,
+            MakeTailor: `Scene/${'MakeTailor'}.json`,
+        },
+        json: {
+            GeneralClothes: {
+                url: `_LwgData/_DressingRoom/GeneralClothes.json`,
+                dataArr: new Array,
+            },
+            DIYClothes: {
+                url: `_LwgData/_MakeTailor/DIYClothes.json`,
+                dataArr: new Array,
+            },
+            DIYClothesDiff: {
+                url: `_LwgData/_MakeTailor/DIYClothesDiff.json`,
+                dataArr: new Array,
+            },
+            MakePattern: {
+                url: `_LwgData/_MakePattern/MakePattern.json`,
+                dataArr: new Array,
+            },
+            Ranking: {
+                url: `_LwgData/_Ranking/Ranking.json`,
+                dataArr: new Array,
+            },
+            CheckIn: {
+                url: `_LwgData/_CheckIn/CheckIn.json`,
+                dataArr: new Array,
             }
-        };
-        _CutInRes.MakePattern = {
-            texture2D: {
-                bgMakePattern: {
-                    url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgMakePattern.jpg`,
-                    texture2D: null,
-                },
-                bgPhoto: {
-                    url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgPhoto.png`,
-                    texture2D: null,
-                },
-            }
-        };
-        _CutInRes.DressingRoom = {
-            texture2D: {
-                bgDressingRoom: {
-                    url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgDressingRoom.jpg`,
-                    texture2D: null,
-                },
-            }
-        };
-    })(_CutInRes || (_CutInRes = {}));
+        },
+    };
+    class _CutInRes {
+    }
+    _CutInRes.Start = {
+        texture2D: {
+            bgStart: {
+                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgStart.jpg`,
+                texture2D: null,
+            },
+        }
+    };
+    _CutInRes.MakePattern = {
+        texture2D: {
+            bgMakePattern: {
+                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgMakePattern.jpg`,
+                texture2D: null,
+            },
+            bgPhoto: {
+                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgPhoto.png`,
+                texture2D: null,
+            },
+        }
+    };
+    _CutInRes.DressingRoom = {
+        texture2D: {
+            bgDressingRoom: {
+                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgDressingRoom.jpg`,
+                texture2D: null,
+            },
+        }
+    };
 
     var _3D;
     (function (_3D) {
@@ -8667,6 +8621,8 @@
         _3D.DIYCloth = DIYCloth;
     })(_3D || (_3D = {}));
 
+    class _GameData1 {
+    }
     var _GameData;
     (function (_GameData) {
         class _Guide {
@@ -9018,10 +8974,9 @@
             }
         }
         _GameData._DIYClothes = _DIYClothes;
-        class _Ranking extends DataAdmin._Table {
+        class _RankingData extends DataAdmin._Table {
             constructor() {
                 super(...arguments);
-                this._whereFrom = 'Start';
                 this._otherPro = {
                     rankNum: 'rankNum',
                     fansNum: 'fansNum',
@@ -9034,7 +8989,7 @@
             }
             static _ins() {
                 if (!this.ins) {
-                    this.ins = new _Ranking('RankingData', _Res._list.json.Ranking.dataArr, true);
+                    this.ins = new _RankingData('RankingData', _Res._list.json.Ranking.dataArr, true);
                     if (!this.ins._arr[0]['iconSkin']) {
                         for (let index = 0; index < this.ins._arr.length; index++) {
                             const element = this.ins._arr[index];
@@ -9047,6 +9002,15 @@
                 return this.ins;
             }
         }
+        class _Ranking {
+            static get _Table() {
+                return this['_RankingData'] ? this['_RankingData'] : _RankingData._ins();
+            }
+            static set _Table(v) {
+                this['_RankingData'] = _RankingData._ins();
+            }
+        }
+        _Ranking._whereFrom = 'Start';
         _GameData._Ranking = _Ranking;
         class _MakeTailor {
         }
@@ -9215,7 +9179,7 @@
         };
         _Tweeting._photoIndex = 0;
         _GameData._Tweeting = _Tweeting;
-        class _CheckIn extends DataAdmin._Table {
+        class _CheckInData extends DataAdmin._Table {
             constructor() {
                 super(...arguments);
                 this._otherPro = {
@@ -9231,28 +9195,33 @@
                 }
                 return this.ins;
             }
-            get _immediately() {
+        }
+        class _CheckIn extends DataAdmin._Table {
+            static get _Table() {
+                return _CheckInData._ins();
+            }
+            static get _immediately() {
                 return StorageAdmin._num('_CheckIn/immediately').value;
             }
             ;
-            set _immediately(val) {
+            static set _immediately(val) {
                 StorageAdmin._num('_CheckIn/immediately').value = val;
             }
-            get _checkInNum() {
+            static get _checkInNum() {
                 return StorageAdmin._num('_CheckIn/checkInNum').value;
             }
             ;
-            set _checkInNum(val) {
+            static set _checkInNum(val) {
                 StorageAdmin._num('_CheckIn/checkInNum').value = val;
             }
-            get _lastCheckDate() {
+            static get _lastCheckDate() {
                 return StorageAdmin._num('_CheckIn/lastCheckDate').value;
             }
             ;
-            set _lastCheckDate(val) {
+            static set _lastCheckDate(val) {
                 StorageAdmin._num('_CheckIn/lastCheckDate').value = val;
             }
-            get _todayCheckIn() {
+            static get _todayCheckIn() {
                 return this._lastCheckDate == DateAdmin._date.date ? true : false;
             }
             ;
@@ -9411,8 +9380,8 @@
         }
         init() {
             console.log(`SubPkg  init`);
-            this.pkgFlag = 0;
             console.log(`SubPkg  oppoGame`);
+            this.pkgFlag = 0;
             this.loadPkg_OPPO();
         }
         loadPkg_wx() {
@@ -9588,8 +9557,6 @@
         lwgOnAwake() {
             this._ImgVar('Hand').scale(0, 0);
             this._ImgVar('Slide').scale(0, 0);
-            this.handDiffX = this.handDiffX;
-            this.handDiffY = this.handDiffY;
         }
         clickEffcet() {
             Effects2D._Aperture._continuous(this._Owner, [this._ImgVar('Hand').x, this._ImgVar('Hand').y + 28], [6, 6], null, null, [Effects2D._SkinUrl.圆形小光环], null, this._ImgVar('Hand').zOrder - 1, [1.2, 1.2], [0.6, 0.6], [0.01, 0.01]);
@@ -9640,19 +9607,19 @@
             Animation2D.scale(this._ImgVar('Hand'), 0, 0, 1, 1, time, delay ? delay : 0, () => {
                 func && func();
             });
-            this._ImgVar('Handpic').rotation = -17;
+            this._ImgVar('HandPic').rotation = -17;
         }
         bgAppear(delay, func) {
             Tools._Node.destroyAllChildren(this._ImgVar('Background'));
             const time = 300;
-            this._ImgVar('Handpic').rotation = -17;
+            this._ImgVar('HandPic').rotation = -17;
             Animation2D.fadeOut(this._ImgVar('Background'), 0, 1, time, delay ? delay : 0, () => {
                 func && func();
             });
         }
         handVanish(delay, func) {
             const time = 300;
-            this._ImgVar('Handpic').rotation = -17;
+            this._ImgVar('HandPic').rotation = -17;
             Animation2D.scale(this._ImgVar('Hand'), 1, 1, 0, 0, time, delay ? delay : 0, () => {
                 func && func();
             });
@@ -9672,7 +9639,7 @@
                 func && func();
             });
             this._ImgVar('Hand').scale(1, 1);
-            Animation2D.move(this._ImgVar('Handpic'), 75, 56, time);
+            Animation2D.move(this._ImgVar('HandPic'), 75, 56, time);
             switch (bgType) {
                 case this.bgType.vanish:
                     this.bgVanish();
@@ -9692,9 +9659,10 @@
             this._AniVar('Click').stop();
             this._AniVar('ClickOne').stop();
             this._ImgVar('Hand').visible = true;
-            this._ImgVar('Handpic').pos(75, 56);
-            this._ImgVar('Handpic').scale(1, 1);
-            this._ImgVar('Handpic').rotation = -17;
+            this._ImgVar('HandPic').scale(1, 1);
+            this._ImgVar('HandPic').rotation = -17;
+            this._ImgVar('Hand').pos(this._ImgVar('HandPic')._lwg.gPoint.x - 75, this._ImgVar('HandPic')._lwg.gPoint.y - 56);
+            this._ImgVar('HandPic').pos(75, 56);
         }
         slideUpAppear(x, y, width, height, radius, delay) {
             this.bgAppear(delay ? delay : 0, () => {
@@ -9811,22 +9779,20 @@
                 this._Owner.close();
             }
         }
-        pattenAni(fx, fy, tx, ty) {
-            this.handMove(fx, fy, () => {
+        pattenAni(ftx, fty, tx, ty) {
+            this.handMove(ftx, fty, () => {
                 const time = 700;
                 const delay = 1000;
-                this._ImgVar('Hand').pos(fx, fy);
                 TimerAdmin._loop(time * 3 + delay, this._ImgVar('Hand'), () => {
-                    this.handAppear(null, () => {
-                        TimerAdmin._once(200, this, () => {
-                            this._AniVar('ClickOne').play(0, false);
-                        });
-                        Animation2D.move(this._ImgVar('Hand'), tx, ty, time, () => {
-                            this.handVanish(300, () => {
-                                this._ImgVar('Hand').pos(fx, fy);
-                            });
-                        }, delay);
+                    this._ImgVar('Hand').scale(1, 1);
+                    TimerAdmin._once(200, this._ImgVar('Hand'), () => {
+                        this._AniVar('ClickOne').play(0, false);
                     });
+                    Animation2D.move(this._ImgVar('Hand'), tx, ty, time, () => {
+                        this.handVanish(300, () => {
+                            this._ImgVar('Hand').pos(ftx, fty - 30);
+                        });
+                    }, delay);
                 }, true);
             });
         }
@@ -9852,7 +9818,7 @@
                     if (e === 'com') {
                         this._ImgVar('Hand').pos(this._Scissor.x, this._Scissor.y);
                         this._ImgVar('Hand').scale(0, 0);
-                        this._ImgVar('Handpic').scale(1, 1);
+                        this._ImgVar('HandPic').scale(1, 1);
                     }
                 });
             }
@@ -9866,8 +9832,7 @@
                 this.slideUpAppear(x, y, 165, 450, 20);
             });
             this._evReg(_GameData._Guide.event.MakeTailorChangeCloth, () => {
-                const gP = this._ImgVar('Slide').localToGlobal(new Laya.Point(this._ImgVar('SlideHand').x, this._ImgVar('SlideHand').y));
-                this._ImgVar('Hand').pos(gP.x, gP.y);
+                this._ImgVar('Hand').pos(this._ImgVar('SlideHand')._lwg.gPoint.x, this._ImgVar('SlideHand')._lwg.gPoint.y);
                 this._ImgVar('Hand').scale(1, 1);
                 this._ImgVar('Slide').scale(0, 0);
                 const x = Laya.stage.width - 95;
@@ -9912,13 +9877,12 @@
             });
             this._evReg(_GameData._Guide.event.MakePatternPattern1, () => {
                 _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Pattern1;
-                this.handClear();
                 const x = Laya.stage.width - 152;
-                const y = 280;
+                const y = 310;
                 this.pattenAni(x, y, Laya.stage.width / 2, y);
                 this.bgVanish();
             });
-            var func = () => {
+            var frameFunc = () => {
                 const WConversion = this._Wireframe.getChildByName('WConversion');
                 const gP = this._Wireframe.localToGlobal(new Laya.Point(WConversion.x, WConversion.y));
                 this.handMove(gP.x, gP.y, () => {
@@ -9928,7 +9892,7 @@
             this._AniVar('Frame').on(Laya.Event.LABEL, this, (label) => {
                 if (label === 'com') {
                     if (this._Wireframe) {
-                        func();
+                        frameFunc();
                     }
                 }
             });
@@ -9936,36 +9900,29 @@
                 _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Frame1;
                 if (Wireframe)
                     this._Wireframe = Wireframe;
-                func();
+                frameFunc();
             });
             this._evReg(_GameData._Guide.event.MakePatternTurnFace, (x, y) => {
                 _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.TurnFace;
-                this._AniVar('Frame').stop();
                 this.handClear();
                 this.moveCircleBg(x, y, radius);
             });
             this._evReg(_GameData._Guide.event.MakePatternPattern2, () => {
                 _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Pattern2;
-                this.handClear();
-                this._AniVar('Click').stop();
                 const x = Laya.stage.width - 152;
                 const y = 420;
-                this.bgVanish(0, () => {
-                    this.handMove(x, y, () => {
-                        this.pattenAni(x, y, Laya.stage.width / 2, y);
-                    });
-                });
+                this.pattenAni(x, y, Laya.stage.width / 2, y);
+                this.bgVanish();
             });
             this._evReg(_GameData._Guide.event.MakePatternFrame2, (Wireframe) => {
                 _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Frame2;
                 if (Wireframe)
                     this._Wireframe = Wireframe;
-                func();
+                frameFunc();
             });
             this._evReg(_GameData._Guide.event.MakePatternBtnCom, (x, y) => {
                 _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.BtnCom;
-                this._AniVar('Frame').stop();
-                this._ImgVar('Handpic').scale(1, 1);
+                this.handClear();
                 this.moveCircleBg(x, y, radius);
             });
             this._evReg(_GameData._Guide.event.TweetingBtnChoosePhoto, (x, y, handX, handY) => {
@@ -10772,6 +10729,7 @@
                 this._evNotify(_GameData._MakeTailor.event.scissorStop);
                 EventAdmin._notify(_GameData._MakeTailor.event.scissorTrigger, [other.owner]);
                 this.Ani.effcts();
+                ADManager.VibrateShort();
             }
         }
     }
@@ -10793,13 +10751,13 @@
                 }
                 else {
                     switch (this.$unlockWay) {
-                        case _GameData._DIYClothes._ins()._unlockWay.check:
+                        case this.$unlockWayType.$check:
                             Dialogue.createHint_Middle('请前往签到页面获取');
                             break;
-                        case _GameData._DIYClothes._ins()._unlockWay.customs:
+                        case this.$unlockWayType.$customs:
                             Dialogue.createHint_Middle(`制作${this.$conditionNum}件才能衣服获取哦！`);
                             break;
-                        case _GameData._DIYClothes._ins()._unlockWay.ads:
+                        case this.$unlockWayType.$ads:
                             ADManager.ShowReward(() => {
                                 if (_GameData._DIYClothes._ins()._checkCondition(this.$name)) {
                                     Dialogue.createHint_Middle('恭喜获得一件新服装！');
@@ -10808,7 +10766,7 @@
                                 }
                             });
                             break;
-                        case _GameData._DIYClothes._ins()._unlockWay.free:
+                        case this.$unlockWayType.$free:
                             Dialogue.createHint_Middle(`免费获得`);
                             break;
                         default:
@@ -10832,7 +10790,7 @@
             }
             else {
                 if (!this.$complete) {
-                    if (this.$unlockWay === _GameData._DIYClothes._ins()._unlockWay.ads) {
+                    if (this.$unlockWay === _GameData._DIYClothes._ins()._unlockWay.$ads) {
                         this._ImgChild('AdsSign').visible = true;
                         this._LableChild('UnlockWay').visible = false;
                         this._ImgChild('Mask').visible = false;
@@ -10841,12 +10799,12 @@
                         this._ImgChild('AdsSign').visible = false;
                         this._LableChild('UnlockWay').visible = true;
                         switch (this.$unlockWay) {
-                            case _GameData._DIYClothes._ins()._unlockWay.check:
+                            case _GameData._DIYClothes._ins()._unlockWay.$check:
                                 this._LableChild('UnlockWay').text = '签到';
                                 this._LableChild('UnlockWay').fontSize = 30;
                                 this._LableChild('UnlockWayNum').visible = false;
                                 break;
-                            case _GameData._DIYClothes._ins()._unlockWay.customs:
+                            case _GameData._DIYClothes._ins()._unlockWay.$customs:
                                 this._LableChild('UnlockWay').text = `制作衣服`;
                                 this._LableChild('UnlockWay').fontSize = 25;
                                 this._LableChild('UnlockWayNum').visible = true;
@@ -11131,7 +11089,7 @@
                                     });
                                 }
                                 else {
-                                    !_GameData._CheckIn._ins()._todayCheckIn && this._openScene('CheckIn', false);
+                                    !_GameData._CheckIn._todayCheckIn && this._openScene('CheckIn', false);
                                 }
                             }
                         });
@@ -11152,8 +11110,8 @@
                 this.lwgButton();
             });
             this._evReg(_GameData._Start.event.updateRanking, () => {
-                let obj = _GameData._Ranking._ins()._getPitchObj();
-                this._LabelVar('RankNum').text = `${obj[_GameData._Ranking._ins()._otherPro.rankNum]}/50`;
+                let obj = _GameData._Ranking._Table._getPitchObj();
+                this._LabelVar('RankNum').text = `${obj[_GameData._Ranking._Table._otherPro.rankNum]}/50`;
             });
             this._evReg(_GameData._Start.event.photo, () => {
                 const sp = _3D._Scene._ins().cameraToSprite(this._Owner);
@@ -11221,7 +11179,7 @@
             });
             this.BtnPersonalInfoClick();
             this._btnUp(this._ImgVar('BtnRanking'), () => {
-                _GameData._Ranking._ins()._whereFrom = 'Start';
+                _GameData._Ranking._whereFrom = 'Start';
                 this._openScene('Ranking', false);
             });
             this._btnUp(this._ImgVar('BtnDressingRoom'), () => {
@@ -11353,13 +11311,13 @@
             this._btnFour(this._ImgChild('Icon'), (e) => {
                 if (!this.$complete) {
                     switch (this.$unlockWay) {
-                        case _GameData._Pattern._ins()._unlockWay.check:
+                        case this.$unlockWayType.$check:
                             Dialogue.createHint_Middle('请前往签到页面获取');
                             break;
-                        case _GameData._Pattern._ins()._unlockWay.customs:
+                        case this.$unlockWayType.$customs:
                             Dialogue.createHint_Middle(`制作${this.$conditionNum}件衣服才能获取！`);
                             break;
-                        case _GameData._Pattern._ins()._unlockWay.ads:
+                        case this.$unlockWayType.$ads:
                             ADManager.ShowReward(() => {
                                 if (_GameData._Pattern._ins()._checkCondition(this.$name)) {
                                     Dialogue.createHint_Middle('恭喜获得新贴图！');
@@ -11414,7 +11372,7 @@
             }
             else {
                 if (!this.$complete) {
-                    if (this.$unlockWay === _GameData._Pattern._ins()._unlockWay.ads) {
+                    if (this.$unlockWay === _GameData._Pattern._ins()._unlockWay.$ads) {
                         this._ImgChild('AdsSign').visible = true;
                         this._LableChild('UnlockWay').visible = false;
                     }
@@ -11422,12 +11380,12 @@
                         this._LableChild('AdsSign').visible = false;
                         this._LableChild('UnlockWay').visible = true;
                         switch (this.$unlockWay) {
-                            case _GameData._DIYClothes._ins()._unlockWay.check:
+                            case _GameData._DIYClothes._ins()._unlockWay.$check:
                                 this._LableChild('UnlockWay').text = '签到';
                                 this._LableChild('UnlockWay').fontSize = 30;
                                 this._LableChild('UnlockWayNum').visible = false;
                                 break;
-                            case _GameData._DIYClothes._ins()._unlockWay.customs:
+                            case _GameData._DIYClothes._ins()._unlockWay.$customs:
                                 this._LableChild('UnlockWay').text = `制作衣服`;
                                 this._LableChild('UnlockWay').fontSize = 25;
                                 this._LableChild('UnlockWayNum').visible = true;
@@ -11932,7 +11890,7 @@
             }
             StorageAdmin._array(`${_3D.DIYCloth._ins().name}/${_GameData._DIYClothes._ins()._otherPro.texF}`).value = fArr;
             StorageAdmin._array(`${_3D.DIYCloth._ins().name}/${_GameData._DIYClothes._ins()._otherPro.texR}`).value = rArr;
-            _GameData._Ranking._ins()._whereFrom = this._Owner.name;
+            _GameData._Ranking._whereFrom = this._Owner.name;
         }
         onStageMouseDown(e) {
             this.Tex.touchP = new Laya.Point(e.stageX, e.stageY);
@@ -12195,9 +12153,9 @@
         lwgOnAwake() {
             ADManager.TAPoint(TaT.BtnShow, 'changename');
             this._TextInputVar('NameValue').text = _GameData._PersonalInfo._name;
-            const obj = _GameData._Ranking._ins()._getPitchObj();
-            this._LabelVar('RankValue').text = obj[_GameData._Ranking._ins()._otherPro.rankNum];
-            this._LabelVar('FansValue').text = obj[_GameData._Ranking._ins()._otherPro.fansNum];
+            const obj = _GameData._Ranking._Table._getPitchObj();
+            this._LabelVar('RankValue').text = obj[_GameData._Ranking._Table._otherPro.rankNum];
+            this._LabelVar('FansValue').text = obj[_GameData._Ranking._Table._otherPro.fansNum];
         }
         lwgOpenAni() {
             return _GameAni._dialogOpenFadeOut(this._ImgVar('Background'), this._ImgVar('Content'), () => {
@@ -12277,34 +12235,34 @@
         }
         ;
         $render() {
-            if (this.$data[_GameData._Ranking._ins()._property.$classify] === _GameData._Ranking._ins()._classify.self) {
+            if (this.$data[_GameData._Ranking._Table._property.$classify] === _GameData._Ranking._Table._classify.self) {
                 this._ImgChild('Board').skin = `Game/UI/Ranking/x_di.png`;
                 this._LableChild('Name').text = _GameData._PersonalInfo._name;
             }
             else {
                 this._ImgChild('Board').skin = `Game/UI/Ranking/w_di.png`;
-                this._LableChild('Name').text = this.$data[_GameData._Ranking._ins()._property.$name];
+                this._LableChild('Name').text = this.$data[_GameData._Ranking._Table._property.$name];
             }
             this._LableChild('RankNum').text = String(this.$rankNum);
             this._LableChild('FansNum').text = String(this.$fansNum);
             const IconPic = this._LableChild('Icon').getChildAt(0);
-            IconPic.skin = this.$data[_GameData._Ranking._ins()._otherPro.iconSkin];
+            IconPic.skin = this.$data[_GameData._Ranking._Table._otherPro.iconSkin];
         }
     }
     class Ranking extends Admin._SceneBase {
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'rankpage');
-            _GameData._Ranking._ins()._List = this._ListVar('List');
-            if (_GameData._Ranking._ins()._whereFrom === 'Tweeting') {
-                _GameData._Ranking._ins()._addProValueForAll(_GameData._Ranking._ins()._otherPro.fansNum, () => {
+            _GameData._Ranking._Table._List = this._ListVar('List');
+            if (_GameData._Ranking._whereFrom === 'Tweeting') {
+                _GameData._Ranking._Table._addProValueForAll(_GameData._Ranking._Table._otherPro.fansNum, () => {
                     return Tools._Number.randomOneInt(100, 150);
                 });
             }
             this._evNotify(_GameData._Start.event.updateRanking);
-            _GameData._Ranking._ins()._listRenderScript = RankingItem;
+            _GameData._Ranking._Table._listRenderScript = RankingItem;
         }
         lwgOpenAni() {
-            if (_GameData._Ranking._ins()._whereFrom === 'Tweeting') {
+            if (_GameData._Ranking._whereFrom === 'Tweeting') {
                 _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('Background'));
             }
             else {
@@ -12313,7 +12271,7 @@
             return 200;
         }
         lwgOpenAniAfter() {
-            if (_GameData._Ranking._ins()._whereFrom === 'Tweeting') {
+            if (_GameData._Ranking._whereFrom === 'Tweeting') {
                 _GameEffects2D._fireworksCelebrate(() => {
                     !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
                         this.BtnCloseClick();
@@ -12321,21 +12279,21 @@
                         this._evNotify(_GameData._Guide.event.RankingCloseBtn, [gP.x, gP.y]);
                     }, this._Owner.zOrder + 1);
                 });
-                _GameData._Ranking._ins()._whereFrom = 'Start';
+                _GameData._Ranking._whereFrom = 'Start';
             }
         }
         lwgOnStart() {
-            if (_GameData._Ranking._ins()._getProperty(_GameData._Ranking._ins()._pitchName, _GameData._Ranking._ins()._otherPro.rankNum) === 1) {
-                _GameData._Ranking._ins()._List.scrollTo(0);
+            if (_GameData._Ranking._Table._getProperty(_GameData._Ranking._Table._pitchName, _GameData._Ranking._Table._otherPro.rankNum) === 1) {
+                _GameData._Ranking._Table._List.scrollTo(0);
             }
             else {
-                if (_GameData._Ranking._ins()._whereFrom === 'Tweeting') {
-                    _GameData._Ranking._ins()._listScrollToLast();
-                    _GameData._Ranking._ins()._listTweenToPitchChoose(-1, 1500);
+                if (_GameData._Ranking._whereFrom === 'Tweeting') {
+                    _GameData._Ranking._Table._listScrollToLast();
+                    _GameData._Ranking._Table._listTweenToPitchChoose(-1, 1500);
                 }
                 else {
-                    _GameData._Ranking._ins()._listScrollToLast();
-                    _GameData._Ranking._ins()._listTweenToPitchChoose(-1, 600);
+                    _GameData._Ranking._Table._listScrollToLast();
+                    _GameData._Ranking._Table._listTweenToPitchChoose(-1, 600);
                 }
             }
         }
@@ -12355,46 +12313,11 @@
         }
         lwgCloseAni() {
             return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-                _GameData._Guide._complete && !_GameData._CheckIn._ins()._todayCheckIn && this._openScene('CheckIn', false);
+                _GameData._Guide._complete && !_GameData._CheckIn._todayCheckIn && this._openScene('CheckIn', false);
             });
         }
         lwgOnDisable() {
             ADManager.TAPoint(TaT.PageLeave, 'rankpage');
-        }
-    }
-
-    class BackHint extends Admin._SceneBase {
-        constructor() {
-            super(...arguments);
-            this.closeAniType = null;
-        }
-        lwgOpenAni() {
-            return _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
-        }
-        lwgButton() {
-            this._btnUp(this._ImgVar('BtnLeave'), () => {
-                _GameData._PreLoadCutIn._fromBack = true;
-                _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-                    this._Owner.close();
-                    _GameData._BackHint._fromScene[_GameData._BackHint._fromScene.name]._openScene('Start', true, true);
-                });
-            });
-            var close = () => {
-                this.closeAniType = 100;
-                _GameData._BackHint._3dToSp && _GameData._BackHint._3dToSp.destroy();
-                _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-                    this._Owner.close();
-                });
-            };
-            this._btnUp(this._ImgVar('BtnContinue'), () => {
-                close();
-            });
-            this._btnUp(this._ImgVar('BtnClose'), () => {
-                close();
-            });
-        }
-        lwgCloseAni() {
-            return this.closeAniType;
         }
     }
 
@@ -12407,9 +12330,9 @@
             this._ImgVar('IconPic').skin = `Game/UI/Ranking/IconSkin/Ava.png`;
             _GameData._Tweeting._attentionNum += Tools._Number.randomOneInt(50, 100);
             this._LabelVar('AttentionNum').text = _GameData._Tweeting._attentionNum.toString();
-            this._LabelVar('FansNum').text = _GameData._Ranking._ins()._getPitchProperty(_GameData._Ranking._ins()._otherPro.fansNum);
+            this._LabelVar('FansNum').text = _GameData._Ranking._Table._getPitchProperty(_GameData._Ranking._Table._otherPro.fansNum);
             _GameData._Tweeting._completeNum++;
-            _GameData._DIYClothes._ins()._checkConditionUnlockWay(_GameData._DIYClothes._ins()._unlockWay.customs, 1);
+            _GameData._DIYClothes._ins()._checkConditionUnlockWay(_GameData._DIYClothes._ins()._unlockWay.$customs, 1);
             this._LabelVar('CompleteNum').text = _GameData._Tweeting._completeNum.toString();
             const heatArr = Tools._Number.randomCountBySection(20, 50, 3);
             heatArr.sort();
@@ -12422,8 +12345,8 @@
                 const Brief = Rank.getChildByName('Brief');
                 const Heat = Rank.getChildByName('Heat');
                 const Icon = Rank.getChildByName('HeadIcon').getChildByName('Icon');
-                const data = _GameData._Ranking._ins()._arr[index];
-                Name.text = data[_GameData._Ranking._ins()._property.$name];
+                const data = _GameData._Ranking._Table._arr[index];
+                Name.text = data[_GameData._Ranking._Table._property.$name];
                 Tag.skin = `Game/UI/Tweeting/Main/${index + 1}.png`;
                 Brief.text = briefArr[index];
                 Heat.text = `本周热度 ${heatArr[index]}万`;
@@ -12631,7 +12554,7 @@
             this._ImgVar('Like').x = (this._ImgVar('Middle').width - left * 2) * 3 / 4 + left;
             this._ImgVar('Bottom').width = this._Owner.width - 160;
             const iconArr = Tools._Number.randomCountBySection(1, 20, 2);
-            const twoObj = _GameData._Ranking._ins()._randomCountObj(2);
+            const twoObj = _GameData._Ranking._Table._randomCountObj(2);
             for (let index = 0; index < 2; index++) {
                 const Reply = this._ImgVar(`Reply${index + 1}`);
                 const Icon1 = Reply.getChildByName('HeadIcon').getChildAt(0);
@@ -12671,7 +12594,7 @@
         }
         lwgOnAwake() {
             ADManager.TAPoint(TaT.BtnShow, 'ADrank');
-            this.pitchObj = _GameData._Ranking._ins()._getPitchObj();
+            this.pitchObj = _GameData._Ranking._Table._getPitchObj();
             this.fansNum = Tools._Number.randomOneInt(115, 383);
             this.pitchObj['fansNum'] += this.fansNum;
             this._FontClipVar('FansNum').value = this.fansNum.toString();
@@ -12690,7 +12613,7 @@
         }
         lwgButton() {
             var closeBefore = () => {
-                _GameData._Ranking._ins()._whereFrom = 'Tweeting';
+                _GameData._Ranking._whereFrom = 'Tweeting';
                 _GameData._Tweeting._photo.clear();
                 this._closeScene('Tweeting_Dynamic');
                 this._closeScene();
@@ -12751,11 +12674,11 @@
     class _Item$3 extends DataAdmin._Item {
         $button() {
             this._btnUp(this._ImgChild('Reward'), (e) => {
-                if (!_GameData._CheckIn._ins()._todayCheckIn) {
-                    if (_GameData._CheckIn._ins()._checkInNum + 1 === this.$serial) {
-                        _GameData._CheckIn._ins()._lastCheckDate = DateAdmin._date.date;
-                        _GameData._CheckIn._ins()._setCompleteName(this.$name);
-                        _GameData._CheckIn._ins()._checkInNum++;
+                if (!_GameData._CheckIn._todayCheckIn) {
+                    if (_GameData._CheckIn._checkInNum + 1 === this.$serial) {
+                        _GameData._CheckIn._lastCheckDate = DateAdmin._date.date;
+                        _GameData._CheckIn._Table._setCompleteName(this.$name);
+                        _GameData._CheckIn._checkInNum++;
                         if (this.$rewardType.substr(0, 3) === 'diy') {
                             _GameData._DIYClothes._ins()._setCompleteByName(this.$rewardType);
                             Dialogue.createHint_Middle('恭喜获得新的裁剪服装');
@@ -12778,7 +12701,7 @@
             });
             var func = (e) => {
                 ADManager.ShowReward(() => {
-                    _GameData._CheckIn._ins()._setOtherCompleteName(this.$name);
+                    _GameData._CheckIn._Table._setOtherCompleteName(this.$name);
                     if (this.$otherRewardType.substr(0, 3) === 'diy') {
                         _GameData._DIYClothes._ins()._setCompleteByName(this.$otherRewardType);
                         Dialogue.createHint_Middle('恭喜获得新的裁剪服装');
@@ -12792,13 +12715,13 @@
             };
             var adsClick = (e) => {
                 if (!this.$otherComplete) {
-                    if (!_GameData._CheckIn._ins()._todayCheckIn) {
-                        if (_GameData._CheckIn._ins()._checkInNum + 1 === this.$serial) {
+                    if (!_GameData._CheckIn._todayCheckIn) {
+                        if (_GameData._CheckIn._checkInNum + 1 === this.$serial) {
                             func(e);
                         }
                     }
                     else {
-                        if (_GameData._CheckIn._ins()._checkInNum >= this.$serial) {
+                        if (_GameData._CheckIn._checkInNum >= this.$serial) {
                             func(e);
                         }
                     }
@@ -12824,8 +12747,8 @@
             }
             Already.visible = this.$complete;
             if (!this.$complete) {
-                if (_GameData._CheckIn._ins()._checkInNum + 1 === this.$serial) {
-                    if (_GameData._CheckIn._ins()._todayCheckIn) {
+                if (_GameData._CheckIn._checkInNum + 1 === this.$serial) {
+                    if (_GameData._CheckIn._todayCheckIn) {
                         this._ImgChild('Reward').skin = 'Game/UI/ChekIn/k_nei.png';
                     }
                     else {
@@ -12851,8 +12774,8 @@
             }
             AdsAlready.visible = this.$otherComplete;
             if (!this.$otherComplete) {
-                if (!_GameData._CheckIn._ins()._todayCheckIn) {
-                    if (_GameData._CheckIn._ins()._checkInNum + 1 === this.$serial) {
+                if (!_GameData._CheckIn._todayCheckIn) {
+                    if (_GameData._CheckIn._checkInNum + 1 === this.$serial) {
                         this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                     }
                     else {
@@ -12860,7 +12783,7 @@
                     }
                 }
                 else {
-                    if (_GameData._CheckIn._ins()._checkInNum >= this.$serial) {
+                    if (_GameData._CheckIn._checkInNum >= this.$serial) {
                         this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                     }
                     else {
@@ -12876,11 +12799,11 @@
     }
     class CheckIn extends Admin._SceneBase {
         lwgOnAwake() {
-            _GameData._CheckIn._ins()._List = this._ListVar('List');
-            _GameData._CheckIn._ins()._listRenderScript = _Item$3;
-            _GameData._CheckIn._ins()._List.scrollBar.touchScrollEnable = false;
-            this._LabelVar('ImmediatelyNum').text = `${_GameData._CheckIn._ins()._immediately} / 4`;
-            if (_GameData._CheckIn._ins()._immediately >= 4 || _GameData._CheckIn._ins()._checkInNum >= 4) {
+            _GameData._CheckIn._Table._List = this._ListVar('List');
+            _GameData._CheckIn._Table._listRenderScript = _Item$3;
+            _GameData._CheckIn._Table._List.scrollBar.touchScrollEnable = false;
+            this._LabelVar('ImmediatelyNum').text = `${_GameData._CheckIn._immediately} / 4`;
+            if (_GameData._CheckIn._immediately >= 4 || _GameData._CheckIn._checkInNum >= 4) {
                 this._ImgVar('BtnImmediately').visible = false;
                 this._LabelVar('Tip').text = `奖励已经全部领取！`;
             }
@@ -12897,6 +12820,7 @@
             this._btnUp(this._ImgVar('BtnClose'), () => {
                 if (!_GameData._Guide._complete && _GameData._Guide.CheckInCloseBtn) {
                     _GameData._Guide._complete = true;
+                    Dialogue.createHint_Middle('开启你的女神之路吧!');
                     this._evNotify(_GameData._Guide.event.closeGuide);
                     this._evNotify(_GameData._Guide.event.StartOtherBtnClick);
                 }
@@ -12908,14 +12832,14 @@
                 return;
             this.BtnCloseClick();
             this._btnUp(this._ImgVar('BtnImmediately'), () => {
-                if (_GameData._CheckIn._ins()._immediately < 4) {
+                if (_GameData._CheckIn._immediately < 4) {
                     ADManager.ShowReward(() => {
-                        _GameData._CheckIn._ins()._immediately++;
-                        this._LabelVar('ImmediatelyNum').text = `${_GameData._CheckIn._ins()._immediately} / 4 `;
-                        if (_GameData._CheckIn._ins()._immediately >= 4) {
+                        _GameData._CheckIn._immediately++;
+                        this._LabelVar('ImmediatelyNum').text = `${_GameData._CheckIn._immediately} / 4 `;
+                        if (_GameData._CheckIn._immediately >= 4) {
                             this._ImgVar('BtnImmediately').visible = false;
                             const gP1 = this._ImgVar('GuideTab1')._lwg.gPoint;
-                            _GameData._CheckIn._ins()._setAllCompleteDelay(300, (com) => {
+                            _GameData._CheckIn._Table._setAllCompleteDelay(300, (com) => {
                                 const copyP1 = new Laya.Point(gP1.x, gP1.y);
                                 if (!com) {
                                     _GameEffects2D._oneFireworks(copyP1);
@@ -12923,7 +12847,7 @@
                                 gP1.x += 165;
                             }, null, null);
                             const gP2 = this._ImgVar('GuideTab2')._lwg.gPoint;
-                            _GameData._CheckIn._ins()._setAllOtherCompleteDelay(300, (com) => {
+                            _GameData._CheckIn._Table._setAllOtherCompleteDelay(300, (com) => {
                                 const copyP2 = new Laya.Point(gP2.x, gP2.y);
                                 if (!com) {
                                     _GameEffects2D._oneFireworks(copyP2);
@@ -12948,9 +12872,45 @@
         }
     }
 
+    class BackHint extends Admin._SceneBase {
+        constructor() {
+            super(...arguments);
+            this.closeAniType = null;
+        }
+        lwgOpenAni() {
+            return _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
+        }
+        lwgButton() {
+            this._btnUp(this._ImgVar('BtnLeave'), () => {
+                _GameData._PreLoadCutIn._fromBack = true;
+                _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
+                    this._Owner.close();
+                    _GameData._BackHint._fromScene[_GameData._BackHint._fromScene.name]._openScene('Start', true, true);
+                });
+            });
+            var close = () => {
+                this.closeAniType = 100;
+                _GameData._BackHint._3dToSp && _GameData._BackHint._3dToSp.destroy();
+                _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
+                    this._Owner.close();
+                });
+            };
+            this._btnUp(this._ImgVar('BtnContinue'), () => {
+                close();
+            });
+            this._btnUp(this._ImgVar('BtnClose'), () => {
+                close();
+            });
+        }
+        lwgCloseAni() {
+            return this.closeAniType;
+        }
+    }
+
     class LwgInit extends _LwgInitScene {
         lwgOnAwake() {
             Platform._Ues.value = Platform._Tpye.OPPO;
+            Laya.MouseManager.multiTouchEnabled = false;
             SceneAnimation._closeSwitch.value = true;
             SceneAnimation._Use.value = {
                 class: SceneAnimation._shutters.Close,
@@ -13222,13 +13182,6 @@
                     checkPos(this.items[c * this.line + l], k1, l, c);
                 }
             }
-        }
-    }
-
-    class UISubpackages extends Laya.Script {
-        onAwake() {
-        }
-        onStart() {
         }
     }
 
@@ -14475,7 +14428,6 @@
             reg("TJ/Promo/script/P201.ts", P201);
             reg("script/Lwg/LwgInit.ts", LwgInit);
             reg("TJ/Promo/script/P402.ts", P402);
-            reg("script/Lwg/UISubpackages.ts", UISubpackages);
             reg("nativeAd.ts", nativeAd);
             reg("demo.ts", test);
             reg("TJ/Promo/script/PromoOpen.ts", PromoOpen);

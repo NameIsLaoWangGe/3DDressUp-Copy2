@@ -6,7 +6,6 @@ import P405 from "./TJ/Promo/script/P405"
 import P201 from "./TJ/Promo/script/P201"
 import LwgInit from "./script/Lwg/LwgInit"
 import P402 from "./TJ/Promo/script/P402"
-import UISubpackages from "./script/Lwg/UISubpackages"
 import nativeAd from "./nativeAd"
 import demo from "./demo"
 import PromoOpen from "./TJ/Promo/script/PromoOpen"
@@ -44,7 +43,6 @@ export default class GameConfig{
         reg("TJ/Promo/script/P201.ts",P201);
         reg("script/Lwg/LwgInit.ts",LwgInit);
         reg("TJ/Promo/script/P402.ts",P402);
-        reg("script/Lwg/UISubpackages.ts",UISubpackages);
         reg("nativeAd.ts",nativeAd);
         reg("demo.ts",demo);
         reg("TJ/Promo/script/PromoOpen.ts",PromoOpen);

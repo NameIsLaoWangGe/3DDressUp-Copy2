@@ -6,13 +6,9 @@ export default class Guide extends Admin._SceneBase {
     lwgOpenAni(): number {
         return 200;
     }
-    handDiffX: number;
-    handDiffY: number;
     lwgOnAwake(): void {
         this._ImgVar('Hand').scale(0, 0);
         this._ImgVar('Slide').scale(0, 0);
-        this.handDiffX = this.handDiffX;
-        this.handDiffY = this.handDiffY;
     }
     clickEffcet(): void {
         Effects2D._Aperture._continuous(this._Owner, [this._ImgVar('Hand').x, this._ImgVar('Hand').y + 28], [6, 6], null, null, [Effects2D._SkinUrl.圆形小光环], null, this._ImgVar('Hand').zOrder - 1, [1.2, 1.2], [0.6, 0.6], [0.01, 0.01]);
@@ -81,19 +77,19 @@ export default class Guide extends Admin._SceneBase {
         Animation2D.scale(this._ImgVar('Hand'), 0, 0, 1, 1, time, delay ? delay : 0, () => {
             func && func();
         })
-        this._ImgVar('Handpic').rotation = -17;
+        this._ImgVar('HandPic').rotation = -17;
     }
     bgAppear(delay?: number, func?: Function): void {
         Tools._Node.destroyAllChildren(this._ImgVar('Background'));
         const time = 300;
-        this._ImgVar('Handpic').rotation = -17;
+        this._ImgVar('HandPic').rotation = -17;
         Animation2D.fadeOut(this._ImgVar('Background'), 0, 1, time, delay ? delay : 0, () => {
             func && func();
         });
     }
     handVanish(delay?: number, func?: Function): void {
         const time = 300;
-        this._ImgVar('Handpic').rotation = -17;
+        this._ImgVar('HandPic').rotation = -17;
         Animation2D.scale(this._ImgVar('Hand'), 1, 1, 0, 0, time, delay ? delay : 0, () => {
             func && func();
         })
@@ -118,7 +114,7 @@ export default class Guide extends Admin._SceneBase {
             func && func();
         })
         this._ImgVar('Hand').scale(1, 1);
-        Animation2D.move(this._ImgVar('Handpic'), 75, 56, time);
+        Animation2D.move(this._ImgVar('HandPic'), 75, 56, time);
         switch (bgType) {
             case this.bgType.vanish:
                 this.bgVanish();
@@ -138,11 +134,11 @@ export default class Guide extends Admin._SceneBase {
         this._AniVar('Click').stop();
         this._AniVar('ClickOne').stop();
         this._ImgVar('Hand').visible = true;
-        this._ImgVar('Handpic').pos(75, 56);
-        this._ImgVar('Handpic').scale(1, 1);
-        this._ImgVar('Handpic').rotation = -17;
+        this._ImgVar('HandPic').scale(1, 1);
+        this._ImgVar('HandPic').rotation = -17;
+        this._ImgVar('Hand').pos(this._ImgVar('HandPic')._lwg.gPoint.x - 75, this._ImgVar('HandPic')._lwg.gPoint.y - 56);
+        this._ImgVar('HandPic').pos(75, 56);
     }
-
 
     /**
      * 单个矩形的出现，滑动动作出现
@@ -218,6 +214,7 @@ export default class Guide extends Admin._SceneBase {
     moveCircleBg(x: number, y: number, radius: number): void {
         this.bgAppear(0, () => {
             this.boreholeCircle([[x, y, radius]], null, null, () => {
+
                 this.handMove(x, y, () => {
                     this._AniVar('Click').play();
                 });
@@ -312,25 +309,24 @@ export default class Guide extends Admin._SceneBase {
         }
     }
 
+
     /**拉伸框子*/
     _Wireframe: Laya.Image;
 
-    pattenAni(fx: number, fy: number, tx: number, ty: number): void {
-        this.handMove(fx, fy, () => {
+    pattenAni(ftx: number, fty: number, tx: number, ty: number): void {
+        this.handMove(ftx, fty, () => {
             const time = 700;
             const delay = 1000;
-            this._ImgVar('Hand').pos(fx, fy);
             TimerAdmin._loop(time * 3 + delay, this._ImgVar('Hand'), () => {
-                this.handAppear(null, () => {
-                    TimerAdmin._once(200, this, () => {
-                        this._AniVar('ClickOne').play(0, false);
-                    })
-                    Animation2D.move(this._ImgVar('Hand'), tx, ty, time, () => {
-                        this.handVanish(300, () => {
-                            this._ImgVar('Hand').pos(fx, fy);
-                        });
-                    }, delay);
-                });
+                this._ImgVar('Hand').scale(1, 1);
+                TimerAdmin._once(200, this._ImgVar('Hand'), () => {
+                    this._AniVar('ClickOne').play(0, false);
+                })
+                Animation2D.move(this._ImgVar('Hand'), tx, ty, time, () => {
+                    this.handVanish(300, () => {
+                        this._ImgVar('Hand').pos(ftx, fty - 30);
+                    });
+                }, delay);
             }, true);
         })
     }
@@ -357,7 +353,7 @@ export default class Guide extends Admin._SceneBase {
                 if (e === 'com') {
                     this._ImgVar('Hand').pos(this._Scissor.x, this._Scissor.y);
                     this._ImgVar('Hand').scale(0, 0);
-                    this._ImgVar('Handpic').scale(1, 1);
+                    this._ImgVar('HandPic').scale(1, 1);
                 }
             })
         }
@@ -374,8 +370,7 @@ export default class Guide extends Admin._SceneBase {
         })
 
         this._evReg(_GameData._Guide.event.MakeTailorChangeCloth, () => {
-            const gP = this._ImgVar('Slide').localToGlobal(new Laya.Point(this._ImgVar('SlideHand').x, this._ImgVar('SlideHand').y));
-            this._ImgVar('Hand').pos(gP.x, gP.y);
+            this._ImgVar('Hand').pos(this._ImgVar('SlideHand')._lwg.gPoint.x, this._ImgVar('SlideHand')._lwg.gPoint.y);
             this._ImgVar('Hand').scale(1, 1);
             this._ImgVar('Slide').scale(0, 0);
             const x = Laya.stage.width - 95;
@@ -421,14 +416,13 @@ export default class Guide extends Admin._SceneBase {
 
         this._evReg(_GameData._Guide.event.MakePatternPattern1, () => {
             _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Pattern1;
-            this.handClear();
             const x = Laya.stage.width - 152;
-            const y = 280;
+            const y = 310;
             this.pattenAni(x, y, Laya.stage.width / 2, y);
             this.bgVanish();
         })
 
-        var func = () => {
+        var frameFunc = () => {
             const WConversion = this._Wireframe.getChildByName('WConversion') as Laya.Image;
             const gP = this._Wireframe.localToGlobal(new Laya.Point(WConversion.x, WConversion.y));
             this.handMove(gP.x, gP.y, () => {
@@ -439,7 +433,7 @@ export default class Guide extends Admin._SceneBase {
         this._AniVar('Frame').on(Laya.Event.LABEL, this, (label: string) => {
             if (label === 'com') {
                 if (this._Wireframe) {
-                    func();
+                    frameFunc();
                 }
             }
         })
@@ -447,39 +441,32 @@ export default class Guide extends Admin._SceneBase {
         this._evReg(_GameData._Guide.event.MakePatternFrame1, (Wireframe: Laya.Image) => {
             _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Frame1;
             if (Wireframe) this._Wireframe = Wireframe;
-            func();
+            frameFunc();
         })
 
         this._evReg(_GameData._Guide.event.MakePatternTurnFace, (x: number, y: number) => {
             _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.TurnFace;
-            this._AniVar('Frame').stop();
             this.handClear();
             this.moveCircleBg(x, y, radius);
         })
 
         this._evReg(_GameData._Guide.event.MakePatternPattern2, () => {
             _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Pattern2;
-            this.handClear();
-            this._AniVar('Click').stop();
             const x = Laya.stage.width - 152;
             const y = 420;
-            this.bgVanish(0, () => {
-                this.handMove(x, y, () => {
-                    this.pattenAni(x, y, Laya.stage.width / 2, y);
-                });
-            })
+            this.pattenAni(x, y, Laya.stage.width / 2, y);
+            this.bgVanish();
         })
 
         this._evReg(_GameData._Guide.event.MakePatternFrame2, (Wireframe: Laya.Image) => {
             _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.Frame2;
             if (Wireframe) this._Wireframe = Wireframe;
-            func();
+            frameFunc();
         })
 
         this._evReg(_GameData._Guide.event.MakePatternBtnCom, (x: number, y: number) => {
             _GameData._Guide.MakePatternState = _GameData._Guide.MakePatternStateType.BtnCom;
-            this._AniVar('Frame').stop();
-            this._ImgVar('Handpic').scale(1, 1);
+            this.handClear();
             this.moveCircleBg(x, y, radius);
         })
 

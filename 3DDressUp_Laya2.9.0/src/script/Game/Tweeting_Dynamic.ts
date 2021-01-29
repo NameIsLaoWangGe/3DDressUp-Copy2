@@ -2,7 +2,7 @@ import ADManager, { TaT } from "../../TJ/Admanager";
 import { Adaptive, Admin, Animation2D, Click, DataAdmin, DateAdmin, Dialogue, Effects2D, StorageAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
-import { _GameEffects2D } from "./GameEffects2D";
+import { _GameEffects2D } from "./_GameEffects2D";
 
 
 export default class Tweeting_Dynamic extends Admin._SceneBase {
@@ -89,7 +89,7 @@ export default class Tweeting_Dynamic extends Admin._SceneBase {
 
         this._ImgVar('Bottom').width = this._Owner.width - 160;
         const iconArr = Tools._Number.randomCountBySection(1, 20, 2);
-        const twoObj = _GameData._Ranking._ins()._randomCountObj(2);
+        const twoObj = _GameData._Ranking._Table._randomCountObj(2);
         for (let index = 0; index < 2; index++) {
             const Reply = this._ImgVar(`Reply${index + 1}`)
             const Icon1 = Reply.getChildByName('HeadIcon').getChildAt(0) as Laya.Image;

@@ -2,7 +2,7 @@ import ADManager, { TaT } from "../../TJ/Admanager";
 import { Admin, Animation2D, TimerAdmin, Tools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
-import { _GameEffects2D } from "./GameEffects2D";
+import { _GameEffects2D } from "./_GameEffects2D";
 
 export default class Tweeting_Main extends Admin._SceneBase {
     lwgOnAwake(): void {
@@ -16,10 +16,10 @@ export default class Tweeting_Main extends Admin._SceneBase {
         this._ImgVar('IconPic').skin = `Game/UI/Ranking/IconSkin/Ava.png`;
         _GameData._Tweeting._attentionNum += Tools._Number.randomOneInt(50, 100);
         this._LabelVar('AttentionNum').text = _GameData._Tweeting._attentionNum.toString();
-        this._LabelVar('FansNum').text = _GameData._Ranking._ins()._getPitchProperty(_GameData._Ranking._ins()._otherPro.fansNum);
+        this._LabelVar('FansNum').text = _GameData._Ranking._Table._getPitchProperty(_GameData._Ranking._Table._otherPro.fansNum);
         // 完成次数增加也完成一些任务
         _GameData._Tweeting._completeNum++;
-        _GameData._DIYClothes._ins()._checkConditionUnlockWay(_GameData._DIYClothes._ins()._unlockWay.customs, 1);
+        _GameData._DIYClothes._ins()._checkConditionUnlockWay(_GameData._DIYClothes._ins()._unlockWay.$customs, 1);
         this._LabelVar('CompleteNum').text = _GameData._Tweeting._completeNum.toString();
         // 热门
         const heatArr = Tools._Number.randomCountBySection(20, 50, 3);
@@ -33,8 +33,8 @@ export default class Tweeting_Main extends Admin._SceneBase {
             const Brief = Rank.getChildByName('Brief') as Laya.Label;
             const Heat = Rank.getChildByName('Heat') as Laya.Label;
             const Icon = Rank.getChildByName('HeadIcon').getChildByName('Icon') as Laya.Image;
-            const data = _GameData._Ranking._ins()._arr[index];
-            Name.text = data[_GameData._Ranking._ins()._property.$name];
+            const data =  _GameData._Ranking._Table._arr[index];
+            Name.text = data[ _GameData._Ranking._Table._property.$name];
             Tag.skin = `Game/UI/Tweeting/Main/${index + 1}.png`;
             Brief.text = briefArr[index];
             Heat.text = `本周热度 ${heatArr[index]}万`;

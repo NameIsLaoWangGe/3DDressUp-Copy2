@@ -3,9 +3,9 @@ import lwg, { Admin, Animation2D, DataAdmin, Dialogue, Effects3D, StorageAdmin, 
 import { LwgOPPO } from "../Lwg/LwgOPPO";
 import { _3D } from "./_3D";
 import { _GameData } from "./_GameData";
+import { _GameEffects3D } from "./_GameEffects3D";
 import { _Res } from "./_Res";
 import { _UI } from "./_UI";
-import { _GameEffects3D } from "./GameEffects3D";
 
 /**表格中的其他类型*/
 export type _otherPro = {

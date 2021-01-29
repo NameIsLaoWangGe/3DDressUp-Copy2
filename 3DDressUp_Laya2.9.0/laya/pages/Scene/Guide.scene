@@ -1,6 +1,8 @@
 {
+    "x":0,
     "type":"View",
     "selectedBox":2,
+    "selecteID":5,
     "searchKey":"View",
     "props":{"width":1280,"sceneColor":"#514646","height":720},
     "nodeParent":-1,
@@ -13,6 +15,7 @@
     "compId":2,
     "child":[
         {
+            "x":15,
             "type":"Image",
             "searchKey":"Image,Hand,Hand",
             "props":{"zOrder":10,"y":302,"x":796,"width":86,"var":"Hand","name":"Hand","height":94,"alpha":1},
@@ -25,11 +28,12 @@
             "compId":5,
             "child":[
                 {
+                    "x":30,
                     "type":"Image",
-                    "searchKey":"Image,Handpic,Handpic",
-                    "props":{"y":43.8,"x":44,"width":87,"var":"Handpic","skin":"Lwg/UI/icon_hand.png","scaleY":1.01,"scaleX":1.01,"rotation":-11.7,"name":"Handpic","height":94,"anchorY":0.5,"anchorX":0.5,"alpha":1},
+                    "searchKey":"Image,HandPic,HandPic",
+                    "props":{"y":43.8,"x":44,"width":87,"var":"HandPic","skin":"Lwg/UI/icon_hand.png","scaleY":1.01,"scaleX":1.01,"rotation":-11.7,"name":"HandPic","height":94,"anchorY":0.5,"anchorX":0.5,"alpha":1},
                     "nodeParent":5,
-                    "label":"Handpic",
+                    "label":"HandPic",
                     "isDirectory":false,
                     "isAniNode":true,
                     "hasChild":false,
@@ -39,6 +43,7 @@
                 }]
         },
         {
+            "x":15,
             "type":"Image",
             "searchKey":"Image,Background,Background",
             "props":{"zOrder":0,"y":640,"x":360,"width":200,"var":"Background","skin":"Lwg/UI/ui_orthogon_black_0.3.png","sizeGrid":"35,15,47,13","pivotY":640,"pivotX":360,"name":"Background","mouseEnabled":false,"height":200,"alpha":0},
@@ -53,6 +58,7 @@
                 ]
         },
         {
+            "x":15,
             "type":"Image",
             "searchKey":"Image,Slide,Slide",
             "props":{"y":349,"x":1191,"width":119,"var":"Slide","name":"Slide","height":325,"anchorY":0.5,"anchorX":0.5},
@@ -65,18 +71,20 @@
             "compId":5274,
             "child":[
                 {
+                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,SlideHand,SlideHand",
                     "props":{"zOrder":10,"y":221,"x":60,"width":86,"var":"SlideHand","name":"SlideHand","height":94,"alpha":1},
                     "nodeParent":5274,
                     "label":"SlideHand",
-                    "isOpen":false,
+                    "isOpen":true,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":5275,
                     "child":[
                         {
+                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,Handpic",
                             "props":{"y":43.8,"x":44,"width":87,"skin":"Lwg/UI/icon_hand.png","scaleY":1.01,"scaleX":1.01,"rotation":-11.7,"name":"Handpic","height":94,"anchorY":0.5,"anchorX":0.5,"alpha":1},
@@ -91,6 +99,7 @@
                         }]
                 },
                 {
+                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,arrows",
                     "props":{"y":143,"x":60,"width":68,"skin":"Lwg/UI/arrows1.png","pivotY":110,"pivotX":34,"name":"arrows","height":220},

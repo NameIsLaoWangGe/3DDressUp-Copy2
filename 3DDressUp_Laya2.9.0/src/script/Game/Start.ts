@@ -2,10 +2,9 @@ import ADManager, { TaT } from "../../TJ/Admanager";
 import lwg, { Admin, Animation2D, TimerAdmin, _SceneName, Tools, Effects2D, EventAdmin, StorageAdmin, Effects3D, } from "../Lwg/Lwg";
 import { _3D } from "./_3D";
 import { _GameData } from "./_GameData";
-import { _GameEffects2D } from "./GameEffects2D";
+import { _GameEffects2D } from "./_GameEffects2D";
 export default class Start extends Admin._SceneBase {
     lwgOnAwake(): void {
-
         ADManager.TAPoint(TaT.PageShow, 'mainpage');
         ADManager.TAPoint(TaT.BtnShow, 'symaker');
         ADManager.TAPoint(TaT.BtnShow, 'lyqmaker');
@@ -43,7 +42,7 @@ export default class Start extends Admin._SceneBase {
                                     this._evNotify(_GameData._Guide.event.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
                                 })
                             } else {
-                                !_GameData._CheckIn._ins()._todayCheckIn && this._openScene('CheckIn', false);
+                                !_GameData._CheckIn._todayCheckIn && this._openScene('CheckIn', false);
                             }
                         }
                     })
@@ -67,8 +66,8 @@ export default class Start extends Admin._SceneBase {
         })
 
         this._evReg(_GameData._Start.event.updateRanking, () => {
-            let obj = _GameData._Ranking._ins()._getPitchObj();
-            this._LabelVar('RankNum').text = `${obj[_GameData._Ranking._ins()._otherPro.rankNum]}/50`;
+            let obj = _GameData._Ranking._Table._getPitchObj();
+            this._LabelVar('RankNum').text = `${obj[_GameData._Ranking._Table._otherPro.rankNum]}/50`;
         })
         this._evReg(_GameData._Start.event.photo, () => {
             const sp = _3D._Scene._ins().cameraToSprite(this._Owner);
@@ -143,7 +142,7 @@ export default class Start extends Admin._SceneBase {
 
         this.BtnPersonalInfoClick();
         this._btnUp(this._ImgVar('BtnRanking'), () => {
-            _GameData._Ranking._ins()._whereFrom = 'Start';
+            _GameData._Ranking._whereFrom = 'Start';
             this._openScene('Ranking', false);
         })
         this._btnUp(this._ImgVar('BtnDressingRoom'), () => {

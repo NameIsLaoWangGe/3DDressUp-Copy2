@@ -1,5 +1,5 @@
-export module _Res {
-    export let _list = {
+export class _Res {
+    static _list = {
         scene3D: {
             // MakeClothes: {
             //     url: `_Lwg3D/_Scene/LayaScene_3DDressUp/Conventional/3DDressUp.ls`,
@@ -177,8 +177,8 @@ export module _Res {
     }
 }
 
-export module _CutInRes {
-    export let Start = {
+export class _CutInRes {
+    static Start = {
         texture2D: {
             bgStart: {
                 url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgStart.jpg`,
@@ -186,7 +186,7 @@ export module _CutInRes {
             },
         }
     }
-    export let MakePattern = {
+    static MakePattern = {
         texture2D: {
             bgMakePattern: {
                 url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgMakePattern.jpg`,
@@ -198,7 +198,7 @@ export module _CutInRes {
             },
         }
     }
-    export let DressingRoom = {
+    static DressingRoom = {
         texture2D: {
             bgDressingRoom: {
                 url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgDressingRoom.jpg`,

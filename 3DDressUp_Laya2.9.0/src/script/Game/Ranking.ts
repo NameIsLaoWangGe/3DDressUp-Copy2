@@ -2,7 +2,7 @@ import ADManager, { TaT } from "../../TJ/Admanager";
 import Lwg, { Admin, Animation2D, AudioAdmin, DataAdmin, Effects2D, TimerAdmin, Tools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
-import { _GameEffects2D } from "./GameEffects2D";
+import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
 
 export type _otherPro = {
@@ -17,34 +17,34 @@ export class RankingItem extends DataAdmin._Item implements _otherPro {
         return this.$data ? this.$data['fansNum'] : null;
     };
     $render(): void {
-        if (this.$data[_GameData._Ranking._ins()._property.$classify] === _GameData._Ranking._ins()._classify.self) {
+        if (this.$data[_GameData._Ranking._Table._property.$classify] === _GameData._Ranking._Table._classify.self) {
             this._ImgChild('Board').skin = `Game/UI/Ranking/x_di.png`;
             this._LableChild('Name').text = _GameData._PersonalInfo._name;
         } else {
             this._ImgChild('Board').skin = `Game/UI/Ranking/w_di.png`;
-            this._LableChild('Name').text = this.$data[_GameData._Ranking._ins()._property.$name];
+            this._LableChild('Name').text = this.$data[_GameData._Ranking._Table._property.$name];
         }
         this._LableChild('RankNum').text = String(this.$rankNum);
         this._LableChild('FansNum').text = String(this.$fansNum);
         const IconPic = this._LableChild('Icon').getChildAt(0) as Laya.Image;
-        IconPic.skin = this.$data[_GameData._Ranking._ins()._otherPro.iconSkin];
+        IconPic.skin = this.$data[_GameData._Ranking._Table._otherPro.iconSkin];
     }
 }
 export default class Ranking extends Admin._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'rankpage');
-        _GameData._Ranking._ins()._List = this._ListVar('List');
-        if (_GameData._Ranking._ins()._whereFrom === 'Tweeting') {
-            _GameData._Ranking._ins()._addProValueForAll(_GameData._Ranking._ins()._otherPro.fansNum, (): number => {
+        _GameData._Ranking._Table._List = this._ListVar('List');
+        if (_GameData._Ranking._whereFrom === 'Tweeting') {
+            _GameData._Ranking._Table._addProValueForAll(_GameData._Ranking._Table._otherPro.fansNum, (): number => {
                 return Tools._Number.randomOneInt(100, 150);
             })
         }
         this._evNotify(_GameData._Start.event.updateRanking);
-        _GameData._Ranking._ins()._listRenderScript = RankingItem;
+        _GameData._Ranking._Table._listRenderScript = RankingItem;
     }
 
     lwgOpenAni(): number {
-        if (_GameData._Ranking._ins()._whereFrom === 'Tweeting') {
+        if (_GameData._Ranking._whereFrom === 'Tweeting') {
             _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('Background'));
         } else {
             _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
@@ -53,7 +53,7 @@ export default class Ranking extends Admin._SceneBase {
     }
 
     lwgOpenAniAfter(): void {
-        if (_GameData._Ranking._ins()._whereFrom === 'Tweeting') {
+        if (_GameData._Ranking._whereFrom === 'Tweeting') {
             _GameEffects2D._fireworksCelebrate(() => {
                 !_GameData._Guide._complete && this._openScene('Guide', false, false, () => {
                     this.BtnCloseClick();
@@ -61,19 +61,19 @@ export default class Ranking extends Admin._SceneBase {
                     this._evNotify(_GameData._Guide.event.RankingCloseBtn, [gP.x, gP.y]);
                 }, this._Owner.zOrder + 1);
             });
-            _GameData._Ranking._ins()._whereFrom = 'Start';
+            _GameData._Ranking._whereFrom = 'Start';
         }
     }
     lwgOnStart(): void {
-        if (_GameData._Ranking._ins()._getProperty(_GameData._Ranking._ins()._pitchName, _GameData._Ranking._ins()._otherPro.rankNum) === 1) {
-            _GameData._Ranking._ins()._List.scrollTo(0);
+        if (_GameData._Ranking._Table._getProperty(_GameData._Ranking._Table._pitchName, _GameData._Ranking._Table._otherPro.rankNum) === 1) {
+            _GameData._Ranking._Table._List.scrollTo(0);
         } else {
-            if (_GameData._Ranking._ins()._whereFrom === 'Tweeting') {
-                _GameData._Ranking._ins()._listScrollToLast();
-                _GameData._Ranking._ins()._listTweenToPitchChoose(-1, 1500);
+            if (_GameData._Ranking._whereFrom === 'Tweeting') {
+                _GameData._Ranking._Table._listScrollToLast();
+                _GameData._Ranking._Table._listTweenToPitchChoose(-1, 1500);
             } else {
-                _GameData._Ranking._ins()._listScrollToLast();
-                _GameData._Ranking._ins()._listTweenToPitchChoose(-1, 600);
+                _GameData._Ranking._Table._listScrollToLast();
+                _GameData._Ranking._Table._listTweenToPitchChoose(-1, 600);
             }
         }
     }
@@ -93,7 +93,7 @@ export default class Ranking extends Admin._SceneBase {
     }
     lwgCloseAni(): number {
         return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-            _GameData._Guide._complete && !_GameData._CheckIn._ins()._todayCheckIn && this._openScene('CheckIn', false);
+            _GameData._Guide._complete && !_GameData._CheckIn._todayCheckIn && this._openScene('CheckIn', false);
         });
     }
 

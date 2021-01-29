@@ -15,13 +15,13 @@ export class _Item extends DataAdmin._Item {
             (e: Laya.Event) => {
                 if (!this.$complete) {
                     switch (this.$unlockWay) {
-                        case _GameData._Pattern._ins()._unlockWay.check:
+                        case this.$unlockWayType.$check:
                             Dialogue.createHint_Middle('请前往签到页面获取');
                             break;
-                        case _GameData._Pattern._ins()._unlockWay.customs:
+                        case this.$unlockWayType.$customs:
                             Dialogue.createHint_Middle(`制作${this.$conditionNum}件衣服才能获取！`);
                             break;
-                        case _GameData._Pattern._ins()._unlockWay.ads:
+                        case this.$unlockWayType.$ads:
                             ADManager.ShowReward(() => {
                                 if (_GameData._Pattern._ins()._checkCondition(this.$name)) {
                                     Dialogue.createHint_Middle('恭喜获得新贴图！');
@@ -78,19 +78,19 @@ export class _Item extends DataAdmin._Item {
             this._LableChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = false;
         } else {
             if (!this.$complete) {
-                if (this.$unlockWay === _GameData._Pattern._ins()._unlockWay.ads) {
+                if (this.$unlockWay === _GameData._Pattern._ins()._unlockWay.$ads) {
                     this._ImgChild('AdsSign').visible = true;
                     this._LableChild('UnlockWay').visible = false;
                 } else {
                     this._LableChild('AdsSign').visible = false;
                     this._LableChild('UnlockWay').visible = true;
                     switch (this.$unlockWay) {
-                        case _GameData._DIYClothes._ins()._unlockWay.check:
+                        case _GameData._DIYClothes._ins()._unlockWay.$check:
                             this._LableChild('UnlockWay').text = '签到';
                             this._LableChild('UnlockWay').fontSize = 30;
                             this._LableChild('UnlockWayNum').visible = false;
                             break;
-                        case _GameData._DIYClothes._ins()._unlockWay.customs:
+                        case _GameData._DIYClothes._ins()._unlockWay.$customs:
                             this._LableChild('UnlockWay').text = `制作衣服`;
                             this._LableChild('UnlockWay').fontSize = 25;
                             this._LableChild('UnlockWayNum').visible = true;
@@ -320,7 +320,7 @@ export default class MakePattern extends Admin._SceneBase {
         }
         StorageAdmin._array(`${_3D.DIYCloth._ins().name}/${_GameData._DIYClothes._ins()._otherPro.texF}`).value = fArr;
         StorageAdmin._array(`${_3D.DIYCloth._ins().name}/${_GameData._DIYClothes._ins()._otherPro.texR}`).value = rArr;
-        _GameData._Ranking._ins()._whereFrom = this._Owner.name;
+        _GameData._Ranking._whereFrom = this._Owner.name;
         // } else {
         //     // 绘制到两张只有一半的sp上，节省本地存储的内存
         //     this._SpriteVar('Front').scaleY = this._SpriteVar('Reverse').scaleY = 1;

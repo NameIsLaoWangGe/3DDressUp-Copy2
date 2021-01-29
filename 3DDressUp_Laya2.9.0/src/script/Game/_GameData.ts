@@ -2,6 +2,42 @@ import { DataAdmin, DateAdmin, StorageAdmin, TimerAdmin, Tools } from "../Lwg/Lw
 import { _3D } from "./_3D";
 import { _Res } from "./_Res";
 
+
+export class _GameData1 {
+    // static get _AllClothes(): _AllClothes {
+    //     return _AllClothes._ins();
+    // }
+    // static get _DIYClothes(): _DIYClothes {
+    //     return _DIYClothes._ins();
+    // }
+    // static get _Ranking(): _Ranking {
+    //     return _Ranking;
+    // }
+    // static get _Guide(): _Guide {
+    //     return _Guide;
+    // }
+    // static get _PersonalInfo(): _PersonalInfo {
+    //     return _PersonalInfo;
+    // }
+    // static get _BackHint(): _BackHint {
+    //     return _BackHint;
+    // }
+    // static get _MakeTailor(): _MakeTailor {
+    //     return _MakeTailor;
+    // }
+    // static get _MakePattern(): _MakePattern {
+    //     return _MakePattern;
+    // }
+    // static get _DressingRoom(): _DressingRoom {
+    //     return _DressingRoom;
+    // }
+    // static get _Tweeting(): _Tweeting {
+    //     return _Tweeting;
+    // }
+    // static get _CheckIn(): _CheckIn {
+    //     return _CheckIn;
+    // }
+}
 export module _GameData {
     export class _Guide {
         static event = {
@@ -89,7 +125,6 @@ export module _GameData {
         /**是不是从返回按钮中进来的，返回按钮中进来回主界面不会换装*/
         static _fromBack: boolean = false;
     }
-
     export class _Start {
         static _whereFrom: string;
         static event = {
@@ -98,7 +133,6 @@ export module _GameData {
             BtnPersonalInfo: 'Start' + 'BtnPersonalInfo',
         }
     }
-
     export class _AllClothes extends DataAdmin._Table {
         private static ins: _AllClothes;
         static _ins() {
@@ -307,7 +341,6 @@ export module _GameData {
             _AllClothes._ins()._refreshAndStorage();
         }
     }
-
     /**DIY服装总数据数据*/
     export class _DIYClothes extends DataAdmin._Table {
         private static ins: _DIYClothes;
@@ -384,12 +417,11 @@ export module _GameData {
             return CloBox;
         }
     }
-
-    export class _Ranking extends DataAdmin._Table {
-        private static ins: _Ranking;
+    class _RankingData extends DataAdmin._Table {
+        private static ins: _RankingData;
         static _ins() {
             if (!this.ins) {
-                this.ins = new _Ranking('RankingData', _Res._list.json.Ranking.dataArr, true);
+                this.ins = new _RankingData('RankingData', _Res._list.json.Ranking.dataArr, true);
                 if (!this.ins._arr[0]['iconSkin']) {
                     for (let index = 0; index < this.ins._arr.length; index++) {
                         const element = this.ins._arr[index];
@@ -401,8 +433,7 @@ export module _GameData {
             }
             return this.ins;
         }
-        /**从哪个界面进来*/
-        _whereFrom: string = 'Start';
+
         _otherPro = {
             rankNum: 'rankNum',
             fansNum: 'fansNum',
@@ -411,6 +442,16 @@ export module _GameData {
         _classify = {
             other: 'other',
             self: 'self',
+        }
+    }
+    export class _Ranking {
+        /**从哪个界面进来*/
+        static _whereFrom: string = 'Start';
+        static get _Table(): _RankingData {
+            return this['_RankingData'] ? this['_RankingData'] : _RankingData._ins();
+        }
+        static set _Table(v: _RankingData) {
+            this['_RankingData'] = _RankingData._ins();
         }
     }
     export class _MakeTailor {
@@ -585,7 +626,7 @@ export module _GameData {
 
     }
 
-    export class _CheckIn extends DataAdmin._Table {
+    class _CheckInData extends DataAdmin._Table {
         private static ins: _CheckIn;
         static _ins(): _CheckIn {
             if (!this.ins) {
@@ -599,35 +640,39 @@ export module _GameData {
             otherRewardNum: 'otherRewardNum',
             otherCompelet: 'otherCompelet',
         }
+    }
+    export class _CheckIn extends DataAdmin._Table {
+        static get _Table(): _CheckInData {
+            return _CheckInData._ins();
+        }
         /**提前解锁全部奖励按钮，解锁了几次*/
-        get _immediately(): number {
+        static get _immediately(): number {
             return StorageAdmin._num('_CheckIn/immediately').value;
         };
-        set _immediately(val: number) {
+        static set _immediately(val: number) {
             StorageAdmin._num('_CheckIn/immediately').value = val;
         }
         /**当前签到第几天了，4日签到为4天一个循环*/
-        get _checkInNum(): number {
+        static get _checkInNum(): number {
             return StorageAdmin._num('_CheckIn/checkInNum').value;
         };
-        set _checkInNum(val: number) {
+        static set _checkInNum(val: number) {
             StorageAdmin._num('_CheckIn/checkInNum').value = val;
         }
         /**上次的签到日期，主要判断今日会不会弹出签到，不一样则弹出签到，一样则不弹出签到*/
-        get _lastCheckDate(): number {
+        static get _lastCheckDate(): number {
             return StorageAdmin._num('_CheckIn/lastCheckDate').value;
         };
-        set _lastCheckDate(val: number) {
+        static set _lastCheckDate(val: number) {
             StorageAdmin._num('_CheckIn/lastCheckDate').value = val;
         }
         /**
          * 今天是否已经签到
          */
-        get _todayCheckIn(): boolean {
+        static get _todayCheckIn(): boolean {
             return this._lastCheckDate == DateAdmin._date.date ? true : false;
         };
     }
-
     export class _Pattern extends DataAdmin._Table {
         private static ins: _Pattern;
         static _ins(): _Pattern {
@@ -665,7 +710,6 @@ export module _GameData {
             expression: 'expression',
         }
     }
-
     /**贴图位置偏移*/
     export class _PatternDiff extends DataAdmin._Table {
         private static ins: _PatternDiff;

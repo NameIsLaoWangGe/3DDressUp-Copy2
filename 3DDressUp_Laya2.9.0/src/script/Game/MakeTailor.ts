@@ -1,12 +1,12 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
 import lwg, { Admin, Animation2D, AudioAdmin, Click, DataAdmin, Dialogue, Effects2D, EventAdmin, SceneAnimation, TimerAdmin, Tools, _SceneName } from "../Lwg/Lwg";
 import { _GameData } from "./_GameData";
-import { _GameEffects2D } from "./GameEffects2D";
+import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
-
 import { _UI } from "./_UI";
+
 /**当前任务服装数据*/
-export default class _TaskClothes extends DataAdmin._Table {
+export class _TaskClothes extends DataAdmin._Table {
     private static ins: _TaskClothes;
     static _ins() {
         if (!this.ins) {
@@ -236,6 +236,7 @@ class _Scissor extends Admin._ObjectBase {
             this._evNotify(_GameData._MakeTailor.event.scissorStop);
             EventAdmin._notify(_GameData._MakeTailor.event.scissorTrigger, [other.owner]);
             this.Ani.effcts();
+            ADManager.VibrateShort();
         }
     }
 }
@@ -257,13 +258,13 @@ class _Item extends DataAdmin._Item {
             }
             else {
                 switch (this.$unlockWay) {
-                    case _GameData._DIYClothes._ins()._unlockWay.check:
+                    case this.$unlockWayType.$check:
                         Dialogue.createHint_Middle('请前往签到页面获取');
                         break;
-                    case _GameData._DIYClothes._ins()._unlockWay.customs:
+                    case this.$unlockWayType.$customs:
                         Dialogue.createHint_Middle(`制作${this.$conditionNum}件才能衣服获取哦！`);
                         break;
-                    case _GameData._DIYClothes._ins()._unlockWay.ads:
+                    case this.$unlockWayType.$ads:
                         ADManager.ShowReward(() => {
                             if (_GameData._DIYClothes._ins()._checkCondition(this.$name)) {
                                 Dialogue.createHint_Middle('恭喜获得一件新服装！');
@@ -272,7 +273,7 @@ class _Item extends DataAdmin._Item {
                             }
                         })
                         break;
-                    case _GameData._DIYClothes._ins()._unlockWay.free:
+                    case this.$unlockWayType.$free:
                         Dialogue.createHint_Middle(`免费获得`);
                         break;
                     default:
@@ -295,7 +296,7 @@ class _Item extends DataAdmin._Item {
             this._ImgChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
         } else {
             if (!this.$complete) {
-                if (this.$unlockWay === _GameData._DIYClothes._ins()._unlockWay.ads) {
+                if (this.$unlockWay === _GameData._DIYClothes._ins()._unlockWay.$ads) {
                     this._ImgChild('AdsSign').visible = true;
                     this._LableChild('UnlockWay').visible = false;
                     this._ImgChild('Mask').visible = false;
@@ -303,12 +304,12 @@ class _Item extends DataAdmin._Item {
                     this._ImgChild('AdsSign').visible = false;
                     this._LableChild('UnlockWay').visible = true;
                     switch (this.$unlockWay) {
-                        case _GameData._DIYClothes._ins()._unlockWay.check:
+                        case _GameData._DIYClothes._ins()._unlockWay.$check:
                             this._LableChild('UnlockWay').text = '签到';
                             this._LableChild('UnlockWay').fontSize = 30;
                             this._LableChild('UnlockWayNum').visible = false;
                             break;
-                        case _GameData._DIYClothes._ins()._unlockWay.customs:
+                        case _GameData._DIYClothes._ins()._unlockWay.$customs:
                             this._LableChild('UnlockWay').text = `制作衣服`;
                             this._LableChild('UnlockWay').fontSize = 25;
                             this._LableChild('UnlockWayNum').visible = true;
@@ -337,7 +338,7 @@ class _Item extends DataAdmin._Item {
     }
 }
 
-export class MakeTailor extends Admin._SceneBase {
+export default class MakeTailor extends Admin._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'jiancaipage');
 

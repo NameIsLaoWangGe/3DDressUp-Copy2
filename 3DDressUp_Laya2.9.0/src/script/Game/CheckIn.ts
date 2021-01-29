@@ -2,17 +2,17 @@ import ADManager from "../../TJ/Admanager";
 import { Admin, DataAdmin, DateAdmin, Dialogue, Effects2D, StorageAdmin } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _GameData } from "./_GameData";
-import { _GameEffects2D } from "./GameEffects2D";
+import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
 
 class _Item extends DataAdmin._Item {
     $button(): void {
         this._btnUp(this._ImgChild('Reward'), (e: Laya.Event) => {
-            if (!_GameData._CheckIn._ins()._todayCheckIn) {
-                if (_GameData._CheckIn._ins()._checkInNum + 1 === this.$serial) {
-                    _GameData._CheckIn._ins()._lastCheckDate = DateAdmin._date.date;
-                    _GameData._CheckIn._ins()._setCompleteName(this.$name);
-                    _GameData._CheckIn._ins()._checkInNum++;
+            if (!_GameData._CheckIn._todayCheckIn) {
+                if (_GameData._CheckIn._checkInNum + 1 === this.$serial) {
+                    _GameData._CheckIn._lastCheckDate = DateAdmin._date.date;
+                    _GameData._CheckIn._Table._setCompleteName(this.$name);
+                    _GameData._CheckIn._checkInNum++;
 
                     if (this.$rewardType.substr(0, 3) === 'diy') {
                         _GameData._DIYClothes._ins()._setCompleteByName(this.$rewardType);
@@ -35,7 +35,7 @@ class _Item extends DataAdmin._Item {
 
         var func = (e: Laya.Event) => {
             ADManager.ShowReward(() => {
-                _GameData._CheckIn._ins()._setOtherCompleteName(this.$name);
+                _GameData._CheckIn._Table._setOtherCompleteName(this.$name);
                 if (this.$otherRewardType.substr(0, 3) === 'diy') {
                     _GameData._DIYClothes._ins()._setCompleteByName(this.$otherRewardType);
                     Dialogue.createHint_Middle('恭喜获得新的裁剪服装');
@@ -48,12 +48,12 @@ class _Item extends DataAdmin._Item {
         }
         var adsClick = (e: Laya.Event) => {
             if (!this.$otherComplete) {
-                if (!_GameData._CheckIn._ins()._todayCheckIn) {
-                    if (_GameData._CheckIn._ins()._checkInNum + 1 === this.$serial) {
+                if (!_GameData._CheckIn._todayCheckIn) {
+                    if (_GameData._CheckIn._checkInNum + 1 === this.$serial) {
                         func(e);
                     }
                 } else {
-                    if (_GameData._CheckIn._ins()._checkInNum >= this.$serial) {
+                    if (_GameData._CheckIn._checkInNum >= this.$serial) {
                         func(e);
                     }
                 }
@@ -78,8 +78,8 @@ class _Item extends DataAdmin._Item {
         }
         Already.visible = this.$complete;
         if (!this.$complete) {
-            if (_GameData._CheckIn._ins()._checkInNum + 1 === this.$serial) {
-                if (_GameData._CheckIn._ins()._todayCheckIn) {
+            if (_GameData._CheckIn._checkInNum + 1 === this.$serial) {
+                if (_GameData._CheckIn._todayCheckIn) {
                     this._ImgChild('Reward').skin = 'Game/UI/ChekIn/k_nei.png';
                 } else {
                     this._ImgChild('Reward').skin = 'Game/UI/ChekIn/k_nei1.png';
@@ -102,14 +102,14 @@ class _Item extends DataAdmin._Item {
         }
         AdsAlready.visible = this.$otherComplete;
         if (!this.$otherComplete) {
-            if (!_GameData._CheckIn._ins()._todayCheckIn) {
-                if (_GameData._CheckIn._ins()._checkInNum + 1 === this.$serial) {
+            if (!_GameData._CheckIn._todayCheckIn) {
+                if (_GameData._CheckIn._checkInNum + 1 === this.$serial) {
                     this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                 } else {
                     this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei.png';
                 }
             } else {
-                if (_GameData._CheckIn._ins()._checkInNum >= this.$serial) {
+                if (_GameData._CheckIn._checkInNum >= this.$serial) {
                     this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                 } else {
                     this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei.png';
@@ -123,11 +123,11 @@ class _Item extends DataAdmin._Item {
 }
 export default class CheckIn extends Admin._SceneBase {
     lwgOnAwake(): void {
-        _GameData._CheckIn._ins()._List = this._ListVar('List');
-        _GameData._CheckIn._ins()._listRenderScript = _Item;
-        _GameData._CheckIn._ins()._List.scrollBar.touchScrollEnable = false;
-        this._LabelVar('ImmediatelyNum').text = `${_GameData._CheckIn._ins()._immediately} / 4`;
-        if (_GameData._CheckIn._ins()._immediately >= 4 || _GameData._CheckIn._ins()._checkInNum >= 4) {
+        _GameData._CheckIn._Table._List = this._ListVar('List');
+        _GameData._CheckIn._Table._listRenderScript = _Item;
+        _GameData._CheckIn._Table._List.scrollBar.touchScrollEnable = false;
+        this._LabelVar('ImmediatelyNum').text = `${_GameData._CheckIn._immediately} / 4`;
+        if (_GameData._CheckIn._immediately >= 4 || _GameData._CheckIn._checkInNum >= 4) {
             this._ImgVar('BtnImmediately').visible = false;
             this._LabelVar('Tip').text = `奖励已经全部领取！`;
         }
@@ -145,6 +145,7 @@ export default class CheckIn extends Admin._SceneBase {
         this._btnUp(this._ImgVar('BtnClose'), () => {
             if (!_GameData._Guide._complete && _GameData._Guide.CheckInCloseBtn) {
                 _GameData._Guide._complete = true;
+                Dialogue.createHint_Middle('开启你的女神之路吧!');
                 this._evNotify(_GameData._Guide.event.closeGuide);
                 this._evNotify(_GameData._Guide.event.StartOtherBtnClick);
             }
@@ -156,14 +157,14 @@ export default class CheckIn extends Admin._SceneBase {
         if (!_GameData._Guide._complete) return;
         this.BtnCloseClick();
         this._btnUp(this._ImgVar('BtnImmediately'), () => {
-            if (_GameData._CheckIn._ins()._immediately < 4) {
+            if (_GameData._CheckIn._immediately < 4) {
                 ADManager.ShowReward(() => {
-                    _GameData._CheckIn._ins()._immediately++;
-                    this._LabelVar('ImmediatelyNum').text = `${_GameData._CheckIn._ins()._immediately} / 4 `;
-                    if (_GameData._CheckIn._ins()._immediately >= 4) {
+                    _GameData._CheckIn._immediately++;
+                    this._LabelVar('ImmediatelyNum').text = `${_GameData._CheckIn._immediately} / 4 `;
+                    if (_GameData._CheckIn._immediately >= 4) {
                         this._ImgVar('BtnImmediately').visible = false;
                         const gP1 = this._ImgVar('GuideTab1')._lwg.gPoint;
-                        _GameData._CheckIn._ins()._setAllCompleteDelay(300, (com: boolean) => {
+                        _GameData._CheckIn._Table._setAllCompleteDelay(300, (com: boolean) => {
                             const copyP1 = new Laya.Point(gP1.x, gP1.y);
                             if (!com) {
                                 _GameEffects2D._oneFireworks(copyP1);
@@ -171,7 +172,7 @@ export default class CheckIn extends Admin._SceneBase {
                             gP1.x += 165;
                         }, null, null);
                         const gP2 = this._ImgVar('GuideTab2')._lwg.gPoint;
-                        _GameData._CheckIn._ins()._setAllOtherCompleteDelay(300, (com: boolean) => {
+                        _GameData._CheckIn._Table._setAllOtherCompleteDelay(300, (com: boolean) => {
                             const copyP2 = new Laya.Point(gP2.x, gP2.y);
                             if (!com) {
                                 _GameEffects2D._oneFireworks(copyP2);
@@ -183,7 +184,6 @@ export default class CheckIn extends Admin._SceneBase {
                         _GameData._DIYClothes._ins()._setCompleteByNameArr(['diy_dress_003_final', 'diy_dress_007_final', 'diy_top_004_final', 'diy_bottom_005_final', 'diy_dress_006_final', 'diy_bottom_006_final']);
                         _GameData._Pattern._ins()._setCompleteByClassify('cat');
                         _GameData._Pattern._ins()._setCompleteByClassify('newYear');
-
                     }
                 })
             } else {
