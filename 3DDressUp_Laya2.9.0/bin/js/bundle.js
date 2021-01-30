@@ -1216,22 +1216,22 @@
         (function (SceneAdmin) {
             SceneAdmin._SceneControl = {};
             SceneAdmin._SceneScript = {};
-            let _SceneName;
-            (function (_SceneName) {
-                _SceneName["PreLoad"] = "PreLoad";
-                _SceneName["PreLoadCutIn"] = "PreLoadCutIn";
-                _SceneName["Guide"] = "Guide";
-                _SceneName["Start"] = "Start";
-                _SceneName["Shop"] = "Shop";
-                _SceneName["Task"] = "Task";
-                _SceneName["Set"] = "Set";
-                _SceneName["Victory"] = "Victory";
-                _SceneName["Defeated"] = "Defeated";
-                _SceneName["CheckIn"] = "CheckIn";
-                _SceneName["LwgInit"] = "LwgInit";
-                _SceneName["SelectLevel"] = "SelectLevel";
-                _SceneName["Settle"] = "Settle";
-            })(_SceneName = SceneAdmin._SceneName || (SceneAdmin._SceneName = {}));
+            let _BaseName;
+            (function (_BaseName) {
+                _BaseName["PreLoad"] = "PreLoad";
+                _BaseName["PreLoadCutIn"] = "PreLoadCutIn";
+                _BaseName["Guide"] = "Guide";
+                _BaseName["Start"] = "Start";
+                _BaseName["Shop"] = "Shop";
+                _BaseName["Task"] = "Task";
+                _BaseName["Set"] = "Set";
+                _BaseName["Victory"] = "Victory";
+                _BaseName["Defeated"] = "Defeated";
+                _BaseName["CheckIn"] = "CheckIn";
+                _BaseName["LwgInit"] = "LwgInit";
+                _BaseName["SelectLevel"] = "SelectLevel";
+                _BaseName["Settle"] = "Settle";
+            })(_BaseName = SceneAdmin._BaseName || (SceneAdmin._BaseName = {}));
             SceneAdmin._PreLoadCutIn = {
                 openName: null,
                 closeName: null,
@@ -1239,7 +1239,7 @@
                 zOrder: null,
             };
             function _preLoadOpenScene(openName, closeName, func, zOrder) {
-                _openScene(_SceneName.PreLoadCutIn, closeName, func);
+                _openScene(_BaseName.PreLoadCutIn, closeName, func);
                 SceneAdmin._PreLoadCutIn.openName = openName;
                 SceneAdmin._PreLoadCutIn.closeName = closeName;
                 SceneAdmin._PreLoadCutIn.func = func;
@@ -1375,7 +1375,7 @@
                     return;
                 }
                 _SceneChange._closeZOderUP(LwgScene._SceneControl[closeName]);
-                let script = SceneAdmin._SceneControl[closeName][SceneAdmin._SceneControl[closeName].name];
+                const script = SceneAdmin._SceneControl[closeName][SceneAdmin._SceneControl[closeName].name];
                 if (script) {
                     if (script) {
                         LwgClick._switch = false;
@@ -1479,7 +1479,15 @@
                 }
                 _btnUp(target, up, effect) {
                     LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, (e) => {
-                        LwgClick._absoluteSwitch && LwgClick._switch && up && up(e);
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && up && up(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
                     }, null);
                 }
                 _btnOut(target, out, effect) {
@@ -1524,7 +1532,7 @@
             class _SceneBase extends _ScriptBase {
                 constructor() {
                     super();
-                    this._calssName = _SceneName.PreLoad;
+                    this._calssName = _BaseName.PreLoad;
                 }
                 get _Owner() {
                     return this.owner;
@@ -1870,7 +1878,7 @@
                 Skin["blackBord"] = "Lwg/UI/ui_orthogon_black_0.7.png";
             })(Skin || (Skin = {}));
             function createHint_Middle(describe) {
-                let Hint_M = Laya.Pool.getItemByClass('Hint_M', Laya.Sprite);
+                const Hint_M = Laya.Pool.getItemByClass('Hint_M', Laya.Sprite);
                 Hint_M.name = 'Hint_M';
                 Laya.stage.addChild(Hint_M);
                 Hint_M.width = Laya.stage.width;
@@ -1880,7 +1888,7 @@
                 Hint_M.x = Laya.stage.width / 2;
                 Hint_M.y = Laya.stage.height / 2;
                 Hint_M.zOrder = 100;
-                let Pic = new Laya.Image();
+                const Pic = new Laya.Image();
                 Hint_M.addChild(Pic);
                 Pic.skin = Skin.blackBord;
                 Pic.width = Laya.stage.width;
@@ -1890,7 +1898,7 @@
                 Pic.y = Hint_M.height / 2;
                 Pic.x = Laya.stage.width / 2;
                 Pic.alpha = 0.6;
-                let Dec = new Laya.Label();
+                const Dec = new Laya.Label();
                 Hint_M.addChild(Dec);
                 Dec.width = Laya.stage.width;
                 Dec.text = describe;
@@ -1930,7 +1938,7 @@
                         break;
                     }
                 }
-                let arr = [];
+                const arr = [];
                 for (const key in dia) {
                     if (dia.hasOwnProperty(key)) {
                         const value = dia[key];
@@ -2136,7 +2144,7 @@
                 SkinUrl[SkinUrl["Frame/Effects/iconGold.png"] = 0] = "Frame/Effects/iconGold.png";
             })(SkinUrl || (SkinUrl = {}));
             function _createOne(width, height, url) {
-                let Gold = Laya.Pool.getItemByClass('addGold', Laya.Image);
+                const Gold = Laya.Pool.getItemByClass('addGold', Laya.Image);
                 Gold.name = 'addGold';
                 let num = Math.floor(Math.random() * 12);
                 Gold.alpha = 1;
@@ -2282,7 +2290,7 @@
                 }
             };
             function _init() {
-                let d = new Date;
+                const d = new Date;
                 DateAdmin._loginInfo = StorageAdmin._arrayArr('DateAdmin._loginInfo');
                 DateAdmin._loginInfo.value.push([d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getDay(), d.getHours(), d.getMinutes(), d.getSeconds()]);
                 let arr = [];
@@ -3746,7 +3754,7 @@
                     return arr;
                 }
                 _setPropertyByClassify(classify, pro, value) {
-                    let arr = this._getArrByClassify(classify);
+                    const arr = this._getArrByClassify(classify);
                     for (const key in arr) {
                         if (Object.prototype.hasOwnProperty.call(arr, key)) {
                             const element = arr[key];
@@ -5594,6 +5602,20 @@
         (function (ClickAdmin) {
             ClickAdmin._switch = true;
             ClickAdmin._absoluteSwitch = true;
+            ClickAdmin._assign = [];
+            function _checkAssign(name) {
+                let assign = false;
+                if (LwgClick._assign.length > 0) {
+                    for (let index = 0; index < LwgClick._assign.length; index++) {
+                        const _name = LwgClick._assign[index];
+                        if (_name === name) {
+                            assign = true;
+                        }
+                    }
+                }
+                return assign;
+            }
+            ClickAdmin._checkAssign = _checkAssign;
             function _createButton() {
                 let Btn = new Laya.Sprite();
                 let img = new Laya.Image();
@@ -6432,7 +6454,7 @@
                 btn.zOrder = ZOder ? ZOder : 100;
                 var btnSetUp = function (e) {
                     e.stopPropagation();
-                    LwgScene._openScene(LwgScene._SceneName.Set);
+                    LwgScene._openScene(LwgScene._BaseName.Set);
                 };
                 LwgClick._on(LwgClick._Type.largen, btn, null, null, btnSetUp, null);
                 SetAdmin._BtnSet = btn;
@@ -7656,11 +7678,11 @@
             let _prefab2D = [];
             let _json = [];
             let _skeleton = [];
-            let _effectTex2D = [];
+            let _effectsTex2D = [];
             PreLoadAdmin._sumProgress = 0;
             PreLoadAdmin._loadOrder = [];
             PreLoadAdmin._loadOrderIndex = 0;
-            PreLoadAdmin._loadType = SceneAdmin._SceneName.PreLoad;
+            PreLoadAdmin._loadType = SceneAdmin._BaseName.PreLoad;
             let _ListName;
             (function (_ListName) {
                 _ListName["scene3D"] = "scene3D";
@@ -7721,7 +7743,7 @@
                 _json = [];
                 _skeleton = [];
                 PreLoadAdmin._loadOrder = [];
-                _effectTex2D = [];
+                _effectsTex2D = [];
                 PreLoadAdmin._sumProgress = 0;
                 PreLoadAdmin._loadOrderIndex = 0;
                 PreLoadAdmin._currentProgress.value = 0;
@@ -7777,7 +7799,7 @@
                                                 _texture.push(element);
                                                 break;
                                             case _ListName.effectTex2D:
-                                                _effectTex2D.push(element);
+                                                _effectsTex2D.push(element);
                                                 break;
                                             default:
                                                 break;
@@ -7786,7 +7808,7 @@
                                 }
                             }
                         }
-                        PreLoadAdmin._loadOrder = [_pic2D, _scene2D, _prefab2D, _prefab3D, _json, _texture, _texture2D, _mesh3D, _material, _skeleton, _scene3D, _effectTex2D];
+                        PreLoadAdmin._loadOrder = [_pic2D, _scene2D, _prefab2D, _prefab3D, _json, _texture, _texture2D, _mesh3D, _material, _skeleton, _scene3D, _effectsTex2D];
                         for (let index = 0; index < PreLoadAdmin._loadOrder.length; index++) {
                             PreLoadAdmin._sumProgress += PreLoadAdmin._loadOrder[index].length;
                             if (PreLoadAdmin._loadOrder[index].length <= 0) {
@@ -7803,13 +7825,13 @@
                     EventAdmin._registerOnce(_Event.complete, this, () => {
                         Laya.timer.once(this.lwgAllComplete(), this, () => {
                             LwgScene._SceneControl[PreLoadAdmin._loadType] = this._Owner;
-                            if (PreLoadAdmin._loadType !== LwgScene._SceneName.PreLoad) {
+                            if (PreLoadAdmin._loadType !== LwgScene._BaseName.PreLoad) {
                                 LwgScene._PreLoadCutIn.openName && this._openScene(LwgScene._PreLoadCutIn.openName);
                             }
                             else {
                                 AudioAdmin._playMusic();
-                                this._openScene(LwgScene._SceneName.Start, true, false, () => {
-                                    PreLoadAdmin._loadType = LwgScene._SceneName.PreLoadCutIn;
+                                this._openScene(LwgScene._BaseName.Start, true, false, () => {
+                                    PreLoadAdmin._loadType = LwgScene._BaseName.PreLoadCutIn;
                                 });
                             }
                         });
@@ -7839,28 +7861,38 @@
                     switch (PreLoadAdmin._loadOrder[PreLoadAdmin._loadOrderIndex]) {
                         case _pic2D:
                             Laya.loader.load(_pic2D[index], Laya.Handler.create(this, (any) => {
+                                EventAdmin._notify(_Event.progress);
+                                if (typeof _pic2D[index]['url'] === 'object') {
+                                    return;
+                                }
                                 if (any == null) {
                                     console.log('XXXXXXXXXXX2D资源' + _pic2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                 }
                                 else {
                                     console.log('2D图片' + _pic2D[index] + '加载完成！', '数组下标为：', index);
                                 }
-                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _scene2D:
                             Laya.loader.load(_scene2D[index], Laya.Handler.create(this, (any) => {
+                                EventAdmin._notify(_Event.progress);
+                                if (typeof _scene2D[index]['url'] === 'object') {
+                                    return;
+                                }
                                 if (any == null) {
                                     console.log('XXXXXXXXXXX数据表' + _scene2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                 }
                                 else {
                                     console.log('2D场景' + _scene2D[index] + '加载完成！', '数组下标为：', index);
                                 }
-                                EventAdmin._notify(_Event.progress);
                             }), null, Laya.Loader.JSON);
                             break;
                         case _scene3D:
                             Laya.Scene3D.load(_scene3D[index]['url'], Laya.Handler.create(this, (Scene) => {
+                                EventAdmin._notify(_Event.progress);
+                                if (typeof _scene3D[index]['url'] === 'object') {
+                                    return;
+                                }
                                 if (Scene == null) {
                                     console.log('XXXXXXXXXXX3D场景' + _scene3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                 }
@@ -7868,11 +7900,14 @@
                                     _scene3D[index]['Scene'] = Scene;
                                     console.log('3D场景' + _scene3D[index]['url'] + '加载完成！', '数组下标为：', index);
                                 }
-                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _prefab3D:
                             Laya.Sprite3D.load(_prefab3D[index]['url'], Laya.Handler.create(this, (Sp) => {
+                                EventAdmin._notify(_Event.progress);
+                                if (typeof _prefab3D[index]['url'] === 'object') {
+                                    return;
+                                }
                                 if (Sp == null) {
                                     console.log('XXXXXXXXXXX3D预设体' + _prefab3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                 }
@@ -7880,22 +7915,28 @@
                                     _prefab3D[index]['Prefab'] = Sp;
                                     console.log('3D预制体' + _prefab3D[index]['url'] + '加载完成！', '数组下标为：', index);
                                 }
-                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _mesh3D:
                             Laya.Mesh.load(_mesh3D[index]['url'], Laya.Handler.create(this, (any) => {
+                                EventAdmin._notify(_Event.progress);
+                                if (typeof _mesh3D[index]['url'] === 'object') {
+                                    return;
+                                }
                                 if (any == null) {
                                     console.log('XXXXXXXXXXX3D网格' + _mesh3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                 }
                                 else {
                                     console.log('3D网格' + _mesh3D[index]['url'] + '加载完成！', '数组下标为：', index);
                                 }
-                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _texture:
                             Laya.loader.load(_texture[index]['url'], Laya.Handler.create(this, (tex) => {
+                                EventAdmin._notify(_Event.progress);
+                                if (typeof _texture[index]['url'] === 'object') {
+                                    return;
+                                }
                                 if (tex == null) {
                                     console.log('XXXXXXXXXXX2D纹理' + _texture[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                 }
@@ -7903,11 +7944,14 @@
                                     _texture[index]['texture'] = tex;
                                     console.log('纹理' + _texture[index]['url'] + '加载完成！', '数组下标为：', index);
                                 }
-                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _texture2D:
                             Laya.Texture2D.load(_texture2D[index]['url'], Laya.Handler.create(this, function (tex) {
+                                EventAdmin._notify(_Event.progress);
+                                if (typeof _texture2D[index]['url'] === 'object') {
+                                    return;
+                                }
                                 if (tex == null) {
                                     console.log('XXXXXXXXXXX2D纹理' + _texture2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                 }
@@ -7915,34 +7959,43 @@
                                     _texture2D[index]['texture2D'] = tex;
                                     console.log('3D纹理' + _texture2D[index]['url'] + '加载完成！', '数组下标为：', index);
                                 }
-                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
-                        case _effectTex2D:
-                            Laya.Texture2D.load(_effectTex2D[index]['url'], Laya.Handler.create(this, function (tex) {
+                        case _effectsTex2D:
+                            Laya.Texture2D.load(_effectsTex2D[index]['url'], Laya.Handler.create(this, function (tex) {
+                                EventAdmin._notify(_Event.progress);
+                                if (typeof _effectsTex2D[index]['url'] === 'object') {
+                                    return;
+                                }
                                 if (tex == null) {
-                                    console.log('XXXXXXXXXXX2D纹理' + _effectTex2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    console.log('XXXXXXXXXXX2D纹理' + _effectsTex2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                 }
                                 else {
-                                    _effectTex2D[index]['texture2D'] = tex;
-                                    console.log('3D纹理' + _effectTex2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    _effectsTex2D[index]['texture2D'] = tex;
+                                    console.log('3D纹理' + _effectsTex2D[index]['url'] + '加载完成！', '数组下标为：', index);
                                 }
-                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _material:
                             Laya.Material.load(_material[index]['url'], Laya.Handler.create(this, (any) => {
+                                EventAdmin._notify(_Event.progress);
+                                if (typeof _material[index]['url'] === 'object') {
+                                    return;
+                                }
                                 if (any == null) {
                                     console.log('XXXXXXXXXXX材质' + _material[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                 }
                                 else {
                                     console.log('材质' + _material[index]['url'] + '加载完成！', '数组下标为：', index);
                                 }
-                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _json:
                             Laya.loader.load(_json[index]['url'], Laya.Handler.create(this, (data) => {
+                                EventAdmin._notify(_Event.progress);
+                                if (typeof _json[index]['url'] === 'object') {
+                                    return;
+                                }
                                 if (data == null) {
                                     console.log('XXXXXXXXXXX数据表' + _json[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                 }
@@ -7950,7 +8003,6 @@
                                     _json[index]['dataArr'] = data["RECORDS"];
                                     console.log('数据表' + _json[index]['url'] + '加载完成！', '数组下标为：', index);
                                 }
-                                EventAdmin._notify(_Event.progress);
                             }), null, Laya.Loader.JSON);
                             break;
                         case _skeleton:
@@ -7966,6 +8018,10 @@
                             break;
                         case _prefab2D:
                             Laya.loader.load(_prefab2D[index]['url'], Laya.Handler.create(this, (prefab) => {
+                                EventAdmin._notify(_Event.progress);
+                                if (typeof _prefab2D[index]['url'] === 'object') {
+                                    return;
+                                }
                                 if (prefab == null) {
                                     console.log('XXXXXXXXXXX数据表' + _prefab2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                 }
@@ -7975,7 +8031,6 @@
                                     _prefab2D[index]['prefab'] = _prefab;
                                     console.log('2D预制体' + _prefab2D[index]['url'] + '加载完成！', '数组下标为：', index);
                                 }
-                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         default:
@@ -8190,19 +8245,17 @@
         })(ExecutionAdmin = Lwg.ExecutionAdmin || (Lwg.ExecutionAdmin = {}));
     })(Lwg || (Lwg = {}));
     var Lwg$1 = Lwg;
-    let LwgScene = Lwg.SceneAdmin;
     let LwgPlatform = Lwg.PlatformAdmin;
     let LwgGame = Lwg.GameAdmin;
-    let LwgSceneAni = Lwg.SceneAniAdmin;
+    let LwgScene = Lwg.SceneAdmin;
     let LwgAdaptive = Lwg.AdaptiveAdmin;
+    let LwgSceneAni = Lwg.SceneAniAdmin;
     let LwgDialogue = Lwg.Dialogue;
-    let LwgStorage = Lwg.StorageAdmin;
-    let LwgData = Lwg.DataAdmin;
     let LwgEvent = Lwg.EventAdmin;
-    let LwgDate = Lwg.DateAdmin;
     let LwgTimer = Lwg.TimerAdmin;
-    let LwgExecution = Lwg.ExecutionAdmin;
-    let LwgGold = Lwg.GoldAdmin;
+    let LwgData = Lwg.DataAdmin;
+    let LwgStorage = Lwg.StorageAdmin;
+    let LwgDate = Lwg.DateAdmin;
     let LwgSet = Lwg.SetAdmin;
     let LwgAudio = Lwg.AudioAdmin;
     let LwgClick = Lwg.ClickAdmin;
@@ -8211,6 +8264,8 @@
     let LwgEff3D = Lwg.Eff3DAdmin;
     let LwgAni2D = Lwg.Ani2DAdmin;
     let LwgAni3D = Lwg.Ani3DAdmin;
+    let LwgExecution = Lwg.ExecutionAdmin;
+    let LwgGold = Lwg.GoldAdmin;
     let LwgTools = Lwg.ToolsAdmin;
     let LwgPreLoad = Lwg.PreLoadAdmin;
     let LwgAdmin = Lwg.InitAdmin;
@@ -8337,7 +8392,7 @@
         },
         json: {
             GeneralClothes: {
-                url: `_LwgData/_DressingRoom/GeneralClothes.json`,
+                url: [`_LwgData/_MakeTailor/DIYClothes.json`, `_LwgData/_DressingRoom/GeneralClothes.json`],
                 dataArr: new Array,
             },
             DIYClothes: {
@@ -8617,45 +8672,6 @@
         }
     }
 
-    var _SceneName;
-    (function (_SceneName) {
-        _SceneName["PreLoad"] = "PreLoad";
-        _SceneName["PreLoadCutIn"] = "PreLoadCutIn";
-        _SceneName["Guide"] = "Guide";
-        _SceneName["Start"] = "Start";
-        _SceneName["Shop"] = "Shop";
-        _SceneName["Task"] = "Task";
-        _SceneName["Set"] = "Set";
-        _SceneName["Skin"] = "Skin";
-        _SceneName["Puase"] = "Puase";
-        _SceneName["Share"] = "Share";
-        _SceneName["Game3D"] = "Game3D";
-        _SceneName["Victory"] = "Victory";
-        _SceneName["Defeated"] = "Defeated";
-        _SceneName["PassHint"] = "PassHint";
-        _SceneName["SkinTry"] = "SkinTry";
-        _SceneName["Redeem"] = "Redeem";
-        _SceneName["Turntable"] = "Turntable";
-        _SceneName["CaidanPifu"] = "CaidanPifu";
-        _SceneName["Operation"] = "Operation";
-        _SceneName["VictoryBox"] = "VictoryBox";
-        _SceneName["CheckIn"] = "CheckIn";
-        _SceneName["Resurgence"] = "Resurgence";
-        _SceneName["AdsHint"] = "AdsHint";
-        _SceneName["LwgInit"] = "LwgInit";
-        _SceneName["Game"] = "Game";
-        _SceneName["SmallHint"] = "SmallHint";
-        _SceneName["DrawCard"] = "DrawCard";
-        _SceneName["PropTry"] = "PropTry";
-        _SceneName["Card"] = "Card";
-        _SceneName["ExecutionHint"] = "ExecutionHint";
-        _SceneName["SkinQualified"] = "SkinQualified";
-        _SceneName["Eastereggister"] = "Eastereggister";
-        _SceneName["SelectLevel"] = "SelectLevel";
-        _SceneName["Settle"] = "Settle";
-        _SceneName["Special"] = "Special";
-        _SceneName["Compound"] = "Compound";
-    })(_SceneName || (_SceneName = {}));
     class _RankingData extends LwgData._Table {
         constructor() {
             super(...arguments);
@@ -9156,7 +9172,6 @@
             LwgStorage._num('Tweeting/like').value = val;
         }
     }
-    _Tweeting._prepareInto = false;
     _Tweeting._photo = {
         arr: [],
         take: (Scene, index) => {
@@ -11112,6 +11127,7 @@
             }
         }
         lwgOnStart() {
+            LwgClick._assign = [];
             this._evNotify(_Start._event.updateRanking);
         }
         lwgEvent() {

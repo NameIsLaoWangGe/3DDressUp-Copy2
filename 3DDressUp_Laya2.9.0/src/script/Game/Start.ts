@@ -1,9 +1,9 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import {  LwgScene, LwgAni2D, LwgTimer, LwgTools, LwgClick } from "../Lwg/Lwg";
+import { LwgScene, LwgAni2D, LwgTimer, LwgTools, LwgClick } from "../Lwg/Lwg";
 import { _3DScene } from "./_3D";
 import { _CheckIn, _DIYClothes, _Guide, _Ranking, _Start, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
-export default class Start extends  LwgScene._SceneBase {
+export default class Start extends LwgScene._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'mainpage');
         ADManager.TAPoint(TaT.BtnShow, 'symaker');

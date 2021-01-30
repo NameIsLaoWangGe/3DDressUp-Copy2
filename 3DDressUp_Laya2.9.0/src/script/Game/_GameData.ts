@@ -1,45 +1,6 @@
-import { LwgData, LwgDate, LwgStorage, LwgTimer, LwgTools } from "../Lwg/Lwg";
+import { LwgData, LwgDate, LwgScene, LwgStorage, LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { _3DScene, _3DDIYCloth } from "./_3D";
 import { _Res } from "./_Res";
-/**常用场景的名称，和脚本默认导出类名保持一致*/
-export enum _SceneName {
-    PreLoad = 'PreLoad',
-    PreLoadCutIn = 'PreLoadCutIn',
-    Guide = 'Guide',
-    Start = 'Start',
-    Shop = 'Shop',
-    Task = 'Task',
-    Set = 'Set',
-    Skin = 'Skin',
-    Puase = 'Puase',
-    Share = 'Share',
-    Game3D = 'Game3D',
-    Victory = 'Victory',
-    Defeated = 'Defeated',
-    PassHint = 'PassHint',
-    SkinTry = 'SkinTry',
-    Redeem = 'Redeem',
-    Turntable = 'Turntable',
-    CaidanPifu = 'CaidanPifu',
-    Operation = 'Operation',
-    VictoryBox = 'VictoryBox',
-    CheckIn = 'CheckIn',
-    Resurgence = 'Resurgence',
-    AdsHint = 'AdsHint',
-    LwgInit = 'LwgInit',
-    Game = 'Game',
-    SmallHint = 'SmallHint',
-    DrawCard = 'DrawCard',
-    PropTry = 'PropTry',
-    Card = 'Card',
-    ExecutionHint = 'ExecutionHint',
-    SkinQualified = 'SkinQualified',
-    Eastereggister = 'Eastereggister',
-    SelectLevel = 'SelectLevel',
-    Settle = 'Settle',
-    Special = 'Special',
-    Compound = 'Compound',
-}
 
 class _RankingData extends LwgData._Table {
     private static ins: _RankingData;
@@ -545,8 +506,6 @@ export class _MakePattern {
     }
 }
 export class _Tweeting {
-    /**是否准备进入微博场景，如果准备进入则主界面按钮不可点击*/
-    static _prepareInto = false;
     /**过程中的照相*/
     static _photo = {
         arr: [],

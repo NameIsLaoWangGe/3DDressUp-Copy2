@@ -1,3 +1,4 @@
+/**如果需要加载一组数据,[url1.url2,...]，则可以将需要加载的数组进行遍历赋值给相对应的对象的url，直接加载整个数组也是成立的,只不过加载后，只能通过Laya.loader.getRes(url)获取*/
 export class _Res {
     static _list = {
         scene3D: {
@@ -142,7 +143,7 @@ export class _Res {
 
         json: {
             GeneralClothes: {
-                url: `_LwgData/_DressingRoom/GeneralClothes.json`,
+                url: [`_LwgData/_MakeTailor/DIYClothes.json`, `_LwgData/_DressingRoom/GeneralClothes.json`],
                 dataArr: new Array,
             },
             DIYClothes: {

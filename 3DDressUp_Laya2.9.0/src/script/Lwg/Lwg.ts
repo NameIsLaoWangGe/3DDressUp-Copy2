@@ -3,7 +3,7 @@ export module Lwg {
     /**平台*/
     export module PlatformAdmin {
         /**渠道类型*/
-        export let _Tpye = {
+        export const _Tpye = {
             Bytedance: 'Bytedance',
             WeChat: 'WeChat',
             OPPO: 'OPPO',
@@ -18,7 +18,7 @@ export module Lwg {
             /**研发中*/
             Research: 'Research',
         };
-        export let _Ues = {
+        export const _Ues = {
             get value(): string {
                 return this['_platform_name'] ? this['_platform_name'] : null;
             },
@@ -40,12 +40,12 @@ export module Lwg {
         }
     }
 
-    /**可替代上述等级对象*/
+    /**游戏控制*/
     export module GameAdmin {
         /**游戏开关,控制步骤，不控制暂停，以现在的机制，一般用不上*/
         export let _switch = true;
         /**游戏暂停*/
-        export let pause = {
+        export const pause = {
             get value(): boolean {
                 return _switch;
             },
@@ -62,7 +62,7 @@ export module Lwg {
             }
         }
         /**等级*/
-        export let level = {
+        export const level = {
             get value(): number {
                 return Laya.LocalStorage.getItem('_Game/Level') ? Number(Laya.LocalStorage.getItem('_Game/Level')) : 1;
             },
@@ -79,7 +79,7 @@ export module Lwg {
             }
         }
         /**最大关卡数*/
-        export let maxLevel = {
+        export const maxLevel = {
             get value(): number {
                 return Laya.LocalStorage.getItem('_Game/maxLevel') ? Number(Laya.LocalStorage.getItem('_Game/maxLevel')) : this.level;
             },
@@ -89,7 +89,7 @@ export module Lwg {
         }
 
         /**从第几关开始循环*/
-        export let loopLevel = {
+        export const loopLevel = {
             get value(): string {
                 return this['_Game/loopLevel'] ? this['_Game/loopLevel'] : -1;
             },
@@ -113,7 +113,6 @@ export module Lwg {
                 this.LevelNode = sp;
             }));
         };
-
     }
 
     /**游戏整体控制*/
@@ -123,7 +122,7 @@ export module Lwg {
         /**和场景名称一样的脚本,这个脚本唯一，不可随意调用*/
         export let _SceneScript = {};
         /**常用场景的名称，和脚本默认导出类名保持一致*/
-        export enum _SceneName {
+        export enum _BaseName {
             PreLoad = 'PreLoad',
             PreLoadCutIn = 'PreLoadCutIn',
             Guide = 'Guide',
@@ -139,7 +138,7 @@ export module Lwg {
             Settle = 'Settle',
         }
         /**预加载完毕后，需要打开的场景信息*/
-        export let _PreLoadCutIn = {
+        export const _PreLoadCutIn = {
             openName: null as string,
             closeName: null as string,
             func: null as Function,
@@ -153,7 +152,7 @@ export module Lwg {
          * @param {number} [zOrder] 指定层级，默认为最上层
          */
         export function _preLoadOpenScene(openName: string, closeName: string, func?: Function, zOrder?: number) {
-            _openScene(_SceneName.PreLoadCutIn, closeName, func);
+            _openScene(_BaseName.PreLoadCutIn, closeName, func);
             _PreLoadCutIn.openName = openName;
             _PreLoadCutIn.closeName = closeName;
             _PreLoadCutIn.func = func;
@@ -304,7 +303,7 @@ export module Lwg {
             }
             _SceneChange._closeZOderUP(LwgScene._SceneControl[closeName]);
             //如果内部场景消失动画被重写了，则执行内部场景消失动画，而不执行通用动画
-            let script = _SceneControl[closeName][_SceneControl[closeName].name];
+            const script = _SceneControl[closeName][_SceneControl[closeName].name];
             if (script) {
                 if (script) {
                     LwgClick._switch = false;
@@ -416,7 +415,14 @@ export module Lwg {
             */
             _btnDown(target: Laya.Node, down?: Function, effect?: string): void {
                 LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, (e: Laya.Event) => {
-                    LwgClick._absoluteSwitch && LwgClick._switch && down && down(e)
+                    var func = () => {
+                        ClickAdmin._absoluteSwitch && LwgClick._switch && down && down(e);
+                    }
+                    if (ClickAdmin._assign.length > 0) {
+                        ClickAdmin._checkAssign(target.name) && func();
+                    } else {
+                        func();
+                    }
                 }, null, null, null);
             }
             /**
@@ -427,10 +433,16 @@ export module Lwg {
              */
             _btnMove(target: Laya.Node, move: Function, effect?: string): void {
                 LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, (e: Laya.Event) => {
-                    LwgClick._absoluteSwitch && LwgClick._switch && move && move(e)
+                    var func = () => {
+                        ClickAdmin._absoluteSwitch && LwgClick._switch && move && move(e);
+                    }
+                    if (ClickAdmin._assign.length > 0) {
+                        ClickAdmin._checkAssign(target.name) && func();
+                    } else {
+                        func();
+                    }
                 }, null, null);
             }
-
             /**
              * 抬起触发点击事件注册,可以用(e)=>{}简写传递的函数参数
              * @param target 节点
@@ -439,7 +451,14 @@ export module Lwg {
            */
             _btnUp(target: Laya.Node, up: Function, effect?: string): void {
                 LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, (e: Laya.Event) => {
-                    LwgClick._absoluteSwitch && LwgClick._switch && up && up(e);
+                    var func = () => {
+                        ClickAdmin._absoluteSwitch && LwgClick._switch && up && up(e);
+                    }
+                    if (ClickAdmin._assign.length > 0) {
+                        ClickAdmin._checkAssign(target.name) && func();
+                    } else {
+                        func();
+                    }
                 }, null);
             }
             /**
@@ -449,7 +468,16 @@ export module Lwg {
               * @param effect 效果类型输入'null'则没有效果
              */
             _btnOut(target: Laya.Node, out: Function, effect?: string): void {
-                LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, null, (e: Laya.Event) => { LwgClick._absoluteSwitch && LwgClick._switch && out && out(e) });
+                LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, null, (e: Laya.Event) => {
+                    var func = () => {
+                        ClickAdmin._absoluteSwitch && LwgClick._switch && out && out(e);
+                    }
+                    if (ClickAdmin._assign.length > 0) {
+                        ClickAdmin._checkAssign(target.name) && func();
+                    } else {
+                        func();
+                    }
+                });
             }
             /**
               * 通用事件注册,可以用(e)=>{}简写传递的函数参数
@@ -461,10 +489,49 @@ export module Lwg {
              */
             _btnFour(target: Laya.Node, down?: Function, move?: Function, up?: Function, out?: Function, effect?: string): void {
                 LwgClick._on(effect == null ? effect : LwgClick._Use.value, target, this,
-                    (e: Laya.Event) => { LwgClick._absoluteSwitch && LwgClick._switch && down && down(e) },
-                    (e: Laya.Event) => { LwgClick._absoluteSwitch && LwgClick._switch && move && move(e) },
-                    (e: Laya.Event) => { LwgClick._absoluteSwitch && LwgClick._switch && up && up(e) },
-                    (e: Laya.Event) => { LwgClick._absoluteSwitch && LwgClick._switch && out && out(e) });
+                    (e: Laya.Event) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && down && down(e);
+                        }
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        } else {
+                            func();
+                        }
+                    },
+
+                    (e: Laya.Event) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && move && move(e);
+                        }
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        } else {
+                            func();
+                        }
+                    },
+
+                    (e: Laya.Event) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && up && up(e);
+                        }
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        } else {
+                            func();
+                        }
+                    },
+                    (e: Laya.Event) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && out && out(e);
+                        }
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        } else {
+                            func();
+                        }
+
+                    });
             }
             ownerSceneName: string = '';
             /**
@@ -498,9 +565,9 @@ export module Lwg {
             lwgOnUpdate(): void { };
             /**离开时执行不要执行onDisable，只执行lwgDisable*/
             lwgOnDisable(): void { };
-            onStageMouseDown(e: Laya.Event): void { LwgClick._switch && this.lwgOnStageDown(e) };
-            onStageMouseMove(e: Laya.Event): void { LwgClick._switch && this.lwgOnStageMove(e) };
-            onStageMouseUp(e: Laya.Event): void { LwgClick._switch && this.lwgOnStageUp(e) };
+            onStageMouseDown(e: Laya.Event): void { ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageDown(e) };
+            onStageMouseMove(e: Laya.Event): void { ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageMove(e) };
+            onStageMouseUp(e: Laya.Event): void { ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageUp(e) };
             lwgOnStageDown(e: Laya.Event): void { };
             lwgOnStageMove(e: Laya.Event): void { };
             lwgOnStageUp(e: Laya.Event): void { };
@@ -509,7 +576,7 @@ export module Lwg {
         /**2D场景通用父类*/
         export class _SceneBase extends _ScriptBase {
             /**类名*/
-            private _calssName: string = _SceneName.PreLoad;
+            private _calssName: string = _BaseName.PreLoad;
             constructor() {
                 super();
             }
@@ -904,7 +971,7 @@ export module Lwg {
          * @param describe 类型，也就是提示文字类型
          */
         export function createHint_Middle(describe: string): void {
-            let Hint_M = Laya.Pool.getItemByClass('Hint_M', Laya.Sprite);
+            const Hint_M = Laya.Pool.getItemByClass('Hint_M', Laya.Sprite);
             Hint_M.name = 'Hint_M';//标识符和名称一样
 
             Laya.stage.addChild(Hint_M);
@@ -917,7 +984,7 @@ export module Lwg {
             Hint_M.zOrder = 100;
 
             // 底图
-            let Pic = new Laya.Image();
+            const Pic = new Laya.Image();
             Hint_M.addChild(Pic);
             Pic.skin = Skin.blackBord;
             Pic.width = Laya.stage.width;
@@ -929,7 +996,7 @@ export module Lwg {
             Pic.alpha = 0.6;
 
             // 提示语
-            let Dec = new Laya.Label();
+            const Dec = new Laya.Label();
             Hint_M.addChild(Dec);
             Dec.width = Laya.stage.width
             Dec.text = describe;
@@ -957,7 +1024,7 @@ export module Lwg {
             });
         }
         /**获取对话框内容，内容必须已经预加载*/
-        export let _dialogContent = {
+        export const _dialogContent = {
             get Array(): Array<any> {
                 return Laya.loader.getRes("GameData/Dialogue/Dialogue.json")['RECORDS'] !== null ? Laya.loader.getRes("GameData/Dialogue/Dialogue.json")['RECORDS'] : [];
             },
@@ -977,7 +1044,7 @@ export module Lwg {
                     break;
                 }
             }
-            let arr = [];
+            const arr = [];
             for (const key in dia) {
                 if (dia.hasOwnProperty(key)) {
                     const value = dia[key];
@@ -1134,7 +1201,7 @@ export module Lwg {
     /**金币模块*/
     export module GoldAdmin {
         /**金币数量*/
-        export let _num = {
+        export const _num = {
             get value(): number {
                 return Laya.LocalStorage.getItem('GoldNum') ? Number(Laya.LocalStorage.getItem('GoldNum')) : 0;
             },
@@ -1237,7 +1304,7 @@ export module Lwg {
 
         /**创建单个金币*/
         export function _createOne(width: number, height: number, url: string): Laya.Image {
-            let Gold = Laya.Pool.getItemByClass('addGold', Laya.Image) as Laya.Image;
+            const Gold = Laya.Pool.getItemByClass('addGold', Laya.Image) as Laya.Image;
             Gold.name = 'addGold';//标识符和名称一样
             let num = Math.floor(Math.random() * 12);
             Gold.alpha = 1;
@@ -1347,7 +1414,7 @@ export module Lwg {
     /**事件模块*/
     export module EventAdmin {
         /**以节点为单位，在节点内注册事件，节点移除或者关闭后，关闭事件监听；如果需要在节点外注册事件，this为EventAdmin，不要写在节点脚本中，否则每次打开一次就会注册一次*/
-        export let dispatcher: Laya.EventDispatcher = new Laya.EventDispatcher();
+        export const dispatcher: Laya.EventDispatcher = new Laya.EventDispatcher();
         /**
          * 事件注册,总控制事件注册在当前类，每个游戏独有的事件不要注册在这里，防止每关重复注册
          * @param type 事件类型或者名称
@@ -1408,7 +1475,7 @@ export module Lwg {
 
     /**日期管理*/
     export module DateAdmin {
-        export let _date = {
+        export const _date = {
             /**年*/
             get year(): number {
                 return (new Date()).getFullYear();
@@ -1451,7 +1518,7 @@ export module Lwg {
             }
         }
         export function _init(): void {
-            let d = new Date;
+            const d = new Date;
             _loginInfo = StorageAdmin._arrayArr('DateAdmin._loginInfo');
             _loginInfo.value.push([d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getDay(), d.getHours(), d.getMinutes(), d.getSeconds()])
             let arr: Array<Array<any>> = [];
@@ -1471,7 +1538,7 @@ export module Lwg {
         /**玩家登录的总次数*/
         export let _loginCount: StorageAdmin._NumVariable;
         /**今天登陆了几次*/
-        export let _loginToday = {
+        export const _loginToday = {
             get num(): number {
                 return Laya.LocalStorage.getItem('DateAdmin._loginToday') ? Number(Laya.LocalStorage.getItem('DateAdmin._loginToday')) : 0;
             },
@@ -1482,7 +1549,7 @@ export module Lwg {
             }
         }
         /**前一天登陆是哪一天*/
-        export let _last = {
+        export const _last = {
             get date(): number {
                 if (_loginInfo.value.length > 1) {
                     return _loginInfo.value[_loginInfo.value.length - 2][2];
@@ -1492,7 +1559,7 @@ export module Lwg {
             },
         }
         /**前一天登陆是哪一天*/
-        export let _front = {
+        export const _front = {
             get date(): number {
                 return _loginInfo.value[_loginInfo.value.length - 1][2];
             },
@@ -3417,7 +3484,7 @@ export module Lwg {
             * @memberof _DataTable
             */
             _setPropertyByClassify(classify: string, pro: string, value: any): Array<any> {
-                let arr = this._getArrByClassify(classify);
+                const arr = this._getArrByClassify(classify);
                 for (const key in arr) {
                     if (Object.prototype.hasOwnProperty.call(arr, key)) {
                         const element = arr[key];
@@ -5787,6 +5854,25 @@ export module Lwg {
         export let _switch = true;
         /**点击事件绝对开关，不到不得已不要用，优先级高于_switch*/
         export let _absoluteSwitch = true;
+        /**记录当前可以点击的按钮，其他按钮都不可以点击，可用于新手引导,用过之后一定要记得变为[],长度变为0*/
+        export let _assign: string[] = [];
+        /**
+         * @export 通过一个按钮名称检测其是否没有被屏蔽，返回true是没有被屏蔽，false为屏蔽
+         * @param {Laya.Sprite} target
+         * @return {*}  {boolean} 
+         */
+        export function _checkAssign(name: string): boolean {
+            let assign: boolean = false;
+            if (LwgClick._assign.length > 0) {
+                for (let index = 0; index < LwgClick._assign.length; index++) {
+                    const _name = LwgClick._assign[index];
+                    if (_name === name) {
+                        assign = true;
+                    }
+                }
+            }
+            return assign;
+        }
         /**按钮音效*/
         export let _audioUrl: string;
         /**
@@ -7177,7 +7263,7 @@ export module Lwg {
             btn.zOrder = ZOder ? ZOder : 100;
             var btnSetUp = function (e: Laya.Event): void {
                 e.stopPropagation();
-                LwgScene._openScene(LwgScene._SceneName.Set);
+                LwgScene._openScene(LwgScene._BaseName.Set);
             }
             LwgClick._on(LwgClick._Type.largen, btn, null, null, btnSetUp, null);
             _BtnSet = btn;
@@ -8262,30 +8348,6 @@ export module Lwg {
                     return p;
                 }
             }
-            // /**
-            //   * 射线检测，返回射线扫描结果，可以筛选结果
-            //   * @param camera 摄像机
-            //   * @param scene3D 当前场景
-            //   * @param vector2 触摸点
-            //   * @param filtrateName 找出指定触摸的模型的信息，如果不传则返回全部信息数组；
-            //   */
-            // export function rayScanningFirst(camera: Laya.Camera, scene3D: Laya.Scene3D, vector2: Laya.Vector2): string {
-            //     /**射线*/
-            //     let _ray: Laya.Ray = new Laya.Ray(new Laya.Vector3(0, 0, 0), new Laya.Vector3(0, 0, 0));
-            //     /**射线扫描结果*/
-            //     let outs: Array<Laya.HitResult> = new Array<Laya.HitResult>();
-            //     //射线碰撞到碰撞框，碰撞框的isTrigger属性要勾上，这样只检测碰撞，不产生碰撞反应
-            //     camera.viewportPointToRay(vector2, _ray);
-            //     scene3D.physicsSimulation.rayCastAll(_ray, outs);
-            //     for (var i = 0; i < outs.length; i++) {
-            //         //找到挡屏
-            //         let hitResult = outs[i].collider.owner;
-            //         if (i == 0) {
-            //             console.log(hitResult.name);
-            //             return hitResult.name;
-            //         }
-            //     }
-            // }
             /**
              * 射线检测，返回射线扫描结果，可以筛选结果
              * @param camera 摄像机
@@ -8317,6 +8379,26 @@ export module Lwg {
                 } else {
                     return outs;
                 }
+            }
+
+            /**
+             * 射线检测，返回射线扫描的第一个结果，可以筛选结果
+             * @param camera 摄像机
+             * @param scene3D 当前场景
+             * @param vector2 触摸点
+             * @param filtrateName 找出指定触摸的模型的信息，如果不传则返回全部信息数组；
+             */
+            export function rayScanningFirst(camera: Laya.Camera, scene3D: Laya.Scene3D, vector2: Laya.Vector2,): any {
+                /**射线*/
+                let _ray: Laya.Ray = new Laya.Ray(new Laya.Vector3(0, 0, 0), new Laya.Vector3(0, 0, 0));
+                /**射线扫描结果*/
+                let out: Laya.HitResult = new Laya.HitResult();
+                // 如果被画布canvas并不和stage一样大，那么stage会被缩放，位置需要补回来，舞台在画布内，vector2是舞台坐标，要转换为canvas坐标，
+                const _v2 = new Laya.Vector2(Laya.stage.clientScaleX * vector2.x, Laya.stage.clientScaleY * vector2.y);
+                //射线碰撞到碰撞框，碰撞框的isTrigger属性要勾上，这样只检测碰撞，不产生碰撞反应
+                camera.viewportPointToRay(_v2, _ray);
+                scene3D.physicsSimulation.rayCast(_ray, out);
+                return out;
             }
 
             /**
@@ -8871,7 +8953,7 @@ export module Lwg {
         /**数据表、场景和预制体的加载，在框架中，json数据表为必须加载的项目*/
         let _skeleton: Array<any> = [];
         /**特效列表中的tex2d*/
-        let _effectTex2D: Array<any> = [];
+        let _effectsTex2D: Array<any> = [];
 
         /**进度条总长度,长度为以上三个加载资源类型的数组总长度*/
         export let _sumProgress: number = 0;
@@ -8881,7 +8963,7 @@ export module Lwg {
         export let _loadOrderIndex: number = 0;
 
         /**两种类型，页面前加载还是初始化前*/
-        export let _loadType: string = SceneAdmin._SceneName.PreLoad;
+        export let _loadType: string = SceneAdmin._BaseName.PreLoad;
         export enum _ListName {
             scene3D = 'scene3D',
             prefab3D = 'prefab3D',
@@ -8947,7 +9029,7 @@ export module Lwg {
             _json = [];
             _skeleton = [];
             _loadOrder = [];
-            _effectTex2D = [];
+            _effectsTex2D = [];
             _sumProgress = 0;
             _loadOrderIndex = 0;
             _currentProgress.value = 0;
@@ -9003,7 +9085,7 @@ export module Lwg {
                                             _texture.push(element);
                                             break;
                                         case _ListName.effectTex2D:
-                                            _effectTex2D.push(element);
+                                            _effectsTex2D.push(element);
                                             break;
                                         default:
                                             break;
@@ -9012,7 +9094,7 @@ export module Lwg {
                             }
                         }
                     }
-                    _loadOrder = [_pic2D, _scene2D, _prefab2D, _prefab3D, _json, _texture, _texture2D, _mesh3D, _material, _skeleton, _scene3D, _effectTex2D];
+                    _loadOrder = [_pic2D, _scene2D, _prefab2D, _prefab3D, _json, _texture, _texture2D, _mesh3D, _material, _skeleton, _scene3D, _effectsTex2D];
                     for (let index = 0; index < _loadOrder.length; index++) {
                         _sumProgress += _loadOrder[index].length;
                         if (_loadOrder[index].length <= 0) {
@@ -9030,25 +9112,14 @@ export module Lwg {
                     Laya.timer.once(this.lwgAllComplete(), this, () => {
                         LwgScene._SceneControl[_loadType] = this._Owner;
                         // 页面前
-                        if (_loadType !== LwgScene._SceneName.PreLoad) {
+                        if (_loadType !== LwgScene._BaseName.PreLoad) {
                             LwgScene._PreLoadCutIn.openName && this._openScene(LwgScene._PreLoadCutIn.openName);
                             // console.log('预加载完毕开始打开界面！')
                         } else {
-                            //游戏开始前
-                            // for (const key in  LwgScene._Moudel) {
-                            //     if (Object.prototype.hasOwnProperty.call( LwgScene._Moudel, key)) {
-                            //         const element =  LwgScene._Moudel[key];
-                            //         if (element['_init']) {
-                            //             element['_init']();
-                            //         } else {
-                            //             console.log(element, '模块没有初始化函数！');
-                            //         }
-                            //     }
-                            // }
                             AudioAdmin._playMusic();
                             // 页面前
-                            this._openScene(LwgScene._SceneName.Start, true, false, () => {
-                                _loadType = LwgScene._SceneName.PreLoadCutIn;
+                            this._openScene(LwgScene._BaseName.Start, true, false, () => {
+                                _loadType = LwgScene._BaseName.PreLoadCutIn;
                             })
                         }
                     })
@@ -9079,127 +9150,162 @@ export module Lwg {
                 }
                 //获取到当前分类加载数组的下标 
                 let index = _currentProgress.value - alreadyPro;
-
                 switch (_loadOrder[_loadOrderIndex]) {
                     case _pic2D:
                         Laya.loader.load(_pic2D[index], Laya.Handler.create(this, (any) => {
+                            EventAdmin._notify(_Event.progress);
+                            // 如果是数组则不会赋值,只能从getRes中获取
+                            if (typeof _pic2D[index]['url'] === 'object') {
+                                return;
+                            }
                             if (any == null) {
                                 console.log('XXXXXXXXXXX2D资源' + _pic2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                             } else {
                                 console.log('2D图片' + _pic2D[index] + '加载完成！', '数组下标为：', index);
                             }
-                            EventAdmin._notify(_Event.progress);
                         }));
                         break;
 
                     case _scene2D:
                         Laya.loader.load(_scene2D[index], Laya.Handler.create(this, (any) => {
+                            EventAdmin._notify(_Event.progress);
+                            // 如果是数组则不会赋值,只能从getRes中获取
+                            if (typeof _scene2D[index]['url'] === 'object') {
+                                return;
+                            }
                             if (any == null) {
                                 console.log('XXXXXXXXXXX数据表' + _scene2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                             } else {
                                 console.log('2D场景' + _scene2D[index] + '加载完成！', '数组下标为：', index);
                             }
-                            EventAdmin._notify(_Event.progress);
-
                         }), null, Laya.Loader.JSON);
                         break;
 
                     case _scene3D:
                         Laya.Scene3D.load(_scene3D[index]['url'], Laya.Handler.create(this, (Scene: Laya.Scene3D) => {
+                            EventAdmin._notify(_Event.progress);
+                            // 如果是数组则不会赋值,只能从getRes中获取
+                            if (typeof _scene3D[index]['url'] === 'object') {
+                                return;
+                            }
                             if (Scene == null) {
                                 console.log('XXXXXXXXXXX3D场景' + _scene3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                             } else {
                                 _scene3D[index]['Scene'] = Scene;
                                 console.log('3D场景' + _scene3D[index]['url'] + '加载完成！', '数组下标为：', index);
                             }
-                            EventAdmin._notify(_Event.progress);
-
                         }));
                         break;
 
                     case _prefab3D:
                         Laya.Sprite3D.load(_prefab3D[index]['url'], Laya.Handler.create(this, (Sp: Laya.Sprite3D) => {
+                            EventAdmin._notify(_Event.progress);
+                            // 如果是数组则不会赋值,只能从getRes中获取
+                            if (typeof _prefab3D[index]['url'] === 'object') {
+                                return;
+                            }
                             if (Sp == null) {
                                 console.log('XXXXXXXXXXX3D预设体' + _prefab3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                             } else {
                                 _prefab3D[index]['Prefab'] = Sp;
                                 console.log('3D预制体' + _prefab3D[index]['url'] + '加载完成！', '数组下标为：', index);
                             }
-                            EventAdmin._notify(_Event.progress);
-
                         }));
                         break;
 
                     case _mesh3D:
                         Laya.Mesh.load(_mesh3D[index]['url'], Laya.Handler.create(this, (any) => {
+                            EventAdmin._notify(_Event.progress);
+                            // 如果是数组则不会赋值,只能从getRes中获取
+                            if (typeof _mesh3D[index]['url'] === 'object') {
+                                return;
+                            }
                             if (any == null) {
                                 console.log('XXXXXXXXXXX3D网格' + _mesh3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                             } else {
                                 console.log('3D网格' + _mesh3D[index]['url'] + '加载完成！', '数组下标为：', index);
                             }
-                            EventAdmin._notify(_Event.progress);
 
                         }));
                         break;
 
                     case _texture:
                         Laya.loader.load(_texture[index]['url'], Laya.Handler.create(this, (tex: Laya.Texture) => {
+                            EventAdmin._notify(_Event.progress);
+                            // 如果是数组则不会赋值,只能从getRes中获取
+                            if (typeof _texture[index]['url'] === 'object') {
+                                return;
+                            }
                             if (tex == null) {
                                 console.log('XXXXXXXXXXX2D纹理' + _texture[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                             } else {
                                 _texture[index]['texture'] = tex;
                                 console.log('纹理' + _texture[index]['url'] + '加载完成！', '数组下标为：', index);
                             }
-                            EventAdmin._notify(_Event.progress);
                         }));
                         break;
 
                     case _texture2D:
                         //加载纹理资源
                         Laya.Texture2D.load(_texture2D[index]['url'], Laya.Handler.create(this, function (tex: Laya.Texture2D): void {
+                            EventAdmin._notify(_Event.progress);
+                            // 如果是数组则不会赋值,只能从getRes中获取
+                            if (typeof _texture2D[index]['url'] === 'object') {
+                                return;
+                            }
                             if (tex == null) {
                                 console.log('XXXXXXXXXXX2D纹理' + _texture2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                             } else {
                                 _texture2D[index]['texture2D'] = tex;
                                 console.log('3D纹理' + _texture2D[index]['url'] + '加载完成！', '数组下标为：', index);
                             }
-                            EventAdmin._notify(_Event.progress);
                         }));
                         break;
-                    case _effectTex2D:
+                    case _effectsTex2D:
                         //加载纹理资源
-                        Laya.Texture2D.load(_effectTex2D[index]['url'], Laya.Handler.create(this, function (tex: Laya.Texture2D): void {
-                            if (tex == null) {
-                                console.log('XXXXXXXXXXX2D纹理' + _effectTex2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
-                            } else {
-                                _effectTex2D[index]['texture2D'] = tex;
-                                console.log('3D纹理' + _effectTex2D[index]['url'] + '加载完成！', '数组下标为：', index);
-                            }
+                        Laya.Texture2D.load(_effectsTex2D[index]['url'], Laya.Handler.create(this, function (tex: Laya.Texture2D): void {
                             EventAdmin._notify(_Event.progress);
+                            // 如果是数组则不会赋值,只能从getRes中获取
+                            if (typeof _effectsTex2D[index]['url'] === 'object') {
+                                return;
+                            }
+                            if (tex == null) {
+                                console.log('XXXXXXXXXXX2D纹理' + _effectsTex2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                            } else {
+                                _effectsTex2D[index]['texture2D'] = tex;
+                                console.log('3D纹理' + _effectsTex2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                            }
                         }));
                         break;
 
                     case _material:
                         Laya.Material.load(_material[index]['url'], Laya.Handler.create(this, (any: any) => {
+                            EventAdmin._notify(_Event.progress);
+                            // 如果是数组则不会赋值
+                            if (typeof _material[index]['url'] === 'object') {
+                                return;
+                            }
                             if (any == null) {
                                 console.log('XXXXXXXXXXX材质' + _material[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                             } else {
                                 console.log('材质' + _material[index]['url'] + '加载完成！', '数组下标为：', index);
                             }
-                            EventAdmin._notify(_Event.progress);
                         }));
                         break;
 
                     case _json:
                         Laya.loader.load(_json[index]['url'], Laya.Handler.create(this, (data) => {
+                            EventAdmin._notify(_Event.progress);
+                            // 如果是数组则不会赋值,只能从getRes中获取
+                            if (typeof _json[index]['url'] === 'object') {
+                                return;
+                            }
                             if (data == null) {
                                 console.log('XXXXXXXXXXX数据表' + _json[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                             } else {
                                 _json[index]['dataArr'] = data["RECORDS"];
                                 console.log('数据表' + _json[index]['url'] + '加载完成！', '数组下标为：', index);
                             }
-                            EventAdmin._notify(_Event.progress);
-
                         }), null, Laya.Loader.JSON);
                         break;
 
@@ -9217,6 +9323,11 @@ export module Lwg {
 
                     case _prefab2D:
                         Laya.loader.load(_prefab2D[index]['url'], Laya.Handler.create(this, (prefab: Laya.Prefab) => {
+                            EventAdmin._notify(_Event.progress);
+                            // 如果是数组则不会赋值,只能从getRes中获取
+                            if (typeof _prefab2D[index]['url'] === 'object') {
+                                return;
+                            }
                             if (prefab == null) {
                                 console.log('XXXXXXXXXXX数据表' + _prefab2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                             } else {
@@ -9226,8 +9337,6 @@ export module Lwg {
 
                                 console.log('2D预制体' + _prefab2D[index]['url'] + '加载完成！', '数组下标为：', index);
                             }
-                            EventAdmin._notify(_Event.progress);
-
                         }));
                         break;
 

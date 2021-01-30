@@ -64,7 +64,6 @@ export default class PreLoad extends LwgPreLoad._PreLoadScene {
         }, delay * startCoefficient);
     }
 
-
     progressDisplay(): void {
         this._ImgVar('ProgressBar').mask.x = - this._ImgVar('ProgressBar').width + this._ImgVar('ProgressBar').width / 100 * this.count;
     }
