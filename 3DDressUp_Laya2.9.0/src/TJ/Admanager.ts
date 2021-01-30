@@ -1,4 +1,4 @@
-import { SceneAdmin, AudioAdmin, Dialogue, EventAdmin, Platform, Setting, _SceneName } from "../script/Lwg/Lwg";
+import { LwgScene, LwgAudio, LwgDialogue,  LwgPlatform, LwgSet } from "../script/Lwg/Lwg";
 export default class ADManager {
 
     public static ShowBanner() {
@@ -29,12 +29,12 @@ export default class ADManager {
     static CanShowCD: boolean = true;
     public static ShowReward(rewardAction: Function, CDTime: number = 500)//展示激励广告，一般是视频
     {
-        if (Platform._Ues.value == Platform._Tpye.WebTest || Platform._Ues.value == Platform._Tpye.OPPOTest || Platform._Ues.value == Platform._Tpye.Research) {
+        if ( LwgPlatform._Ues.value ==  LwgPlatform._Tpye.WebTest ||  LwgPlatform._Ues.value ==  LwgPlatform._Tpye.OPPOTest ||  LwgPlatform._Ues.value ==  LwgPlatform._Tpye.Research) {
             rewardAction();
             return;
         }
         if (ADManager.CanShowCD) {
-            AudioAdmin._stopMusic();
+            LwgAudio._stopMusic();
             console.log("?????");
             let p = new TJ.ADS.Param();
             p.extraAd = true;//视频结束后通常会追加一次插屏
@@ -42,7 +42,7 @@ export default class ADManager {
 
             p.cbi.Add(TJ.Define.Event.Reward, () => {
                 getReward = true;
-                AudioAdmin._playMusic(AudioAdmin._voiceUrl.bgm, 0, 1000);
+                LwgAudio._playMusic(LwgAudio._voiceUrl.bgm, 0, 1000);
                 if (rewardAction != null) {
                     rewardAction();
                 }
@@ -51,23 +51,23 @@ export default class ADManager {
             p.cbi.Add(TJ.Define.Event.Close, () => {
 
                 if (!getReward) {
-                    AudioAdmin._playMusic(AudioAdmin._voiceUrl.bgm, 0, 1000);
+                    LwgAudio._playMusic(LwgAudio._voiceUrl.bgm, 0, 1000);
                     //UIMgr.show("UISubSkinTry", 2);
                     // Dialog.createHint_Middle(Dialog.HintContent["观看完整广告才能获取奖励哦！"]);
                     console.log('观看完整广告才能获取奖励哦！');
-                    SceneAdmin._openScene(_SceneName.AdsHint, null, () => {
-                        console.log(SceneAdmin._SceneControl['AdsHint']);
+                    LwgScene._openScene('AdsHint', null, () => {
+                        console.log(LwgScene._SceneControl['AdsHint']);
                         // EventAdmin._notify('setCallBack', [rewardAction])
-                        SceneAdmin._SceneControl['AdsHint']['AdsHint'].setCallBack(rewardAction);
+                        LwgScene._SceneControl['AdsHint']['AdsHint'].setCallBack(rewardAction);
                     });
                     //TipPanel.ins.showString("观看完整广告才能获取奖励哦！");
                 }
             });
             p.cbi.Add(TJ.Define.Event.NoAds, () => {
-                AudioAdmin._playMusic(AudioAdmin._voiceUrl.bgm, 0, 1000);
+                LwgAudio._playMusic(LwgAudio._voiceUrl.bgm, 0, 1000);
 
                 //UIMgr.show("UISubSkinTry", 1);
-                Dialogue.createHint_Middle("暂时没有广告，过会儿再试试吧！");
+                LwgDialogue.createHint_Middle("暂时没有广告，过会儿再试试吧！");
                 //TipPanel.ins.showString("暂时没有广告，过会儿再试试吧！");
             });
 
@@ -130,13 +130,13 @@ export default class ADManager {
     }
 
     static VibrateShort() {
-        if (!Setting._shake.switch) {
+        if (!LwgSet._shake.switch) {
             return;
         }
         TJ.API.Vibrate.Short();
     }
     static Vibratelong() {
-        if (!Setting._shake.switch) {
+        if (!LwgSet._shake.switch) {
             return;
         }
         TJ.API.Vibrate.Long();

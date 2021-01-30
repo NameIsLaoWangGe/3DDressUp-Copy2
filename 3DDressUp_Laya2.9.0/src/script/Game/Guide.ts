@@ -1,8 +1,8 @@
-import { SceneAdmin, Animation2D, Effects2D, TimerAdmin, Tools, _SceneName } from "../Lwg/Lwg";
+import {  LwgScene, LwgAni2D, LwgEff2D, LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _Guide } from "./_GameData";
 /**裁剪界面的层级必须在最上面*/
-export default class Guide extends SceneAdmin._SceneBase {
+export default class Guide extends  LwgScene._SceneBase {
     lwgOpenAni(): number {
         return 200;
     }
@@ -11,7 +11,7 @@ export default class Guide extends SceneAdmin._SceneBase {
         this._ImgVar('Slide').scale(0, 0);
     }
     clickEffcet(): void {
-        Effects2D._Aperture._continuous(this._Owner, [this._ImgVar('Hand').x, this._ImgVar('Hand').y + 28], [6, 6], null, null, [Effects2D._SkinUrl.圆形小光环], null, this._ImgVar('Hand').zOrder - 1, [1.2, 1.2], [0.6, 0.6], [0.01, 0.01]);
+        LwgEff2D._Aperture._continuous(this._Owner, [this._ImgVar('Hand').x, this._ImgVar('Hand').y + 28], [6, 6], null, null, [LwgEff2D._SkinUrl.圆形小光环], null, this._ImgVar('Hand').zOrder - 1, [1.2, 1.2], [0.6, 0.6], [0.01, 0.01]);
     }
     /**
       * 在一个节点上绘制一个圆形反向遮罩,可以绘制很多个,但是不要同时存在多个interactionArea，清除直接删除node中的interactionArea节点即可
@@ -26,10 +26,10 @@ export default class Guide extends SceneAdmin._SceneBase {
             let radiusBase = 15;
             const element = arr[index];
             const speed = (arr[index][2] - radiusBase) / time;
-            TimerAdmin._frameNumLoop(1, time, this, () => {
+            LwgTimer._frameNumLoop(1, time, this, () => {
                 radiusBase += speed;
                 element[2] = radiusBase;
-                Tools._Draw.reverseCircleMask(this._ImgVar('Background'), arr, true);
+                LwgTools._Draw.reverseCircleMask(this._ImgVar('Background'), arr, true);
             }, () => {
                 func && func();
             }, true)
@@ -55,14 +55,14 @@ export default class Guide extends SceneAdmin._SceneBase {
             const speedX = (element[2] - widthBase) / time;
             const speedY = (element[3] - heightBase) / time;
             const speedR = (element[4] - radiuBase) / time;
-            TimerAdmin._frameNumLoop(1, time, this, () => {
+            LwgTimer._frameNumLoop(1, time, this, () => {
                 widthBase += speedX;
                 heightBase += speedY;
                 radiuBase += speedR;
                 element[2] = widthBase;
                 element[3] = heightBase;
                 element[4] = radiuBase;
-                Tools._Draw.reverseRoundrectMask(this._ImgVar('Background'), arr, true);
+                LwgTools._Draw.reverseRoundrectMask(this._ImgVar('Background'), arr, true);
             }, () => {
                 func && func();
             }, true)
@@ -74,29 +74,29 @@ export default class Guide extends SceneAdmin._SceneBase {
     btnComY = 70;
     handAppear(delay?: number, func?: Function): void {
         const time = 200;
-        Animation2D.scale(this._ImgVar('Hand'), 0, 0, 1, 1, time, delay ? delay : 0, () => {
+        LwgAni2D.scale(this._ImgVar('Hand'), 0, 0, 1, 1, time, delay ? delay : 0, () => {
             func && func();
         })
         this._ImgVar('HandPic').rotation = -17;
     }
     bgAppear(delay?: number, func?: Function): void {
-        Tools._Node.destroyAllChildren(this._ImgVar('Background'));
+        LwgTools._Node.destroyAllChildren(this._ImgVar('Background'));
         const time = 300;
         this._ImgVar('HandPic').rotation = -17;
-        Animation2D.fadeOut(this._ImgVar('Background'), 0, 1, time, delay ? delay : 0, () => {
+        LwgAni2D.fadeOut(this._ImgVar('Background'), 0, 1, time, delay ? delay : 0, () => {
             func && func();
         });
     }
     handVanish(delay?: number, func?: Function): void {
         const time = 300;
         this._ImgVar('HandPic').rotation = -17;
-        Animation2D.scale(this._ImgVar('Hand'), 1, 1, 0, 0, time, delay ? delay : 0, () => {
+        LwgAni2D.scale(this._ImgVar('Hand'), 1, 1, 0, 0, time, delay ? delay : 0, () => {
             func && func();
         })
     }
     bgVanish(delay?: number, func?: Function): void {
         const time = 300;
-        Animation2D.fadeOut(this._ImgVar('Background'), 1, 0, time, delay ? delay : 0, () => {
+        LwgAni2D.fadeOut(this._ImgVar('Background'), 1, 0, time, delay ? delay : 0, () => {
             func && func();
         });
     }
@@ -110,11 +110,11 @@ export default class Guide extends SceneAdmin._SceneBase {
         const _y = y - 30;
         const point = new Laya.Point(this._ImgVar('Hand').x, this._ImgVar('Hand').y);
         const time = point.distance(x, _y);
-        Animation2D.move(this._ImgVar('Hand'), x, _y, time, () => {
+        LwgAni2D.move(this._ImgVar('Hand'), x, _y, time, () => {
             func && func();
         })
         this._ImgVar('Hand').scale(1, 1);
-        Animation2D.move(this._ImgVar('HandPic'), 75, 56, time);
+        LwgAni2D.move(this._ImgVar('HandPic'), 75, 56, time);
         switch (bgType) {
             case this.bgType.vanish:
                 this.bgVanish();
@@ -128,8 +128,8 @@ export default class Guide extends SceneAdmin._SceneBase {
     }
     handClear(): void {
         this.lineStop();
-        TimerAdmin._clearAll([this._ImgVar('Hand')]);
-        Animation2D._clearAll([this._ImgVar('Hand')]);
+        LwgTimer._clearAll([this._ImgVar('Hand')]);
+        LwgAni2D._clearAll([this._ImgVar('Hand')]);
         this._AniVar('Frame').stop();
         this._AniVar('Click').stop();
         this._AniVar('ClickOne').stop();
@@ -240,7 +240,7 @@ export default class Guide extends SceneAdmin._SceneBase {
     _stepTailor = 0;
     _Scissor: Laya.Sprite;
     getGuideScissorTime(x: number, y: number): number {
-        const point = Tools._Node.getNodeGP(this._Scissor);
+        const point = LwgTools._Node.getNodeGP(this._Scissor);
         return point.distance(x, y);
     }
     posArr = [
@@ -257,14 +257,14 @@ export default class Guide extends SceneAdmin._SceneBase {
         const pos = this.posArr[index - 1];
         var func = () => {
             this._AniVar('Click').play(0, false);
-            Animation2D.move(this._ImgVar('Hand'), pos[0], pos[1], this.getGuideScissorTime(pos[0], pos[1]), () => {
+            LwgAni2D.move(this._ImgVar('Hand'), pos[0], pos[1], this.getGuideScissorTime(pos[0], pos[1]), () => {
                 this._AniVar(this.presentName).play(0, false);
             }, 1500);
         }
         if (first) {
             func();
         } else {
-            TimerAdmin._loop(6000, this._ImgVar('Hand'), () => {
+            LwgTimer._loop(6000, this._ImgVar('Hand'), () => {
                 this.handAppear(0, () => {
                     func();
                 })
@@ -275,9 +275,9 @@ export default class Guide extends SceneAdmin._SceneBase {
         if (Scissor) this._Scissor = Scissor;
         this.presentName = 'Line01';
         this._ImgVar('Hand').scale(1, 1);
-        Animation2D.move(this._ImgVar('Hand'), this._Scissor.x, this._Scissor.y, this.getGuideScissorTime(this._ImgVar('Hand').x, this._ImgVar('Hand').y), () => {
+        LwgAni2D.move(this._ImgVar('Hand'), this._Scissor.x, this._Scissor.y, this.getGuideScissorTime(this._ImgVar('Hand').x, this._ImgVar('Hand').y), () => {
             this.scissorTailor(true);
-            TimerAdmin._once(5000, this._ImgVar('Hand'), () => {
+            LwgTimer._once(5000, this._ImgVar('Hand'), () => {
                 this.scissorTailor();
             })
         })
@@ -317,12 +317,12 @@ export default class Guide extends SceneAdmin._SceneBase {
         this.handMove(ftx, fty, () => {
             const time = 700;
             const delay = 1000;
-            TimerAdmin._loop(time * 3 + delay, this._ImgVar('Hand'), () => {
+            LwgTimer._loop(time * 3 + delay, this._ImgVar('Hand'), () => {
                 this._ImgVar('Hand').scale(1, 1);
-                TimerAdmin._once(200, this._ImgVar('Hand'), () => {
+                LwgTimer._once(200, this._ImgVar('Hand'), () => {
                     this._AniVar('ClickOne').play(0, false);
                 })
-                Animation2D.move(this._ImgVar('Hand'), tx, ty, time, () => {
+                LwgAni2D.move(this._ImgVar('Hand'), tx, ty, time, () => {
                     this.handVanish(300, () => {
                         this._ImgVar('Hand').pos(ftx, fty - 30);
                     });

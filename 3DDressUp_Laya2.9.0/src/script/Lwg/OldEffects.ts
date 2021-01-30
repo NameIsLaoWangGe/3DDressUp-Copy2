@@ -1,4 +1,4 @@
-import { TimerAdmin, Tools } from "./Lwg";
+import { LwgTimer, LwgTools } from "./Lwg";
 
 /**特效模块*/
 export module OldEffects {
@@ -117,8 +117,8 @@ export module OldEffects {
           * @param basedSpeed 基础速度
           */
         commonSpeedXYByAngle(angle: number, speed: number) {
-            this.self.x += Tools._Point.angleAndLenByPoint(angle, speed + this.accelerated).x;
-            this.self.y += Tools._Point.angleAndLenByPoint(angle, speed + this.accelerated).y;
+            this.self.x += LwgTools._Point.angleAndLenByPoint(angle, speed + this.accelerated).x;
+            this.self.y += LwgTools._Point.angleAndLenByPoint(angle, speed + this.accelerated).y;
         }
         /**移动规则*/
         moveRules(): void {

@@ -1,9 +1,9 @@
-import { SceneAdmin, Dialogue } from "../Lwg/Lwg";
+import {  LwgScene, LwgDialogue } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _Guide, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 
-export default class Tweeting_ChoosePhotos extends SceneAdmin._SceneBase {
+export default class Tweeting_ChoosePhotos extends  LwgScene._SceneBase {
     photoArr: Laya.Image[];
     lwgOnAwake(): void {
         this.photoArr = [this._ImgVar('Photo1'), this._ImgVar('Photo2'), this._ImgVar('Photo3')];
@@ -49,7 +49,7 @@ export default class Tweeting_ChoosePhotos extends SceneAdmin._SceneBase {
                 !_Guide._complete && this._evNotify(_Guide.event.closeGuide);
                 this._closeScene();
             } else {
-                Dialogue.createHint_Middle('还未选择照片哦！');
+                LwgDialogue.createHint_Middle('还未选择照片哦！');
             }
         })
     }

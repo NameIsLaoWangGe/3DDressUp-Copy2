@@ -1,7 +1,47 @@
-import { DataAdmin, DateAdmin, StorageAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
+import { LwgData, LwgDate, LwgStorage, LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { _3DScene, _3DDIYCloth } from "./_3D";
 import { _Res } from "./_Res";
-class _RankingData extends DataAdmin._Table {
+/**常用场景的名称，和脚本默认导出类名保持一致*/
+export enum _SceneName {
+    PreLoad = 'PreLoad',
+    PreLoadCutIn = 'PreLoadCutIn',
+    Guide = 'Guide',
+    Start = 'Start',
+    Shop = 'Shop',
+    Task = 'Task',
+    Set = 'Set',
+    Skin = 'Skin',
+    Puase = 'Puase',
+    Share = 'Share',
+    Game3D = 'Game3D',
+    Victory = 'Victory',
+    Defeated = 'Defeated',
+    PassHint = 'PassHint',
+    SkinTry = 'SkinTry',
+    Redeem = 'Redeem',
+    Turntable = 'Turntable',
+    CaidanPifu = 'CaidanPifu',
+    Operation = 'Operation',
+    VictoryBox = 'VictoryBox',
+    CheckIn = 'CheckIn',
+    Resurgence = 'Resurgence',
+    AdsHint = 'AdsHint',
+    LwgInit = 'LwgInit',
+    Game = 'Game',
+    SmallHint = 'SmallHint',
+    DrawCard = 'DrawCard',
+    PropTry = 'PropTry',
+    Card = 'Card',
+    ExecutionHint = 'ExecutionHint',
+    SkinQualified = 'SkinQualified',
+    Eastereggister = 'Eastereggister',
+    SelectLevel = 'SelectLevel',
+    Settle = 'Settle',
+    Special = 'Special',
+    Compound = 'Compound',
+}
+
+class _RankingData extends LwgData._Table {
     private static ins: _RankingData;
     static _ins() {
         if (!this.ins) {
@@ -77,10 +117,10 @@ export class _Guide {
     }
     /**引导是否完成*/
     static get _complete(): boolean {
-        return StorageAdmin._bool('_Guide_complete').value;
+        return LwgStorage._bool('_Guide_complete').value;
     };
     static set _complete(val: boolean) {
-        StorageAdmin._bool('_Guide_complete').value = val;
+        LwgStorage._bool('_Guide_complete').value = val;
     }
     static MmakeTailorPulldownSwicth: boolean = false;
     static MmakeTailorBtnComSwicth: boolean = false;
@@ -106,10 +146,10 @@ export class _Guide {
 }
 export class _PersonalInfo {
     static get _name(): string {
-        return StorageAdmin._str('playerName', null, 'You').value;
+        return LwgStorage._str('playerName', null, 'You').value;
     };
     static set _name(str: string) {
-        StorageAdmin._str('playerName').value = str;
+        LwgStorage._str('playerName').value = str;
     }
 }
 export class _BackHint {
@@ -129,7 +169,7 @@ export class _Start {
     }
 }
 /**服装总数据*/
-export class _AllClothes extends DataAdmin._Table {
+export class _AllClothes extends LwgData._Table {
     private static ins: _AllClothes;
     static _ins() {
         if (!this.ins) {
@@ -166,9 +206,9 @@ export class _AllClothes extends DataAdmin._Table {
      * */
     collectDIY(): any[] {
         let DIYArr = _DIYClothes._ins()._getArrByNoProperty(_DIYClothes._ins()._otherPro.icon, "");
-        const copyArr = Tools._ObjArray.arrCopy(DIYArr);
+        const copyArr = LwgTools._ObjArray.arrCopy(DIYArr);
         // 将类型修改为'DIY'
-        Tools._ObjArray.modifyProValue(copyArr, this._property.$classify, 'DIY');
+        LwgTools._ObjArray.modifyProValue(copyArr, this._property.$classify, 'DIY');
         this._addObjectArr(copyArr);
         return copyArr;
     }
@@ -209,7 +249,7 @@ export class _AllClothes extends DataAdmin._Table {
                                 fSp.addChild(FImg);
                                 FImg.size(512, 512);
                                 FImg.pos(0, 0);
-                                const ftexData = StorageAdmin._array(`${cloth.name}/${_DIYClothes._ins()._otherPro.texF}`).value;
+                                const ftexData = LwgStorage._array(`${cloth.name}/${_DIYClothes._ins()._otherPro.texF}`).value;
                                 for (let index = 0; index < ftexData.length; index++) {
                                     const data = ftexData[index];
                                     const Img = new Laya.Image;
@@ -228,7 +268,7 @@ export class _AllClothes extends DataAdmin._Table {
                                 const front = cloth.getChildByName(`${cloth.name}_0`) as Laya.SkinnedMeshSprite3D;
                                 const matF = front.skinnedMeshRenderer.material as Laya.BlinnPhongMaterial;
                                 // 稍加延迟，需要加载
-                                TimerAdmin._frameOnce(delay, this, () => {
+                                LwgTimer._frameOnce(delay, this, () => {
                                     matF.albedoTexture && matF.albedoTexture.destroy();
                                     matF.albedoTexture = fSp.drawToTexture(fSp.width, fSp.height, fSp.x, fSp.y + fSp.height) as Laya.RenderTexture2D;
                                     fSp.removeSelf();
@@ -245,7 +285,7 @@ export class _AllClothes extends DataAdmin._Table {
                                 rSp.addChild(RImg);
                                 RImg.size(512, 512);
                                 rSp.pos(512, 0);
-                                const rtexData = StorageAdmin._array(`${cloth.name}/${_DIYClothes._ins()._otherPro.texR}`).value;
+                                const rtexData = LwgStorage._array(`${cloth.name}/${_DIYClothes._ins()._otherPro.texR}`).value;
                                 for (let index = 0; index < rtexData.length; index++) {
                                     const data = rtexData[index];
                                     const Img = new Laya.Image;
@@ -263,7 +303,7 @@ export class _AllClothes extends DataAdmin._Table {
                                 }
                                 const reverse = cloth.getChildByName(`${cloth.name}_1`) as Laya.SkinnedMeshSprite3D;
                                 const matR = reverse.skinnedMeshRenderer.material as Laya.BlinnPhongMaterial;
-                                TimerAdmin._frameOnce(delay, this, () => {
+                                LwgTimer._frameOnce(delay, this, () => {
                                     matR.albedoTexture && matR.albedoTexture.destroy();
                                     matR.albedoTexture = rSp.drawToTexture(rSp.width, rSp.height, rSp.x, rSp.y + rSp.height) as Laya.RenderTexture2D;
                                     rSp.removeSelf();
@@ -294,7 +334,7 @@ export class _AllClothes extends DataAdmin._Table {
 
     /**进游戏时的特殊设置*/
     private startSpecialSet(): void {
-        if (StorageAdmin._bool('DressState').value) {
+        if (LwgStorage._bool('DressState').value) {
             _3DScene._ins()._GBottoms.active = _3DScene._ins()._GTop.active = _3DScene._ins()._DBottoms.active = _3DScene._ins()._DTop.active = false;
         } else {
             _3DScene._ins()._GDress.active = _3DScene._ins()._DDress.active = false;
@@ -304,11 +344,11 @@ export class _AllClothes extends DataAdmin._Table {
     /**特殊设置*/
     specialSet(part?: string): void {
         if (part === this._part.Dress) {
-            StorageAdmin._bool('DressState').value = true;
+            LwgStorage._bool('DressState').value = true;
         } else if (part === this._part.Top || part === this._part.Bottoms) {
-            StorageAdmin._bool('DressState').value = false;
+            LwgStorage._bool('DressState').value = false;
         }
-        if (StorageAdmin._bool('DressState').value) {
+        if (LwgStorage._bool('DressState').value) {
             _3DScene._ins().displayDress();
         } else {
             _3DScene._ins().displayTopAndBotton();
@@ -338,7 +378,7 @@ export class _AllClothes extends DataAdmin._Table {
     }
 }
 /**DIY服装总数据*/
-export class _DIYClothes extends DataAdmin._Table {
+export class _DIYClothes extends LwgData._Table {
     private static ins: _DIYClothes;
     static _ins() {
         if (!this.ins) {
@@ -395,7 +435,7 @@ export class _DIYClothes extends DataAdmin._Table {
     }
     /**创建一件衣服*/
     createClothes(name: string, Scene?: Laya.Scene): Laya.Sprite {
-        const Cloth = Tools._Node.createPrefab(_Res._list.prefab2D[name]['prefab']);
+        const Cloth = LwgTools._Node.createPrefab(_Res._list.prefab2D[name]['prefab']);
         // 增加一个和舞台一样大小的父节点方便移动
         const CloBox = new Laya.Sprite;
         CloBox.width = Laya.stage.width;
@@ -426,7 +466,7 @@ export class _MakeTailor {
         scissorRemove: '_MakeTailor_scissorRemove',
     }
 }
-class _PatternData extends DataAdmin._Table {
+class _PatternData extends LwgData._Table {
     private static ins: _PatternData;
     static _ins(): _PatternData {
         if (!this.ins) {
@@ -464,7 +504,7 @@ class _PatternData extends DataAdmin._Table {
     }
 }
 /**贴图位置偏移*/
-class _PatternDiff extends DataAdmin._Table {
+class _PatternDiff extends LwgData._Table {
     private static ins: _PatternDiff;
     static _ins(): _PatternDiff {
         if (!this.ins) {
@@ -505,7 +545,7 @@ export class _MakePattern {
     }
 }
 export class _Tweeting {
-    /**是否准备进入微博场景，如果准备进入则主界面按钮不可点击*/ 
+    /**是否准备进入微博场景，如果准备进入则主界面按钮不可点击*/
     static _prepareInto = false;
     /**过程中的照相*/
     static _photo = {
@@ -525,47 +565,47 @@ export class _Tweeting {
     };
     /**关注数*/
     static get _attentionNum(): number {
-        return StorageAdmin._num('_MakePattern/attention', null, 180).value;
+        return LwgStorage._num('_MakePattern/attention', null, 180).value;
     };
     static set _attentionNum(val: number) {
-        StorageAdmin._num('_MakePattern/attention').value = val;
+        LwgStorage._num('_MakePattern/attention').value = val;
     }
     /**完成次数*/
     static get _completeNum(): number {
-        return StorageAdmin._num('_MakePattern/completeNum').value;
+        return LwgStorage._num('_MakePattern/completeNum').value;
     };
     static set _completeNum(val: number) {
-        StorageAdmin._num('_MakePattern/completeNum').value = val;
+        LwgStorage._num('_MakePattern/completeNum').value = val;
     }
     /**被分享数*/
     static get _forwardedNum(): number {
-        return StorageAdmin._num('Tweeting/forwarded', null, Tools._Number.randomOneBySection(75, 125, true)).value;
+        return LwgStorage._num('Tweeting/forwarded', null, LwgTools._Number.randomOneBySection(75, 125, true)).value;
     };
     static set _forwardedNum(val: number) {
-        StorageAdmin._num('Tweeting/forwarded').value = val;
+        LwgStorage._num('Tweeting/forwarded').value = val;
     }
     /**被评论数*/
     static get _commentNum(): number {
-        return StorageAdmin._num('Tweeting/Comment', null, Tools._Number.randomOneBySection(100, 150, true)).value;
+        return LwgStorage._num('Tweeting/Comment', null, LwgTools._Number.randomOneBySection(100, 150, true)).value;
     };
     static set _commentNum(val: number) {
-        StorageAdmin._num('Tweeting/Comment').value = val;
+        LwgStorage._num('Tweeting/Comment').value = val;
     }
     /**被点赞数*/
     static get _likeNum(): number {
-        return StorageAdmin._num('Tweeting/like', null, Tools._Number.randomOneBySection(200, 250, true)).value;
+        return LwgStorage._num('Tweeting/like', null, LwgTools._Number.randomOneBySection(200, 250, true)).value;
     };
     static set _likeNum(val: number) {
-        StorageAdmin._num('Tweeting/like').value = val;
+        LwgStorage._num('Tweeting/like').value = val;
     }
 
     /**玩家简介*/
     static _brief = {
         getThree: (): string[] => {
-            return Tools._Array.randomGetOut(_Tweeting._brief.all, 3);
+            return LwgTools._Array.randomGetOut(_Tweeting._brief.all, 3);
         },
         getOne: (): string[] => {
-            return Tools._Array.randomGetOut(_Tweeting._brief.all);
+            return LwgTools._Array.randomGetOut(_Tweeting._brief.all);
         },
         all: [
             '世界很烦，但我要很可爱',
@@ -584,7 +624,7 @@ export class _Tweeting {
     /**微博正文*/
     static _mainBody = {
         getOne: (): string => {
-            _Tweeting._mainBody.present = Tools._Array.randomGetOne(_Tweeting._mainBody.all);
+            _Tweeting._mainBody.present = LwgTools._Array.randomGetOne(_Tweeting._mainBody.all);
             return _Tweeting._mainBody.present;
         },
         present: null as string,
@@ -617,7 +657,7 @@ export class _Tweeting {
     /**网友回复*/
     static _reply = {
         getTow: (): string[] => {
-            return Tools._Array.randomGetOut(_Tweeting._reply.all, 2);
+            return LwgTools._Array.randomGetOut(_Tweeting._reply.all, 2);
         },
         all: [
             '加油，坚持，我看好你哦',
@@ -653,7 +693,7 @@ export class _Tweeting {
     static _photoIndex = 0;
 
 }
-class _CheckInData extends DataAdmin._Table {
+class _CheckInData extends LwgData._Table {
     private static ins: _CheckInData;
     static _ins(): _CheckInData {
         if (!this.ins) {
@@ -674,30 +714,30 @@ export class _CheckIn {
     }
     /**提前解锁全部奖励按钮，解锁了几次*/
     static get _immediately(): number {
-        return StorageAdmin._num('_CheckIn/immediately').value;
+        return LwgStorage._num('_CheckIn/immediately').value;
     };
     static set _immediately(val: number) {
-        StorageAdmin._num('_CheckIn/immediately').value = val;
+        LwgStorage._num('_CheckIn/immediately').value = val;
     }
     /**当前签到第几天了，4日签到为4天一个循环*/
     static get _checkInNum(): number {
-        return StorageAdmin._num('_CheckIn/checkInNum').value;
+        return LwgStorage._num('_CheckIn/checkInNum').value;
     };
     static set _checkInNum(val: number) {
-        StorageAdmin._num('_CheckIn/checkInNum').value = val;
+        LwgStorage._num('_CheckIn/checkInNum').value = val;
     }
     /**上次的签到日期，主要判断今日会不会弹出签到，不一样则弹出签到，一样则不弹出签到*/
     static get _lastCheckDate(): number {
-        return StorageAdmin._num('_CheckIn/lastCheckDate').value;
+        return LwgStorage._num('_CheckIn/lastCheckDate').value;
     };
     static set _lastCheckDate(val: number) {
-        StorageAdmin._num('_CheckIn/lastCheckDate').value = val;
+        LwgStorage._num('_CheckIn/lastCheckDate').value = val;
     }
     /**
      * 今天是否已经签到
      */
     static get _todayCheckIn(): boolean {
-        return this._lastCheckDate == DateAdmin._date.date ? true : false;
+        return this._lastCheckDate == LwgDate._date.date ? true : false;
     };
 }
 

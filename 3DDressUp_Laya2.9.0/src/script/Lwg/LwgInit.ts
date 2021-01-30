@@ -1,4 +1,4 @@
-import { Adaptive, SceneAdmin, Click, Platform, SceneAnimation, _LwgInit, _LwgInitScene } from "./Lwg";
+import { LwgAdaptive, LwgScene, LwgClick, LwgPlatform, LwgSceneAni, LwgAdmin } from "./Lwg";
 import PreLoadCutIn from "../Game/PreLoadCutIn";
 import SubPkg from "./SubPkg";
 import Guide from "../Game/Guide";
@@ -17,19 +17,19 @@ import AdsHint from "../Game/AdsHint";
 import CheckIn from "../Game/CheckIn";
 import { BackHint } from "../Game/BackHint";
 
-export default class LwgInit extends _LwgInitScene {
+export default class LwgInit extends LwgAdmin._InitScene {
     lwgOnAwake(): void {
-        Platform._Ues.value = Platform._Tpye.OPPO;
+        LwgPlatform._Ues.value = LwgPlatform._Tpye.OPPO;
         // Laya.Stat.show();
         Laya.MouseManager.multiTouchEnabled = false;
-        SceneAnimation._closeSwitch.value = true;
-        SceneAnimation._Use.value = {
-            class: SceneAnimation._shutters.Close,
-            type: SceneAnimation._shutters.Close._type.random,
+        LwgSceneAni._closeSwitch.value = true;
+        LwgSceneAni._Use.value = {
+            class: LwgSceneAni._shutters.Close,
+            type: LwgSceneAni._shutters.Close._type.random,
         };
-        Click._Use.value = Click._Type.reduce;
-        Adaptive._Use.value = [1280, 720];
-        SceneAdmin._SceneScript = {
+        LwgClick._Use.value = LwgClick._Type.reduce;
+        LwgAdaptive._Use.value = [1280, 720];
+        LwgScene._SceneScript = {
             PreLoad: PreLoad,
             PreLoadCutIn: PreLoadCutIn,
             Guide: Guide,

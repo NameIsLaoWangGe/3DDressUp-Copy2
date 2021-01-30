@@ -1,4 +1,4 @@
-import { StorageAdmin } from "./Lwg";
+import { LwgStorage } from "./Lwg";
 
 export module LwgOPPO {
     /**
@@ -95,7 +95,7 @@ export module LwgOPPO {
         if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
             var FileSystemManager = Laya.Browser.window.qg.getFileSystemManager();
 
-            let data = StorageAdmin._array(name, null, [1, `${name}.png`]).value;
+            let data = LwgStorage._array(name, null, [1, `${name}.png`]).value;
             let savedFilePath = Laya.Browser.window.qg.env.USER_DATA_PATH
                 + data[0] + data[1];
             let _savedFilePath = Laya.Browser.window.qg.env.USER_DATA_PATH
@@ -112,7 +112,7 @@ export module LwgOPPO {
                         filePath: _savedFilePath,
                         success: function (res: any) { //成功回调
                             console.log('-------------------------图片保存成功', res['savedFilePath']);
-                            StorageAdmin._array(name).value = [data[0] + 1, data[1]];
+                            LwgStorage._array(name).value = [data[0] + 1, data[1]];
                             func && func(res);
                         },
                         fail: function () {  //失败回调
@@ -152,7 +152,7 @@ export module LwgOPPO {
      */
     export function _getStoragePic(name: string): string {
         if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
-            let data = StorageAdmin._array(name).value;
+            let data = LwgStorage._array(name).value;
             // console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii', data);
             // console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii', data[0], data[1]);
             if (data.length > 0) {

@@ -1,10 +1,10 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { SceneAdmin, Animation2D, TimerAdmin, Tools, _PreLoadScene, Click } from "../Lwg/Lwg";
+import {  LwgScene, LwgAni2D, LwgTimer, LwgTools, LwgClick } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _DIYClothes, _Guide, _PersonalInfo, _PreLoadCutIn, _Ranking, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 
-export default class Tweeting_Main extends SceneAdmin._SceneBase {
+export default class Tweeting_Main extends  LwgScene._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'weibopage');
         ADManager.TAPoint(TaT.BtnShow, 'photo_choose');
@@ -14,7 +14,7 @@ export default class Tweeting_Main extends SceneAdmin._SceneBase {
         this._LabelVar('PlayerName').text = _PersonalInfo._name;
         // 玩家头部
         this._ImgVar('IconPic').skin = `Game/UI/Ranking/IconSkin/Ava.png`;
-        _Tweeting._attentionNum += Tools._Number.randomOneInt(50, 100);
+        _Tweeting._attentionNum += LwgTools._Number.randomOneInt(50, 100);
         this._LabelVar('AttentionNum').text = _Tweeting._attentionNum.toString();
         this._LabelVar('FansNum').text = _Ranking._Data._getPitchProperty(_Ranking._Data._otherPro.fansNum);
         // 完成次数增加也完成一些任务
@@ -22,10 +22,10 @@ export default class Tweeting_Main extends SceneAdmin._SceneBase {
         _DIYClothes._ins()._checkConditionUnlockWay(_DIYClothes._ins()._unlockWay.$customs, 1);
         this._LabelVar('CompleteNum').text = _Tweeting._completeNum.toString();
         // 热门
-        const heatArr = Tools._Number.randomCountBySection(20, 50, 3);
+        const heatArr = LwgTools._Number.randomCountBySection(20, 50, 3);
         heatArr.sort();
         const briefArr = _Tweeting._brief.getThree();
-        const iconArr = Tools._Number.randomCountBySection(1, 20, 3);
+        const iconArr = LwgTools._Number.randomCountBySection(1, 20, 3);
         for (let index = 0; index < 3; index++) {
             const Rank = this._ImgVar('Hot').getChildByName(`Rank${index + 1}`) as Laya.Box;
             const Name = Rank.getChildByName('Name') as Laya.Label;
@@ -70,15 +70,15 @@ export default class Tweeting_Main extends SceneAdmin._SceneBase {
         const baseTime = 150;
         const baseDelay = 200;
         _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-            Click._absoluteSwitch = true;
-            Animation2D.scale(this._ImgVar('Top'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 1);
-            Animation2D.scale(this._ImgVar('BtnSet'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 2);
-            Animation2D.scale(this._ImgVar('Body'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 3);
-            Animation2D.scale(this._ImgVar('Head'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 4);
-            Animation2D.scale(this._ImgVar('Hot'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 5);
-            Tools._Node.changePivot(this._ImgVar('BtnChoosePhotos'), this._ImgVar('BtnChoosePhotos').width / 2, this._ImgVar('BtnChoosePhotos').height / 2);
-            Animation2D.bombs_Appear(this._ImgVar('BtnChoosePhotos'), 0, 1, 1.08, 0, baseTime * 2, () => {
-                TimerAdmin._once(300, this, () => {
+            LwgClick._absoluteSwitch = true;
+            LwgAni2D.scale(this._ImgVar('Top'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 1);
+            LwgAni2D.scale(this._ImgVar('BtnSet'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 2);
+            LwgAni2D.scale(this._ImgVar('Body'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 3);
+            LwgAni2D.scale(this._ImgVar('Head'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 4);
+            LwgAni2D.scale(this._ImgVar('Hot'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 5);
+            LwgTools._Node.changePivot(this._ImgVar('BtnChoosePhotos'), this._ImgVar('BtnChoosePhotos').width / 2, this._ImgVar('BtnChoosePhotos').height / 2);
+            LwgAni2D.bombs_Appear(this._ImgVar('BtnChoosePhotos'), 0, 1, 1.08, 0, baseTime * 2, () => {
+                LwgTimer._once(300, this, () => {
                     this.BtnChoosePhotosClick();
                     !_Guide._complete && this._openScene('Guide', false, false, () => {
                         this._evNotify(_Guide.event.TweetingBtnChoosePhoto, [this._ImgVar('BtnChoosePhotos')._lwg.gPoint.x, this._ImgVar('BtnChoosePhotos')._lwg.gPoint.y, this._ImgVar('Photo2')._lwg.gPoint.x + 65, this._ImgVar('Photo2')._lwg.gPoint.y + 65]);

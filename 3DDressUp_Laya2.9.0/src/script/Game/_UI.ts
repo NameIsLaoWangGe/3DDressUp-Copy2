@@ -1,5 +1,5 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { SceneAdmin, Animation2D, Click, Tools } from "../Lwg/Lwg";
+import { LwgScene, LwgAni2D, LwgClick, LwgTools } from "../Lwg/Lwg";
 import { _3DScene } from "./_3D";
 import { _BackHint, _Guide } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
@@ -14,31 +14,31 @@ export class _UI {
         this.Scene = _Scene;
         this.Operation = _Scene['Operation'];
 
-        this.BtnAgain = Tools._Node.createPrefab(_Res._list.prefab2D.BtnAgain.prefab, _Scene, [200, 79]) as Laya.Image;
-        Click._on(Click._Use.value, this.BtnAgain, this, null, null, () => {
+        this.BtnAgain = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnAgain.prefab, _Scene, [200, 79]) as Laya.Image;
+        LwgClick._on(LwgClick._Use.value, this.BtnAgain, this, null, null, () => {
             ADManager.TAPoint(TaT.BtnShow, 'next_lose');
             this.btnAgainClick && this.btnAgainClick();
         })
 
         this.BtnComplete = _Scene['BtnComplete'];
-        Click._on(Click._Use.value, this.BtnComplete, this, null, null, (e: Laya.Event) => {
+        LwgClick._on(LwgClick._Use.value, this.BtnComplete, this, null, null, (e: Laya.Event) => {
             e.stopPropagation();
             this.btnCompleteClick && this.btnCompleteClick();
         })
 
-        this.BtnBack = Tools._Node.createPrefab(_Res._list.prefab2D.BtnBack.prefab, _Scene, [77, 79]) as Laya.Image;
-        Click._on(Click._Use.value, this.BtnBack, this, null, null, () => {
+        this.BtnBack = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnBack.prefab, _Scene, [77, 79]) as Laya.Image;
+        LwgClick._on(LwgClick._Use.value, this.BtnBack, this, null, null, () => {
             if (!_Guide._complete) return;
             ADManager.TAPoint(TaT.BtnShow, 'back_main');
             if (_3DScene._ins()._Owner.active) {
                 _BackHint._3dToSp = _3DScene._ins().cameraToSprite(this.Scene);
             }
             _BackHint._fromScene = this.Scene;
-            SceneAdmin._openScene('BackHint');
+            LwgScene._openScene('BackHint');
         })
 
-        this.BtnRollback = Tools._Node.createPrefab(_Res._list.prefab2D.BtnRollback.prefab, _Scene, [200, 79]) as Laya.Image;
-        Click._on(Click._Use.value, this.BtnRollback, this, null, null, () => {
+        this.BtnRollback = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnRollback.prefab, _Scene, [200, 79]) as Laya.Image;
+        LwgClick._on(LwgClick._Use.value, this.BtnRollback, this, null, null, () => {
             if (!_Guide._complete) return;
             this.btnRollbackClick && this.btnRollbackClick();
         })
@@ -80,45 +80,45 @@ export class _UI {
     moveTargetX: number;
 
     btnRollbackAppear(func?: Function, delay?: number): void {
-        Animation2D.bombs_Appear(this.BtnRollback, 0, 1, this.scale, 0, this.time * 2, () => {
+        LwgAni2D.bombs_Appear(this.BtnRollback, 0, 1, this.scale, 0, this.time * 2, () => {
             func && func();
         }, delay ? delay : 0);
     };
     btnRollbackVinish(func?: Function, delay?: number): void {
-        Animation2D.bombs_Vanish(this.BtnRollback, 0, 0, 0, this.time * 4, () => {
+        LwgAni2D.bombs_Vanish(this.BtnRollback, 0, 0, 0, this.time * 4, () => {
             func && func();
         }, delay ? delay : 0);
     };
     btnAgainAppear(func?: Function, delay?: number): void {
-        Animation2D.bombs_Appear(this.BtnAgain, 0, 1, this.scale, 0, this.time * 2, () => {
+        LwgAni2D.bombs_Appear(this.BtnAgain, 0, 1, this.scale, 0, this.time * 2, () => {
             func && func();
         }, delay ? delay : 0);
     };
 
     btnAgainVinish(func?: Function, delay?: number): void {
-        Animation2D.bombs_Vanish(this.BtnAgain, 0, 0, 0, this.time * 4, () => {
+        LwgAni2D.bombs_Vanish(this.BtnAgain, 0, 0, 0, this.time * 4, () => {
             func && func();
         }, delay ? delay : 0);
     };
     btnBackAppear(func?: Function, delay?: number): void {
-        Animation2D.bombs_Appear(this.BtnBack, 0, 1, this.scale, 0, this.time * 2, () => {
+        LwgAni2D.bombs_Appear(this.BtnBack, 0, 1, this.scale, 0, this.time * 2, () => {
             func && func();
         }, delay ? delay : 0);
     };
     btnBackVinish(func?: Function, delay?: number): void {
-        Animation2D.bombs_Vanish(this.BtnBack, 0, 0, 0, this.time * 4, () => {
+        LwgAni2D.bombs_Vanish(this.BtnBack, 0, 0, 0, this.time * 4, () => {
             func && func();
         }, delay ? delay : 0);
     };
 
     btnCompleteAppear(func?: Function, delay?: number): void {
         _GameEffects2D._circleExplode(this.Operation, new Laya.Point(this.BtnComplete.x, this.BtnComplete.y), delay);
-        Animation2D.bombs_Appear(this.BtnComplete, 0, 1, this.scale, 0, this.time * 2, () => {
+        LwgAni2D.bombs_Appear(this.BtnComplete, 0, 1, this.scale, 0, this.time * 2, () => {
             func && func();
         }, delay ? delay : 0);
     }
     btnCompleteVinish(func?: Function, delay?: number): void {
-        Animation2D.bombs_Vanish(this.BtnComplete, 0, 0, 0, this.time * 4, () => {
+        LwgAni2D.bombs_Vanish(this.BtnComplete, 0, 0, 0, this.time * 4, () => {
             func && func();
         }, delay ? delay : 0);
     };
@@ -126,7 +126,7 @@ export class _UI {
     btnTurnFaceAppear(func?: Function, delay?: number): void {
         if (this.BtnTurnFace) {
             _GameEffects2D._circleExplode(this.Operation, new Laya.Point(this.BtnTurnFace.x, this.BtnTurnFace.y), delay);
-            Animation2D.bombs_Appear(this.BtnTurnFace, 0, 1, this.scale, 0, this.time * 2, () => {
+            LwgAni2D.bombs_Appear(this.BtnTurnFace, 0, 1, this.scale, 0, this.time * 2, () => {
                 func && func();
             });
         }
@@ -134,7 +134,7 @@ export class _UI {
 
     btnTurnFaceVinish(func?: Function, delay?: number): void {
         if (this.BtnTurnFace) {
-            Animation2D.bombs_Vanish(this.BtnTurnFace, 0, 0, 0, this.time * 4, () => {
+            LwgAni2D.bombs_Vanish(this.BtnTurnFace, 0, 0, 0, this.time * 4, () => {
                 func && func();
             }, delay ? delay : 0);
         }
@@ -142,21 +142,21 @@ export class _UI {
 
     operationAppear(func?: Function, delay?: number): void {
         if (this.Scene.name === 'MakeTailor') {
-            Animation2D.fadeOut(this.Scene['BG2'], this.Scene['BG2'].alpha, 1, 500);
+            LwgAni2D.fadeOut(this.Scene['BG2'], this.Scene['BG2'].alpha, 1, 500);
         }
-        Animation2D.move(this.Operation, this.moveTargetX - 40, this.Operation.y, this.time * 4, () => {
-            Animation2D.move(this.Operation, this.moveTargetX, this.Operation.y, this.time, () => {
+        LwgAni2D.move(this.Operation, this.moveTargetX - 40, this.Operation.y, this.time * 4, () => {
+            LwgAni2D.move(this.Operation, this.moveTargetX, this.Operation.y, this.time, () => {
                 func && func();
             })
         }, delay ? delay : 0)
     };
     operationVinish(func?: Function, delay?: number): void {
         if (this.Scene.name === 'MakeTailor') {
-            Animation2D.fadeOut(this.Scene['BG2'], this.Scene['BG2'].alpha, 0, 500);
+            LwgAni2D.fadeOut(this.Scene['BG2'], this.Scene['BG2'].alpha, 0, 500);
         }
-        Animation2D.bombs_Vanish(this.BtnComplete, 0, 0, 0, this.time * 4, () => {
-            Animation2D.move(this.Operation, this.moveTargetX - 40, this.Operation.y, this.time, () => {
-                Animation2D.move(this.Operation, Laya.stage.width + 500, this.Operation.y, this.time * 4, () => {
+        LwgAni2D.bombs_Vanish(this.BtnComplete, 0, 0, 0, this.time * 4, () => {
+            LwgAni2D.move(this.Operation, this.moveTargetX - 40, this.Operation.y, this.time, () => {
+                LwgAni2D.move(this.Operation, Laya.stage.width + 500, this.Operation.y, this.time * 4, () => {
                     func && func();
                 });
             });

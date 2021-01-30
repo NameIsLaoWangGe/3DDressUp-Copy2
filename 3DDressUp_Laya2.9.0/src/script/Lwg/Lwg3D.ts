@@ -1,6 +1,6 @@
-// import { EventAdmin } from "./lwg";
+// import { LwgEvent } from "./lwg";
 
-import { EventAdmin, Tools } from "./Lwg";
+import { LwgEvent, LwgTools } from "./Lwg";
 
 /**管理3D的模块*/
 export module lwg3D {
@@ -71,7 +71,7 @@ export module lwg3D {
 
         private getFindComponent(name: string, Component: string): any {
             if (!this[`_child${name}${Component}`]) {
-                let Node = Tools._Node.findChild3D(this.owner, name);
+                let Node = LwgTools._Node.findChild3D(this.owner, name);
                 if (Node) {
                     if (Node[Component]) {
                         return this[`_child${name}${Component}`] = Node[Component];
@@ -88,7 +88,7 @@ export module lwg3D {
         /**向下查找子节点，返回第一个*/
         _find(name: string): Laya.MeshSprite3D {
             if (!this[`_FindNode${name}`]) {
-                let Node = Tools._Node.findChild3D(this.owner, name);
+                let Node = LwgTools._Node.findChild3D(this.owner, name);
                 if (Node) {
                     return this[`_FindNode${name}`] = Node;
                 } else {
@@ -111,10 +111,10 @@ export module lwg3D {
         /**场景中的一些事件，在lwgOnAwake和lwgOnEnable之间执行*/
         lwgEvent(): void { };
         _evReg(name: string, func: Function): void {
-            EventAdmin._register(name, this, func);
+            LwgEvent._register(name, this, func);
         }
         _evNotify(name: string, args?: Array<any>): void {
-            EventAdmin._notify(name, args);
+            LwgEvent._notify(name, args);
         }
         /**初始化，在onEnable中执行，重写即可覆盖*/
         lwgOnEnable(): void { }
@@ -170,7 +170,7 @@ export module lwg3D {
             this.lwgOnDisable();
             Laya.timer.clearAll(this);
             Laya.Tween.clearAll(this);
-            EventAdmin._offCaller(this);
+            LwgEvent._offCaller(this);
         }
     }
     /**3D物件通用父类*/
@@ -224,7 +224,7 @@ export module lwg3D {
             this.lwgOnDisable();
             Laya.Tween.clearAll(this);
             Laya.timer.clearAll(this);
-            EventAdmin._offCaller(this);
+            LwgEvent._offCaller(this);
         }
     }
 }

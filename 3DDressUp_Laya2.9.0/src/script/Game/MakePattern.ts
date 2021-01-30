@@ -1,5 +1,5 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { SceneAdmin, Animation2D, Animation3D, DataAdmin, Dialogue, StorageAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
+import {  LwgScene, LwgAni2D, LwgAni3D, LwgData, LwgDialogue, LwgStorage, LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { LwgOPPO } from "../Lwg/LwgOPPO";
 import { _3DDIYCloth, _3DScene } from "./_3D";
 import { _GameAni } from "./_GameAni";
@@ -7,7 +7,7 @@ import { _DIYClothes, _Guide, _MakePattern, _Ranking, _Start, _Tweeting } from "
 import { _Res } from "./_Res";
 import { _UI } from "./_UI";
 
-class _Item extends DataAdmin._Item {
+class _Item extends LwgData._Item {
     fX: number;
     diffX: number = 0;
     create: boolean = false;
@@ -17,15 +17,15 @@ class _Item extends DataAdmin._Item {
                 if (!this.$complete) {
                     switch (this.$unlockWay) {
                         case this.$unlockWayType.$check:
-                            Dialogue.createHint_Middle('请前往签到页面获取');
+                            LwgDialogue.createHint_Middle('请前往签到页面获取');
                             break;
                         case this.$unlockWayType.$customs:
-                            Dialogue.createHint_Middle(`制作${this.$conditionNum}件衣服才能获取！`);
+                            LwgDialogue.createHint_Middle(`制作${this.$conditionNum}件衣服才能获取！`);
                             break;
                         case this.$unlockWayType.$ads:
                             ADManager.ShowReward(() => {
                                 if (_MakePattern._Data._checkCondition(this.$name)) {
-                                    Dialogue.createHint_Middle('恭喜获得新贴图！');
+                                    LwgDialogue.createHint_Middle('恭喜获得新贴图！');
                                     _MakePattern._Data._setProperty(this.$name, _MakePattern._Data._property.$complete, true);
                                 }
                             })
@@ -75,7 +75,7 @@ class _Item extends DataAdmin._Item {
     $render(): void {
         this._LableChild('UnlockWayNum').visible = false;
         if (this.$name === 'ads') {
-            !this._BoxChild('NativeRoot') && Tools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
+            !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
             this._LableChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = false;
         } else {
             if (!this.$complete) {
@@ -119,7 +119,7 @@ class _Item extends DataAdmin._Item {
     }
 }
 
-export default class MakePattern extends SceneAdmin._SceneBase {
+export default class MakePattern extends  LwgScene._SceneBase {
 
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'tiehuapage');
@@ -143,7 +143,7 @@ export default class MakePattern extends SceneAdmin._SceneBase {
     }
 
     lwgOpenAniAfter(): void {
-        TimerAdmin._frameOnce(60, this, () => {
+        LwgTimer._frameOnce(60, this, () => {
             !_Guide._complete && this._openScene('Guide', false, false, () => {
                 this._evNotify(_Guide.event.MakePatternChooseClassify);
             })
@@ -164,12 +164,12 @@ export default class MakePattern extends SceneAdmin._SceneBase {
             }));
         }));
 
-        Animation2D.fadeOut(this._ImgVar('BtnL'), 0, 1, 200, 200);
-        Animation2D.fadeOut(this._ImgVar('BtnR'), 0, 1, 200, 200);
+        LwgAni2D.fadeOut(this._ImgVar('BtnL'), 0, 1, 200, 200);
+        LwgAni2D.fadeOut(this._ImgVar('BtnR'), 0, 1, 200, 200);
 
         this.UI = new _UI(this._Owner);
         this.UI.BtnAgain.pos(86, 630);
-        TimerAdmin._frameOnce(10, this, () => {
+        LwgTimer._frameOnce(10, this, () => {
             this.UI.operationAppear(() => {
                 this.UI.btnCompleteAppear(null, 400);
                 this.UI.btnTurnFaceAppear(null, 200);
@@ -233,12 +233,12 @@ export default class MakePattern extends SceneAdmin._SceneBase {
             this.Tex.turnFace(() => {
                 // 这次绘制是微博照片
                 _3DScene._ins().cameraToSprite(this._Owner);
-                TimerAdmin._frameOnce(5, this, () => {
+                LwgTimer._frameOnce(5, this, () => {
                     _Tweeting._photo.take(this._Owner, 1);
                 })
                 this.texStorage();
-                Animation2D.fadeOut(this._ImgVar('BtnL'), 1, 0, 200);
-                Animation2D.fadeOut(this._ImgVar('BtnR'), 1, 0, 200);
+                LwgAni2D.fadeOut(this._ImgVar('BtnL'), 1, 0, 200);
+                LwgAni2D.fadeOut(this._ImgVar('BtnR'), 1, 0, 200);
                 this.UI.operationVinish(() => {
                     this.UI.btnBackVinish(null, 200);
                     this.UI.btnBackVinish();
@@ -319,20 +319,20 @@ export default class MakePattern extends SceneAdmin._SceneBase {
             const element = this._SpriteVar('Reverse').getChildAt(index) as Laya.Image;
             rArr.push(obj(element));
         }
-        StorageAdmin._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texF}`).value = fArr;
-        StorageAdmin._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texR}`).value = rArr;
+        LwgStorage._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texF}`).value = fArr;
+        LwgStorage._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texR}`).value = rArr;
         _Ranking._whereFrom = this._Owner.name;
         // } else {
         //     // 绘制到两张只有一半的sp上，节省本地存储的内存
         //     this._SpriteVar('Front').scaleY = this._SpriteVar('Reverse').scaleY = 1;
-        //     const texF = Tools._Draw.drawToTex(this._SpriteVar('Front'));
-        //     const texR = Tools._Draw.drawToTex(this._SpriteVar('Reverse'));
+        //     const texF = LwgTools._Draw.drawToTex(this._SpriteVar('Front'));
+        //     const texR = LwgTools._Draw.drawToTex(this._SpriteVar('Reverse'));
         //     texF.width = texF.height = texR.width = texR.height = 256;
         //     this._SpriteVar('DrawFront').graphics.drawTexture(texF);
         //     this._SpriteVar('DrawReverse').graphics.drawTexture(texR);
-        //     TimerAdmin._frameOnce(5, this, () => {
-        //         const base64F = Tools._Draw.screenshot(this._SpriteVar('DrawFront'), 0.1);
-        //         const base64R = Tools._Draw.screenshot(this._SpriteVar('DrawReverse'), 0.1);
+        //     LwgTimer._frameOnce(5, this, () => {
+        //         const base64F = LwgTools._Draw.screenshot(this._SpriteVar('DrawFront'), 0.1);
+        //         const base64R = LwgTools._Draw.screenshot(this._SpriteVar('DrawReverse'), 0.1);
         //         Laya.LocalStorage.setItem(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texF}`, base64F);
         //         Laya.LocalStorage.setItem(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texR}`, base64R);
         //         _Ranking._whereFrom = this._Owner.name;
@@ -401,7 +401,7 @@ export default class MakePattern extends SceneAdmin._SceneBase {
             let indexArr: Array<Laya.Point> = [];
             let outArr: Laya.HitResult[] = [];
             for (let index = 0; index < posArr.length; index++) {
-                const out = Tools._3D.rayScanning(_3DScene._ins()._MainCamara, _3DScene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
+                const out = LwgTools._3D.rayScanning(_3DScene._ins()._MainCamara, _3DScene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
                 if (out) {
                     outArr.push(out);
                     indexArr.push(posArr[index]);
@@ -426,7 +426,7 @@ export default class MakePattern extends SceneAdmin._SceneBase {
                 let _width = this._ImgVar(this.Tex.dir).width;
                 let _height = this._ImgVar(this.Tex.dir).height;
                 //通过xz的角度计算x的比例，俯视
-                let angleXZ = Tools._Point.pointByAngle(_3DDIYCloth._ins().ModelTap.transform.position.x - out.point.x, _3DDIYCloth._ins().ModelTap.transform.position.z - out.point.z);
+                let angleXZ = LwgTools._Point.pointByAngle(_3DDIYCloth._ins().ModelTap.transform.position.x - out.point.x, _3DDIYCloth._ins().ModelTap.transform.position.z - out.point.z);
                 // let _angleY: number;
                 if (this.Tex.dir == this.Tex.dirType.Front) {
                     // _angleY = angleXZ + _3DDIYCloth._ins().simRY;
@@ -438,7 +438,7 @@ export default class MakePattern extends SceneAdmin._SceneBase {
                 // console.log(this.Tex.Img.x);
                 // 通过xy计算y
                 let pH = out.point.y - _3DDIYCloth._ins().ModelTap.transform.position.y;//扫描点位置
-                let _DirHeight = Tools._3D.getMeshSize(this.Tex.dir === this.Tex.dirType.Front ? _3DDIYCloth._ins().Front : _3DDIYCloth._ins().Reverse).y;
+                let _DirHeight = LwgTools._3D.getMeshSize(this.Tex.dir === this.Tex.dirType.Front ? _3DDIYCloth._ins().Front : _3DDIYCloth._ins().Reverse).y;
                 let ratio = 1 - pH / _DirHeight;//比例
                 this.Tex.Img.y = ratio * _height;
                 // 补上一些误差
@@ -480,7 +480,7 @@ export default class MakePattern extends SceneAdmin._SceneBase {
             let posArr = this.Tex.setPosArr();
             let bool = false;
             for (let index = 0; index < posArr.length; index++) {
-                const _out = Tools._3D.rayScanning(_3DScene._ins()._MainCamara, _3DScene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
+                const _out = LwgTools._3D.rayScanning(_3DScene._ins()._MainCamara, _3DScene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
                 if (_out) {
                     bool = true;
                 }
@@ -525,7 +525,7 @@ export default class MakePattern extends SceneAdmin._SceneBase {
             this._ImgVar('Wireframe').width = this._ImgVar('WConversion').x = lPoint.x;
             this._ImgVar('Wireframe').height = this._ImgVar('WConversion').y = lPoint.y;
             const gPoint = this._Owner.localToGlobal(new Laya.Point(this._ImgVar('Wireframe').x, this._ImgVar('Wireframe').y));
-            this.Tex.Img.rotation = this.Tex.DisImg.rotation = this._ImgVar('Wireframe').rotation = Tools._Point.pointByAngle(e.stageX - gPoint.x, e.stageY - gPoint.y) + 45;
+            this.Tex.Img.rotation = this.Tex.DisImg.rotation = this._ImgVar('Wireframe').rotation = LwgTools._Point.pointByAngle(e.stageX - gPoint.x, e.stageY - gPoint.y) + 45;
             const scaleWidth = this._ImgVar('Wireframe').width - this.Tex.wireframeSize[0];
             const scaleheight = this._ImgVar('Wireframe').height - this.Tex.wireframeSize[1];
             this.Tex.DisImg.width = this.Tex.Img.width = this.Tex.imgSize[0] + scaleWidth;
@@ -541,8 +541,8 @@ export default class MakePattern extends SceneAdmin._SceneBase {
             }
         },
         again: () => {
-            Tools._Node.removeAllChildren(this._SpriteVar('Front'));
-            Tools._Node.removeAllChildren(this._SpriteVar('Reverse'));
+            LwgTools._Node.removeAllChildren(this._SpriteVar('Front'));
+            LwgTools._Node.removeAllChildren(this._SpriteVar('Reverse'));
             this.Tex.turnFace();
             _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
         },
@@ -587,7 +587,7 @@ export default class MakePattern extends SceneAdmin._SceneBase {
                 time = Math.abs(_3DDIYCloth._ins().Present.transform.localRotationEulerY) * 2;
                 angle = 0;
             }
-            Animation3D.rotateTo(_3DDIYCloth._ins().Present, new Laya.Vector3(0, angle, 0), time, this, null, () => {
+            LwgAni3D.rotateTo(_3DDIYCloth._ins().Present, new Laya.Vector3(0, angle, 0), time, this, null, () => {
                 func && func();
             });
         },
@@ -640,7 +640,7 @@ export default class MakePattern extends SceneAdmin._SceneBase {
             this._btnFour(this._ImgVar('BtnL'), () => {
                 this.Tex.frameRestore();
                 this.Tex.state = this.Tex.stateType.rotate;
-                TimerAdmin._frameLoop(1, this._ImgVar('BtnL'), () => {
+                LwgTimer._frameLoop(1, this._ImgVar('BtnL'), () => {
                     _3DDIYCloth._ins().rotate(0);
                 })
             }, null, () => {
@@ -651,7 +651,7 @@ export default class MakePattern extends SceneAdmin._SceneBase {
             this._btnFour(this._ImgVar('BtnR'), () => {
                 this.Tex.frameRestore();
                 this.Tex.state = this.Tex.stateType.rotate;
-                TimerAdmin._frameLoop(1, this._ImgVar('BtnR'), () => {
+                LwgTimer._frameLoop(1, this._ImgVar('BtnR'), () => {
                     _3DDIYCloth._ins().rotate(1);
                 })
             }, null, () => {

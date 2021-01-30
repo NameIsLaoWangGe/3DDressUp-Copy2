@@ -1,4 +1,4 @@
-import { Dialogue } from "../script/Lwg/Lwg";
+import { LwgDialogue } from "../script/Lwg/Lwg";
 
 export default class RecordManager {
     static Init() {
@@ -88,21 +88,21 @@ export default class RecordManager {
             p.extra.videoTopics = ["涂鸦小画手", "番茄小游戏", "抖音小游戏"]
             p.channel = "video";
             p.success = () => {
-                Dialogue.createHint_Middle("分享成功!");
+                LwgDialogue.createHint_Middle("分享成功!");
                 successedAc();
             };
             p.fail = () => {
                 if (type === 'noAward') {
-                    Dialogue.createHint_Middle("分享失败！");
+                    LwgDialogue.createHint_Middle("分享失败！");
                 } else {
-                    Dialogue.createHint_Middle("分享成功后才能获取奖励！");
+                    LwgDialogue.createHint_Middle("分享成功后才能获取奖励！");
                 }
                 failAc();
             }
             RecordManager.grv.Share(p);
         }
         else {
-            Dialogue.createHint_Middle("暂无视频，玩一局游戏之后分享！");
+            LwgDialogue.createHint_Middle("暂无视频，玩一局游戏之后分享！");
             // UIMgr.tip("暂无录屏，玩一局游戏可以分享");
         }
     }

@@ -1,16 +1,16 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { SceneAdmin, Animation2D, Dialogue, TimerAdmin, Tools } from "../Lwg/Lwg";
+import {  LwgScene, LwgAni2D, LwgDialogue, LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _Guide, _Ranking, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 
-export default class Tweeting_GetFans extends SceneAdmin._SceneBase {
+export default class Tweeting_GetFans extends  LwgScene._SceneBase {
     pitchObj: any;
     fansNum = 0;
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.BtnShow, 'ADrank');
         this.pitchObj = _Ranking._Data._getPitchObj();
-        this.fansNum = Tools._Number.randomOneInt(115, 383);
+        this.fansNum = LwgTools._Number.randomOneInt(115, 383);
         this.pitchObj['fansNum'] += this.fansNum;
         this._FontClipVar('FansNum').value = this.fansNum.toString();
     }
@@ -20,8 +20,8 @@ export default class Tweeting_GetFans extends SceneAdmin._SceneBase {
             !_Guide._complete && this._openScene('Guide', false, false, () => {
                 this._evNotify(_Guide.event.TweetingBtnDoubleFans, [this._ImgVar('BtnDouble')._lwg.gPoint.x, this._ImgVar('BtnDouble')._lwg.gPoint.y]);
             });
-            TimerAdmin._loop(2000, this, () => {
-                Animation2D.bomb_LeftRight(this._ImgVar('BtnDouble'), 1.1, 250);
+            LwgTimer._loop(2000, this, () => {
+                LwgAni2D.bomb_LeftRight(this._ImgVar('BtnDouble'), 1.1, 250);
             }, true);
         });
         return 300;
@@ -40,7 +40,7 @@ export default class Tweeting_GetFans extends SceneAdmin._SceneBase {
         })
         var double = () => {
             this.pitchObj['fansNum'] += this.fansNum;
-            Dialogue.createHint_Middle('太厉害了，涨粉翻倍了！');
+            LwgDialogue.createHint_Middle('太厉害了，涨粉翻倍了！');
             closeBefore();
         }
         this._btnUp(this._ImgVar('BtnDouble'), () => {

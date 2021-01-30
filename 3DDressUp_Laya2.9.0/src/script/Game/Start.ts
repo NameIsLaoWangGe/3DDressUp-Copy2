@@ -1,16 +1,16 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { SceneAdmin, Animation2D, TimerAdmin, _SceneName, Tools, Click } from "../Lwg/Lwg";
+import {  LwgScene, LwgAni2D, LwgTimer, LwgTools, LwgClick } from "../Lwg/Lwg";
 import { _3DScene } from "./_3D";
 import { _CheckIn, _DIYClothes, _Guide, _Ranking, _Start, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
-export default class Start extends SceneAdmin._SceneBase {
+export default class Start extends  LwgScene._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'mainpage');
         ADManager.TAPoint(TaT.BtnShow, 'symaker');
         ADManager.TAPoint(TaT.BtnShow, 'lyqmaker');
         ADManager.TAPoint(TaT.BtnShow, 'xzmaker');
         ADManager.TAPoint(TaT.BtnShow, 'change');
-        Tools._Node.childrenVisible2D(this._ImgVar('BtnParent'), false);
+        LwgTools._Node.childrenVisible2D(this._ImgVar('BtnParent'), false);
         _3DScene._ins().openStartAni(() => {
             this._ImgVar('BtnTop').pos(_3DScene._ins().btnTopPos.x, _3DScene._ins().btnTopPos.y);
             this._ImgVar('BtnDress').pos(_3DScene._ins().btnDressPos.x, _3DScene._ins().btnDressPos.y);
@@ -29,9 +29,9 @@ export default class Start extends SceneAdmin._SceneBase {
             const element = this._ImgVar('BtnParent').getChildAt(index) as Laya.Image;
             element.visible = true;
             const delay = 200 * index;
-            Animation2D.bombs_Appear(element, 0, 1, 1.2, 0, 200, () => {
+            LwgAni2D.bombs_Appear(element, 0, 1, 1.2, 0, 200, () => {
                 if (index === this._ImgVar('BtnParent').numChildren - 1) {
-                    TimerAdmin._once(500, this, () => {
+                    LwgTimer._once(500, this, () => {
                         if (_Start._whereFrom === 'MakePattern') {
                             this._evNotify(_Start._event.photo);
                             _Start._whereFrom = null;
@@ -70,19 +70,19 @@ export default class Start extends SceneAdmin._SceneBase {
             this._LabelVar('RankNum').text = `${obj[_Ranking._Data._otherPro.rankNum]}/50`;
         })
         this._evReg(_Start._event.photo, () => {
-            Click._absoluteSwitch = false;
+            LwgClick._absoluteSwitch = false;
             const sp = _3DScene._ins().cameraToSprite(this._Owner);
-            TimerAdmin._frameOnce(10, this, () => {
+            LwgTimer._frameOnce(10, this, () => {
                 _Tweeting._photo.take(this._Owner, 2);
                 sp.destroy();
-                TimerAdmin._frameOnce(10, this, () => {
+                LwgTimer._frameOnce(10, this, () => {
                     this._openScene('Tweeting_Main', false);
                 })
             })
         })
 
         this._evReg(_Start._event.BtnPersonalInfo, () => {
-            TimerAdmin._once(1000, this, () => {
+            LwgTimer._once(1000, this, () => {
                 this._openScene('Guide', false, false, () => {
                     this.BtnPersonalInfoClick();
                     this._evNotify(_Guide.event.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
@@ -98,7 +98,7 @@ export default class Start extends SceneAdmin._SceneBase {
             if (_Guide._complete) {
                 time = 300;
             }
-            TimerAdmin._once(time, this, () => {
+            LwgTimer._once(time, this, () => {
                 this.openMakeTailor('Dress');
             })
             ADManager.TAPoint(TaT.BtnClick, 'lyqmaker');

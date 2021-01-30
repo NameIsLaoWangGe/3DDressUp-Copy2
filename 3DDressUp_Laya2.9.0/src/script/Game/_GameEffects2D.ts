@@ -1,4 +1,4 @@
-import { AudioAdmin, Effects2D, TimerAdmin, Tools } from "../Lwg/Lwg";
+import { LwgAudio, LwgEff2D, LwgTimer, LwgTools } from "../Lwg/Lwg";
 
 export class _GameEffects2D {
     /**
@@ -8,12 +8,12 @@ export class _GameEffects2D {
      */
     static _interfacePointJet(): void {
         const diff = 100;
-        TimerAdmin._frameNumLoop(5, 15, this, () => {
+        LwgTimer._frameNumLoop(5, 15, this, () => {
             for (let index = 0; index < 5; index++) {
-                Effects2D._Particle._downwardSpray(Laya.stage, new Laya.Point(Laya.stage.width * 1 / 4, -diff), [10, 30], [10, 30], [0, 90], [Effects2D._SkinUrl.矩形1], null,);
-                Effects2D._Particle._downwardSpray(Laya.stage, new Laya.Point(Laya.stage.width * 3 / 4, -diff), [10, 30], [10, 30], [90, 180], [Effects2D._SkinUrl.矩形1], null,);
-                Effects2D._Particle._downwardSpray(Laya.stage, new Laya.Point(-diff, Laya.stage.height / 4), [10, 30], [10, 30], [0, 90], [Effects2D._SkinUrl.矩形1], null);
-                Effects2D._Particle._downwardSpray(Laya.stage, new Laya.Point(Laya.stage.width + diff, Laya.stage.height / 4), [10, 30], [10, 30], [90, 180], [Effects2D._SkinUrl.矩形1], null,);
+                LwgEff2D._Particle._downwardSpray(Laya.stage, new Laya.Point(Laya.stage.width * 1 / 4, -diff), [10, 30], [10, 30], [0, 90], [LwgEff2D._SkinUrl.矩形1], null,);
+                LwgEff2D._Particle._downwardSpray(Laya.stage, new Laya.Point(Laya.stage.width * 3 / 4, -diff), [10, 30], [10, 30], [90, 180], [LwgEff2D._SkinUrl.矩形1], null,);
+                LwgEff2D._Particle._downwardSpray(Laya.stage, new Laya.Point(-diff, Laya.stage.height / 4), [10, 30], [10, 30], [0, 90], [LwgEff2D._SkinUrl.矩形1], null);
+                LwgEff2D._Particle._downwardSpray(Laya.stage, new Laya.Point(Laya.stage.width + diff, Laya.stage.height / 4), [10, 30], [10, 30], [90, 180], [LwgEff2D._SkinUrl.矩形1], null,);
             }
         })
     }
@@ -36,9 +36,9 @@ export class _GameEffects2D {
                     Laya.timer.clearAll(_caller);
                 }
                 p1.y -= moveY;
-                Effects2D._Particle._fallingVertical(Laya.stage, new Laya.Point(p1.x, p1.y), [0, 0], null, null, [0, 360], [Effects2D._SkinUrl.花2], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1])
+                LwgEff2D._Particle._fallingVertical(Laya.stage, new Laya.Point(p1.x, p1.y), [0, 0], null, null, [0, 360], [LwgEff2D._SkinUrl.花2], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1])
             }
-            TimerAdmin._frameLoop(1, _caller, () => {
+            LwgTimer._frameLoop(1, _caller, () => {
                 funcL();
             })
 
@@ -50,9 +50,9 @@ export class _GameEffects2D {
                     Laya.timer.clearAll(_callerR);
                 }
                 p2.y -= moveY;
-                Effects2D._Particle._fallingVertical(Laya.stage, new Laya.Point(p2.x, p2.y), [0, 0], null, null, [0, 360], [Effects2D._SkinUrl.花2], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1])
+                LwgEff2D._Particle._fallingVertical(Laya.stage, new Laya.Point(p2.x, p2.y), [0, 0], null, null, [0, 360], [LwgEff2D._SkinUrl.花2], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1])
             }
-            TimerAdmin._frameLoop(1, _callerR, () => {
+            LwgTimer._frameLoop(1, _callerR, () => {
                 funcR();
             })
         }
@@ -70,7 +70,7 @@ export class _GameEffects2D {
         Img.width = 100;
         Img.height = _height;
         Img.rotation = 40;
-        Tools._Node.changePivot(Img, 0, _height / 2);
+        LwgTools._Node.changePivot(Img, 0, _height / 2);
         Img.pos(0, 0);
         Laya.stage.addChild(Img);
 
@@ -92,12 +92,12 @@ export class _GameEffects2D {
                     Laya.timer.clearAll(_caller);
                 }
                 if (index % 2 == 0) {
-                    Effects2D._Particle._fallingVertical(Img, new Laya.Point(p1.x, p1.y), [0, 0], null, null, [0, 360], [Effects2D._SkinUrl.星星8], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1])
+                    LwgEff2D._Particle._fallingVertical(Img, new Laya.Point(p1.x, p1.y), [0, 0], null, null, [0, 360], [LwgEff2D._SkinUrl.星星8], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1])
                 } else {
-                    Effects2D._Particle._fallingVertical_Reverse(Img, new Laya.Point(p2.x, p2.y), [0, 0], null, null, [0, 360], [Effects2D._SkinUrl.星星8], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [-100, -200], [-0.8, -1.5], [-0.05, -0.1])
+                    LwgEff2D._Particle._fallingVertical_Reverse(Img, new Laya.Point(p2.x, p2.y), [0, 0], null, null, [0, 360], [LwgEff2D._SkinUrl.星星8], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [-100, -200], [-0.8, -1.5], [-0.05, -0.1])
                 }
             }
-            TimerAdmin._frameNumLoop(2, 50, _caller, () => {
+            LwgTimer._frameNumLoop(2, 50, _caller, () => {
                 func();
             })
         }
@@ -111,22 +111,22 @@ export class _GameEffects2D {
     static _fireworksCelebrate(func?: Function) {
         const centerP1 = new Laya.Point(Laya.stage.width / 2, 0);
         const num1 = 150;
-        TimerAdmin._frameNumRandomLoop(1, 3, num1, this, () => {
-            Effects2D._Particle._fallingRotate(Laya.stage, centerP1, [Laya.stage.width, 0], [10, 30], [10, 30], [Effects2D._SkinUrl.矩形1, Effects2D._SkinUrl.矩形2, Effects2D._SkinUrl.矩形3], null, [300, Laya.stage.height], [1, 8]);
+        LwgTimer._frameNumRandomLoop(1, 3, num1, this, () => {
+            LwgEff2D._Particle._fallingRotate(Laya.stage, centerP1, [Laya.stage.width, 0], [10, 30], [10, 30], [LwgEff2D._SkinUrl.矩形1, LwgEff2D._SkinUrl.矩形2, LwgEff2D._SkinUrl.矩形3], null, [300, Laya.stage.height], [1, 8]);
         })
 
         const num2 = 16;
         const centerP2 = new Laya.Point(Laya.stage.width / 2, Laya.stage.height / 2 - 50);
-        TimerAdmin._frameNumRandomLoop(10, 25, num2, this, () => {
-            const count = Tools._Number.randomOneInt(10, 20);
+        LwgTimer._frameNumRandomLoop(10, 25, num2, this, () => {
+            const count = LwgTools._Number.randomOneInt(10, 20);
             const time = 30;
-            const dis = Tools._Number.randomOneInt(100, 300);
-            const radomP = Tools._Point.randomPointByCenter(centerP2, 500, 150)[0];
+            const dis = LwgTools._Number.randomOneInt(100, 300);
+            const radomP = LwgTools._Point.randomPointByCenter(centerP2, 500, 150)[0];
             for (let index = 0; index < count * 2; index++) {
-                Effects2D._Particle._sprayRound(Laya.stage, radomP, null, [20, 40], null, [Effects2D._SkinUrl.花4], null, [dis, dis], [time, time]);
+                LwgEff2D._Particle._sprayRound(Laya.stage, radomP, null, [20, 40], null, [LwgEff2D._SkinUrl.花4], null, [dis, dis], [time, time]);
             }
             for (let index = 0; index < count * 2; index++) {
-                Effects2D._Particle._sprayRound(Laya.stage, radomP, null, [20, 40], null, [Effects2D._SkinUrl.花4], null, [50, dis - 20], [time, time]);
+                LwgEff2D._Particle._sprayRound(Laya.stage, radomP, null, [20, 40], null, [LwgEff2D._SkinUrl.花4], null, [50, dis - 20], [time, time]);
             }
         }, () => {
             func && func();
@@ -134,14 +134,14 @@ export class _GameEffects2D {
     }
     /**单个花爆炸，点击打开宝箱*/
     static _oneFireworks(point: Laya.Point): void {
-        const count = Tools._Number.randomOneInt(10, 20);
+        const count = LwgTools._Number.randomOneInt(10, 20);
         const time = 30;
-        const dis = Tools._Number.randomOneInt(100, 300);
+        const dis = LwgTools._Number.randomOneInt(100, 300);
         for (let index = 0; index < count * 2; index++) {
-            Effects2D._Particle._sprayRound(Laya.stage, point, null, [20, 40], null, [Effects2D._SkinUrl.花4], null, [dis, dis], [time, time]);
+            LwgEff2D._Particle._sprayRound(Laya.stage, point, null, [20, 40], null, [LwgEff2D._SkinUrl.花4], null, [dis, dis], [time, time]);
         }
         for (let index = 0; index < count * 2; index++) {
-            Effects2D._Particle._sprayRound(Laya.stage, point, null, [20, 40], null, [Effects2D._SkinUrl.花4], null, [50, dis - 20], [time, time]);
+            LwgEff2D._Particle._sprayRound(Laya.stage, point, null, [20, 40], null, [LwgEff2D._SkinUrl.花4], null, [50, dis - 20], [time, time]);
         }
     }
 
@@ -152,13 +152,13 @@ export class _GameEffects2D {
     static _circleFlowe(scene: Laya.Scene): void {
         const count = 90;
         const time = 35;
-        const dis = Tools._Number.randomOneInt(500, 500);
+        const dis = LwgTools._Number.randomOneInt(500, 500);
         const p = new Laya.Point(Laya.stage.width / 2, Laya.stage.height / 2);
         for (let index = 0; index < count; index++) {
-            Effects2D._Particle._sprayRound(scene, p, null, [20, 40], null, [Effects2D._SkinUrl.花4], null, [dis, dis], [time, time], null, null, 5);
+            LwgEff2D._Particle._sprayRound(scene, p, null, [20, 40], null, [LwgEff2D._SkinUrl.花4], null, [dis, dis], [time, time], null, null, 5);
         }
         for (let index = 0; index < count * 2; index++) {
-            Effects2D._Particle._sprayRound(scene, p, null, [20, 40], null, [Effects2D._SkinUrl.花4], null, [100, dis - 20], [time, time], null, null, 5);
+            LwgEff2D._Particle._sprayRound(scene, p, null, [20, 40], null, [LwgEff2D._SkinUrl.花4], null, [100, dis - 20], [time, time], null, null, 5);
         }
     }
 
@@ -171,12 +171,12 @@ export class _GameEffects2D {
     static _bothBlinkOnSprite(scene: Laya.Scene, sprite: Laya.Sprite): any {
         const caller = {};
         // 星星闪烁动画左边
-        TimerAdmin._frameRandomLoop(30, 50, caller, () => {
-            Effects2D._Glitter._blinkStar(scene, new Laya.Point(sprite.x - 350, sprite.y), [150, 100], [Effects2D._SkinUrl.星星1], null, [80, 80]);
+        LwgTimer._frameRandomLoop(30, 50, caller, () => {
+            LwgEff2D._Glitter._blinkStar(scene, new Laya.Point(sprite.x - 350, sprite.y), [150, 100], [LwgEff2D._SkinUrl.星星1], null, [80, 80]);
         }, true)
         // 星星闪烁动画右边
-        TimerAdmin._frameRandomLoop(30, 50, caller, () => {
-            Effects2D._Glitter._blinkStar(scene, new Laya.Point(sprite.x + 350, sprite.y), [150, 100], [Effects2D._SkinUrl.星星1], null, [80, 80]);
+        LwgTimer._frameRandomLoop(30, 50, caller, () => {
+            LwgEff2D._Glitter._blinkStar(scene, new Laya.Point(sprite.x + 350, sprite.y), [150, 100], [LwgEff2D._SkinUrl.星星1], null, [80, 80]);
         }, true)
         return caller;
     }
@@ -191,14 +191,14 @@ export class _GameEffects2D {
      * @memberof _GameEffects
      */
     static _circleExplode(Parent: Laya.Sprite, p: Laya.Point, delay?: number): void {
-        TimerAdmin._once(delay ? delay : 0, this, () => {
+        LwgTimer._once(delay ? delay : 0, this, () => {
             const count = 40;
             const time = 5;
-            const dis = Tools._Number.randomOneInt(30, 30);
+            const dis = LwgTools._Number.randomOneInt(30, 30);
             for (let index = 0; index < count; index++) {
-                Effects2D._Particle._sprayRound(Parent, p, null, [20, 40], null, [Effects2D._SkinUrl.星星8], null, [dis, dis], [time, time], null, null, 5);
+                LwgEff2D._Particle._sprayRound(Parent, p, null, [20, 40], null, [LwgEff2D._SkinUrl.星星8], null, [dis, dis], [time, time], null, null, 5);
             }
-            AudioAdmin._playSound();
+            LwgAudio._playSound();
         })
     }
 }

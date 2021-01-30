@@ -1,4 +1,4 @@
-import { TimerAdmin, Tools } from "../Lwg/Lwg";
+import { LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { _CutInRes, _Res } from "./_Res";
 export class _3DScene {
     private static ins: _3DScene;
@@ -103,14 +103,14 @@ export class _3DScene {
         this._RoleAni.play(this.aniName.Stand);
         this._RoleAni.play(this.aniName.DispalyCloth);
         Laya.timer.clearAll(this._Role);
-        TimerAdmin._once(3200, this._Role, () => {
+        LwgTimer._once(3200, this._Role, () => {
             this._RoleAni.crossFade(this.aniName.Stand, 0.3);
         })
     }
     playPoss1Ani(): void {
         this._RoleAni.crossFade(this.aniName.Pose1, 0.3);
         Laya.timer.clearAll(this._Role);
-        TimerAdmin._once(3200, this._Role, () => {
+        LwgTimer._once(3200, this._Role, () => {
             this._RoleAni.crossFade(this.aniName.Stand, 0.3);
         })
     }
@@ -118,7 +118,7 @@ export class _3DScene {
     playPoss2Ani(): void {
         this._RoleAni.crossFade(this.aniName.Pose2, 0.3);
         Laya.timer.clearAll(this._Role);
-        TimerAdmin._once(3200, this._Role, () => {
+        LwgTimer._once(3200, this._Role, () => {
             this._RoleAni.crossFade(this.aniName.Stand, 0.3);
         })
     }
@@ -130,22 +130,22 @@ export class _3DScene {
     }
 
     playRandomPose(): void {
-        TimerAdmin._frameLoop(500, this, () => {
-            Tools._Number.randomOneHalf() == 0 ? _3DScene._ins().playPoss1Ani() : _3DScene._ins().playPoss2Ani();
+        LwgTimer._frameLoop(500, this, () => {
+            LwgTools._Number.randomOneHalf() == 0 ? _3DScene._ins().playPoss1Ani() : _3DScene._ins().playPoss2Ani();
         }, true);
     }
 
     get btnDressPos(): Laya.Vector2 {
-        return Tools._3D.posToScreen(this._BtnDress.transform.position, this._MainCamara);
+        return LwgTools._3D.posToScreen(this._BtnDress.transform.position, this._MainCamara);
     }
     get btnTopPos(): Laya.Vector2 {
-        return Tools._3D.posToScreen(this._BtnTop.transform.position, this._MainCamara);
+        return LwgTools._3D.posToScreen(this._BtnTop.transform.position, this._MainCamara);
     }
     get btnBottomsPos(): Laya.Vector2 {
-        return Tools._3D.posToScreen(this._BtnBottoms.transform.position, this._MainCamara);
+        return LwgTools._3D.posToScreen(this._BtnBottoms.transform.position, this._MainCamara);
     }
     get btnDressingRoomPos(): Laya.Vector2 {
-        return Tools._3D.posToScreen(this._BtnDressingRoom.transform.position, this._MainCamara);
+        return LwgTools._3D.posToScreen(this._BtnDressingRoom.transform.position, this._MainCamara);
     }
 
     /**将3D场景绘制到2D屏幕上*/
@@ -154,7 +154,7 @@ export class _3DScene {
         const Sp = new Laya.Sprite;
         Sp.zOrder = -1;
         scene.addChild(Sp)['size'](Laya.stage.width, Laya.stage.height);
-        Tools._Draw.cameraToSprite(this._MainCamara, Sp);
+        LwgTools._Draw.cameraToSprite(this._MainCamara, Sp);
         return Sp;
     }
 
@@ -165,7 +165,7 @@ export class _3DScene {
         this._Role.active = true;
         this._MirrorCamera.active = false;
         // this._RoleAni.play(this.aniName.Walk);
-        // const dis = Tools._Number.randomOneHalf() == 0 ? - 3 : 3;
+        // const dis = LwgTools._Number.randomOneHalf() == 0 ? - 3 : 3;
         // const time = 180;
         // const rotate = dis == 3 ? 90 : -90;
         // this._Role.transform.position = new Laya.Vector3(this._RoleFPos.x + dis, this._RoleFPos.y, this._RoleFPos.z);
@@ -173,9 +173,9 @@ export class _3DScene {
 
         // this._Role.transform.localRotationEuler = new Laya.Vector3(-10, this._Role.transform.localRotationEuler.y, 0);
 
-        // const CaRotate = Tools._Number.randomOneHalf() == 0 ? - 5 : 5;
+        // const CaRotate = LwgTools._Number.randomOneHalf() == 0 ? - 5 : 5;
         // this._MainCamara.transform.localRotationEuler.x += CaRotate;
-        // TimerAdmin._frameNumLoop(1, time, this, () => {
+        // LwgTimer._frameNumLoop(1, time, this, () => {
 
         //     this._MainCamara.transform.localRotationEuler = new Laya.Vector3(this._MainCamara.transform.localRotationEuler.x - CaRotate / time, this._MainCamara.transform.localRotationEuler.y, this._MainCamara.transform.localRotationEuler.z);
 
@@ -183,14 +183,14 @@ export class _3DScene {
 
         //     this._Role.transform.position = new Laya.Vector3(this._Role.transform.position.x - dis / time, this._Role.transform.position.y, this._Role.transform.position.z);
         // })
-        // TimerAdmin._frameOnce(time - 45, this, () => {
-        //     TimerAdmin._frameNumLoop(1, 45, this, () => {
+        // LwgTimer._frameOnce(time - 45, this, () => {
+        //     LwgTimer._frameNumLoop(1, 45, this, () => {
         //         const speed = rotate > 0 ? 2 : -2;
         //         this._Role.transform.localRotationEuler = new Laya.Vector3(this._Role.transform.localRotationEuler.x, this._Role.transform.localRotationEuler.y -= speed, 0);
         //     }, () => {
-        //         Tools._Number.randomOneHalf() == 0 ? this._RoleAni.crossFade(this.aniName.Pose1, 0.3) :
+        //         LwgTools._Number.randomOneHalf() == 0 ? this._RoleAni.crossFade(this.aniName.Pose1, 0.3) :
         //             this._RoleAni.crossFade(this.aniName.Pose2, 0.1);
-        //         TimerAdmin._once(3000, this, () => {
+        //         LwgTimer._once(3000, this, () => {
         //             this._RoleAni.crossFade(this.aniName.Stand, 0.1);
         //             func();
         //             this.playRandomPose();
@@ -228,8 +228,8 @@ export class _3DScene {
     mirrortex: Laya.Texture;
     openMirror(_Sp: Laya.Image): void {
         this.mirrorSurface = true;
-        TimerAdmin._clearAll([this._Mirror]);
-        TimerAdmin._frameLoop(1, this._Mirror, () => {
+        LwgTimer._clearAll([this._Mirror]);
+        LwgTimer._frameLoop(1, this._Mirror, () => {
             if (this.mirrorSurface) {
                 //选择渲染目标为纹理
                 this._MirrorCamera.renderTarget = new Laya.RenderTexture(_Sp.width, _Sp.height);
@@ -294,10 +294,10 @@ export class _3DDIYCloth {
         _3DScene._ins()._Role.active = false;
 
         const Classify = _3DScene._ins()._DIYHanger.getChildByName(classify) as Laya.MeshSprite3D;
-        Tools._Node.showExcludedChild3D(_3DScene._ins()._DIYHanger, [Classify.name]);
+        LwgTools._Node.showExcludedChild3D(_3DScene._ins()._DIYHanger, [Classify.name]);
 
         this.Present = Classify.getChildByName(pitchName) as Laya.MeshSprite3D;
-        Tools._Node.showExcludedChild3D(Classify, [this.Present.name]);
+        LwgTools._Node.showExcludedChild3D(Classify, [this.Present.name]);
 
         this.Present.transform.localRotationEulerY = 180;
 
@@ -319,8 +319,8 @@ export class _3DDIYCloth {
         //映射贴图图片宽高
         let p1 = new Laya.Vector3(center.x, center.y + extent.y, center.z);
         let p2 = new Laya.Vector3(center.x, center.y - extent.y, center.z);
-        let point1 = Tools._3D.posToScreen(p1, _3DScene._ins()._MainCamara);
-        let point2 = Tools._3D.posToScreen(p2, _3DScene._ins()._MainCamara);
+        let point1 = LwgTools._3D.posToScreen(p1, _3DScene._ins()._MainCamara);
+        let point2 = LwgTools._3D.posToScreen(p2, _3DScene._ins()._MainCamara);
         this.texHeight = point2.y - point1.y;
     }
     addTexture2D(arr: any[]): void {

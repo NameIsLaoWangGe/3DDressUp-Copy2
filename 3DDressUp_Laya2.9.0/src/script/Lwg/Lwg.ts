@@ -1,7 +1,7 @@
 /**综合模板*/
 export module Lwg {
     /**平台*/
-    export module Platform {
+    export module PlatformAdmin {
         /**渠道类型*/
         export let _Tpye = {
             Bytedance: 'Bytedance',
@@ -27,10 +27,10 @@ export module Lwg {
                 switch (val) {
                     case _Tpye.WebTest:
                         Laya.LocalStorage.clear();
-                        Gold._num.value = 5000;
+                        GoldAdmin._num.value = 5000;
                         break;
                     case _Tpye.Research:
-                        Gold._num.value = 50000000000000;
+                        GoldAdmin._num.value = 50000000000000;
                         break;
 
                     default:
@@ -41,41 +41,66 @@ export module Lwg {
     }
 
     /**可替代上述等级对象*/
-    export class _GameAdmin {
-        /**游戏控制开关*/
-        static switch = true;
-        /**实际关卡*/
-        static get level(): number {
-            return Laya.LocalStorage.getItem('_Game/Level') ? Number(Laya.LocalStorage.getItem('_Game/Level')) : 1;
-        };
-        static set level(val: number) {
-            let diff = val - this.level;
-            if (diff > 0) {
-                this.maxLevel += diff;
+    export module GameAdmin {
+        /**游戏开关,控制步骤，不控制暂停，以现在的机制，一般用不上*/
+        export let _switch = true;
+        /**游戏暂停*/
+        export let pause = {
+            get value(): boolean {
+                return _switch;
+            },
+            set value(bool: boolean) {
+                if (bool) {
+                    _switch = false;
+                    TimerAdmin._switch = false;
+                    LwgClick._switch = true;
+                } else {
+                    _switch = true;
+                    TimerAdmin._switch = true;
+                    LwgClick._switch = false;
+                }
             }
-            if (val > this.loopLevel && this.loopLevel != -1) {
-                Laya.LocalStorage.setItem('_Game/Level', (1).toString());
-            } else {
-                Laya.LocalStorage.setItem('_Game/Level', (val).toString());
+        }
+        /**等级*/
+        export let level = {
+            get value(): number {
+                return Laya.LocalStorage.getItem('_Game/Level') ? Number(Laya.LocalStorage.getItem('_Game/Level')) : 1;
+            },
+            set value(val: number) {
+                let diff = val - this.level;
+                if (diff > 0) {
+                    this.maxLevel += diff;
+                }
+                if (val > this.loopLevel && this.loopLevel != -1) {
+                    Laya.LocalStorage.setItem('_Game/Level', (1).toString());
+                } else {
+                    Laya.LocalStorage.setItem('_Game/Level', (val).toString());
+                }
             }
-        };
+        }
         /**最大关卡数*/
-        static get maxLevel(): number {
-            return Laya.LocalStorage.getItem('_Game/maxLevel') ? Number(Laya.LocalStorage.getItem('_Game/maxLevel')) : this.level;
-        };
-        static set maxLevel(val) {
-            Laya.LocalStorage.setItem('_Game/maxLevel', val.toString());
-        };
+        export let maxLevel = {
+            get value(): number {
+                return Laya.LocalStorage.getItem('_Game/maxLevel') ? Number(Laya.LocalStorage.getItem('_Game/maxLevel')) : this.level;
+            },
+            set value(val: number) {
+                Laya.LocalStorage.setItem('_Game/maxLevel', val.toString());
+            }
+        }
+
         /**从第几关开始循环*/
-        static get loopLevel(): number {
-            return this['_Game/loopLevel'] ? this['_Game/loopLevel'] : -1;
-        };
-        static set loopLevel(lev: number) {
-            this['_Game/loopLevel'] = lev;
-        };
+        export let loopLevel = {
+            get value(): string {
+                return this['_Game/loopLevel'] ? this['_Game/loopLevel'] : -1;
+            },
+            set value(val: string) {
+                this['_Game/loopLevel'] = val;
+            }
+        }
         /**等级的显示节点*/
-        static LevelNode: Laya.Sprite;
-        static _createLevel(parent: Laya.Sprite, x: number, y: number): void {
+        export let LevelNode: Laya.Sprite;
+        /**创建等级节点*/
+        export function _createLevel(parent: Laya.Sprite, x: number, y: number): void {
             let sp: Laya.Sprite;
             Laya.loader.load('prefab/LevelNode.json', Laya.Handler.create(this, function (prefab: Laya.Prefab) {
                 const _prefab = new Laya.Prefab();
@@ -88,21 +113,7 @@ export module Lwg {
                 this.LevelNode = sp;
             }));
         };
-        /**游戏暂停*/
-        static get pause(): boolean {
-            return this.switch;
-        }
-        static set pause(bool: boolean) {
-            if (bool) {
-                this.switch = false;
-                TimerAdmin._switch = false;
-                Click._switch = true;
-            } else {
-                this.switch = true;
-                TimerAdmin._switch = true;
-                Click._switch = false;
-            }
-        }
+
     }
 
     /**游戏整体控制*/
@@ -120,35 +131,12 @@ export module Lwg {
             Shop = 'Shop',
             Task = 'Task',
             Set = 'Set',
-            Skin = 'Skin',
-            Puase = 'Puase',
-            Share = 'Share',
-            Game3D = 'Game3D',
             Victory = 'Victory',
             Defeated = 'Defeated',
-            PassHint = 'PassHint',
-            SkinTry = 'SkinTry',
-            Redeem = 'Redeem',
-            Turntable = 'Turntable',
-            CaidanPifu = 'CaidanPifu',
-            Operation = 'Operation',
-            VictoryBox = 'VictoryBox',
             CheckIn = 'CheckIn',
-            Resurgence = 'Resurgence',
-            AdsHint = 'AdsHint',
             LwgInit = 'LwgInit',
-            Game = 'Game',
-            SmallHint = 'SmallHint',
-            DrawCard = 'DrawCard',
-            PropTry = 'PropTry',
-            Card = 'Card',
-            ExecutionHint = 'ExecutionHint',
-            SkinQualified = 'SkinQualified',
-            Eastereggister = 'Eastereggister',
             SelectLevel = 'SelectLevel',
             Settle = 'Settle',
-            Special = 'Special',
-            Compound = 'Compound',
         }
         /**预加载完毕后，需要打开的场景信息*/
         export let _PreLoadCutIn = {
@@ -182,7 +170,7 @@ export module Lwg {
             static _sceneNum: number = 1;
             /**当前打开场景放在最上面*/
             static _openZOderUp(): void {
-                if (SceneAnimation._closeSwitch.value) {
+                if (SceneAniAdmin._closeSwitch.value) {
                     let num = 0;
 
                     for (const key in _SceneControl) {
@@ -211,7 +199,7 @@ export module Lwg {
             };
             /**当前打开场景放在最上面,如果使用了关闭动画，必然关闭场景在上面*/
             static _closeZOderUP(CloseScene: Laya.Scene): void {
-                if (SceneAnimation._closeSwitch.value) {
+                if (SceneAniAdmin._closeSwitch.value) {
                     let num = 0;
                     for (const key in _SceneControl) {
                         if (Object.prototype.hasOwnProperty.call(_SceneControl, key)) {
@@ -276,10 +264,10 @@ export module Lwg {
           * @param zOrder 指定层级
          */
         export function _openScene(openName: string, closeName?: string, func?: Function, zOrder?: number): void {
-            Click._switch = false;
+            LwgClick._switch = false;
             Laya.Scene.load('Scene/' + openName + '.json', Laya.Handler.create(this, function (scene: Laya.Scene) {
                 // 如果该场景已经有了，则立即关闭，打开新的
-                const openScene = Tools._Node.checkChildren(Laya.stage, openName) as Laya.Scene;
+                const openScene = ToolsAdmin._Node.checkChildren(Laya.stage, openName) as Laya.Scene;
                 if (openScene) {
                     openScene.close();
                     console.log(`场景${openName}重复出现！前面的场景将会被关闭！`);
@@ -306,30 +294,30 @@ export module Lwg {
             /**传入的回调函数*/
             var closef = () => {
                 func && func();
-                Click._switch = true;
+                LwgClick._switch = true;
                 _SceneControl[closeName].close();
             }
             // 如果关闭了场景消失动画，则不会执行任何动画
-            if (!SceneAnimation._closeSwitch.value) {
+            if (!SceneAniAdmin._closeSwitch.value) {
                 closef();
                 return;
             }
-            _SceneChange._closeZOderUP(SceneAdmin._SceneControl[closeName]);
+            _SceneChange._closeZOderUP(LwgScene._SceneControl[closeName]);
             //如果内部场景消失动画被重写了，则执行内部场景消失动画，而不执行通用动画
             let script = _SceneControl[closeName][_SceneControl[closeName].name];
             if (script) {
                 if (script) {
-                    Click._switch = false;
+                    LwgClick._switch = false;
                     let time0 = script.lwgCloseAni();
                     if (time0 !== null) {
-                        SceneAnimation._closeAniDelay = time0;
+                        SceneAniAdmin._closeAniDelay = time0;
                         script.lwgBeforeCloseAni();
                         Laya.timer.once(time0, this, () => {
                             closef();
-                            Click._switch = true;
+                            LwgClick._switch = true;
                         })
                     } else {
-                        const delay = SceneAnimation._commonCloseAni(_SceneControl[closeName]);
+                        const delay = SceneAniAdmin._commonCloseAni(_SceneControl[closeName]);
                         Laya.timer.once(delay, this, () => {
                             script.lwgBeforeCloseAni();
                             closef();
@@ -346,7 +334,7 @@ export module Lwg {
 
             private getFind(name: string, type: string): any {
                 if (!this[`_Scene${type}${name}`]) {
-                    let Node = Tools._Node.findChild2D(this.owner.scene, name);
+                    let Node = ToolsAdmin._Node.findChild2D(this.owner.scene, name);
                     if (Node) {
                         return this[`_Scene${type}${name}`] = Node;
                     } else {
@@ -398,7 +386,7 @@ export module Lwg {
             _storeArray(name: string, _func?: Function, initial?: Array<any>): StorageAdmin._ArrayVariable {
                 return StorageAdmin._array(`${this.owner.name}/${name}`, _func, initial);
             }
-            /**游戏开始前执行一次，重写覆盖*/
+            /**激活时执行一次，重写覆盖*/
             lwgOnAwake(): void { };
             /**适配位置*/
             lwgAdaptive(): void { };
@@ -427,8 +415,8 @@ export module Lwg {
              * @param effect 效果类型输入'null'则没有效果
             */
             _btnDown(target: Laya.Node, down?: Function, effect?: string): void {
-                Click._on(effect == undefined ? Click._Use.value : effect, target, this, (e: Laya.Event) => {
-                    Click._absoluteSwitch && Click._switch && down && down(e)
+                LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, (e: Laya.Event) => {
+                    LwgClick._absoluteSwitch && LwgClick._switch && down && down(e)
                 }, null, null, null);
             }
             /**
@@ -438,8 +426,8 @@ export module Lwg {
               * @param effect 效果类型输入'null'则没有效果
              */
             _btnMove(target: Laya.Node, move: Function, effect?: string): void {
-                Click._on(effect == undefined ? Click._Use.value : effect, target, this, null, (e: Laya.Event) => {
-                    Click._absoluteSwitch && Click._switch && move && move(e)
+                LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, (e: Laya.Event) => {
+                    LwgClick._absoluteSwitch && LwgClick._switch && move && move(e)
                 }, null, null);
             }
 
@@ -450,9 +438,8 @@ export module Lwg {
              * @param effect 效果类型输入'null'则没有效果
            */
             _btnUp(target: Laya.Node, up: Function, effect?: string): void {
-                Click._on(effect == undefined ? Click._Use.value : effect, target, this, null, null, (e: Laya.Event) => {
-                    console.log(Click._absoluteSwitch);
-                    Click._absoluteSwitch && Click._switch && up && up(e);
+                LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, (e: Laya.Event) => {
+                    LwgClick._absoluteSwitch && LwgClick._switch && up && up(e);
                 }, null);
             }
             /**
@@ -462,7 +449,7 @@ export module Lwg {
               * @param effect 效果类型输入'null'则没有效果
              */
             _btnOut(target: Laya.Node, out: Function, effect?: string): void {
-                Click._on(effect == undefined ? Click._Use.value : effect, target, this, null, null, null, (e: Laya.Event) => { Click._absoluteSwitch && Click._switch && out && out(e) });
+                LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, null, (e: Laya.Event) => { LwgClick._absoluteSwitch && LwgClick._switch && out && out(e) });
             }
             /**
               * 通用事件注册,可以用(e)=>{}简写传递的函数参数
@@ -473,11 +460,11 @@ export module Lwg {
               * @param out 移出回调
              */
             _btnFour(target: Laya.Node, down?: Function, move?: Function, up?: Function, out?: Function, effect?: string): void {
-                Click._on(effect == null ? effect : Click._Use.value, target, this,
-                    (e: Laya.Event) => { Click._absoluteSwitch && Click._switch && down && down(e) },
-                    (e: Laya.Event) => { Click._absoluteSwitch && Click._switch && move && move(e) },
-                    (e: Laya.Event) => { Click._absoluteSwitch && Click._switch && up && up(e) },
-                    (e: Laya.Event) => { Click._absoluteSwitch && Click._switch && out && out(e) });
+                LwgClick._on(effect == null ? effect : LwgClick._Use.value, target, this,
+                    (e: Laya.Event) => { LwgClick._absoluteSwitch && LwgClick._switch && down && down(e) },
+                    (e: Laya.Event) => { LwgClick._absoluteSwitch && LwgClick._switch && move && move(e) },
+                    (e: Laya.Event) => { LwgClick._absoluteSwitch && LwgClick._switch && up && up(e) },
+                    (e: Laya.Event) => { LwgClick._absoluteSwitch && LwgClick._switch && out && out(e) });
             }
             ownerSceneName: string = '';
             /**
@@ -494,9 +481,9 @@ export module Lwg {
                     closeName = this.ownerSceneName;
                 }
                 if (!preLoadCutIn) {
-                    SceneAdmin._openScene(openName, closeName, func, zOrder);
+                    LwgScene._openScene(openName, closeName, func, zOrder);
                 } else {
-                    SceneAdmin._preLoadOpenScene(openName, closeName, func, zOrder);
+                    LwgScene._preLoadOpenScene(openName, closeName, func, zOrder);
                 }
             }
             /**
@@ -505,15 +492,15 @@ export module Lwg {
              * @param func 关闭后的回调函数
              * */
             _closeScene(sceneName?: string, func?: Function): void {
-                SceneAdmin._closeScene(sceneName ? sceneName : this.ownerSceneName, func);
+                LwgScene._closeScene(sceneName ? sceneName : this.ownerSceneName, func);
             }
             /**每帧执行，不要执行onUpdate，只执行lwgOnUpdate*/
             lwgOnUpdate(): void { };
             /**离开时执行不要执行onDisable，只执行lwgDisable*/
             lwgOnDisable(): void { };
-            onStageMouseDown(e: Laya.Event): void { Click._switch && this.lwgOnStageDown(e) };
-            onStageMouseMove(e: Laya.Event): void { Click._switch && this.lwgOnStageMove(e) };
-            onStageMouseUp(e: Laya.Event): void { Click._switch && this.lwgOnStageUp(e) };
+            onStageMouseDown(e: Laya.Event): void { LwgClick._switch && this.lwgOnStageDown(e) };
+            onStageMouseMove(e: Laya.Event): void { LwgClick._switch && this.lwgOnStageMove(e) };
+            onStageMouseUp(e: Laya.Event): void { LwgClick._switch && this.lwgOnStageUp(e) };
             lwgOnStageDown(e: Laya.Event): void { };
             lwgOnStageMove(e: Laya.Event): void { };
             lwgOnStageUp(e: Laya.Event): void { };
@@ -627,13 +614,13 @@ export module Lwg {
                 let time = this.lwgOpenAni();
                 if (time !== null) {
                     Laya.timer.once(time, this, () => {
-                        Click._switch = true;
+                        LwgClick._switch = true;
                         this.lwgOpenAniAfter();
                         this.lwgButton();
                         _SceneChange._close();
                     });
                 } else {
-                    SceneAnimation._commonOpenAni(this._Owner);
+                    SceneAniAdmin._commonOpenAni(this._Owner);
                 }
             }
             /**开场动画,返回的数字为时间倒计时，倒计时结束后开启点击事件,也可以用来屏蔽通用动画，只需返回一个数字即可,如果场景内节点是以prefab添加进去的，那么必须卸载lwgOpenAni之前*/
@@ -642,15 +629,15 @@ export module Lwg {
             lwgOpenAniAfter(): void { };
             /**按照当前Y轴坐标的高度的比例适配，适配整个舞台*/
             _adaHeight(arr: Array<Laya.Sprite>): void {
-                Adaptive._stageHeight(arr);
+                LwgAdaptive._stageHeight(arr);
             };
             /**按照当前X轴的高度的比例适配*/
             _adaWidth(arr: Array<Laya.Sprite>): void {
-                Adaptive._stageWidth(arr);
+                LwgAdaptive._stageWidth(arr);
             };
             /**按照当前X轴的高度的比例适配*/
             _adaptiveCenter(arr: Array<Laya.Sprite>): void {
-                Adaptive._center(arr, Laya.stage);
+                LwgAdaptive._center(arr, Laya.stage);
             };
             onUpdate(): void { this.lwgOnUpdate() };
             /**离场动画前执行*/
@@ -959,10 +946,10 @@ export module Lwg {
 
             // 动画
             Dec.alpha = 0;
-            Animation2D.scale_Alpha(Hint_M, 0, 1, 0, 1, 1, 1, 200, 0, f => {
-                Animation2D.fadeOut(Dec, 0, 1, 150, 0, f => {
-                    Animation2D.fadeOut(Dec, 1, 0, 200, 800, f => {
-                        Animation2D.scale_Alpha(Hint_M, 1, 1, 1, 1, 0, 0, 200, 0, f => {
+            Ani2DAdmin.scale_Alpha(Hint_M, 0, 1, 0, 1, 1, 1, 200, 0, f => {
+                Ani2DAdmin.fadeOut(Dec, 0, 1, 150, 0, f => {
+                    Ani2DAdmin.fadeOut(Dec, 1, 0, 200, 800, f => {
+                        Ani2DAdmin.scale_Alpha(Hint_M, 1, 1, 1, 1, 0, 0, 200, 0, f => {
                             Hint_M.removeSelf();
                         });
                     });
@@ -1102,7 +1089,7 @@ export module Lwg {
                     if (delayed == undefined) {
                         delayed = 1000;
                     }
-                    Animation2D.scale_Alpha(Pre_Dialogue, 0, 0, 0, 1, 1, 1, 150, 1000, () => {
+                    Ani2DAdmin.scale_Alpha(Pre_Dialogue, 0, 0, 0, 1, 1, 1, 150, 1000, () => {
                         for (let index = 0; index < contentArr.length; index++) {
 
                             Laya.timer.once(index * delayed, this, () => {
@@ -1110,7 +1097,7 @@ export module Lwg {
 
                                 if (index == contentArr.length - 1) {
                                     Laya.timer.once(delayed, this, () => {
-                                        Animation2D.scale_Alpha(Pre_Dialogue, 1, 1, 1, 0, 0, 0, 150, 1000, () => {
+                                        Ani2DAdmin.scale_Alpha(Pre_Dialogue, 1, 1, 1, 0, 0, 0, 150, 1000, () => {
                                             Pre_Dialogue.removeSelf();
                                         })
                                     })
@@ -1145,7 +1132,7 @@ export module Lwg {
     }
 
     /**金币模块*/
-    export module Gold {
+    export module GoldAdmin {
         /**金币数量*/
         export let _num = {
             get value(): number {
@@ -1176,7 +1163,7 @@ export module Lwg {
                 _prefab.json = prefab;
                 sp = Laya.Pool.getItemByCreateFun('gold', _prefab.create, _prefab);
                 let Num = sp.getChildByName('Num') as Laya.Label;
-                Num.text = Tools._Format.formatNumber(_num.value);
+                Num.text = ToolsAdmin._Format.formatNumber(_num.value);
                 parent.addChild(sp);
                 sp.pos(x, y);
                 sp.zOrder = 100;
@@ -1188,7 +1175,7 @@ export module Lwg {
         export function _add(number: number) {
             _num.value += Number(number);
             let Num = GoldNode.getChildByName('Num') as Laya.Text;
-            Num.text = Tools._Format.formatNumber(_num.value);
+            Num.text = ToolsAdmin._Format.formatNumber(_num.value);
         }
         /**增加金币节点上的表现动画，并不会增加金币*/
         export function _addDisPlay(number: number) {
@@ -1210,7 +1197,7 @@ export module Lwg {
                 return;
             }
             if (delayed) {
-                Animation2D.scale_Alpha(GoldNode, 0, 1, 1, 1, 1, 1, delayed, 0, f => {
+                Ani2DAdmin.scale_Alpha(GoldNode, 0, 1, 1, 1, 1, 1, delayed, 0, f => {
                     GoldNode.visible = true;
                 });
             } else {
@@ -1235,7 +1222,7 @@ export module Lwg {
                 return;
             }
             if (delayed) {
-                Animation2D.scale_Alpha(GoldNode, 1, 1, 1, 1, 1, 0, delayed, 0, f => {
+                Ani2DAdmin.scale_Alpha(GoldNode, 1, 1, 1, 1, 1, 0, delayed, 0, f => {
                     GoldNode.visible = false;
                 });
             } else {
@@ -1291,7 +1278,7 @@ export module Lwg {
 
                     parent.addChild(Gold);
 
-                    Animation2D.move_Scale(Gold, 1, firstPoint.x, firstPoint.y, targetPoint.x, targetPoint.y, 1, 350, 0, null, () => {
+                    Ani2DAdmin.move_Scale(Gold, 1, firstPoint.x, firstPoint.y, targetPoint.x, targetPoint.y, 1, 350, 0, null, () => {
                         AudioAdmin._playSound(AudioAdmin._voiceUrl.huodejinbi);
                         if (index === number - 1) {
 
@@ -1334,8 +1321,8 @@ export module Lwg {
                 let x = Math.floor(Math.random() * 2) == 1 ? firstPoint.x + Math.random() * 100 : firstPoint.x - Math.random() * 100;
                 let y = Math.floor(Math.random() * 2) == 1 ? firstPoint.y + Math.random() * 100 : firstPoint.y - Math.random() * 100;
                 // Gold.rotation = Math.random() * 360;
-                Animation2D.move_Scale(Gold, 0.5, firstPoint.x, firstPoint.y, x, y, 1, 300, Math.random() * 100 + 100, Laya.Ease.expoIn, () => {
-                    Animation2D.move_Scale(Gold, 1, Gold.x, Gold.y, targetPoint.x, targetPoint.y, 1, 400, Math.random() * 200 + 100, Laya.Ease.cubicOut, () => {
+                Ani2DAdmin.move_Scale(Gold, 0.5, firstPoint.x, firstPoint.y, x, y, 1, 300, Math.random() * 100 + 100, Laya.Ease.expoIn, () => {
+                    Ani2DAdmin.move_Scale(Gold, 1, Gold.x, Gold.y, targetPoint.x, targetPoint.y, 1, 400, Math.random() * 200 + 100, Laya.Ease.cubicOut, () => {
                         AudioAdmin._playSound(AudioAdmin._voiceUrl.huodejinbi);
                         if (index === number - 1) {
 
@@ -1558,7 +1545,7 @@ export module Lwg {
                 }
             }
             var func = () => {
-                let delay = Tools._Number.randomOneInt(delay1, delay2);
+                let delay = ToolsAdmin._Number.randomOneInt(delay1, delay2);
                 Laya.timer.frameOnce(delay, caller, () => {
                     if (_switch) {
                         method();
@@ -1618,7 +1605,7 @@ export module Lwg {
             immediately && _switch && method();
             let num0 = 0;
             var func = () => {
-                let delay = Tools._Number.randomOneInt(delay1, delay2);
+                let delay = ToolsAdmin._Number.randomOneInt(delay1, delay2);
                 Laya.timer.frameOnce(delay, caller, () => {
                     if (_switch) {
                         num0++;
@@ -1649,7 +1636,7 @@ export module Lwg {
             immediately && _switch && method();
             let num0 = 0;
             var func = () => {
-                let delay = Tools._Number.randomOneInt(delay1, delay2);
+                let delay = ToolsAdmin._Number.randomOneInt(delay1, delay2);
                 Laya.timer.frameOnce(delay, caller, () => {
                     if (_switch) {
                         num0++;
@@ -1739,7 +1726,7 @@ export module Lwg {
                 }
             }
             var func = () => {
-                let delay = Tools._Number.randomOneInt(delay1, delay2);
+                let delay = ToolsAdmin._Number.randomOneInt(delay1, delay2);
                 Laya.timer.once(delay, caller, () => {
                     if (_switch) {
                         method();
@@ -1820,7 +1807,7 @@ export module Lwg {
     }
 
     /**适配设置*/
-    export module Adaptive {
+    export module AdaptiveAdmin {
         export let _Use = {
             get value(): [number, number] {
                 return this['Adaptive_value'] ? this['Adaptive_value'] : null;
@@ -1884,7 +1871,7 @@ export module Lwg {
     }
 
 
-    export module SceneAnimation {
+    export module SceneAniAdmin {
         /**通常情况下，开场动画和关闭动画只有一种，否则可能会有空白时间*/
         export let _openSwitch = {
             get value(): boolean {
@@ -1931,14 +1918,14 @@ export module Lwg {
         /**通用场景进场动画*/
         export function _commonOpenAni(Scene: Laya.Scene): number {
             var afterAni = () => {
-                Click._switch = true;
+                LwgClick._switch = true;
                 if (Scene[Scene.name]) {
                     Scene[Scene.name].lwgOpenAniAfter();
                     Scene[Scene.name].lwgButton();
                 }
             }
             if (!_openSwitch.value) {
-                SceneAdmin._SceneChange._close();
+                LwgScene._SceneChange._close();
                 Laya.timer.once(_closeAniDelay + _closeAniTime, this, () => {
                     afterAni();
                 })
@@ -1997,9 +1984,9 @@ export module Lwg {
                 let time = 400;
                 let delay = 300;
                 if (Scene['Background']) {
-                    Animation2D.fadeOut(Scene, 0, 1, time / 2, delay);
+                    Ani2DAdmin.fadeOut(Scene, 0, 1, time / 2, delay);
                 }
-                Animation2D.fadeOut(Scene, 0, 1, time, 0);
+                Ani2DAdmin.fadeOut(Scene, 0, 1, time, 0);
                 return time + delay;
             }
 
@@ -2007,9 +1994,9 @@ export module Lwg {
                 let time = 150;
                 let delay = 50;
                 if (Scene['Background']) {
-                    Animation2D.fadeOut(Scene, 1, 0, time / 2);
+                    Ani2DAdmin.fadeOut(Scene, 1, 0, time / 2);
                 }
-                Animation2D.fadeOut(Scene, 1, 0, time, delay)
+                Ani2DAdmin.fadeOut(Scene, 1, 0, time, delay)
                 return time + delay;
             }
         }
@@ -2022,14 +2009,14 @@ export module Lwg {
             /**延时，有时候绘制需要时间*/
             let _delay = 150;
             function _moveClose(sp: Laya.Sprite, tex: Laya.Texture, scaleX: number, scealeY: number): void {
-                Animation2D.scale(sp, 1, 1, scaleX, scealeY, _time, 0, () => {
+                Ani2DAdmin.scale(sp, 1, 1, scaleX, scealeY, _time, 0, () => {
                     tex.disposeBitmap();
                     tex.destroy();
                     sp.destroy();
                 });
             }
             function _moveOpen(sp: Laya.Sprite, tex: Laya.Texture, scaleX: number, scealeY: number): void {
-                Animation2D.scale(sp, scaleX, scealeY, 1, 1, _time, 0, () => {
+                Ani2DAdmin.scale(sp, scaleX, scealeY, 1, 1, _time, 0, () => {
                     tex.disposeBitmap();
                     tex.destroy();
                     sp.destroy();
@@ -2069,7 +2056,7 @@ export module Lwg {
                 sp.zOrder = 1000;
                 sp.pos(x, y);
                 sp.size(width, height);
-                Tools._Node.changePivot(sp, width / 2, height / 2);
+                ToolsAdmin._Node.changePivot(sp, width / 2, height / 2);
                 sp.texture = tex;
                 _moveRule(sp, tex, scaleModul, open);
                 return sp;
@@ -2153,8 +2140,8 @@ export module Lwg {
                     const Mask = _createMask(sp);
                     Mask.size(Math.round(Laya.stage.width / _num), Math.round(Laya.stage.height + addLen));
                     Mask.pos(Math.round(Laya.stage.width / _num * index), Math.round(-addLen / 2));
-                    Tools._Node.changePivot(Mask, Math.round(Mask.width / 2), Math.round(Mask.height / 2));
-                    Tools._Node.changePivot(sp, Math.round(index * sp.width / _num + sp.width / _num / 2), Math.round(sp.height / 2));
+                    ToolsAdmin._Node.changePivot(Mask, Math.round(Mask.width / 2), Math.round(Mask.height / 2));
+                    ToolsAdmin._Node.changePivot(sp, Math.round(index * sp.width / _num + sp.width / _num / 2), Math.round(sp.height / 2));
                     Mask.rotation = -10;
                 }
             }
@@ -2166,8 +2153,8 @@ export module Lwg {
                     const Mask = _createMask(sp);
                     Mask.size(Math.round(Laya.stage.width / _num), Math.round(Laya.stage.height + 1000));
                     Mask.pos(Math.round(Laya.stage.width / _num * index), -1000 / 2);
-                    Tools._Node.changePivot(Mask, Math.round(Mask.width / 2), Math.round(Mask.height / 2));
-                    Tools._Node.changePivot(sp, Math.round(index * sp.width / _num + sp.width / _num / 2), Math.round(sp.height / 2));
+                    ToolsAdmin._Node.changePivot(Mask, Math.round(Mask.width / 2), Math.round(Mask.height / 2));
+                    ToolsAdmin._Node.changePivot(sp, Math.round(index * sp.width / _num + sp.width / _num / 2), Math.round(sp.height / 2));
                     Mask.rotation = 10;
                 }
             }
@@ -2186,8 +2173,8 @@ export module Lwg {
                     Mask1.width = Math.round(Laya.stage.width / _num);
                     Mask1.height = Math.round(Laya.stage.height + addLen);
                     Mask1.pos(Math.round(Laya.stage.width / _num * index), Math.round(-addLen / 2));
-                    Tools._Node.changePivot(Mask1, Math.round(Mask1.width / 2), Math.round(Mask1.height / 2));
-                    Tools._Node.changePivot(sp1, Math.round(index * sp1.width / _num + sp1.width / _num / 2), Math.round(sp1.height / 2));
+                    ToolsAdmin._Node.changePivot(Mask1, Math.round(Mask1.width / 2), Math.round(Mask1.height / 2));
+                    ToolsAdmin._Node.changePivot(sp1, Math.round(index * sp1.width / _num + sp1.width / _num / 2), Math.round(sp1.height / 2));
                     Mask1.rotation = -15;
 
                     const sp2 = _createMaskSp(Scene, 'x', open);
@@ -2195,15 +2182,15 @@ export module Lwg {
                     Mask2.width = Laya.stage.width / _num;
                     Mask2.height = Laya.stage.height + addLen;
                     Mask2.pos(Laya.stage.width / _num * index, -addLen / 2);
-                    Tools._Node.changePivot(Mask2, Mask2.width / 2, Mask2.height / 2);
-                    Tools._Node.changePivot(sp2, index * sp2.width / _num + sp2.width / _num / 2, sp2.height / 2);
+                    ToolsAdmin._Node.changePivot(Mask2, Mask2.width / 2, Mask2.height / 2);
+                    ToolsAdmin._Node.changePivot(sp2, index * sp2.width / _num + sp2.width / _num / 2, sp2.height / 2);
                     Mask2.rotation = 15;
                 }
             }
 
             /**横竖三个随机播放*/
             export function _randomCroAndVer(Scene: Laya.Scene, open: boolean): void {
-                const index = Tools._Array.randomGetOne([0, 1, 2]);
+                const index = ToolsAdmin._Array.randomGetOne([0, 1, 2]);
                 switch (index) {
                     case 0:
                         _crosswise(Scene, open);
@@ -2221,7 +2208,7 @@ export module Lwg {
             }
             /**随机播放*/
             export function _random(Scene: Laya.Scene, open: boolean): void {
-                const index = Tools._Array.randomGetOne([0, 1, 2, 3, 4, 5]);
+                const index = ToolsAdmin._Array.randomGetOne([0, 1, 2, 3, 4, 5]);
                 switch (index) {
                     case 0:
                         _crosswise(Scene, open);
@@ -2313,9 +2300,9 @@ export module Lwg {
                 let time: number = 700;
                 let delay: number = 100;
                 if (Scene.getChildByName('Background')) {
-                    Animation2D.fadeOut(Scene.getChildByName('Background') as Laya.Sprite, 0, 1, time);
+                    Ani2DAdmin.fadeOut(Scene.getChildByName('Background') as Laya.Sprite, 0, 1, time);
                 }
-                let stickInLeftArr = Tools._Node.childZOrderByY(Scene, false);
+                let stickInLeftArr = ToolsAdmin._Node.childZOrderByY(Scene, false);
                 for (let index = 0; index < stickInLeftArr.length; index++) {
                     const element = stickInLeftArr[index] as Laya.Image;
                     if (element.name !== 'Background' && element.name.substr(0, 5) !== 'NoAni') {
@@ -2324,17 +2311,17 @@ export module Lwg {
                         // switch (type) {
                         //     case _Type.stickIn.upLeftDownLeft:
                         //         element.rotation = element.y > Laya.stage.height / 2 ? -180 : 180;
-                        //         Tools._Node.changePivot(element, 0, 0);
+                        //         ToolsAdmin._Node.changePivot(element, 0, 0);
 
                         //         break;
                         //     case _Type.stickIn.upRightDownLeft:
                         //         element.rotation = element.y > Laya.stage.height / 2 ? -180 : 180;
-                        //         Tools._Node.changePivot(element, element.rotation == 180 ? element.width : 0, 0);
+                        //         ToolsAdmin._Node.changePivot(element, element.rotation == 180 ? element.width : 0, 0);
 
                         //         break;
                         //     case _Type.stickIn.randomstickIn:
-                        //         element.rotation = Tools._Number.randomOneHalf() == 1 ? 180 : -180;
-                        //         Tools._Node.changePivot(element, Tools._Number.randomOneHalf() == 1 ? 0 : element.width, Tools._Number.randomOneHalf() == 1 ? 0 : element.height);
+                        //         element.rotation = ToolsAdmin._Number.randomOneHalf() == 1 ? 180 : -180;
+                        //         ToolsAdmin._Node.changePivot(element, ToolsAdmin._Number.randomOneHalf() == 1 ? 0 : element.width, ToolsAdmin._Number.randomOneHalf() == 1 ? 0 : element.height);
                         //         break;
                         //     default:
                         //         break;
@@ -2343,9 +2330,9 @@ export module Lwg {
                         let originalY = element.y;
                         element.x = element.pivotX > element.width / 2 ? 800 + element.width : -800 - element.width;
                         element.y = element.rotation > 0 ? element.y + 200 : element.y - 200;
-                        Animation2D.rotate(element, 0, time, delay * index);
-                        Animation2D.move(element, originalX, originalY, time, () => {
-                            Tools._Node.changePivot(element, originalPovitX, originalPovitY);
+                        Ani2DAdmin.rotate(element, 0, time, delay * index);
+                        Ani2DAdmin.move(element, originalX, originalY, time, () => {
+                            ToolsAdmin._Node.changePivot(element, originalPovitX, originalPovitY);
                         }, delay * index);
                     }
                 }
@@ -3263,7 +3250,7 @@ export module Lwg {
                 if (arr.length == 0) {
                     return null;
                 } else {
-                    let any = Tools._Array.randomGetOne(arr);
+                    let any = ToolsAdmin._Array.randomGetOne(arr);
                     return any;
                 }
             }
@@ -3274,7 +3261,7 @@ export module Lwg {
              * @memberof _Table
              */
             _randomOneObj(): any {
-                const index = Tools._Number.randomOneBySection(0, this._arr.length - 1, true);
+                const index = ToolsAdmin._Number.randomOneBySection(0, this._arr.length - 1, true);
                 return this._arr[index];
             }
             /**
@@ -3283,7 +3270,7 @@ export module Lwg {
             * @memberof _Table
             */
             _randomCountObj(count: number): any {
-                const indexArr = Tools._Number.randomCountBySection(0, this._arr.length - 1, count, true);
+                const indexArr = ToolsAdmin._Number.randomCountBySection(0, this._arr.length - 1, count, true);
                 const arr = [];
                 for (let i = 0; i < this._arr.length; i++) {
                     for (let j = 0; j < indexArr.length; j++) {
@@ -3639,7 +3626,7 @@ export module Lwg {
              * */
             _addObject(obj: any): void {
                 // 必须拷贝
-                let _obj = Tools._ObjArray.objCopy(obj);
+                let _obj = ToolsAdmin._ObjArray.objCopy(obj);
                 for (let index = 0; index < this._arr.length; index++) {
                     const element = this._arr[index];
                     if (element[this._property.$name] === _obj[this._property.$name]) {
@@ -3654,7 +3641,7 @@ export module Lwg {
              * @param objArr 增加的对象数组
              * */
             _addObjectArr(objArr: Array<any>): void {
-                const _objArr = Tools._ObjArray.arrCopy(objArr);
+                const _objArr = ToolsAdmin._ObjArray.arrCopy(objArr);
                 for (let i = 0; i < _objArr.length; i++) {
                     const obj = _objArr[i];
                     // 将原来和当前数组中名称相同的对象冲掉，防止重名
@@ -3683,7 +3670,7 @@ export module Lwg {
              * @param  largest  是否是以最大在前，默认为true
              * */
             _sortByProperty(pro: string, indexPro?: string, inverted?: boolean): void {
-                Tools._ObjArray.sortByProperty(this._arr, pro);
+                ToolsAdmin._ObjArray.sortByProperty(this._arr, pro);
                 if (inverted == undefined || inverted) {
                     for (let index = this._arr.length - 1; index >= 0; index--) {
                         const element = this._arr[index];
@@ -3722,9 +3709,9 @@ export module Lwg {
             let storeArr: any;
             if (Laya.LocalStorage.getJSON(storageName)) {
                 storeArr = JSON.parse(Laya.LocalStorage.getJSON(storageName));
-                let diffArray = Tools._ObjArray.diffProByTwo(tableArr, storeArr, propertyName);
+                let diffArray = ToolsAdmin._ObjArray.diffProByTwo(tableArr, storeArr, propertyName);
                 console.log(`${storageName}新添加对象`, diffArray);
-                Tools._Array.addToarray(storeArr, diffArray);
+                ToolsAdmin._Array.addToarray(storeArr, diffArray);
             } else {
                 storeArr = tableArr;
             }
@@ -3758,9 +3745,9 @@ export module Lwg {
                     let dataArr_0: Array<any> = Laya.loader.getRes(url)['RECORDS'];
                     // 如果本地数据条数大于json条数，说明json减东西了，不会对比，json只能增加不能删减
                     if (dataArr_0.length >= dataArr.length) {
-                        let diffArray = Tools._ObjArray.diffProByTwo(dataArr_0, dataArr, propertyName);
+                        let diffArray = ToolsAdmin._ObjArray.diffProByTwo(dataArr_0, dataArr, propertyName);
                         console.log('两个数据的差值为：', diffArray);
-                        Tools._Array.addToarray(dataArr, diffArray);
+                        ToolsAdmin._Array.addToarray(dataArr, diffArray);
                     } else {
                         console.log(storageName + '数据表填写有误，长度不能小于之前的长度');
                     }
@@ -3780,7 +3767,7 @@ export module Lwg {
     }
 
     /**滤镜模块,主要是为节点和场景等进行颜色变化设置*/
-    export module Color {
+    export module ColorAdmin {
         /**
          * RGB三个颜色值转换成16进制的字符串‘#xxxxxx’；
          * @param r 
@@ -3814,7 +3801,7 @@ export module Lwg {
             let cf = new Laya.ColorFilter();
             node.blendMode = 'null';
             if (!RGBA) {
-                cf.color(Tools._Number.randomOneBySection(255, 100, true), Tools._Number.randomOneBySection(255, 100, true), Tools._Number.randomOneBySection(255, 100, true), 1)
+                cf.color(ToolsAdmin._Number.randomOneBySection(255, 100, true), ToolsAdmin._Number.randomOneBySection(255, 100, true), ToolsAdmin._Number.randomOneBySection(255, 100, true), 1)
             } else {
                 cf.color(RGBA[0], RGBA[1], RGBA[2], RGBA[3])
             }
@@ -3901,7 +3888,7 @@ export module Lwg {
                 RGBA0 = [node.filters[0]['_alpha'][0], node.filters[0]['_alpha'][1], node.filters[0]['_alpha'][2], node.filters[0]['_alpha'][3] ? node.filters[0]['_alpha'][3] : 1];
             }
             // 随机出一条颜色值
-            let RGBA = [Tools._Number.randomCountBySection(RGBA1[0], RGBA2[0])[0], Tools._Number.randomCountBySection(RGBA1[1], RGBA2[1])[0], Tools._Number.randomCountBySection(RGBA1[2], RGBA2[2])[0], Tools._Number.randomCountBySection(RGBA1[3] ? RGBA1[3] : 1, RGBA2[3] ? RGBA2[3] : 1)[0]];
+            let RGBA = [ToolsAdmin._Number.randomCountBySection(RGBA1[0], RGBA2[0])[0], ToolsAdmin._Number.randomCountBySection(RGBA1[1], RGBA2[1])[0], ToolsAdmin._Number.randomCountBySection(RGBA1[2], RGBA2[2])[0], ToolsAdmin._Number.randomCountBySection(RGBA1[3] ? RGBA1[3] : 1, RGBA2[3] ? RGBA2[3] : 1)[0]];
             let speedR = (RGBA[0] - RGBA0[0]) / frameTime;
             let speedG = (RGBA[1] - RGBA0[1]) / frameTime;
             let speedB = (RGBA[2] - RGBA0[2]) / frameTime;
@@ -3933,7 +3920,7 @@ export module Lwg {
 
 
     /**2D特效模块*/
-    export module Effects3D {
+    export module Eff3DAdmin {
         export let _tex2D = {
             爱心2: {
                 url: 'Lwg/Effects/3D/aixin2.png',
@@ -4070,9 +4057,9 @@ export module Lwg {
                  * @return {*}  {Laya.MeshSprite3D}
                  */
                 _boxInit(parent: Laya.Sprite3D | Laya.Scene3D, position: [number, number, number], sectionSize: [[number, number, number], [number, number, number]], sectionRotation: [[number, number, number], [number, number, number]], texArr: Laya.Texture2D[], colorRGBA: [[number, number, number, number], [number, number, number, number]]): void {
-                    const _scaleX = sectionSize ? Tools._Number.randomOneBySection(sectionSize[0][0], sectionSize[1][0]) : Tools._Number.randomOneBySection(0.06, 0.08);
-                    const _scaleY = sectionSize ? Tools._Number.randomOneBySection(sectionSize[0][1], sectionSize[1][1]) : Tools._Number.randomOneBySection(0.06, 0.08);
-                    const _scaleZ = sectionSize ? Tools._Number.randomOneBySection(sectionSize[0][2], sectionSize[1][2]) : Tools._Number.randomOneBySection(0.06, 0.08);
+                    const _scaleX = sectionSize ? ToolsAdmin._Number.randomOneBySection(sectionSize[0][0], sectionSize[1][0]) : ToolsAdmin._Number.randomOneBySection(0.06, 0.08);
+                    const _scaleY = sectionSize ? ToolsAdmin._Number.randomOneBySection(sectionSize[0][1], sectionSize[1][1]) : ToolsAdmin._Number.randomOneBySection(0.06, 0.08);
+                    const _scaleZ = sectionSize ? ToolsAdmin._Number.randomOneBySection(sectionSize[0][2], sectionSize[1][2]) : ToolsAdmin._Number.randomOneBySection(0.06, 0.08);
 
                     this.box = parent.addChild(new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(_scaleX, _scaleY, _scaleZ))) as Laya.MeshSprite3D;
 
@@ -4083,18 +4070,18 @@ export module Lwg {
                     }
                     this.fPosition = new Laya.Vector3(this.box.transform.position.x, this.box.transform.position.y, this.box.transform.position.z);
 
-                    this.box.transform.localRotationEulerX = sectionRotation ? Tools._Number.randomOneBySection(sectionRotation[0][0], sectionRotation[1][0]) : Tools._Number.randomOneBySection(0, 360);
-                    this.box.transform.localRotationEulerX = sectionRotation ? Tools._Number.randomOneBySection(sectionRotation[0][1], sectionRotation[1][1]) : Tools._Number.randomOneBySection(0, 360);
-                    this.box.transform.localRotationEulerX = sectionRotation ? Tools._Number.randomOneBySection(sectionRotation[0][2], sectionRotation[1][2]) : Tools._Number.randomOneBySection(0, 360);
+                    this.box.transform.localRotationEulerX = sectionRotation ? ToolsAdmin._Number.randomOneBySection(sectionRotation[0][0], sectionRotation[1][0]) : ToolsAdmin._Number.randomOneBySection(0, 360);
+                    this.box.transform.localRotationEulerX = sectionRotation ? ToolsAdmin._Number.randomOneBySection(sectionRotation[0][1], sectionRotation[1][1]) : ToolsAdmin._Number.randomOneBySection(0, 360);
+                    this.box.transform.localRotationEulerX = sectionRotation ? ToolsAdmin._Number.randomOneBySection(sectionRotation[0][2], sectionRotation[1][2]) : ToolsAdmin._Number.randomOneBySection(0, 360);
                     this.fEuler = new Laya.Vector3(this.box.transform.localRotationEulerX, this.box.transform.localRotationEulerY, this.box.transform.localRotationEulerZ);
 
                     const mat = this.box.meshRenderer.material = new Laya.BlinnPhongMaterial();
-                    mat.albedoTexture = texArr ? Tools._Array.randomGetOne(texArr) : _tex2D.圆形发光.texture2D;
+                    mat.albedoTexture = texArr ? ToolsAdmin._Array.randomGetOne(texArr) : _tex2D.圆形发光.texture2D;
                     mat.renderMode = 2;//忽略透明度
-                    const R = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : Tools._Number.randomOneBySection(10, 25);
-                    const G = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : Tools._Number.randomOneBySection(5, 15);
-                    const B = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : Tools._Number.randomOneBySection(5, 10);
-                    const A = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : Tools._Number.randomOneBySection(1, 1);
+                    const R = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : ToolsAdmin._Number.randomOneBySection(10, 25);
+                    const G = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : ToolsAdmin._Number.randomOneBySection(5, 15);
+                    const B = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : ToolsAdmin._Number.randomOneBySection(5, 10);
+                    const A = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : ToolsAdmin._Number.randomOneBySection(1, 1);
                     mat.albedoColor = new Laya.Vector4(R, G, B, A);
                     this.mat = mat;
                 }
@@ -4132,7 +4119,7 @@ export module Lwg {
                  * @memberof boxBase
                  */
                 _positionByARY(angleSpeed: number, radius: number, speedY: number, distance: number, stateSwitch?: Function): void {
-                    const pXZ = Tools._Point.getRoundPos(this._positionByARY_FA += angleSpeed, radius, new Laya.Point(this.fPosition.x, this.fPosition.z));
+                    const pXZ = ToolsAdmin._Point.getRoundPos(this._positionByARY_FA += angleSpeed, radius, new Laya.Point(this.fPosition.x, this.fPosition.z));
                     this.box.transform.position = new Laya.Vector3(pXZ.x, this.box.transform.position.y += speedY, pXZ.y);
                     if (this.box.transform.position.y - this.fPosition.y > distance) {
                         stateSwitch && stateSwitch();
@@ -4151,7 +4138,7 @@ export module Lwg {
                  */
                 _positionARXY_R(angle: number, speedR: number, distance?: number, stateSwitch?: Function): void {
                     this._positionARXY_FR += speedR;
-                    const point = Tools._Point.getRoundPos(angle, this._positionARXY_FR, new Laya.Point(0, 0));
+                    const point = ToolsAdmin._Point.getRoundPos(angle, this._positionARXY_FR, new Laya.Point(0, 0));
                     this.box.transform.position = new Laya.Vector3(this.fPosition.x + point.x, this.fPosition.y + point.y, this.fPosition.z);
                     if (this._positionARXY_FR >= distance) {
                         stateSwitch && stateSwitch();
@@ -4349,7 +4336,7 @@ export module Lwg {
                  */
                 _randomScopeByPosition(scopeSize: [[number, number, number], [number, number, number]]): void {
                     scopeSize = scopeSize ? scopeSize : [[0.1, 0.1, 0.1], [0.3, 0.3, 0.3]]
-                    Tools._3D.randomScopeByPosition(this.box, scopeSize);
+                    ToolsAdmin._3D.randomScopeByPosition(this.box, scopeSize);
                 }
 
                 /**忽略Z轴，看起来是一个平面*/
@@ -4389,10 +4376,10 @@ export module Lwg {
                 caller._boxInit(parent, position, sectionSize, sectionRotation, texArr, colorRGBA);
                 caller._excludeZ();
                 caller._rotateTheZero();
-                const _distance = Tools._Number.randomNumerical(distance, [1.5, 1.5]);
-                const _speedY = Tools._Number.randomNumerical(speedY, [0.02, 0.02]);
-                const _angleSpeed = Tools._Number.randomNumerical(angleSpeed, [6, 6]);
-                const _radius = Tools._Number.randomNumerical(radius, [0.5, 0.5]);
+                const _distance = ToolsAdmin._Number.randomNumerical(distance, [1.5, 1.5]);
+                const _speedY = ToolsAdmin._Number.randomNumerical(speedY, [0.02, 0.02]);
+                const _angleSpeed = ToolsAdmin._Number.randomNumerical(angleSpeed, [6, 6]);
+                const _radius = ToolsAdmin._Number.randomNumerical(radius, [0.5, 0.5]);
                 caller.mat.albedoColorA = 0;
                 caller.stateSwitch('m');
                 caller.moveFunc = () => {
@@ -4430,9 +4417,9 @@ export module Lwg {
                 caller._excludeZ();
                 caller._rotateTheZero();
 
-                const _distance = Tools._Number.randomNumerical(distance, [0.3, 0.6]);
-                const _speedR = Tools._Number.randomNumerical(speedR, [0.008, 0.012]);
-                const _angle = Tools._Number.randomNumerical([0, 360]);
+                const _distance = ToolsAdmin._Number.randomNumerical(distance, [0.3, 0.6]);
+                const _speedR = ToolsAdmin._Number.randomNumerical(speedR, [0.008, 0.012]);
+                const _angle = ToolsAdmin._Number.randomNumerical([0, 360]);
                 caller.mat.albedoColorA = 0;
                 caller.stateSwitch('m');
                 caller.moveFunc = () => {
@@ -4496,10 +4483,10 @@ export module Lwg {
                 caller._scaleTheZero();
                 caller._randomScopeByPosition(scopeSize);
                 caller.mat.albedoColorA = 0;
-                const _maxScale = Tools._Number.randomNumerical(maxScale, [1, 2]);
-                const _scaleSpeed = Tools._Number.randomNumerical(scaleSpeed, [0.01, 0.05]);
-                const _angelspeed = Tools._Number.randomNumerical(angelspeed, [2, 6], true);
-                const _ASpeed = Tools._Number.randomNumerical(ASpeed, [0.01, 0.05]);
+                const _maxScale = ToolsAdmin._Number.randomNumerical(maxScale, [1, 2]);
+                const _scaleSpeed = ToolsAdmin._Number.randomNumerical(scaleSpeed, [0.01, 0.05]);
+                const _angelspeed = ToolsAdmin._Number.randomNumerical(angelspeed, [2, 6], true);
+                const _ASpeed = ToolsAdmin._Number.randomNumerical(ASpeed, [0.01, 0.05]);
                 caller.appearFunc = () => {
                     caller._fadeIn(_ASpeed, 1, () => {
                         caller.stateSwitch('m');
@@ -4529,7 +4516,7 @@ export module Lwg {
 
     }
     /**2D特效模块*/
-    export module Effects2D {
+    export module Eff2DAdmin {
         /**特效元素的图片地址，所有项目都可用*/
         export enum _SkinUrl {
             爱心1 = 'Lwg/Effects/aixin1.png',
@@ -4583,16 +4570,16 @@ export module Lwg {
                     this.height = size ? size[1] : 100;
                     this.pivotX = this.width / 2;
                     this.pivotY = this.height / 2;
-                    this.rotation = rotation ? Tools._Number.randomOneBySection(rotation[0], rotation[1]) : Tools._Number.randomOneBySection(360);
-                    this.skin = urlArr ? Tools._Array.randomGetOne(urlArr) : _SkinUrl.花3;
+                    this.rotation = rotation ? ToolsAdmin._Number.randomOneBySection(rotation[0], rotation[1]) : ToolsAdmin._Number.randomOneBySection(360);
+                    this.skin = urlArr ? ToolsAdmin._Array.randomGetOne(urlArr) : _SkinUrl.花3;
                     this.zOrder = zOrder ? zOrder : 0;
                     this.alpha = 0;
                     let RGBA = [];
-                    RGBA[0] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : Tools._Number.randomOneBySection(180, 255);
-                    RGBA[1] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : Tools._Number.randomOneBySection(10, 180);
-                    RGBA[2] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : Tools._Number.randomOneBySection(10, 180);
-                    RGBA[3] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : Tools._Number.randomOneBySection(1, 1);
-                    Color._colour(this, RGBA);
+                    RGBA[0] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : ToolsAdmin._Number.randomOneBySection(180, 255);
+                    RGBA[1] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : ToolsAdmin._Number.randomOneBySection(10, 180);
+                    RGBA[2] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : ToolsAdmin._Number.randomOneBySection(10, 180);
+                    RGBA[3] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : ToolsAdmin._Number.randomOneBySection(1, 1);
+                    ColorAdmin._colour(this, RGBA);
                 }
             }
 
@@ -4612,14 +4599,14 @@ export module Lwg {
              */
             export function _continuous(parent: Laya.Sprite, centerPoint?: [number, number], size?: [number, number], minScale?: [number, number], rotation?: Array<number>, urlArr?: Array<string>, colorRGBA?: Array<Array<number>>, zOrder?: number, maxScale?: [number, number], speed?: [number, number], accelerated?: [number, number]): void {
                 const Img = new _ApertureImage(parent, centerPoint, size, rotation, urlArr, colorRGBA, zOrder);
-                let _speed = speed ? Tools._Number.randomOneBySection(speed[0], speed[1]) : 0.025;
-                let _accelerated = accelerated ? Tools._Number.randomOneBySection(accelerated[0], accelerated[1]) : 0.0005;
+                let _speed = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : 0.025;
+                let _accelerated = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : 0.0005;
                 if (minScale) {
                     Img.scale(minScale[0], minScale[1]);
                 } else {
                     Img.scale(0, 0);
                 }
-                const _maxScale = maxScale ? Tools._Number.randomOneBySection(maxScale[0], maxScale[1]) : 2;
+                const _maxScale = maxScale ? ToolsAdmin._Number.randomOneBySection(maxScale[0], maxScale[1]) : 2;
                 let moveCaller = {
                     alpha: true,
                     scale: false,
@@ -4670,14 +4657,14 @@ export module Lwg {
                 */
             export function _continuousByDs(parent: Laya.Sprite, centerPoint?: [number, number], size?: [number, number], minScale?: [number, number], rotation?: Array<number>, urlArr?: Array<string>, colorRGBA?: Array<Array<number>>, zOrder?: number, maxScale?: [number, number], speed?: [number, number], accelerated?: [number, number]): void {
                 const Img = new _ApertureImage(parent, centerPoint, size, rotation, urlArr, colorRGBA, zOrder);
-                let _speed = speed ? Tools._Number.randomOneBySection(speed[0], speed[1]) : 0.025;
-                let _accelerated = accelerated ? Tools._Number.randomOneBySection(accelerated[0], accelerated[1]) : 0.0005;
+                let _speed = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : 0.025;
+                let _accelerated = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : 0.0005;
                 if (minScale) {
                     Img.scale(minScale[0], minScale[1]);
                 } else {
                     Img.scale(0, 0);
                 }
-                const _maxScale = maxScale ? Tools._Number.randomOneBySection(maxScale[0], maxScale[1]) : 2;
+                const _maxScale = maxScale ? ToolsAdmin._Number.randomOneBySection(maxScale[0], maxScale[1]) : 2;
                 let moveCaller = {
                     alpha: true,
                     scale: false,
@@ -4737,26 +4724,26 @@ export module Lwg {
                 constructor(parent: Laya.Sprite, centerPoint: Laya.Point, sectionWH: [number, number], width: [number, number], height: [number, number], rotation: [number, number], urlArr: Array<string>, colorRGBA: [[number, number, number, number], [number, number, number, number]], zOrder: number) {
                     super();
                     parent.addChild(this);
-                    let sectionWidth = sectionWH ? Tools._Number.randomOneBySection(sectionWH[0]) : Tools._Number.randomOneBySection(200);
-                    let sectionHeight = sectionWH ? Tools._Number.randomOneBySection(sectionWH[1]) : Tools._Number.randomOneBySection(50);
-                    sectionWidth = Tools._Number.randomOneHalf() == 0 ? sectionWidth : -sectionWidth;
-                    sectionHeight = Tools._Number.randomOneHalf() == 0 ? sectionHeight : -sectionHeight;
+                    let sectionWidth = sectionWH ? ToolsAdmin._Number.randomOneBySection(sectionWH[0]) : ToolsAdmin._Number.randomOneBySection(200);
+                    let sectionHeight = sectionWH ? ToolsAdmin._Number.randomOneBySection(sectionWH[1]) : ToolsAdmin._Number.randomOneBySection(50);
+                    sectionWidth = ToolsAdmin._Number.randomOneHalf() == 0 ? sectionWidth : -sectionWidth;
+                    sectionHeight = ToolsAdmin._Number.randomOneHalf() == 0 ? sectionHeight : -sectionHeight;
                     this.x = centerPoint ? centerPoint.x + sectionWidth : sectionWidth;
                     this.y = centerPoint ? centerPoint.y + sectionHeight : sectionHeight;
-                    this.width = width ? Tools._Number.randomOneBySection(width[0], width[1]) : Tools._Number.randomOneBySection(20, 50);
-                    this.height = height ? Tools._Number.randomOneBySection(height[0], height[1]) : this.width;
+                    this.width = width ? ToolsAdmin._Number.randomOneBySection(width[0], width[1]) : ToolsAdmin._Number.randomOneBySection(20, 50);
+                    this.height = height ? ToolsAdmin._Number.randomOneBySection(height[0], height[1]) : this.width;
                     this.pivotX = this.width / 2;
                     this.pivotY = this.height / 2;
-                    this.skin = urlArr ? Tools._Array.randomGetOne(urlArr) : _SkinUrl.圆形1;
-                    this.rotation = rotation ? Tools._Number.randomOneBySection(rotation[0], rotation[1]) : 0;
+                    this.skin = urlArr ? ToolsAdmin._Array.randomGetOne(urlArr) : _SkinUrl.圆形1;
+                    this.rotation = rotation ? ToolsAdmin._Number.randomOneBySection(rotation[0], rotation[1]) : 0;
                     this.alpha = 0;
                     this.zOrder = zOrder ? zOrder : 1000;
                     let RGBA = [];
-                    RGBA[0] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : Tools._Number.randomOneBySection(180, 255);
-                    RGBA[1] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : Tools._Number.randomOneBySection(10, 180);
-                    RGBA[2] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : Tools._Number.randomOneBySection(10, 180);
-                    RGBA[3] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : Tools._Number.randomOneBySection(1, 1);
-                    Color._colour(this, RGBA);
+                    RGBA[0] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : ToolsAdmin._Number.randomOneBySection(180, 255);
+                    RGBA[1] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : ToolsAdmin._Number.randomOneBySection(10, 180);
+                    RGBA[2] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : ToolsAdmin._Number.randomOneBySection(10, 180);
+                    RGBA[3] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : ToolsAdmin._Number.randomOneBySection(1, 1);
+                    ColorAdmin._colour(this, RGBA);
                 }
             }
 
@@ -4779,10 +4766,10 @@ export module Lwg {
              */
             export function _snow(parent: Laya.Sprite, centerPoint?: Laya.Point, sectionWH?: [number, number], width?: [number, number], height?: [number, number], rotation?: [number, number], urlArr?: Array<string>, colorRGBA?: [[number, number, number, number], [number, number, number, number]], zOrder?: number, distance?: [number, number], rotationSpeed?: [number, number], speed?: [number, number], windX?: [number, number]): Laya.Image {
                 let Img = new _ParticleImgBase(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder);
-                let _rotationSpeed = rotationSpeed ? Tools._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : Tools._Number.randomOneBySection(0, 1);
-                _rotationSpeed = Tools._Number.randomOneHalf() == 0 ? _rotationSpeed : -_rotationSpeed;
-                let speed0 = speed ? Tools._Number.randomOneBySection(speed[0], speed[1]) : Tools._Number.randomOneBySection(1, 2.5);
-                let _windX = windX ? Tools._Number.randomOneBySection(windX[0], windX[1]) : 0;
+                let _rotationSpeed = rotationSpeed ? ToolsAdmin._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 1);
+                _rotationSpeed = ToolsAdmin._Number.randomOneHalf() == 0 ? _rotationSpeed : -_rotationSpeed;
+                let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(1, 2.5);
+                let _windX = windX ? ToolsAdmin._Number.randomOneBySection(windX[0], windX[1]) : 0;
                 let moveCaller = {
                     alpha: true,
                     move: false,
@@ -4790,7 +4777,7 @@ export module Lwg {
                 };
                 Img['moveCaller'] = moveCaller;
                 let distance0 = 0;
-                let distance1 = distance ? Tools._Number.randomOneBySection(distance[0], distance[1]) : Tools._Number.randomOneBySection(100, 300);
+                let distance1 = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(100, 300);
                 TimerAdmin._frameLoop(1, moveCaller, () => {
                     Img.x += _windX;
                     Img.rotation += _rotationSpeed;
@@ -4842,12 +4829,12 @@ export module Lwg {
               */
             export function _downwardSpray(parent: Laya.Sprite, point?: Laya.Point, width?: [number, number], height?: [number, number], angle?: [number, number], urlArr?: Array<string>, colorRGBA?: [[number, number, number, number], [number, number, number, number]], vanishDistance?: [number, number], moveSpeed?: [number, number], gravity?: [number, number], accelerated?: [number, number], rotationSpeed?: [number, number], scaleRotationSpeed?: [number, number], skewSpeed?: [number, number], zOrder?: number): Laya.Image {
                 const Img = new _ParticleImgBase(parent, point, [0, 0], width, height, null, urlArr, colorRGBA, zOrder);
-                const _angle = angle ? Tools._Number.randomOneBySection(angle[0], angle[1]) : Tools._Number.randomOneBySection(0, 90);
-                const p = Tools._Point.angleByPoint(_angle);
-                const _vanishDistance = vanishDistance ? Tools._Number.randomOneBySection(vanishDistance[0], vanishDistance[1]) : Tools._Number.randomOneBySection(200, 800);
-                let _speed = moveSpeed ? Tools._Number.randomOneBySection(moveSpeed[0], moveSpeed[1]) : Tools._Number.randomOneBySection(10, 30);
-                let accelerated0 = accelerated ? Tools._Number.randomOneBySection(accelerated[0], accelerated[1]) : Tools._Number.randomOneBySection(0.3, 1.5);
-                const _gravity = gravity ? Tools._Number.randomOneBySection(gravity[0], gravity[1]) : Tools._Number.randomOneBySection(1, 5);
+                const _angle = angle ? ToolsAdmin._Number.randomOneBySection(angle[0], angle[1]) : ToolsAdmin._Number.randomOneBySection(0, 90);
+                const p = ToolsAdmin._Point.angleByPoint(_angle);
+                const _vanishDistance = vanishDistance ? ToolsAdmin._Number.randomOneBySection(vanishDistance[0], vanishDistance[1]) : ToolsAdmin._Number.randomOneBySection(200, 800);
+                let _speed = moveSpeed ? ToolsAdmin._Number.randomOneBySection(moveSpeed[0], moveSpeed[1]) : ToolsAdmin._Number.randomOneBySection(10, 30);
+                let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.3, 1.5);
+                const _gravity = gravity ? ToolsAdmin._Number.randomOneBySection(gravity[0], gravity[1]) : ToolsAdmin._Number.randomOneBySection(1, 5);
                 let acc = 0;
                 const moveCaller = {
                     appear: true,
@@ -4914,17 +4901,17 @@ export module Lwg {
              */
             function rotatingWay(Img: Laya.Image, rotationSpeed?: [number, number], scaleRotationSpeed?: [number, number], skewSpeed?: [number, number],): Function {
 
-                let _rotationSpeed = rotationSpeed ? Tools._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : Tools._Number.randomOneBySection(0, 1);
-                _rotationSpeed = Tools._Number.randomOneHalf() == 0 ? _rotationSpeed : -_rotationSpeed;
+                let _rotationSpeed = rotationSpeed ? ToolsAdmin._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 1);
+                _rotationSpeed = ToolsAdmin._Number.randomOneHalf() == 0 ? _rotationSpeed : -_rotationSpeed;
 
-                const _scaleSpeed = scaleRotationSpeed ? Tools._Number.randomOneBySection(scaleRotationSpeed[0], scaleRotationSpeed[1]) : Tools._Number.randomOneBySection(0, 0.25);
-                const _scaleDir = Tools._Number.randomOneHalf();
+                const _scaleSpeed = scaleRotationSpeed ? ToolsAdmin._Number.randomOneBySection(scaleRotationSpeed[0], scaleRotationSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 0.25);
+                const _scaleDir = ToolsAdmin._Number.randomOneHalf();
 
-                let _skewSpeed = skewSpeed ? Tools._Number.randomOneBySection(skewSpeed[0], skewSpeed[1]) : Tools._Number.randomOneBySection(1, 10);
-                _skewSpeed = Tools._Number.randomOneHalf() === 1 ? _skewSpeed : -_skewSpeed;
-                const _skewDir = Tools._Number.randomOneHalf();
+                let _skewSpeed = skewSpeed ? ToolsAdmin._Number.randomOneBySection(skewSpeed[0], skewSpeed[1]) : ToolsAdmin._Number.randomOneBySection(1, 10);
+                _skewSpeed = ToolsAdmin._Number.randomOneHalf() === 1 ? _skewSpeed : -_skewSpeed;
+                const _skewDir = ToolsAdmin._Number.randomOneHalf();
 
-                const _scaleOrSkew = Tools._Number.randomOneHalf();
+                const _scaleOrSkew = ToolsAdmin._Number.randomOneHalf();
                 var rotateFunc = () => {
                     Img.rotation += _rotationSpeed;
                     if (_scaleOrSkew === 1) {
@@ -4982,10 +4969,10 @@ export module Lwg {
               */
             export function _fallingRotate(parent: Laya.Sprite, centerPoint?: Laya.Point, sectionWH?: [number, number], width?: [number, number], height?: [number, number], urlArr?: Array<string>, colorRGBA?: [[number, number, number, number], [number, number, number, number]], distance?: [number, number], moveSpeed?: [number, number], scaleRotationSpeed?: [number, number], skewSpeed?: [number, number], rotationSpeed?: [number, number], zOrder?: number): Laya.Image {
                 const Img = new _ParticleImgBase(parent, centerPoint, sectionWH, width, height, null, urlArr, colorRGBA, zOrder);
-                const _moveSpeed = moveSpeed ? Tools._Number.randomOneBySection(moveSpeed[0], moveSpeed[1]) : Tools._Number.randomOneBySection(1, 2.5);
+                const _moveSpeed = moveSpeed ? ToolsAdmin._Number.randomOneBySection(moveSpeed[0], moveSpeed[1]) : ToolsAdmin._Number.randomOneBySection(1, 2.5);
 
                 let _distance0 = 0;
-                const _distance = distance ? Tools._Number.randomOneBySection(distance[0], distance[1]) : Tools._Number.randomOneBySection(100, 300);
+                const _distance = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(100, 300);
                 const moveCaller = {
                     appear: true,
                     move: false,
@@ -5043,8 +5030,8 @@ export module Lwg {
               */
             export function _fallingVertical(parent: Laya.Sprite, centerPoint?: Laya.Point, sectionWH?: [number, number], width?: [number, number], height?: [number, number], rotation?: [number, number], urlArr?: Array<string>, colorRGBA?: [[number, number, number, number], [number, number, number, number]], zOrder?: number, distance?: [number, number], speed?: [number, number], accelerated?: [number, number]): Laya.Image {
                 let Img = new _ParticleImgBase(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder);
-                let speed0 = speed ? Tools._Number.randomOneBySection(speed[0], speed[1]) : Tools._Number.randomOneBySection(4, 8);
-                let accelerated0 = accelerated ? Tools._Number.randomOneBySection(accelerated[0], accelerated[1]) : Tools._Number.randomOneBySection(0.25, 0.45);
+                let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(4, 8);
+                let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.25, 0.45);
                 let acc = 0;
                 let moveCaller = {
                     alpha: true,
@@ -5052,7 +5039,7 @@ export module Lwg {
                     vinish: false,
                 };
                 Img['moveCaller'] = moveCaller;
-                let distance1 = distance ? Tools._Number.randomOneBySection(distance[0], distance[1]) : Tools._Number.randomOneBySection(100, 300);
+                let distance1 = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(100, 300);
                 let fY = Img.y;
                 TimerAdmin._frameLoop(1, moveCaller, () => {
                     if (Img.alpha < 1 && moveCaller.alpha) {
@@ -5099,8 +5086,8 @@ export module Lwg {
               */
             export function _fallingVertical_Reverse(parent: Laya.Sprite, centerPoint?: Laya.Point, sectionWH?: [number, number], width?: [number, number], height?: [number, number], rotation?: [number, number], urlArr?: Array<string>, colorRGBA?: [[number, number, number, number], [number, number, number, number]], zOrder?: number, distance?: [number, number], speed?: [number, number], accelerated?: [number, number]): Laya.Image {
                 let Img = new _ParticleImgBase(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder);
-                let speed0 = speed ? Tools._Number.randomOneBySection(speed[0], speed[1]) : Tools._Number.randomOneBySection(4, 8);
-                let accelerated0 = accelerated ? Tools._Number.randomOneBySection(accelerated[0], accelerated[1]) : Tools._Number.randomOneBySection(0.25, 0.45);
+                let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(4, 8);
+                let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.25, 0.45);
                 let acc = 0;
                 let moveCaller = {
                     alpha: true,
@@ -5108,7 +5095,7 @@ export module Lwg {
                     vinish: false,
                 };
                 Img['moveCaller'] = moveCaller;
-                let distance1 = distance ? Tools._Number.randomOneBySection(distance[0], distance[1]) : Tools._Number.randomOneBySection(100, 300);
+                let distance1 = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(100, 300);
                 let fY = Img.y;
                 TimerAdmin._frameLoop(1, moveCaller, () => {
                     if (Img.alpha < 1 && moveCaller.alpha) {
@@ -5155,8 +5142,8 @@ export module Lwg {
              */
             export function _slowlyUp(parent: Laya.Sprite, centerPoint?: Laya.Point, sectionWH?: [number, number], width?: [number, number], height?: [number, number], rotation?: [number, number], urlArr?: Array<string>, colorRGBA?: [[number, number, number, number], [number, number, number, number]], zOrder?: number, distance?: [number, number], speed?: [number, number], accelerated?: [number, number]): Laya.Image {
                 let Img = new _ParticleImgBase(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder);
-                let speed0 = speed ? Tools._Number.randomOneBySection(speed[0], speed[1]) : Tools._Number.randomOneBySection(1.5, 2);
-                let accelerated0 = accelerated ? Tools._Number.randomOneBySection(accelerated[0], accelerated[1]) : Tools._Number.randomOneBySection(0.001, 0.005);
+                let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(1.5, 2);
+                let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.001, 0.005);
                 let acc = 0;
                 let moveCaller = {
                     alpha: true,
@@ -5166,7 +5153,7 @@ export module Lwg {
                 Img['moveCaller'] = moveCaller;
                 let fy = Img.y;
                 let distance0 = 0;
-                let distance1 = distance ? Tools._Number.randomOneBySection(distance[0], distance[1]) : Tools._Number.randomOneBySection(-250, -600);
+                let distance1 = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(-250, -600);
                 TimerAdmin._frameLoop(1, moveCaller, () => {
                     if (Img.alpha < 1 && moveCaller.alpha) {
                         Img.alpha += 0.03;
@@ -5219,18 +5206,18 @@ export module Lwg {
 
                 let radius = 0;
 
-                const _time = time ? Tools._Number.randomOneBySection(time[0], time[1]) : Tools._Number.randomOneBySection(30, 50);
+                const _time = time ? ToolsAdmin._Number.randomOneBySection(time[0], time[1]) : ToolsAdmin._Number.randomOneBySection(30, 50);
 
-                const _distance = distance ? Tools._Number.randomOneBySection(distance[0], distance[1]) : Tools._Number.randomOneBySection(100, 200);
+                const _distance = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(100, 200);
 
                 const _speed = _distance / _time;
 
-                const _angle = moveAngle ? Tools._Number.randomOneBySection(moveAngle[0], moveAngle[1]) : Tools._Number.randomOneBySection(0, 360);
+                const _angle = moveAngle ? ToolsAdmin._Number.randomOneBySection(moveAngle[0], moveAngle[1]) : ToolsAdmin._Number.randomOneBySection(0, 360);
 
-                let rotationSpeed0 = rotationSpeed ? Tools._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : Tools._Number.randomOneBySection(0, 20);
-                rotationSpeed0 = Tools._Number.randomOneHalf() == 0 ? rotationSpeed0 : -rotationSpeed0;
+                let rotationSpeed0 = rotationSpeed ? ToolsAdmin._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 20);
+                rotationSpeed0 = ToolsAdmin._Number.randomOneHalf() == 0 ? rotationSpeed0 : -rotationSpeed0;
 
-                const vinishTime = Tools._Number.randomOneInt(60);
+                const vinishTime = ToolsAdmin._Number.randomOneInt(60);
                 const subAlpha = 1 / vinishTime;
 
                 let moveCaller = {
@@ -5250,7 +5237,7 @@ export module Lwg {
                     } else {
                         if (!moveCaller.vinish) {
                             radius += _speed;
-                            let point = Tools._Point.getRoundPos(_angle, radius, centerPoint0);
+                            let point = ToolsAdmin._Point.getRoundPos(_angle, radius, centerPoint0);
                             Img.pos(point.x, point.y);
                             if (radius > _distance) {
                                 moveCaller.move = false;
@@ -5263,7 +5250,7 @@ export module Lwg {
                                 Laya.timer.clearAll(moveCaller);
                             }
                             radius += _speed / 2;
-                            let point = Tools._Point.getRoundPos(_angle, radius, centerPoint0);
+                            let point = ToolsAdmin._Point.getRoundPos(_angle, radius, centerPoint0);
                             Img.pos(point.x, point.y);
                         }
                     }
@@ -5291,8 +5278,8 @@ export module Lwg {
             export function _spray(parent: Laya.Sprite, centerPoint?: Laya.Point, width?: [number, number], height?: [number, number], rotation?: [number, number], urlArr?: Array<string>, colorRGBA?: [[number, number, number, number], [number, number, number, number]], distance?: [number, number], moveAngle?: [number, number], rotationSpeed?: [number, number], speed?: [number, number], accelerated?: [number, number], zOrder?: number): Laya.Image {
                 let Img = new _ParticleImgBase(parent, centerPoint, [0, 0], width, height, rotation, urlArr, colorRGBA, zOrder);
                 let centerPoint0 = centerPoint ? centerPoint : new Laya.Point(0, 0);
-                let speed0 = speed ? Tools._Number.randomOneBySection(speed[0], speed[1]) : Tools._Number.randomOneBySection(3, 10);
-                let accelerated0 = accelerated ? Tools._Number.randomOneBySection(accelerated[0], accelerated[1]) : Tools._Number.randomOneBySection(0.25, 0.45);
+                let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(3, 10);
+                let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.25, 0.45);
                 let acc = 0;
                 let moveCaller = {
                     alpha: true,
@@ -5301,10 +5288,10 @@ export module Lwg {
                 };
                 Img['moveCaller'] = moveCaller;
                 let radius = 0;
-                let distance1 = distance ? Tools._Number.randomOneBySection(distance[0], distance[1]) : Tools._Number.randomOneBySection(100, 200);
-                let angle0 = moveAngle ? Tools._Number.randomOneBySection(moveAngle[0], moveAngle[1]) : Tools._Number.randomOneBySection(0, 360);
-                let rotationSpeed0 = rotationSpeed ? Tools._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : Tools._Number.randomOneBySection(0, 20);
-                rotationSpeed0 = Tools._Number.randomOneHalf() == 0 ? rotationSpeed0 : -rotationSpeed0;
+                let distance1 = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(100, 200);
+                let angle0 = moveAngle ? ToolsAdmin._Number.randomOneBySection(moveAngle[0], moveAngle[1]) : ToolsAdmin._Number.randomOneBySection(0, 360);
+                let rotationSpeed0 = rotationSpeed ? ToolsAdmin._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 20);
+                rotationSpeed0 = ToolsAdmin._Number.randomOneHalf() == 0 ? rotationSpeed0 : -rotationSpeed0;
                 TimerAdmin._frameLoop(1, moveCaller, () => {
                     Img.rotation += rotationSpeed0;
                     if (Img.alpha < 1 && moveCaller.alpha) {
@@ -5329,7 +5316,7 @@ export module Lwg {
                         }
                         acc += accelerated0;
                         radius += speed0 + acc;
-                        let point = Tools._Point.getRoundPos(angle0, radius, centerPoint0);
+                        let point = ToolsAdmin._Point.getRoundPos(angle0, radius, centerPoint0);
                         Img.pos(point.x, point.y);
                     }
                 })
@@ -5357,33 +5344,33 @@ export module Lwg {
                 let Img = new _ParticleImgBase(parent, centerPoint, [0, 0], width, height, rotation, urlArr, colorRGBA, zOrder);
                 let _angle: number = 0;
                 sectionWH = sectionWH ? sectionWH : [100, 100];
-                let fixedXY = Tools._Number.randomOneHalf() == 0 ? 'x' : 'y';
+                let fixedXY = ToolsAdmin._Number.randomOneHalf() == 0 ? 'x' : 'y';
                 curtailAngle = curtailAngle ? curtailAngle : 60;
                 if (fixedXY == 'x') {
-                    if (Tools._Number.randomOneHalf() == 0) {
+                    if (ToolsAdmin._Number.randomOneHalf() == 0) {
                         Img.x += sectionWH[0];
-                        _angle = Tools._Number.randomOneHalf() == 0 ? Tools._Number.randomOneBySection(0, 90 - curtailAngle) : Tools._Number.randomOneBySection(0, -90 + curtailAngle);
+                        _angle = ToolsAdmin._Number.randomOneHalf() == 0 ? ToolsAdmin._Number.randomOneBySection(0, 90 - curtailAngle) : ToolsAdmin._Number.randomOneBySection(0, -90 + curtailAngle);
                     } else {
                         Img.x -= sectionWH[0];
-                        _angle = Tools._Number.randomOneBySection(90 + curtailAngle, 270 - curtailAngle);
+                        _angle = ToolsAdmin._Number.randomOneBySection(90 + curtailAngle, 270 - curtailAngle);
                     }
-                    Img.y += Tools._Number.randomOneBySection(-sectionWH[1], sectionWH[1]);
+                    Img.y += ToolsAdmin._Number.randomOneBySection(-sectionWH[1], sectionWH[1]);
                 } else {
-                    if (Tools._Number.randomOneHalf() == 0) {
+                    if (ToolsAdmin._Number.randomOneHalf() == 0) {
                         Img.y -= sectionWH[1];
-                        _angle = Tools._Number.randomOneBySection(180 + curtailAngle, 360 - curtailAngle);
+                        _angle = ToolsAdmin._Number.randomOneBySection(180 + curtailAngle, 360 - curtailAngle);
                     } else {
                         Img.y += sectionWH[1];
-                        _angle = Tools._Number.randomOneBySection(0 + curtailAngle, 180 - curtailAngle);
+                        _angle = ToolsAdmin._Number.randomOneBySection(0 + curtailAngle, 180 - curtailAngle);
                     }
-                    Img.x += Tools._Number.randomOneBySection(-sectionWH[0], sectionWH[0]);
+                    Img.x += ToolsAdmin._Number.randomOneBySection(-sectionWH[0], sectionWH[0]);
                 }
-                let p = Tools._Point.angleByPoint(_angle);
-                let _distance = distance ? Tools._Number.randomOneBySection(distance[0], distance[1]) : Tools._Number.randomOneBySection(20, 50);
-                let speed0 = speed ? Tools._Number.randomOneBySection(speed[0], speed[1]) : Tools._Number.randomOneBySection(0.5, 1);
-                let accelerated0 = accelerated ? Tools._Number.randomOneBySection(accelerated[0], accelerated[1]) : Tools._Number.randomOneBySection(0.25, 0.45);
+                let p = ToolsAdmin._Point.angleByPoint(_angle);
+                let _distance = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(20, 50);
+                let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(0.5, 1);
+                let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.25, 0.45);
                 let acc = 0;
-                let rotationSpeed0 = rotateSpeed ? Tools._Number.randomOneBySection(rotateSpeed[0], rotateSpeed[1]) : Tools._Number.randomOneBySection(0, 20);
+                let rotationSpeed0 = rotateSpeed ? ToolsAdmin._Number.randomOneBySection(rotateSpeed[0], rotateSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 20);
                 let firstP = new Laya.Point(Img.x, Img.y);
                 let moveCaller = {
                     alpha: true,
@@ -5441,8 +5428,8 @@ export module Lwg {
             export function _moveToTargetToMove(parent: Laya.Sprite, centerPoint?: Laya.Point, width?: [number, number], height?: [number, number], rotation?: [number, number], angle?: [number, number], urlArr?: Array<string>, colorRGBA?: [[number, number, number, number], [number, number, number, number]], zOrder?: number, distance1?: [number, number], distance2?: [number, number], rotationSpeed?: [number, number], speed?: [number, number], accelerated?: [number, number]): Laya.Image {
                 let Img = new _ParticleImgBase(parent, centerPoint, [0, 0], width, height, rotation, urlArr, colorRGBA, zOrder);
                 let centerPoint0 = centerPoint ? centerPoint : new Laya.Point(0, 0);
-                let speed0 = speed ? Tools._Number.randomOneBySection(speed[0], speed[1]) : Tools._Number.randomOneBySection(5, 6);
-                let accelerated0 = accelerated ? Tools._Number.randomOneBySection(accelerated[0], accelerated[1]) : Tools._Number.randomOneBySection(0.25, 0.45);
+                let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(5, 6);
+                let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.25, 0.45);
                 let acc = 0;
                 let moveCaller = {
                     alpha: true,
@@ -5453,12 +5440,12 @@ export module Lwg {
                 };
                 Img['moveCaller'] = moveCaller;
                 let radius = 0;
-                let dis1 = distance1 ? Tools._Number.randomOneBySection(distance1[0], distance1[1]) : Tools._Number.randomOneBySection(100, 200);
-                let dis2 = distance2 ? Tools._Number.randomOneBySection(distance2[0], distance2[1]) : Tools._Number.randomOneBySection(100, 200);
+                let dis1 = distance1 ? ToolsAdmin._Number.randomOneBySection(distance1[0], distance1[1]) : ToolsAdmin._Number.randomOneBySection(100, 200);
+                let dis2 = distance2 ? ToolsAdmin._Number.randomOneBySection(distance2[0], distance2[1]) : ToolsAdmin._Number.randomOneBySection(100, 200);
 
-                let angle0 = angle ? Tools._Number.randomOneBySection(angle[0], angle[1]) : Tools._Number.randomOneBySection(0, 360);
+                let angle0 = angle ? ToolsAdmin._Number.randomOneBySection(angle[0], angle[1]) : ToolsAdmin._Number.randomOneBySection(0, 360);
                 Img.rotation = angle0 - 90;
-                let rotationSpeed0 = rotationSpeed ? Tools._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : Tools._Number.randomOneBySection(0, 20);
+                let rotationSpeed0 = rotationSpeed ? ToolsAdmin._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 20);
                 TimerAdmin._frameLoop(1, moveCaller, () => {
                     if (moveCaller.alpha) {
                         acc += accelerated0;
@@ -5497,7 +5484,7 @@ export module Lwg {
                             Laya.timer.clearAll(moveCaller);
                         }
                     }
-                    let point = Tools._Point.getRoundPos(angle0, radius, centerPoint0);
+                    let point = ToolsAdmin._Point.getRoundPos(angle0, radius, centerPoint0);
                     Img.pos(point.x, point.y);
                 })
                 return Img;
@@ -5521,15 +5508,15 @@ export module Lwg {
                 let Img = new Laya.Image();
                 parent.addChild(Img);
                 width = width ? width : [25, 50];
-                Img.width = Tools._Number.randomCountBySection(width[0], width[1])[0];
-                Img.height = height ? Tools._Number.randomCountBySection(height[0], height[1])[0] : Img.width;
+                Img.width = ToolsAdmin._Number.randomCountBySection(width[0], width[1])[0];
+                Img.height = height ? ToolsAdmin._Number.randomCountBySection(height[0], height[1])[0] : Img.width;
                 Img.pivotX = Img.width / 2;
                 Img.pivotY = Img.height / 2;
-                Img.skin = urlArr ? Tools._Array.randomGetOut(urlArr)[0] : _SkinUrl[Tools._Number.randomCountBySection(0, 12)[0]];
-                let radius0 = Tools._Number.randomCountBySection(radius[0], radius[1])[0];
+                Img.skin = urlArr ? ToolsAdmin._Array.randomGetOut(urlArr)[0] : _SkinUrl[ToolsAdmin._Number.randomCountBySection(0, 12)[0]];
+                let radius0 = ToolsAdmin._Number.randomCountBySection(radius[0], radius[1])[0];
                 Img.alpha = 0;
-                let speed0 = speed ? Tools._Number.randomCountBySection(speed[0], speed[1])[0] : Tools._Number.randomCountBySection(5, 10)[0];
-                let angle = rotation ? Tools._Number.randomCountBySection(rotation[0], rotation[1])[0] : Tools._Number.randomCountBySection(0, 360)[0];
+                let speed0 = speed ? ToolsAdmin._Number.randomCountBySection(speed[0], speed[1])[0] : ToolsAdmin._Number.randomCountBySection(5, 10)[0];
+                let angle = rotation ? ToolsAdmin._Number.randomCountBySection(rotation[0], rotation[1])[0] : ToolsAdmin._Number.randomCountBySection(0, 360)[0];
                 let caller = {};
                 let acc = 0;
                 accelerated = accelerated ? accelerated : 0.35;
@@ -5542,7 +5529,7 @@ export module Lwg {
                         acc += accelerated;
                         radius0 -= (speed0 + acc);
                     }
-                    let point = Tools._Point.getRoundPos(angle, radius0, centerPoint);
+                    let point = ToolsAdmin._Point.getRoundPos(angle, radius0, centerPoint);
                     Img.pos(point.x, point.y);
                     if (point.distance(centerPoint.x, centerPoint.y) <= 20 || point.distance(centerPoint.x, centerPoint.y) >= 1000) {
                         Img.removeSelf();
@@ -5562,19 +5549,19 @@ export module Lwg {
                         return;
                     }
                     parent.addChild(this);
-                    this.skin = urlArr ? Tools._Array.randomGetOne(urlArr) : _SkinUrl.星星1;
-                    this.width = width ? Tools._Number.randomOneBySection(width[0], width[1]) : 80;
-                    this.height = height ? Tools._Number.randomOneBySection(height[0], height[1]) : this.width;
+                    this.skin = urlArr ? ToolsAdmin._Array.randomGetOne(urlArr) : _SkinUrl.星星1;
+                    this.width = width ? ToolsAdmin._Number.randomOneBySection(width[0], width[1]) : 80;
+                    this.height = height ? ToolsAdmin._Number.randomOneBySection(height[0], height[1]) : this.width;
                     this.pivotX = this.width / 2;
                     this.pivotY = this.height / 2;
-                    let p = radiusXY ? Tools._Point.randomPointByCenter(centerPos, radiusXY[0], radiusXY[1], 1) : Tools._Point.randomPointByCenter(centerPos, 100, 100, 1);
+                    let p = radiusXY ? ToolsAdmin._Point.randomPointByCenter(centerPos, radiusXY[0], radiusXY[1], 1) : ToolsAdmin._Point.randomPointByCenter(centerPos, 100, 100, 1);
                     this.pos(p[0].x, p[0].y);
                     let RGBA = [];
-                    RGBA[0] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : Tools._Number.randomOneBySection(10, 255);
-                    RGBA[1] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : Tools._Number.randomOneBySection(200, 255);
-                    RGBA[2] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : Tools._Number.randomOneBySection(10, 255);
-                    RGBA[3] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : Tools._Number.randomOneBySection(1, 1);
-                    Color._colour(this, RGBA);
+                    RGBA[0] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : ToolsAdmin._Number.randomOneBySection(10, 255);
+                    RGBA[1] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : ToolsAdmin._Number.randomOneBySection(200, 255);
+                    RGBA[2] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : ToolsAdmin._Number.randomOneBySection(10, 255);
+                    RGBA[3] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : ToolsAdmin._Number.randomOneBySection(1, 1);
+                    ColorAdmin._colour(this, RGBA);
                     this.alpha = 0;
                     this.zOrder = zOder ? zOder : 1000;
                 }
@@ -5599,10 +5586,10 @@ export module Lwg {
                 // 最大放大大小
                 Img.scaleX = 0;
                 Img.scaleY = 0;
-                let _scale = scale ? Tools._Number.randomOneBySection(scale[0], scale[1]) : Tools._Number.randomOneBySection(0.8, 1.2);
-                let _speed = speed ? Tools._Number.randomOneBySection(speed[0], speed[1]) : Tools._Number.randomOneBySection(0.01, 0.02);
-                let _rotateSpeed = rotateSpeed ? Tools._Number.randomOneInt(rotateSpeed[0], rotateSpeed[1]) : Tools._Number.randomOneInt(0, 5);
-                _rotateSpeed = Tools._Number.randomOneHalf() == 0 ? -_rotateSpeed : _rotateSpeed;
+                let _scale = scale ? ToolsAdmin._Number.randomOneBySection(scale[0], scale[1]) : ToolsAdmin._Number.randomOneBySection(0.8, 1.2);
+                let _speed = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(0.01, 0.02);
+                let _rotateSpeed = rotateSpeed ? ToolsAdmin._Number.randomOneInt(rotateSpeed[0], rotateSpeed[1]) : ToolsAdmin._Number.randomOneInt(0, 5);
+                _rotateSpeed = ToolsAdmin._Number.randomOneHalf() == 0 ? -_rotateSpeed : _rotateSpeed;
                 let moveCaller = {
                     appear: true,
                     scale: false,
@@ -5696,17 +5683,17 @@ export module Lwg {
                 constructor(parent: Laya.Sprite, urlArr: Array<string>, colorRGBA: Array<Array<number>>, width: Array<number>, height: Array<number>, zOrder: number) {
                     super();
                     parent.addChild(this);
-                    this.skin = urlArr ? Tools._Array.randomGetOne(urlArr) : _SkinUrl.圆形发光1;
-                    this.width = width ? Tools._Number.randomOneBySection(width[0], width[1]) : 80;
-                    this.height = height ? Tools._Number.randomOneBySection(height[0], height[1]) : this.width;
+                    this.skin = urlArr ? ToolsAdmin._Array.randomGetOne(urlArr) : _SkinUrl.圆形发光1;
+                    this.width = width ? ToolsAdmin._Number.randomOneBySection(width[0], width[1]) : 80;
+                    this.height = height ? ToolsAdmin._Number.randomOneBySection(height[0], height[1]) : this.width;
                     this.pivotX = this.width / 2;
                     this.pivotY = this.height / 2;
                     let RGBA = [];
-                    RGBA[0] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : Tools._Number.randomOneBySection(0, 255);
-                    RGBA[1] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : Tools._Number.randomOneBySection(0, 255);
-                    RGBA[2] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : Tools._Number.randomOneBySection(0, 255);
-                    RGBA[3] = colorRGBA ? Tools._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : Tools._Number.randomOneBySection(0, 255);
-                    Color._colour(this, RGBA);
+                    RGBA[0] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : ToolsAdmin._Number.randomOneBySection(0, 255);
+                    RGBA[1] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : ToolsAdmin._Number.randomOneBySection(0, 255);
+                    RGBA[2] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : ToolsAdmin._Number.randomOneBySection(0, 255);
+                    RGBA[3] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : ToolsAdmin._Number.randomOneBySection(0, 255);
+                    ColorAdmin._colour(this, RGBA);
                     this.zOrder = zOrder ? zOrder : 0;
                     this.alpha = 0;
                     this.scaleX = 0;
@@ -5755,7 +5742,7 @@ export module Lwg {
                     Imgfootprint.zOrder = -1;
                     Imgfootprint.scaleX = Img.scaleX;
                     Imgfootprint.scaleY = Img.scaleY;
-                    Animation2D.fadeOut(Imgfootprint, 1, 0, 200, 0, () => {
+                    Ani2DAdmin.fadeOut(Imgfootprint, 1, 0, 200, 0, () => {
                         Imgfootprint.removeSelf();
                     });
                     if (Img.parent == null) {
@@ -5774,13 +5761,13 @@ export module Lwg {
                     let targetXY = [posArray[index][0], posArray[index][1]];
                     let distance = (new Laya.Point(Img.x, Img.y)).distance(targetXY[0], targetXY[1]);
                     if (parallel) {
-                        Img.rotation = Tools._Point.pointByAngle(Img.x - targetXY[0], Img.y - targetXY[1]) + 180;
+                        Img.rotation = ToolsAdmin._Point.pointByAngle(Img.x - targetXY[0], Img.y - targetXY[1]) + 180;
                     }
                     let time = speed * 100 + distance / 5;
                     if (index == posArray.length + 1) {
                         targetXY = [posArray[0][0], posArray[0][1]];
                     }
-                    Animation2D.move(Img, targetXY[0], targetXY[1], time, () => {
+                    Ani2DAdmin.move(Img, targetXY[0], targetXY[1], time, () => {
                         index++;
                         if (index == posArray.length) {
                             index = 0;
@@ -5795,7 +5782,7 @@ export module Lwg {
     }
 
     /**点击事件模块 */
-    export module Click {
+    export module ClickAdmin {
         /**点击事件开关，主要是场景切换控制按钮的点击*/
         export let _switch = true;
         /**点击事件绝对开关，不到不得已不要用，优先级高于_switch*/
@@ -5915,7 +5902,7 @@ export module Lwg {
         export class _Largen {
             down(event: Laya.Event): void {
                 event.currentTarget.scale(1.1, 1.1);
-                AudioAdmin._playSound(Click._audioUrl);
+                AudioAdmin._playSound(LwgClick._audioUrl);
             }
             move(): void { }
             up(event: Laya.Event): void {
@@ -5933,7 +5920,7 @@ export module Lwg {
 
             down(event: Laya.Event): void {
                 event.currentTarget.scale(0.9, 0.9);
-                AudioAdmin._playSound(Click._audioUrl);
+                AudioAdmin._playSound(LwgClick._audioUrl);
 
             }
             move(): void { }
@@ -5946,7 +5933,7 @@ export module Lwg {
         }
     }
 
-    export module Animation3D {
+    export module Ani3DAdmin {
         /**缓动集合，用于清除当前this上的所有缓动*/
         export let tweenMap: any = {};
         /**帧率*/
@@ -6162,7 +6149,7 @@ export module Lwg {
     }
 
     /**动画模块*/
-    export module Animation2D {
+    export module Ani2DAdmin {
         /**
         * @export 清理对象上的所有Tween动画
         * @param {Array<any>} arr 清理的数组
@@ -6206,7 +6193,7 @@ export module Lwg {
                 delayed = 0;
             }
             if (!click) {
-                Click._switch = false
+                LwgClick._switch = false
             }
             Laya.Tween.to(node, { x: node.x - range }, time, null, Laya.Handler.create(this, function () {
                 // AudioAdmin._playSound(Enum.AudioName.commonShake, 1);
@@ -6217,7 +6204,7 @@ export module Lwg {
                             func();
                         }
                         if (!click) {
-                            Click._switch = true
+                            LwgClick._switch = true
                         }
                     }))
                 }))
@@ -6313,14 +6300,14 @@ export module Lwg {
         export function fadeOut(node: Laya.Sprite, alpha1: number, alpha2: number, time: number, delayed?: number, func?: Function, stageClick?: boolean): void {
             node.alpha = alpha1;
             if (stageClick) {
-                Click._switch = false
+                LwgClick._switch = false
             }
             Laya.Tween.to(node, { alpha: alpha2 }, time, null, Laya.Handler.create(this, function () {
                 if (func) {
                     func();
                 }
                 if (stageClick) {
-                    Click._switch = true
+                    LwgClick._switch = true
                 }
             }), delayed ? delayed : 0)
         }
@@ -6582,14 +6569,14 @@ export module Lwg {
         export function cardRotateX_TowFace(node: Laya.Sprite, time: number, func1?: Function, delayed?: number, func2?: Function): void {
             Laya.Tween.to(node, { scaleX: 0 }, time, null, Laya.Handler.create(this, function () {
                 // 所有子节点消失
-                Tools._Node.childrenVisible2D(node, false);
+                ToolsAdmin._Node.childrenVisible2D(node, false);
                 if (func1) {
                     func1();
                 }
                 Laya.Tween.to(node, { scaleX: 1 }, time * 0.9, null, Laya.Handler.create(this, function () {
                     Laya.Tween.to(node, { scaleX: 0 }, time * 0.8, null, Laya.Handler.create(this, function () {
 
-                        Tools._Node.childrenVisible2D(node, true);
+                        ToolsAdmin._Node.childrenVisible2D(node, true);
 
                         Laya.Tween.to(node, { scaleX: 1 }, time * 0.7, null, Laya.Handler.create(this, function () {
                             if (func2) {
@@ -6635,14 +6622,14 @@ export module Lwg {
         export function cardRotateY_TowFace(node: Laya.Sprite, time: number, func1?: Function, delayed?: number, func2?: Function): void {
             Laya.Tween.to(node, { scaleY: 0 }, time, null, Laya.Handler.create(this, function () {
                 // 所有子节点消失
-                Tools._Node.childrenVisible2D(node, false);
+                ToolsAdmin._Node.childrenVisible2D(node, false);
                 if (func1) {
                     func1();
                 }
                 Laya.Tween.to(node, { scaleY: 1 }, time, null, Laya.Handler.create(this, function () {
                     Laya.Tween.to(node, { scaleY: 0 }, time, null, Laya.Handler.create(this, function () {
                         Laya.Tween.to(node, { scaleY: 1 }, time * 1 / 2, null, Laya.Handler.create(this, function () {
-                            Tools._Node.childrenVisible2D(node, true);
+                            ToolsAdmin._Node.childrenVisible2D(node, true);
                             if (func2) {
                                 func2();
                             }
@@ -7107,7 +7094,7 @@ export module Lwg {
         }
     }
     /**设置模块*/
-    export module Setting {
+    export module SetAdmin {
         /**音效设置*/
         export let _sound = {
             get switch(): boolean {
@@ -7190,9 +7177,9 @@ export module Lwg {
             btn.zOrder = ZOder ? ZOder : 100;
             var btnSetUp = function (e: Laya.Event): void {
                 e.stopPropagation();
-                SceneAdmin._openScene(SceneAdmin._SceneName.Set);
+                LwgScene._openScene(LwgScene._SceneName.Set);
             }
-            Click._on(Click._Type.largen, btn, null, null, btnSetUp, null);
+            LwgClick._on(LwgClick._Type.largen, btn, null, null, btnSetUp, null);
             _BtnSet = btn;
             _BtnSet.name = 'BtnSetNode';
             return btn;
@@ -7209,7 +7196,7 @@ export module Lwg {
                 return;
             }
             if (delayed) {
-                Animation2D.scale_Alpha(_BtnSet, 0, 1, 1, 1, 1, 1, delayed, 0, f => {
+                Ani2DAdmin.scale_Alpha(_BtnSet, 0, 1, 1, 1, 1, 1, delayed, 0, f => {
                     _BtnSet.visible = true;
                 });
             } else {
@@ -7232,7 +7219,7 @@ export module Lwg {
                 return;
             }
             if (delayed) {
-                Animation2D.scale_Alpha(_BtnSet, 1, 1, 1, 1, 1, 0, delayed, 0, f => {
+                Ani2DAdmin.scale_Alpha(_BtnSet, 1, 1, 1, 1, 1, 0, delayed, 0, f => {
                     _BtnSet.visible = false;
                 });
             } else {
@@ -7271,7 +7258,7 @@ export module Lwg {
             if (!number) {
                 number = 1;
             }
-            if (Setting._sound.switch) {
+            if (SetAdmin._sound.switch) {
                 Laya.SoundManager.playSound(url, number, Laya.Handler.create(this, function () {
                     if (func) {
                         func();
@@ -7287,7 +7274,7 @@ export module Lwg {
          * @param soundVolume 音量大小0-1，默认1
          */
         export function _playDefeatedSound(url?: string, number?: number, func?: Function, soundVolume?: number) {
-            if (Setting._sound.switch) {
+            if (SetAdmin._sound.switch) {
                 Laya.SoundManager.soundVolume = soundVolume ? soundVolume : 1;
                 Laya.SoundManager.playSound(url ? url : _voiceUrl.defeated, number ? number : 1, Laya.Handler.create(this, function () {
                     if (func) {
@@ -7305,7 +7292,7 @@ export module Lwg {
           * @param soundVolume 音量大小0-1，默认1
           */
         export function _playVictorySound(url?: string, number?: number, func?: Function, soundVolume?: number) {
-            if (Setting._sound.switch) {
+            if (SetAdmin._sound.switch) {
                 Laya.SoundManager.soundVolume = soundVolume ? soundVolume : 1;
                 Laya.SoundManager.playSound(url ? url : _voiceUrl.victory, number ? number : 1, Laya.Handler.create(this, function () {
                     if (func) {
@@ -7322,7 +7309,7 @@ export module Lwg {
         * @param delayed 延时时间，默认0
         */
         export function _playMusic(url?: string, number?: number, delayed?: number) {
-            if (Setting._bgMusic.switch) {
+            if (SetAdmin._bgMusic.switch) {
                 Laya.SoundManager.playMusic(url ? url : _voiceUrl.bgm, number ? number : 0, Laya.Handler.create(this, function () { }), delayed ? delayed : 0);
             }
         }
@@ -7332,7 +7319,7 @@ export module Lwg {
         }
     }
     /**工具模块*/
-    export module Tools {
+    export module ToolsAdmin {
         /**
         * RGB三个颜色值转换成16进制的字符串‘000000’，需要加上‘#’；
         * @param r 
@@ -7642,7 +7629,7 @@ export module Lwg {
                 for (let i = 0; i < node.numChildren; i++) {
                     indexArr.push(i);
                 }
-                let randomIndex = Tools._Array.randomGetOut(indexArr, num);
+                let randomIndex = ToolsAdmin._Array.randomGetOut(indexArr, num);
                 for (let j = 0; j < randomIndex.length; j++) {
                     childArr.push(node.getChildAt(randomIndex[j]));
                 }
@@ -7890,9 +7877,9 @@ export module Lwg {
              * @return {*}  {number}
              */
             export function randomNumerical(numSection: [number, number], defaultNumSection?: [number, number], randomPlusOrMinus?: boolean): number {
-                let num = numSection ? Tools._Number.randomOneBySection(numSection[0], numSection[1]) : Tools._Number.randomOneBySection(defaultNumSection[0], defaultNumSection[1]);
+                let num = numSection ? ToolsAdmin._Number.randomOneBySection(numSection[0], numSection[1]) : ToolsAdmin._Number.randomOneBySection(defaultNumSection[0], defaultNumSection[1]);
                 if (randomPlusOrMinus) {
-                    num = Tools._Number.randomOneHalf() === 0 ? num : -num;
+                    num = ToolsAdmin._Number.randomOneHalf() === 0 ? num : -num;
                 }
                 return num;
             }
@@ -8086,10 +8073,10 @@ export module Lwg {
                 }
                 let arr: Array<Laya.Point> = [];
                 for (let index = 0; index < count; index++) {
-                    let x0 = Tools._Number.randomCountBySection(0, radiusX, 1, false);
-                    let y0 = Tools._Number.randomCountBySection(0, radiusY, 1, false);
-                    let diffX = Tools._Number.randomOneHalf() == 0 ? x0[0] : -x0[0];
-                    let diffY = Tools._Number.randomOneHalf() == 0 ? y0[0] : -y0[0];
+                    let x0 = ToolsAdmin._Number.randomCountBySection(0, radiusX, 1, false);
+                    let y0 = ToolsAdmin._Number.randomCountBySection(0, radiusY, 1, false);
+                    let diffX = ToolsAdmin._Number.randomOneHalf() == 0 ? x0[0] : -x0[0];
+                    let diffY = ToolsAdmin._Number.randomOneHalf() == 0 ? y0[0] : -y0[0];
                     let p = new Laya.Point(centerPos.x + diffX, centerPos.y + diffY);
                     arr.push(p);
                 }
@@ -8141,12 +8128,12 @@ export module Lwg {
              * @memberof _Caller
              */
             export function randomScopeByPosition(sp3D: Laya.MeshSprite3D, scopeSize: [[number, number, number], [number, number, number]]): void {
-                let _pX = Tools._Number.randomOneBySection(scopeSize[0][0], scopeSize[1][0])
-                let _pY = Tools._Number.randomOneBySection(scopeSize[0][1], scopeSize[1][1])
-                let _pZ = Tools._Number.randomOneBySection(scopeSize[0][2], scopeSize[1][2])
-                _pX = Tools._Number.randomOneHalf() == 0 ? _pX : -_pX;
-                _pY = Tools._Number.randomOneHalf() == 0 ? _pY : -_pY;
-                _pZ = Tools._Number.randomOneHalf() == 0 ? _pZ : -_pZ;
+                let _pX = ToolsAdmin._Number.randomOneBySection(scopeSize[0][0], scopeSize[1][0])
+                let _pY = ToolsAdmin._Number.randomOneBySection(scopeSize[0][1], scopeSize[1][1])
+                let _pZ = ToolsAdmin._Number.randomOneBySection(scopeSize[0][2], scopeSize[1][2])
+                _pX = ToolsAdmin._Number.randomOneHalf() == 0 ? _pX : -_pX;
+                _pY = ToolsAdmin._Number.randomOneHalf() == 0 ? _pY : -_pY;
+                _pZ = ToolsAdmin._Number.randomOneHalf() == 0 ? _pZ : -_pZ;
                 sp3D.transform.position = new Laya.Vector3(sp3D.transform.position.x + _pX, sp3D.transform.position.y + _pY, sp3D.transform.position.z + _pZ);
             }
 
@@ -8858,7 +8845,7 @@ export module Lwg {
         }
     }
 
-    export module LwgPreLoad {
+    export module PreLoadAdmin {
         /**3D场景的加载，其他3D物体，贴图，Mesh详见：  https://ldc2.layabox.com/doc/?nav=zh-ts-4-3-1   */
         let _scene3D: Array<any> = [];
         /**3D预设的加载，其他3D物体，贴图，Mesh详见：  https://ldc2.layabox.com/doc/?nav=zh-ts-4-3-1   */
@@ -8925,7 +8912,7 @@ export module Lwg {
                     console.log('当前进度条进度为:', _currentProgress.value / _sumProgress);
                     // console.log('进度条停止！');
                     console.log('所有资源加载完成！此时所有资源可通过例如 Laya.loader.getRes("url")获取');
-                    EventAdmin._notify(LwgPreLoad._Event.complete);
+                    EventAdmin._notify(PreLoadAdmin._Event.complete);
                 } else {
                     // 当前进度达到当前长度节点时,去到下一个数组加载
                     let number = 0;
@@ -8935,7 +8922,7 @@ export module Lwg {
                     if (this['len'] == number) {
                         _loadOrderIndex++;
                     }
-                    EventAdmin._notify(LwgPreLoad._Event.stepLoding);
+                    EventAdmin._notify(PreLoadAdmin._Event.stepLoding);
                 }
             },
         };
@@ -8967,15 +8954,15 @@ export module Lwg {
         }
         export class _PreLoadScene extends SceneAdmin._SceneBase {
             moduleOnAwake(): void {
-                LwgPreLoad._remakeLode();
+                PreLoadAdmin._remakeLode();
             }
             /**载入加载项*/
             lwgStartLoding(any: any): void {
-                EventAdmin._notify(LwgPreLoad._Event.importList, (any));
+                EventAdmin._notify(PreLoadAdmin._Event.importList, (any));
             }
             moduleEvent(): void {
                 EventAdmin._registerOnce(_Event.importList, this, (listObj: {}) => {
-                    listObj[_ListName.effectTex2D] = Effects3D._tex2D;
+                    listObj[_ListName.effectTex2D] = Eff3DAdmin._tex2D;
                     for (const key in listObj) {
                         if (Object.prototype.hasOwnProperty.call(listObj, key)) {
                             for (const key1 in listObj[key]) {
@@ -9035,22 +9022,22 @@ export module Lwg {
                     }
                     let time = this.lwgOpenAni();
                     Laya.timer.once(time ? time : 0, this, () => {
-                        EventAdmin._notify(LwgPreLoad._Event.stepLoding);
+                        EventAdmin._notify(PreLoadAdmin._Event.stepLoding);
                     })
                 });
                 EventAdmin._register(_Event.stepLoding, this, () => { this.startLodingRule() });
                 EventAdmin._registerOnce(_Event.complete, this, () => {
                     Laya.timer.once(this.lwgAllComplete(), this, () => {
-                        SceneAdmin._SceneControl[_loadType] = this._Owner;
+                        LwgScene._SceneControl[_loadType] = this._Owner;
                         // 页面前
-                        if (_loadType !== SceneAdmin._SceneName.PreLoad) {
-                            SceneAdmin._PreLoadCutIn.openName && this._openScene(SceneAdmin._PreLoadCutIn.openName);
+                        if (_loadType !== LwgScene._SceneName.PreLoad) {
+                            LwgScene._PreLoadCutIn.openName && this._openScene(LwgScene._PreLoadCutIn.openName);
                             // console.log('预加载完毕开始打开界面！')
                         } else {
                             //游戏开始前
-                            // for (const key in SceneAdmin._Moudel) {
-                            //     if (Object.prototype.hasOwnProperty.call(SceneAdmin._Moudel, key)) {
-                            //         const element = SceneAdmin._Moudel[key];
+                            // for (const key in  LwgScene._Moudel) {
+                            //     if (Object.prototype.hasOwnProperty.call( LwgScene._Moudel, key)) {
+                            //         const element =  LwgScene._Moudel[key];
                             //         if (element['_init']) {
                             //             element['_init']();
                             //         } else {
@@ -9060,8 +9047,8 @@ export module Lwg {
                             // }
                             AudioAdmin._playMusic();
                             // 页面前
-                            this._openScene(_SceneName.Start, true, false, () => {
-                                _loadType = SceneAdmin._SceneName.PreLoadCutIn;
+                            this._openScene(LwgScene._SceneName.Start, true, false, () => {
+                                _loadType = LwgScene._SceneName.PreLoadCutIn;
                             })
                         }
                     })
@@ -9082,7 +9069,7 @@ export module Lwg {
             private startLodingRule(): void {
                 if (_loadOrder.length <= 0) {
                     console.log('没有加载项');
-                    EventAdmin._notify(LwgPreLoad._Event.complete);
+                    EventAdmin._notify(PreLoadAdmin._Event.complete);
                     return;
                 }
                 // 已经加载过的分类数组的长度
@@ -9255,8 +9242,8 @@ export module Lwg {
         }
     }
     /**配置模块，拉去资源，分包等*/
-    export module _LwgInit {
-        export class _LwgInitScene extends SceneAdmin._SceneBase {
+    export module InitAdmin {
+        export class _InitScene extends SceneAdmin._SceneBase {
             lwgOpenAni(): number {
                 return 100;
             }
@@ -9267,7 +9254,7 @@ export module Lwg {
     }
 
     /**体力模块*/
-    export module Execution {
+    export module ExecutionAdmin {
         /**最大体力数量上限*/
         let maxEx = 15;
         /**当前剩余行动力的数量*/
@@ -9358,9 +9345,9 @@ export module Lwg {
                 sp.y = Laya.stage.height / 2;
                 sp.zOrder = 50;
                 if (_ExecutionNode) {
-                    Animation2D.move(sp, _ExecutionNode.x, _ExecutionNode.y, 800, () => {
-                        Animation2D.fadeOut(sp, 1, 0, 200, 0, () => {
-                            Animation2D.upDwon_Shake(_ExecutionNode, 10, 80, 0, null);
+                    Ani2DAdmin.move(sp, _ExecutionNode.x, _ExecutionNode.y, 800, () => {
+                        Ani2DAdmin.fadeOut(sp, 1, 0, 200, 0, () => {
+                            Ani2DAdmin.upDwon_Shake(_ExecutionNode, 10, 80, 0, null);
                             if (func) {
                                 func();
                             }
@@ -9384,9 +9371,9 @@ export module Lwg {
             label.x = _ExecutionNode.x + 100;
             label.y = _ExecutionNode.y - label.height / 2 + 4;
             label.zOrder = 100;
-            Animation2D.fadeOut(label, 0, 1, 200, 150, () => {
-                Animation2D.leftRight_Shake(_ExecutionNode, 15, 60, 0, null);
-                Animation2D.fadeOut(label, 1, 0, 600, 400, () => {
+            Ani2DAdmin.fadeOut(label, 0, 1, 200, 150, () => {
+                Ani2DAdmin.leftRight_Shake(_ExecutionNode, 15, 60, 0, null);
+                Ani2DAdmin.fadeOut(label, 1, 0, 600, 400, () => {
                 });
             });
         }
@@ -9476,31 +9463,27 @@ export module Lwg {
 }
 export default Lwg;
 // 全局模块
-export let SceneAdmin = Lwg.SceneAdmin;
-export let Platform = Lwg.Platform;
-export let GameAdmin = Lwg._GameAdmin;
-export let _SceneName = SceneAdmin._SceneName;
-export let SceneAnimation = Lwg.SceneAnimation;
-export let Adaptive = Lwg.Adaptive;
-export let StorageAdmin = Lwg.StorageAdmin;
-export let DataAdmin = Lwg.DataAdmin;
-export let EventAdmin = Lwg.EventAdmin;
-export let DateAdmin = Lwg.DateAdmin;
-export let TimerAdmin = Lwg.TimerAdmin;
-export let Execution = Lwg.Execution;
-export let Gold = Lwg.Gold;
-export let Setting = Lwg.Setting;
-export let AudioAdmin = Lwg.AudioAdmin;
-export let Click = Lwg.Click;
-export let Color = Lwg.Color;
-export let Effects2D = Lwg.Effects2D;
-export let Effects3D = Lwg.Effects3D;
-export let Dialogue = Lwg.Dialogue;
-export let Animation2D = Lwg.Animation2D;
-export let Animation3D = Lwg.Animation3D;
-export let Tools = Lwg.Tools;
-// 预加载和初始化页面
-export let _LwgPreLoad = Lwg.LwgPreLoad;
-export let _PreLoadScene = Lwg.LwgPreLoad._PreLoadScene;
-export let _LwgInit = Lwg._LwgInit;
-export let _LwgInitScene = Lwg._LwgInit._LwgInitScene;
+export let LwgPlatform = Lwg.PlatformAdmin;
+export let LwgGame = Lwg.GameAdmin;
+export let LwgScene = Lwg.SceneAdmin;
+export let LwgAdaptive = Lwg.AdaptiveAdmin;
+export let LwgSceneAni = Lwg.SceneAniAdmin;
+export let LwgDialogue = Lwg.Dialogue;
+export let LwgEvent = Lwg.EventAdmin;
+export let LwgTimer = Lwg.TimerAdmin;
+export let LwgData = Lwg.DataAdmin;
+export let LwgStorage = Lwg.StorageAdmin;
+export let LwgDate = Lwg.DateAdmin;
+export let LwgSet = Lwg.SetAdmin;
+export let LwgAudio = Lwg.AudioAdmin;
+export let LwgClick = Lwg.ClickAdmin;
+export let LwgColor = Lwg.ColorAdmin;
+export let LwgEff2D = Lwg.Eff2DAdmin;
+export let LwgEff3D = Lwg.Eff3DAdmin;
+export let LwgAni2D = Lwg.Ani2DAdmin;
+export let LwgAni3D = Lwg.Ani3DAdmin;
+export let LwgExecution = Lwg.ExecutionAdmin;
+export let LwgGold = Lwg.GoldAdmin;
+export let LwgTools = Lwg.ToolsAdmin;
+export let LwgPreLoad = Lwg.PreLoadAdmin;
+export let LwgAdmin = Lwg.InitAdmin;

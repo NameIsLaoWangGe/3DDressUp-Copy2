@@ -1,7 +1,7 @@
-import { SceneAdmin } from "../Lwg/Lwg";
+import {  LwgScene } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _BackHint, _PreLoadCutIn } from "./_GameData";
-export class BackHint extends SceneAdmin._SceneBase {
+export class BackHint extends  LwgScene._SceneBase {
     closeAniType = null;
     lwgOpenAni(): number {
         return _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));

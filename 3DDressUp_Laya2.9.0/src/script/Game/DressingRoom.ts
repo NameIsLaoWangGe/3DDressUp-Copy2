@@ -1,5 +1,5 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import lwg, { SceneAdmin, DataAdmin, Dialogue, TimerAdmin, Tools } from "../Lwg/Lwg";
+import lwg, { LwgScene, LwgData, LwgDialogue, LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { LwgOPPO } from "../Lwg/LwgOPPO";
 import { _AllClothes } from "./_GameData";
 import { _GameEffects3D } from "./_GameEffects3D";
@@ -13,7 +13,7 @@ export type _otherPro = {
     $putOn: any;
 } & lwg.DataAdmin._BaseProperty;
 
-class _Item extends DataAdmin._Item implements _otherPro {
+class _Item extends LwgData._Item implements _otherPro {
     get $icon(): string {
         return this.$data ? this.$data['icon'] : null;
     }
@@ -38,7 +38,7 @@ class _Item extends DataAdmin._Item implements _otherPro {
             } else {
                 ADManager.ShowReward(() => {
                     if (_AllClothes._ins()._checkCondition(this.$name)) {
-                        Dialogue.createHint_Middle('恭喜获得新服装！');
+                        LwgDialogue.createHint_Middle('恭喜获得新服装！');
                         _AllClothes._ins().accurateChange(this.$data['part'], this.$name);
                     }
                 })
@@ -47,7 +47,7 @@ class _Item extends DataAdmin._Item implements _otherPro {
     }
     $render(): void {
         if (this.$name === 'ads') {
-            !this._BoxChild('NativeRoot') && Tools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
+            !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
             this._ImgChild('Mask').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
         } else {
             this._BoxChild('NativeRoot') && this._BoxChild('NativeRoot').destroy();
@@ -82,7 +82,7 @@ class _Item extends DataAdmin._Item implements _otherPro {
     }
 }
 
-export default class DressingRoom extends SceneAdmin._SceneBase {
+export default class DressingRoom extends LwgScene._SceneBase {
 
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'changepage');
@@ -106,7 +106,7 @@ export default class DressingRoom extends SceneAdmin._SceneBase {
     lwgOnStart(): void {
         _AllClothes._ins()._List.refresh();
         this.UI = new _UI(this._Owner);
-        TimerAdmin._frameOnce(10, this, () => {
+        LwgTimer._frameOnce(10, this, () => {
             this.UI.operationAppear(() => {
                 this.UI.btnCompleteAppear(null, 400);
             });

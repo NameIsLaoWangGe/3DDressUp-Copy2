@@ -1,12 +1,12 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { SceneAdmin, Animation2D, AudioAdmin, Click, DataAdmin, Dialogue, Effects2D, EventAdmin, TimerAdmin, Tools, _SceneName } from "../Lwg/Lwg";
+import {  LwgScene, LwgAni2D, LwgAudio, LwgClick, LwgData, LwgDialogue, LwgEff2D, LwgEvent, LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { _DIYClothes, _Guide, _MakeTailor, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
 import { _UI } from "./_UI";
 
 /**当前任务服装数据*/
-export class _TaskClothes extends DataAdmin._Table {
+export class _TaskClothes extends LwgData._Table {
     private static ins: _TaskClothes;
     static _ins() {
         if (!this.ins) {
@@ -29,7 +29,7 @@ export class _TaskClothes extends DataAdmin._Table {
             }
         }
         this.clothesMove();
-        Animation2D.move_rotate(this.LastClothes, 45, new Laya.Point(Laya.stage.width * 1.5, Laya.stage.height * 1.5), this.moveTime, 0, () => {
+        LwgAni2D.move_rotate(this.LastClothes, 45, new Laya.Point(Laya.stage.width * 1.5, Laya.stage.height * 1.5), this.moveTime, 0, () => {
             this.LastClothes.removeSelf();
         })
     }
@@ -39,7 +39,7 @@ export class _TaskClothes extends DataAdmin._Table {
         const time = 700;
         this.Clothes.pos(0, -Laya.stage.height * 1.5);
         this.Clothes.rotation = 45;
-        Animation2D.move_rotate(this.Clothes, 0, new Laya.Point(Laya.stage.width / 2, Laya.stage.height / 2), time);
+        LwgAni2D.move_rotate(this.Clothes, 0, new Laya.Point(Laya.stage.width / 2, Laya.stage.height / 2), time);
     }
     LastClothes: Laya.Sprite;
     LineParent: Laya.Image;
@@ -63,7 +63,7 @@ export class _TaskClothes extends DataAdmin._Table {
             }
         }
         this.clothesMove();
-        this.LastClothes && Animation2D.move_rotate(this.LastClothes, -45, new Laya.Point(Laya.stage.width * 1.5, -Laya.stage.height * 1.5), this.moveTime, 0, () => {
+        this.LastClothes && LwgAni2D.move_rotate(this.LastClothes, -45, new Laya.Point(Laya.stage.width * 1.5, -Laya.stage.height * 1.5), this.moveTime, 0, () => {
             this.LastClothes.removeSelf();
         })
     }
@@ -86,7 +86,7 @@ export class _TaskClothes extends DataAdmin._Table {
 }
 
 /**剪刀*/
-class _Scissor extends SceneAdmin._ObjectBase {
+class _Scissor extends  LwgScene._ObjectBase {
     lwgOnAwake(): void {
         this._Owner.pos(this.Ani.vanishP.x, this.Ani.vanishP.y);
     }
@@ -102,9 +102,9 @@ class _Scissor extends SceneAdmin._ObjectBase {
         },
 
         paly: () => {
-            TimerAdmin._clearAll([this.Ani]);
-            Animation2D._clearAll([this.Ani]);
-            TimerAdmin._frameLoop(1, this.Ani, () => {
+            LwgTimer._clearAll([this.Ani]);
+            LwgAni2D._clearAll([this.Ani]);
+            LwgTimer._frameLoop(1, this.Ani, () => {
                 if (this._SceneImg('S2').rotation > this.Ani.range) {
                     this.Ani.dir = 'up';
                 } else if (this._SceneImg('S2').rotation <= 0) {
@@ -120,19 +120,19 @@ class _Scissor extends SceneAdmin._ObjectBase {
             });
         },
         stop: () => {
-            TimerAdmin._frameOnce(30, this.Ani, () => {
+            LwgTimer._frameOnce(30, this.Ani, () => {
                 let time = 100;
-                TimerAdmin._clearAll([this.Ani]);
-                Animation2D._clearAll([this.Ani]);
-                Animation2D.rotate(this._SceneImg('S1'), -this.Ani.range / 3, time)
-                Animation2D.rotate(this._SceneImg('S2'), this.Ani.range / 3, time)
+                LwgTimer._clearAll([this.Ani]);
+                LwgAni2D._clearAll([this.Ani]);
+                LwgAni2D.rotate(this._SceneImg('S1'), -this.Ani.range / 3, time)
+                LwgAni2D.rotate(this._SceneImg('S2'), this.Ani.range / 3, time)
             })
         },
 
         event: () => {
             this._evReg(_MakeTailor._event.scissorAppear, () => {
                 let time = 800;
-                Animation2D.move_rotate(this._Owner, this._fRotation + 360, this._fPoint, time, 0, () => {
+                LwgAni2D.move_rotate(this._Owner, this._fRotation + 360, this._fPoint, time, 0, () => {
                     this._Owner.rotation = this._fRotation;
                     this.Move.switch = true;
                     if (!_Guide._complete) this._evNotify(_Guide.event.MakeTailorStartTailor, [this._Owner]);
@@ -150,10 +150,10 @@ class _Scissor extends SceneAdmin._ObjectBase {
                 let disY = -600;
                 let time = 600;
                 let delay = 100;
-                Animation2D.move_rotate(this._Owner, this._Owner.rotation + 360, new Laya.Point(Laya.stage.width / 2, Laya.stage.height / 2), time / 2, delay, () => {
+                LwgAni2D.move_rotate(this._Owner, this._Owner.rotation + 360, new Laya.Point(Laya.stage.width / 2, Laya.stage.height / 2), time / 2, delay, () => {
                     this._Owner.rotation = 0;
-                    Animation2D.move_rotate(this._Owner, -30, new Laya.Point(this._Owner.x - disX / 6, this._Owner.y - disY / 5), time / 2, delay * 1.5, () => {
-                        Animation2D.move_rotate(this._Owner, Tools._Number.randomOneHalf() == 0 ? 720 : -720, new Laya.Point(this._Owner.x + disX, this._Owner.y + disY), time, delay, () => {
+                    LwgAni2D.move_rotate(this._Owner, -30, new Laya.Point(this._Owner.x - disX / 6, this._Owner.y - disY / 5), time / 2, delay * 1.5, () => {
+                        LwgAni2D.move_rotate(this._Owner, LwgTools._Number.randomOneHalf() == 0 ? 720 : -720, new Laya.Point(this._Owner.x + disX, this._Owner.y + disY), time, delay, () => {
                             func && func();
                             this._Owner.rotation = 0;
                             this._Owner.pos(this.Ani.vanishP.x, this.Ani.vanishP.y);
@@ -163,13 +163,13 @@ class _Scissor extends SceneAdmin._ObjectBase {
             })
 
             this._evReg(_MakeTailor._event.scissorAgain, () => {
-                Animation2D.move_rotate(this._Owner, this._fRotation, this._fPoint, 600, 100, () => {
+                LwgAni2D.move_rotate(this._Owner, this._fRotation, this._fPoint, 600, 100, () => {
                     _TaskClothes._ins().again(this._Scene);
                 });
             })
 
             this._evReg(_MakeTailor._event.scissorRotation, (rotate: number) => {
-                TimerAdmin._clearAll([this._Owner]);
+                LwgTimer._clearAll([this._Owner]);
                 const time = 10;
                 let angle: number;
                 if (Math.abs(rotate - this._Owner.rotation) < 180) {
@@ -178,17 +178,17 @@ class _Scissor extends SceneAdmin._ObjectBase {
                     angle = -(360 - (rotate - this._Owner.rotation));
                 }
                 let unit = angle / time;
-                TimerAdmin._frameNumLoop(1, time, this._Owner, () => {
+                LwgTimer._frameNumLoop(1, time, this._Owner, () => {
                     this._Owner.rotation += unit;
                 })
             })
         },
         effcts: () => {
-            const num = Tools._Number.randomOneInt(3, 6);
+            const num = LwgTools._Number.randomOneInt(3, 6);
             const color1 = _DIYClothes._ins().getColor()[0];
             const color2 = _DIYClothes._ins().getColor()[1];
             for (let index = 0; index < num; index++) {
-                Effects2D._Particle._spray(this._Scene, this._point, [10, 30], null, [0, 360], [Effects2D._SkinUrl.三角形1], [color1, color2], [20, 90], null, null, [1, 3], [0.1, 0.2], this._Owner.zOrder - 1);
+                LwgEff2D._Particle._spray(this._Scene, this._point, [10, 30], null, [0, 360], [LwgEff2D._SkinUrl.三角形1], [color1, color2], [20, 90], null, null, [1, 3], [0.1, 0.2], this._Owner.zOrder - 1);
             }
         }
     }
@@ -214,7 +214,7 @@ class _Scissor extends SceneAdmin._ObjectBase {
                     this.Move.diffP = new Laya.Point(e.stageX - this.Move.touchP.x, e.stageY - this.Move.touchP.y);
                     this._Owner.x += this.Move.diffP.x;
                     this._Owner.y += this.Move.diffP.y;
-                    Tools._Node.tieByStage(this._Owner);
+                    LwgTools._Node.tieByStage(this._Owner);
                     this.Move.touchP = new Laya.Point(e.stageX, e.stageY);
                     this._evNotify(_MakeTailor._event.scissorPlay);
                 }
@@ -233,14 +233,14 @@ class _Scissor extends SceneAdmin._ObjectBase {
             other['cut'] = true;
             this._evNotify(_MakeTailor._event.scissorPlay);
             this._evNotify(_MakeTailor._event.scissorStop);
-            EventAdmin._notify(_MakeTailor._event.scissorTrigger, [other.owner]);
+            LwgEvent._notify(_MakeTailor._event.scissorTrigger, [other.owner]);
             this.Ani.effcts();
             ADManager.VibrateShort();
         }
     }
 }
 
-class _Item extends DataAdmin._Item {
+class _Item extends LwgData._Item {
     $awake(): void { };
     $button(): void {
         this._btnUp(this._Owner, () => {
@@ -258,22 +258,22 @@ class _Item extends DataAdmin._Item {
             else {
                 switch (this.$unlockWay) {
                     case this.$unlockWayType.$check:
-                        Dialogue.createHint_Middle('请前往签到页面获取');
+                        LwgDialogue.createHint_Middle('请前往签到页面获取');
                         break;
                     case this.$unlockWayType.$customs:
-                        Dialogue.createHint_Middle(`制作${this.$conditionNum}件才能衣服获取哦！`);
+                        LwgDialogue.createHint_Middle(`制作${this.$conditionNum}件才能衣服获取哦！`);
                         break;
                     case this.$unlockWayType.$ads:
                         ADManager.ShowReward(() => {
                             if (_DIYClothes._ins()._checkCondition(this.$name)) {
-                                Dialogue.createHint_Middle('恭喜获得一件新服装！');
+                                LwgDialogue.createHint_Middle('恭喜获得一件新服装！');
                                 _DIYClothes._ins()._setPitch(this.$name);
                                 this._evNotify(_MakeTailor._event.changeClothes);
                             }
                         })
                         break;
                     case this.$unlockWayType.$free:
-                        Dialogue.createHint_Middle(`免费获得`);
+                        LwgDialogue.createHint_Middle(`免费获得`);
                         break;
                     default:
                         break;
@@ -290,7 +290,7 @@ class _Item extends DataAdmin._Item {
         this._LableChild('UnlockWayNum').visible = false;
         if (this.$name == 'ads') {
             if (!this._BoxChild('NativeRoot')) {
-                Tools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
+                LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
             }
             this._ImgChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
         } else {
@@ -337,7 +337,7 @@ class _Item extends DataAdmin._Item {
     }
 }
 
-export default class MakeTailor extends SceneAdmin._SceneBase {
+export default class MakeTailor extends  LwgScene._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'jiancaipage');
 
@@ -356,7 +356,7 @@ export default class MakeTailor extends SceneAdmin._SceneBase {
     UI: _UI;
     lwgOnStart(): void {
         this.UI = new _UI(this._Owner);
-        TimerAdmin._frameOnce(40, this, () => {
+        LwgTimer._frameOnce(40, this, () => {
             this.UI.operationAppear(() => {
                 this.UI.btnAgainVinish(null, 200);
                 this.UI.btnCompleteAppear(null, 400);
@@ -369,7 +369,7 @@ export default class MakeTailor extends SceneAdmin._SceneBase {
             });
         })
         this.UI.BtnRollback.visible = false;
-        TimerAdmin._frameOnce(20, this, () => {
+        LwgTimer._frameOnce(20, this, () => {
             _TaskClothes._ins().changeClothes(this._Owner);
         })
     }
@@ -383,7 +383,7 @@ export default class MakeTailor extends SceneAdmin._SceneBase {
             this.UI.operationVinish(() => {
                 this.UI.btnAgainAppear();
             }, 200);
-            TimerAdmin._frameOnce(30, this, () => {
+            LwgTimer._frameOnce(30, this, () => {
                 this._evNotify(_MakeTailor._event.scissorAppear);
             })
         }
@@ -417,13 +417,13 @@ export default class MakeTailor extends SceneAdmin._SceneBase {
             this._evNotify(_MakeTailor._event.scissorRemove, [() => {
                 _TaskClothes._ins().again(this._Owner);
             }]);
-            Click._switch.value = false;
-            TimerAdmin._frameOnce(60, this, () => {
+              LwgClick._switch = false;
+            LwgTimer._frameOnce(60, this, () => {
                 this.UI.operationAppear(() => {
                     this.UI.btnAgainVinish(null, 200);
                     this.UI.btnCompleteAppear();
                 });
-                Click._switch.value = true;
+                  LwgClick._switch = true;
             })
         }
     }
@@ -454,8 +454,8 @@ export default class MakeTailor extends SceneAdmin._SceneBase {
                     // 比对索引值
                     if (element.name.substr(5, 2) == Dotted.parent.name.substr(4, 2)) {
                         let time = 1500;
-                        let disX = Tools._Number.randomOneInt(1000) + 1000;
-                        let disY = Tools._Number.randomOneInt(1000) + 1000;
+                        let disX = LwgTools._Number.randomOneInt(1000) + 1000;
+                        let disY = LwgTools._Number.randomOneInt(1000) + 1000;
                         switch (element.name.substr(8)) {
                             case 'U':
                                 disX = 0;
@@ -488,23 +488,23 @@ export default class MakeTailor extends SceneAdmin._SceneBase {
                             default:
                                 break;
                         }
-                        Animation2D.move_rotate(element, 0, new Laya.Point(element.x + disX / 30, element.y + disY / 30), time / 6, 0, () => {
-                            let rotate1 = Tools._Number.randomOneBySection(180);
-                            let rotate2 = Tools._Number.randomOneBySection(-180);
-                            Animation2D.move_rotate(element, Tools._Number.randomOneHalf() == 0 ? rotate1 : rotate2, new Laya.Point(element.x + disX, element.y + disY), time, 0, () => {
-                                Animation2D.fadeOut(element, 1, 0, 200);
+                        LwgAni2D.move_rotate(element, 0, new Laya.Point(element.x + disX / 30, element.y + disY / 30), time / 6, 0, () => {
+                            let rotate1 = LwgTools._Number.randomOneBySection(180);
+                            let rotate2 = LwgTools._Number.randomOneBySection(-180);
+                            LwgAni2D.move_rotate(element, LwgTools._Number.randomOneHalf() == 0 ? rotate1 : rotate2, new Laya.Point(element.x + disX, element.y + disY), time, 0, () => {
+                                LwgAni2D.fadeOut(element, 1, 0, 200);
                             });
                         });
                     }
                 }
                 // 检测是否全部完成
                 if (_TaskClothes._ins()._checkAllCompelet()) {
-                    Tools._Node.removeAllChildren(_TaskClothes._ins().LineParent);
+                    LwgTools._Node.removeAllChildren(_TaskClothes._ins().LineParent);
                     this._evNotify(_MakeTailor._event.scissorRemove);
-                    TimerAdmin._frameOnce(80, this, () => {
+                    LwgTimer._frameOnce(80, this, () => {
                         this._evNotify(_MakeTailor._event.completeEffcet);
                     })
-                    TimerAdmin._frameOnce(280, this, () => {
+                    LwgTimer._frameOnce(280, this, () => {
                         _Tweeting._photo.take(this._Owner, 0);
                         this._openScene('MakePattern', true, true);
                     })
@@ -530,8 +530,8 @@ export default class MakeTailor extends SceneAdmin._SceneBase {
         this._evReg(_MakeTailor._event.completeEffcet, () => {
             this.UI.btnBackVinish();
             this.UI.btnAgainVinish();
-            AudioAdmin._playVictorySound(null, null, null, 0.5);
-            const index = Tools._Array.randomGetOne([0, 1, 2]);
+            LwgAudio._playVictorySound(null, null, null, 0.5);
+            const index = LwgTools._Array.randomGetOne([0, 1, 2]);
             switch (index) {
                 case 0:
                     this.heartShapedPathEffcet();
@@ -554,14 +554,14 @@ export default class MakeTailor extends SceneAdmin._SceneBase {
     heartShapedPathEffcet(): void {
         this._AniVar('complete').play(0, false);
         let _caller = {};
-        TimerAdmin._frameLoop(1, _caller, () => {
+        LwgTimer._frameLoop(1, _caller, () => {
             let gP = (this._ImgVar('EFlower').parent as Laya.Image).localToGlobal(new Laya.Point(this._ImgVar('EFlower').x, this._ImgVar('EFlower').y))
-            Effects2D._Particle._fallingVertical(this._Owner, new Laya.Point(gP.x, gP.y - 40), [0, 0], null, null, [0, 360], [Effects2D._SkinUrl.花2], [[255, 222, 0, 1], [255, 222, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1])
+            LwgEff2D._Particle._fallingVertical(this._Owner, new Laya.Point(gP.x, gP.y - 40), [0, 0], null, null, [0, 360], [LwgEff2D._SkinUrl.花2], [[255, 222, 0, 1], [255, 222, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1])
 
-            Effects2D._Particle._fallingVertical(this._Owner, new Laya.Point(gP.x, gP.y), [0, 0], null, null, [0, 360], [Effects2D._SkinUrl.花2], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1])
+            LwgEff2D._Particle._fallingVertical(this._Owner, new Laya.Point(gP.x, gP.y), [0, 0], null, null, [0, 360], [LwgEff2D._SkinUrl.花2], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1])
         })
         this._AniVar('complete').on(Laya.Event.COMPLETE, this, () => {
-            TimerAdmin._clearAll([_caller]);
+            LwgTimer._clearAll([_caller]);
         })
     }
 }

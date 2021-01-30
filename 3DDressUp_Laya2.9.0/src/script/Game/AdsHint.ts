@@ -1,7 +1,7 @@
 import ADManager from "../../TJ/Admanager";
-import { SceneAdmin } from "../Lwg/Lwg";
+import {  LwgScene } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
-export default class AdsHint extends SceneAdmin._SceneBase {
+export default class AdsHint extends  LwgScene._SceneBase {
     adAction: any;
     setCallBack(_adAction: any): void {
         this.adAction = _adAction;

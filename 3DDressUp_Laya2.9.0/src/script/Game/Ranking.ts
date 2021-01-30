@@ -1,5 +1,5 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import Lwg, { SceneAdmin, DataAdmin, Tools } from "../Lwg/Lwg";
+import Lwg, { LwgScene, LwgData, LwgTools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _CheckIn, _Guide, _PersonalInfo, _Ranking, _Start } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
@@ -10,7 +10,7 @@ export type _otherPro = {
     $fansNum: any;
 } & Lwg.DataAdmin._BaseProperty;
 
-export class RankingItem extends DataAdmin._Item implements _otherPro {
+export class RankingItem extends LwgData._Item implements _otherPro {
     get $rankNum(): string {
         return this.$data ? this.$data['rankNum'] : null;
     };
@@ -31,13 +31,13 @@ export class RankingItem extends DataAdmin._Item implements _otherPro {
         IconPic.skin = this.$data[_Ranking._Data._otherPro.iconSkin];
     }
 }
-export default class Ranking extends SceneAdmin._SceneBase {
+export default class Ranking extends LwgScene._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'rankpage');
         _Ranking._Data._List = this._ListVar('List');
         if (_Ranking._whereFrom === 'Tweeting') {
             _Ranking._Data._addProValueForAll(_Ranking._Data._otherPro.fansNum, (): number => {
-                return Tools._Number.randomOneInt(100, 150);
+                return LwgTools._Number.randomOneInt(100, 150);
             })
         }
         this._evNotify(_Start._event.updateRanking);

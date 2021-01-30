@@ -1,26 +1,26 @@
 import ADManager from "../../TJ/Admanager";
-import { SceneAdmin, DataAdmin, DateAdmin, Dialogue } from "../Lwg/Lwg";
+import { LwgScene, LwgData, LwgDate, LwgDialogue } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _CheckIn, _DIYClothes, _Guide, _MakePattern } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
 
-class _Item extends DataAdmin._Item {
+class _Item extends LwgData._Item {
     $button(): void {
         this._btnUp(this._ImgChild('Reward'), (e: Laya.Event) => {
             if (!_CheckIn._todayCheckIn) {
                 if (_CheckIn._checkInNum + 1 === this.$serial) {
-                    _CheckIn._lastCheckDate = DateAdmin._date.date;
+                    _CheckIn._lastCheckDate = LwgDate._date.date;
                     _CheckIn._Data._setCompleteName(this.$name);
                     _CheckIn._checkInNum++;
 
                     if (this.$rewardType.substr(0, 3) === 'diy') {
                         _DIYClothes._ins()._setCompleteByName(this.$rewardType);
-                        Dialogue.createHint_Middle('恭喜获得新的裁剪服装');
+                        LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
                         _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                     } else if (this.$rewardType === 'cat') {
                         _MakePattern._Data._setCompleteByClassify(this.$rewardType);
-                        Dialogue.createHint_Middle('恭喜获得猫咪贴图一套');
+                        LwgDialogue.createHint_Middle('恭喜获得猫咪贴图一套');
                         _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                     }
                     if (!_Guide._complete) {
@@ -29,7 +29,7 @@ class _Item extends DataAdmin._Item {
                     }
                 }
             } else {
-                Dialogue.createHint_Middle('日期不对哦！');
+                LwgDialogue.createHint_Middle('日期不对哦！');
             }
         })
 
@@ -38,10 +38,10 @@ class _Item extends DataAdmin._Item {
                 _CheckIn._Data._setOtherCompleteName(this.$name);
                 if (this.$otherRewardType.substr(0, 3) === 'diy') {
                     _DIYClothes._ins()._setCompleteByName(this.$otherRewardType);
-                    Dialogue.createHint_Middle('恭喜获得新的裁剪服装');
+                    LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
                 } else if (this.$otherRewardType === 'newYear') {
                     _MakePattern._Data._setCompleteByClassify(this.$otherRewardType);
-                    Dialogue.createHint_Middle('恭喜获得新年贴图一套');
+                    LwgDialogue.createHint_Middle('恭喜获得新年贴图一套');
                 }
                 _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
             })
@@ -58,7 +58,7 @@ class _Item extends DataAdmin._Item {
                     }
                 }
             } else {
-                Dialogue.createHint_Middle('日期不对哦！');
+                LwgDialogue.createHint_Middle('日期不对哦！');
             }
         }
         this._btnUp(this._ImgChild('AdsReward'), adsClick);
@@ -125,7 +125,7 @@ class _Item extends DataAdmin._Item {
         }
     }
 }
-export default class CheckIn extends SceneAdmin._SceneBase {
+export default class CheckIn extends LwgScene._SceneBase {
     lwgOnAwake(): void {
         _CheckIn._Data._List = this._ListVar('List');
         _CheckIn._Data._listRenderScript = _Item;
@@ -149,7 +149,7 @@ export default class CheckIn extends SceneAdmin._SceneBase {
         this._btnUp(this._ImgVar('BtnClose'), () => {
             if (!_Guide._complete && _Guide.CheckInCloseBtn) {
                 _Guide._complete = true;
-                Dialogue.createHint_Middle('开启你的女神之路吧!');
+                LwgDialogue.createHint_Middle('开启你的女神之路吧!');
                 this._evNotify(_Guide.event.closeGuide);
                 this._evNotify(_Guide.event.StartOtherBtnClick);
             }
@@ -183,7 +183,7 @@ export default class CheckIn extends SceneAdmin._SceneBase {
                             }
                             gP2.x += 165;
                         }, null, () => {
-                            Dialogue.createHint_Middle('奖励已经全部获得，快去制作服装吧！');
+                            LwgDialogue.createHint_Middle('奖励已经全部获得，快去制作服装吧！');
                         });
                         _DIYClothes._ins()._setCompleteByNameArr(['diy_dress_003_final', 'diy_dress_007_final', 'diy_top_004_final', 'diy_bottom_005_final', 'diy_dress_006_final', 'diy_bottom_006_final']);
                         _MakePattern._Data._setCompleteByClassify('cat');
@@ -191,7 +191,7 @@ export default class CheckIn extends SceneAdmin._SceneBase {
                     }
                 })
             } else {
-                Dialogue.createHint_Middle('奖励已经全部获得，无需在看广告o.o！')
+                LwgDialogue.createHint_Middle('奖励已经全部获得，无需在看广告o.o！')
             }
         })
     }
