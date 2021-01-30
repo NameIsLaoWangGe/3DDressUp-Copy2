@@ -1,5 +1,5 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { Admin, Animation2D, AudioAdmin, Click, DataAdmin, Dialogue, Effects2D, EventAdmin, TimerAdmin, Tools, _SceneName } from "../Lwg/Lwg";
+import { SceneAdmin, Animation2D, AudioAdmin, Click, DataAdmin, Dialogue, Effects2D, EventAdmin, TimerAdmin, Tools, _SceneName } from "../Lwg/Lwg";
 import { _DIYClothes, _Guide, _MakeTailor, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
@@ -86,7 +86,7 @@ export class _TaskClothes extends DataAdmin._Table {
 }
 
 /**剪刀*/
-class _Scissor extends Admin._ObjectBase {
+class _Scissor extends SceneAdmin._ObjectBase {
     lwgOnAwake(): void {
         this._Owner.pos(this.Ani.vanishP.x, this.Ani.vanishP.y);
     }
@@ -130,7 +130,7 @@ class _Scissor extends Admin._ObjectBase {
         },
 
         event: () => {
-            this._evReg( _MakeTailor._event.scissorAppear, () => {
+            this._evReg(_MakeTailor._event.scissorAppear, () => {
                 let time = 800;
                 Animation2D.move_rotate(this._Owner, this._fRotation + 360, this._fPoint, time, 0, () => {
                     this._Owner.rotation = this._fRotation;
@@ -138,13 +138,13 @@ class _Scissor extends Admin._ObjectBase {
                     if (!_Guide._complete) this._evNotify(_Guide.event.MakeTailorStartTailor, [this._Owner]);
                 })
             })
-            this._evReg( _MakeTailor._event.scissorPlay, () => {
+            this._evReg(_MakeTailor._event.scissorPlay, () => {
                 this.Ani.paly();
             })
-            this._evReg( _MakeTailor._event.scissorStop, () => {
+            this._evReg(_MakeTailor._event.scissorStop, () => {
                 this.Ani.stop();
             })
-            this._evReg( _MakeTailor._event.scissorRemove, (func?: Function) => {
+            this._evReg(_MakeTailor._event.scissorRemove, (func?: Function) => {
                 this.Move.switch = false;
                 let disX = 1500;
                 let disY = -600;
@@ -162,13 +162,13 @@ class _Scissor extends Admin._ObjectBase {
                 })
             })
 
-            this._evReg( _MakeTailor._event.scissorAgain, () => {
+            this._evReg(_MakeTailor._event.scissorAgain, () => {
                 Animation2D.move_rotate(this._Owner, this._fRotation, this._fPoint, 600, 100, () => {
                     _TaskClothes._ins().again(this._Scene);
                 });
             })
 
-            this._evReg( _MakeTailor._event.scissorRotation, (rotate: number) => {
+            this._evReg(_MakeTailor._event.scissorRotation, (rotate: number) => {
                 TimerAdmin._clearAll([this._Owner]);
                 const time = 10;
                 let angle: number;
@@ -204,7 +204,7 @@ class _Scissor extends Admin._ObjectBase {
         this._btnFour(Laya.stage,
             (e: Laya.Event) => {
                 if (this.Move.switch) {
-                    this._evNotify( _MakeTailor._event.scissorPlay);
+                    this._evNotify(_MakeTailor._event.scissorPlay);
                     this.Move.touchP = new Laya.Point(e.stageX, e.stageY);
                     if (!_Guide._complete) this._evNotify(_Guide.event.MakeTailorCloseTailor, [this._Owner]);
                 }
@@ -216,11 +216,11 @@ class _Scissor extends Admin._ObjectBase {
                     this._Owner.y += this.Move.diffP.y;
                     Tools._Node.tieByStage(this._Owner);
                     this.Move.touchP = new Laya.Point(e.stageX, e.stageY);
-                    this._evNotify( _MakeTailor._event.scissorPlay);
+                    this._evNotify(_MakeTailor._event.scissorPlay);
                 }
             },
             () => {
-                this._evNotify( _MakeTailor._event.scissorStop);
+                this._evNotify(_MakeTailor._event.scissorStop);
                 this.Move.touchP = null;
                 if (!_Guide._complete) {
                     this._evNotify(_Guide.event.MakeTailorOpenTailor, [this._Owner]);
@@ -231,9 +231,9 @@ class _Scissor extends Admin._ObjectBase {
     onTriggerEnter(other: Laya.CircleCollider, _Owner: Laya.CircleCollider): void {
         if (!other['cut'] && this.Move.switch) {
             other['cut'] = true;
-            this._evNotify( _MakeTailor._event.scissorPlay);
-            this._evNotify( _MakeTailor._event.scissorStop);
-            EventAdmin._notify( _MakeTailor._event.scissorTrigger, [other.owner]);
+            this._evNotify(_MakeTailor._event.scissorPlay);
+            this._evNotify(_MakeTailor._event.scissorStop);
+            EventAdmin._notify(_MakeTailor._event.scissorTrigger, [other.owner]);
             this.Ani.effcts();
             ADManager.VibrateShort();
         }
@@ -252,7 +252,7 @@ class _Item extends DataAdmin._Item {
                 // 如果已选中则不会更换选择
                 if (this.$name !== _DIYClothes._ins()._pitchName) {
                     _DIYClothes._ins()._setPitch(this.$name);
-                    this._evNotify( _MakeTailor._event.changeClothes);
+                    this._evNotify(_MakeTailor._event.changeClothes);
                 }
             }
             else {
@@ -268,7 +268,7 @@ class _Item extends DataAdmin._Item {
                             if (_DIYClothes._ins()._checkCondition(this.$name)) {
                                 Dialogue.createHint_Middle('恭喜获得一件新服装！');
                                 _DIYClothes._ins()._setPitch(this.$name);
-                                this._evNotify( _MakeTailor._event.changeClothes);
+                                this._evNotify(_MakeTailor._event.changeClothes);
                             }
                         })
                         break;
@@ -337,7 +337,7 @@ class _Item extends DataAdmin._Item {
     }
 }
 
-export default class MakeTailor extends Admin._SceneBase {
+export default class MakeTailor extends SceneAdmin._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'jiancaipage');
 
@@ -384,7 +384,7 @@ export default class MakeTailor extends Admin._SceneBase {
                 this.UI.btnAgainAppear();
             }, 200);
             TimerAdmin._frameOnce(30, this, () => {
-                this._evNotify( _MakeTailor._event.scissorAppear);
+                this._evNotify(_MakeTailor._event.scissorAppear);
             })
         }
 
@@ -414,26 +414,26 @@ export default class MakeTailor extends Admin._SceneBase {
             return;
         }
         this.UI.btnAgainClick = () => {
-            this._evNotify( _MakeTailor._event.scissorRemove, [() => {
+            this._evNotify(_MakeTailor._event.scissorRemove, [() => {
                 _TaskClothes._ins().again(this._Owner);
             }]);
-            Click._switch = false;
+            Click._switch.value = false;
             TimerAdmin._frameOnce(60, this, () => {
                 this.UI.operationAppear(() => {
                     this.UI.btnAgainVinish(null, 200);
                     this.UI.btnCompleteAppear();
                 });
-                Click._switch = true;
+                Click._switch.value = true;
             })
         }
     }
 
     lwgEvent(): void {
-        this._evReg( _MakeTailor._event.changeClothes, () => {
+        this._evReg(_MakeTailor._event.changeClothes, () => {
             _TaskClothes._ins().changeClothes(this._Owner);
         })
 
-        this._evReg( _MakeTailor._event.scissorTrigger, (Dotted: Laya.Image) => {
+        this._evReg(_MakeTailor._event.scissorTrigger, (Dotted: Laya.Image) => {
             const Parent = Dotted.parent as Laya.Sprite;
             const value = _TaskClothes._ins()._checkCondition(Parent.name);
             Dotted.visible = false;
@@ -500,9 +500,9 @@ export default class MakeTailor extends Admin._SceneBase {
                 // 检测是否全部完成
                 if (_TaskClothes._ins()._checkAllCompelet()) {
                     Tools._Node.removeAllChildren(_TaskClothes._ins().LineParent);
-                    this._evNotify( _MakeTailor._event.scissorRemove);
+                    this._evNotify(_MakeTailor._event.scissorRemove);
                     TimerAdmin._frameOnce(80, this, () => {
-                        this._evNotify( _MakeTailor._event.completeEffcet);
+                        this._evNotify(_MakeTailor._event.completeEffcet);
                     })
                     TimerAdmin._frameOnce(280, this, () => {
                         _Tweeting._photo.take(this._Owner, 0);
@@ -514,20 +514,20 @@ export default class MakeTailor extends Admin._SceneBase {
             const gPos = (Dotted.parent as Laya.Image).localToGlobal(new Laya.Point(Dotted.x, Dotted.y));
             if (Dotted.name == 'A') {
                 if (this._ImgVar('Scissor').x <= gPos.x) {
-                    this._evNotify( _MakeTailor._event.scissorRotation, [Dotted.rotation]);
+                    this._evNotify(_MakeTailor._event.scissorRotation, [Dotted.rotation]);
                 } else {
-                    this._evNotify( _MakeTailor._event.scissorRotation, [180 + Dotted.rotation]);
+                    this._evNotify(_MakeTailor._event.scissorRotation, [180 + Dotted.rotation]);
                 }
             } else {
                 if (this._ImgVar('Scissor').y >= gPos.y) {
-                    this._evNotify( _MakeTailor._event.scissorRotation, [Dotted.rotation]);
+                    this._evNotify(_MakeTailor._event.scissorRotation, [Dotted.rotation]);
                 } else {
-                    this._evNotify( _MakeTailor._event.scissorRotation, [180 + Dotted.rotation]);
+                    this._evNotify(_MakeTailor._event.scissorRotation, [180 + Dotted.rotation]);
                 }
             }
         })
 
-        this._evReg( _MakeTailor._event.completeEffcet, () => {
+        this._evReg(_MakeTailor._event.completeEffcet, () => {
             this.UI.btnBackVinish();
             this.UI.btnAgainVinish();
             AudioAdmin._playVictorySound(null, null, null, 0.5);

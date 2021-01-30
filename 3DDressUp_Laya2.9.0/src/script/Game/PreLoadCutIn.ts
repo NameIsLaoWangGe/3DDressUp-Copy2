@@ -1,4 +1,4 @@
-import { Admin, EventAdmin, TimerAdmin, Tools, _LwgPreLoad, _SceneName } from "../Lwg/Lwg";
+import { SceneAdmin, EventAdmin, TimerAdmin, Tools, _LwgPreLoad, _SceneName } from "../Lwg/Lwg";
 import { _3DDIYCloth, _3DScene } from "./_3D";
 import { _GameAni } from "./_GameAni";
 import { _AllClothes, _DIYClothes, _PreLoadCutIn } from "./_GameData";
@@ -10,13 +10,13 @@ export default class PreLoadCutIn extends _LwgPreLoad._PreLoadScene {
             time++;
             this._LabelVar('Schedule').text = `${time}%`;
         }, () => {
-            let obj = _CutInRes[Admin._PreLoadCutIn.openName];
+            let obj = _CutInRes[SceneAdmin._PreLoadCutIn.openName];
             obj = obj ? obj : {};
             EventAdmin._notify(_LwgPreLoad._Event.importList, [obj]);
         })
     }
     lwgAllComplete(): number {
-        switch (Admin._PreLoadCutIn.openName) {
+        switch (SceneAdmin._PreLoadCutIn.openName) {
             case 'MakePattern':
                 _3DDIYCloth._ins().remake(_DIYClothes._ins()._pitchClassify, _DIYClothes._ins()._pitchName);
                 _3DScene._ins().intoMakePattern();
@@ -39,7 +39,7 @@ export default class PreLoadCutIn extends _LwgPreLoad._PreLoadScene {
                 _DIYClothes._ins().getClothesArr();
                 break;
             case 'Start':
-                if (Admin._PreLoadCutIn.closeName === 'MakePattern' && !_PreLoadCutIn._fromBack) {
+                if (SceneAdmin._PreLoadCutIn.closeName === 'MakePattern' && !_PreLoadCutIn._fromBack) {
                     this.iconPhoto();
                 } else {
                     _3DScene._ins().intoStart();

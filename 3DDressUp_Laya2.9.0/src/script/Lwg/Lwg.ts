@@ -106,7 +106,7 @@ export module Lwg {
     }
 
     /**游戏整体控制*/
-    export module Admin {
+    export module SceneAdmin {
         /**场景控制,访问特定场景用_sceneControl[name]访问*/
         export let _SceneControl = {};
         /**和场景名称一样的脚本,这个脚本唯一，不可随意调用*/
@@ -314,7 +314,7 @@ export module Lwg {
                 closef();
                 return;
             }
-            _SceneChange._closeZOderUP(Admin._SceneControl[closeName]);
+            _SceneChange._closeZOderUP(SceneAdmin._SceneControl[closeName]);
             //如果内部场景消失动画被重写了，则执行内部场景消失动画，而不执行通用动画
             let script = _SceneControl[closeName][_SceneControl[closeName].name];
             if (script) {
@@ -428,7 +428,7 @@ export module Lwg {
             */
             _btnDown(target: Laya.Node, down?: Function, effect?: string): void {
                 Click._on(effect == undefined ? Click._Use.value : effect, target, this, (e: Laya.Event) => {
-                    Click._switch && down && down(e)
+                    Click._absoluteSwitch && Click._switch && down && down(e)
                 }, null, null, null);
             }
             /**
@@ -439,7 +439,7 @@ export module Lwg {
              */
             _btnMove(target: Laya.Node, move: Function, effect?: string): void {
                 Click._on(effect == undefined ? Click._Use.value : effect, target, this, null, (e: Laya.Event) => {
-                    Click._switch && move && move(e)
+                    Click._absoluteSwitch && Click._switch && move && move(e)
                 }, null, null);
             }
 
@@ -451,7 +451,8 @@ export module Lwg {
            */
             _btnUp(target: Laya.Node, up: Function, effect?: string): void {
                 Click._on(effect == undefined ? Click._Use.value : effect, target, this, null, null, (e: Laya.Event) => {
-                    Click._switch && up && up(e);
+                    console.log(Click._absoluteSwitch);
+                    Click._absoluteSwitch && Click._switch && up && up(e);
                 }, null);
             }
             /**
@@ -461,7 +462,7 @@ export module Lwg {
               * @param effect 效果类型输入'null'则没有效果
              */
             _btnOut(target: Laya.Node, out: Function, effect?: string): void {
-                Click._on(effect == undefined ? Click._Use.value : effect, target, this, null, null, null, (e: Laya.Event) => { Click._switch && out && out(e) });
+                Click._on(effect == undefined ? Click._Use.value : effect, target, this, null, null, null, (e: Laya.Event) => { Click._absoluteSwitch && Click._switch && out && out(e) });
             }
             /**
               * 通用事件注册,可以用(e)=>{}简写传递的函数参数
@@ -473,10 +474,10 @@ export module Lwg {
              */
             _btnFour(target: Laya.Node, down?: Function, move?: Function, up?: Function, out?: Function, effect?: string): void {
                 Click._on(effect == null ? effect : Click._Use.value, target, this,
-                    (e: Laya.Event) => { Click._switch && down && down(e) },
-                    (e: Laya.Event) => { Click._switch && move && move(e) },
-                    (e: Laya.Event) => { Click._switch && up && up(e) },
-                    (e: Laya.Event) => { Click._switch && out && out(e) });
+                    (e: Laya.Event) => { Click._absoluteSwitch && Click._switch && down && down(e) },
+                    (e: Laya.Event) => { Click._absoluteSwitch && Click._switch && move && move(e) },
+                    (e: Laya.Event) => { Click._absoluteSwitch && Click._switch && up && up(e) },
+                    (e: Laya.Event) => { Click._absoluteSwitch && Click._switch && out && out(e) });
             }
             ownerSceneName: string = '';
             /**
@@ -493,9 +494,9 @@ export module Lwg {
                     closeName = this.ownerSceneName;
                 }
                 if (!preLoadCutIn) {
-                    Admin._openScene(openName, closeName, func, zOrder);
+                    SceneAdmin._openScene(openName, closeName, func, zOrder);
                 } else {
-                    Admin._preLoadOpenScene(openName, closeName, func, zOrder);
+                    SceneAdmin._preLoadOpenScene(openName, closeName, func, zOrder);
                 }
             }
             /**
@@ -504,7 +505,7 @@ export module Lwg {
              * @param func 关闭后的回调函数
              * */
             _closeScene(sceneName?: string, func?: Function): void {
-                Admin._closeScene(sceneName ? sceneName : this.ownerSceneName, func);
+                SceneAdmin._closeScene(sceneName ? sceneName : this.ownerSceneName, func);
             }
             /**每帧执行，不要执行onUpdate，只执行lwgOnUpdate*/
             lwgOnUpdate(): void { };
@@ -1937,7 +1938,7 @@ export module Lwg {
                 }
             }
             if (!_openSwitch.value) {
-                Admin._SceneChange._close();
+                SceneAdmin._SceneChange._close();
                 Laya.timer.once(_closeAniDelay + _closeAniTime, this, () => {
                     afterAni();
                 })
@@ -2626,26 +2627,37 @@ export module Lwg {
             $chName: any;
             /**品类*/
             $classify: any;
+
             /**解锁方式*/
             $unlockWay: any;
-            /**条件值*/
-            $conditionNum: any;
-            /**对比条件值，达到了多少*/
-            $degreeNum: any;
-            /**另一个奖励条件，对比条件值，达到了多少*/
-            $otherDegreeNum: any;
-            /**达到，取得，完成,解锁*/
-            $complete: any;
-            /**附加一个达到，取得，完成,解锁*/
-            $otherComplete: any;
-            /**奖励的状态，如果不有规律的奖励，需要手动领取*/
-            $getAward: any;
-            /**附加奖励的状态，如果不有规律的奖励，需要手动领取*/
-            $otherGetAward: any;
+            /**另一个解锁方式*/
+            $otherUnlockWay: any;
+
             /**奖励类型或者名称*/
             $rewardType: any;
             /**附加奖励的类型或者名称*/
             $otherRewardType: any;
+
+            /**条件值*/
+            $conditionNum: any;
+            /**另一个条件值*/
+            $otherConditionNum: any;
+
+            /**对比条件值，达到了多少*/
+            $degreeNum: any;
+            /**另一个奖励条件，对比条件值，达到了多少*/
+            $otherDegreeNum: any;
+
+            /**达到，取得，完成,解锁*/
+            $complete: any;
+            /**附加一个达到，取得，完成,解锁*/
+            $otherComplete: any;
+
+            /**奖励的状态，如果不有规律的奖励，需要手动领取*/
+            $getAward: any;
+            /**附加奖励的状态，如果不有规律的奖励，需要手动领取*/
+            $otherGetAward: any;
+
             /**是否被选中*/
             $pitch: any;
         }
@@ -2660,29 +2672,38 @@ export module Lwg {
         }
 
         /**listItem脚本，此脚本中的$awake，$button替代所有流程方法，不要使用OnEnable，onstart禁用，因为渲染时会反复执行，只有onawake执行一次,所有属性暂时不可赋值，因为赋值后需要调用$render方法和控制类进行刷新，索性直接通过控制类修改属性，这样更加统一*/
-        export class _Item extends Admin._ObjectBase implements _BaseProperty {
-            get $name(): string { return this.$data ? this.$data['name'] : null; }
-            get $serial(): number { return this.$data ? this.$data['serial'] : null; }
-            get $sort(): string { return this.$data ? this.$data['sort'] : null; }
-            get $chName(): string { return this.$data ? this.$data['chName'] : null; }
-            get $classify(): string { return this.$data ? this.$data['classify'] : null; }
-            get $unlockWay(): string { return this.$data ? this.$data['unlockWay'] : null; }
-            get $conditionNum(): number { return this.$data ? this.$data['conditionNum'] : null; }
-            get $degreeNum(): number { return this.$data ? this.$data['degreeNum'] : null; }
-            get $otherDegreeNum(): number { return this.$data ? this.$data['otherDegreeNum'] : null; }
-            get $complete(): boolean { return this.$data ? this.$data['complete'] : null; }
-            get $otherComplete(): boolean { return this.$data ? this.$data['otherComplete'] : null; }
-            get $getAward(): boolean { return this.$data ? this.$data['getAward'] : null; }
-            get $otherGetAward(): boolean { return this.$data ? this.$data['otherGetAward'] : null; }
-            get $rewardType(): string { return this.$data ? this.$data['rewardType'] : null; }
-            get $otherRewardType(): string { return this.$data ? this.$data['otherRewardType'] : null; }
-            get $pitch(): boolean { return this.$data ? this.$data['pitch'] : null; }
+        export class _Item extends SceneAdmin._ObjectBase implements _BaseProperty {
+            get $name(): string { return this.$data['name'] };
+            get $serial(): number { return this.$data['serial'] };
+            get $sort(): string { return this.$data['sort'] };
+            get $chName(): string { return this.$data['chName'] };
+            get $classify(): string { return this.$data['classify'] };
+
+            get $unlockWay(): string { return this.$data['unlockWay'] };
+            get $otherUnlockWay(): string { return this.$data['otherUnlockWay'] };
+
+            get $conditionNum(): number { return this.$data['conditionNum'] };
+            get $otherConditionNum(): number { return this.$data['otherConditionNum'] };
+
+            get $degreeNum(): number { return this.$data['degreeNum'] };
+            get $otherDegreeNum(): number { return this.$data['otherDegreeNum'] };
+
+            get $rewardType(): string { return this.$data['rewardType'] };
+            get $otherRewardType(): string { return this.$data['otherRewardType'] };
+
+            get $complete(): boolean { return this.$data['complete'] };
+            get $otherComplete(): boolean { return this.$data['otherComplete'] };
+
+            get $getAward(): boolean { return this.$data['getAward'] };
+            get $otherGetAward(): boolean { return this.$data['otherGetAward'] };
+
+            get $pitch(): boolean { return this.$data['pitch'] };
             /**数据对象，通过item赋值*/
             get $data(): any {
                 if (!this['item/dataSource']) {
-                    console.log('data没有赋值！也可能是数据源赋值给data延时！');
+                    console.log('data没有赋值！也可能是数据延时！');
                 }
-                return this['item/dataSource'];
+                return this['item/dataSource'] ? this['item/dataSource'] : {};
             }
             set $data(data: any) { this['item/dataSource'] = data; }
             /**数据源在数组中的序号*/
@@ -2696,10 +2717,10 @@ export module Lwg {
             $unlockWayType: _BaseUnlockWay = {
                 $ads: 'ads',
                 $gold: 'gold',
-                $customs: 'customs',
                 $diamond: 'diamond',
-                $free: 'free',
+                $customs: 'customs',
                 $check: 'check',
+                $free: 'free',
             }
             /**渲染内容*/
             $render(): void { };
@@ -2722,27 +2743,35 @@ export module Lwg {
                 $sort: 'sort',
                 $chName: 'chName',
                 $classify: 'classify',
+
                 $unlockWay: 'unlockWay',
+                $otherUnlockWay: 'otherUnlockWay',
+
                 $conditionNum: 'conditionNum',
+                $otherConditionNum: 'otherConditionNum',
+
                 $degreeNum: 'degreeNum',
-                $complete: 'complete',
-                $otherComplete: 'otherComplete',
-                $getAward: 'getAward',
-                $pitch: 'pitch',
                 $otherDegreeNum: 'otherDegreeNum',
-                $otherGetAward: 'otherGetAward',
+
                 $rewardType: 'otherGetAward',
                 $otherRewardType: 'otherRewardType',
+
+                $complete: 'complete',
+                $otherComplete: 'otherComplete',
+
+                $getAward: 'getAward',
+                $otherGetAward: 'otherGetAward',
+                $pitch: 'pitch',
             };
             /**其他属性枚举重写添加*/
             _otherPro: any;
             /**一般解锁方式枚举*/
             _unlockWay: _BaseUnlockWay = {
-                $ads: 'ads',
-                $gold: 'gold',
-                $customs: 'customs',
-                $diamond: 'diamond',
                 $free: 'free',
+                $gold: 'gold',
+                $diamond: 'diamond',
+                $ads: 'ads',
+                $customs: 'customs',
                 $check: 'check',
             }
             /**奖励类型*/
@@ -5767,7 +5796,10 @@ export module Lwg {
 
     /**点击事件模块 */
     export module Click {
-        export let _switch: boolean = true;
+        /**点击事件开关，主要是场景切换控制按钮的点击*/
+        export let _switch = true;
+        /**点击事件绝对开关，不到不得已不要用，优先级高于_switch*/
+        export let _absoluteSwitch = true;
         /**按钮音效*/
         export let _audioUrl: string;
         /**
@@ -7158,7 +7190,7 @@ export module Lwg {
             btn.zOrder = ZOder ? ZOder : 100;
             var btnSetUp = function (e: Laya.Event): void {
                 e.stopPropagation();
-                Admin._openScene(Admin._SceneName.Set);
+                SceneAdmin._openScene(SceneAdmin._SceneName.Set);
             }
             Click._on(Click._Type.largen, btn, null, null, btnSetUp, null);
             _BtnSet = btn;
@@ -8862,7 +8894,7 @@ export module Lwg {
         export let _loadOrderIndex: number = 0;
 
         /**两种类型，页面前加载还是初始化前*/
-        export let _loadType: string = Admin._SceneName.PreLoad;
+        export let _loadType: string = SceneAdmin._SceneName.PreLoad;
         export enum _ListName {
             scene3D = 'scene3D',
             prefab3D = 'prefab3D',
@@ -8933,7 +8965,7 @@ export module Lwg {
             _loadOrderIndex = 0;
             _currentProgress.value = 0;
         }
-        export class _PreLoadScene extends Admin._SceneBase {
+        export class _PreLoadScene extends SceneAdmin._SceneBase {
             moduleOnAwake(): void {
                 LwgPreLoad._remakeLode();
             }
@@ -9009,16 +9041,16 @@ export module Lwg {
                 EventAdmin._register(_Event.stepLoding, this, () => { this.startLodingRule() });
                 EventAdmin._registerOnce(_Event.complete, this, () => {
                     Laya.timer.once(this.lwgAllComplete(), this, () => {
-                        Admin._SceneControl[_loadType] = this._Owner;
+                        SceneAdmin._SceneControl[_loadType] = this._Owner;
                         // 页面前
-                        if (_loadType !== Admin._SceneName.PreLoad) {
-                            Admin._PreLoadCutIn.openName && this._openScene(Admin._PreLoadCutIn.openName);
+                        if (_loadType !== SceneAdmin._SceneName.PreLoad) {
+                            SceneAdmin._PreLoadCutIn.openName && this._openScene(SceneAdmin._PreLoadCutIn.openName);
                             // console.log('预加载完毕开始打开界面！')
                         } else {
                             //游戏开始前
-                            // for (const key in Admin._Moudel) {
-                            //     if (Object.prototype.hasOwnProperty.call(Admin._Moudel, key)) {
-                            //         const element = Admin._Moudel[key];
+                            // for (const key in SceneAdmin._Moudel) {
+                            //     if (Object.prototype.hasOwnProperty.call(SceneAdmin._Moudel, key)) {
+                            //         const element = SceneAdmin._Moudel[key];
                             //         if (element['_init']) {
                             //             element['_init']();
                             //         } else {
@@ -9029,7 +9061,7 @@ export module Lwg {
                             AudioAdmin._playMusic();
                             // 页面前
                             this._openScene(_SceneName.Start, true, false, () => {
-                                _loadType = Admin._SceneName.PreLoadCutIn;
+                                _loadType = SceneAdmin._SceneName.PreLoadCutIn;
                             })
                         }
                     })
@@ -9224,7 +9256,7 @@ export module Lwg {
     }
     /**配置模块，拉去资源，分包等*/
     export module _LwgInit {
-        export class _LwgInitScene extends Admin._SceneBase {
+        export class _LwgInitScene extends SceneAdmin._SceneBase {
             lwgOpenAni(): number {
                 return 100;
             }
@@ -9236,11 +9268,13 @@ export module Lwg {
 
     /**体力模块*/
     export module Execution {
+        /**最大体力数量上限*/
+        let maxEx = 15;
         /**当前剩余行动力的数量*/
         export let _execution = {
             get value(): number {
                 if (!this['Execution/executionNum']) {
-                    return Laya.LocalStorage.getItem('Execution/executionNumm') ? Number(Laya.LocalStorage.getItem('Execution/executionNum')) : 15;
+                    return Laya.LocalStorage.getItem('Execution/executionNumm') ? Number(Laya.LocalStorage.getItem('Execution/executionNum')) : maxEx;
                 }
                 return this['Execution/executionNum'];
             },
@@ -9357,32 +9391,32 @@ export module Lwg {
             });
         }
 
-        export class ExecutionNode extends Admin._ObjectBase {
+        export class ExecutionNode extends SceneAdmin._ObjectBase {
             Num: Laya.FontClip;
             CountDown: Laya.Label;
-            CountDown_board: Laya.Label;
+            CountDown_Board: Laya.Label;
 
             lwgOnAwake(): void {
                 this.Num = this._Owner.getChildByName('Num') as Laya.FontClip;
                 this.CountDown = this._Owner.getChildByName('CountDown') as Laya.Label;
-                this.CountDown_board = this._Owner.getChildByName('CountDown_board') as Laya.Label;
+                this.CountDown_Board = this._Owner.getChildByName('CountDown_Board') as Laya.Label;
                 this.countNum = 59;
                 this.CountDown.text = '00:' + this.countNum;
-                this.CountDown_board.text = this.CountDown.text;
+                this.CountDown_Board.text = this.CountDown.text;
 
                 // 获取上次的体力
                 let d = new Date;
                 if (d.getDate() !== _addExDate.value) {
-                    _execution.value = 15;
+                    _execution.value = maxEx;
                 } else {
                     if (d.getHours() == _addExHours.value) {
                         console.log(d.getMinutes(), _addMinutes.value);
                         _execution.value += (d.getMinutes() - _addMinutes.value);
-                        if (_execution.value > 15) {
-                            _execution.value = 15;
+                        if (_execution.value > maxEx) {
+                            _execution.value = maxEx;
                         }
                     } else {
-                        _execution.value = 15;
+                        _execution.value = maxEx;
                     }
                 }
                 this.Num.value = _execution.value.toString();
@@ -9412,22 +9446,22 @@ export module Lwg {
                     }
                     if (this.countNum >= 10 && this.countNum <= 59) {
                         this.CountDown.text = '00:' + this.countNum;
-                        this.CountDown_board.text = this.CountDown.text;
+                        this.CountDown_Board.text = this.CountDown.text;
 
                     } else if (this.countNum >= 0 && this.countNum < 10) {
                         this.CountDown.text = '00:0' + this.countNum;
-                        this.CountDown_board.text = this.CountDown.text;
+                        this.CountDown_Board.text = this.CountDown.text;
                     }
                 }
             }
             lwgOnStart(): void {
                 TimerAdmin._frameLoop(1, this, () => {
-                    if (Number(this.Num.value) >= 15) {
+                    if (Number(this.Num.value) >= maxEx) {
                         if (this.timeSwitch) {
-                            _execution.value = 15;
+                            _execution.value = maxEx;
                             this.Num.value = _execution.value.toString();
                             this.CountDown.text = '00:00';
-                            this.CountDown_board.text = this.CountDown.text;
+                            this.CountDown_Board.text = this.CountDown.text;
                             this.countNum = 60;
                             this.timeSwitch = false;
                         }
@@ -9442,10 +9476,10 @@ export module Lwg {
 }
 export default Lwg;
 // 全局模块
-export let Admin = Lwg.Admin;
+export let SceneAdmin = Lwg.SceneAdmin;
 export let Platform = Lwg.Platform;
 export let GameAdmin = Lwg._GameAdmin;
-export let _SceneName = Admin._SceneName;
+export let _SceneName = SceneAdmin._SceneName;
 export let SceneAnimation = Lwg.SceneAnimation;
 export let Adaptive = Lwg.Adaptive;
 export let StorageAdmin = Lwg.StorageAdmin;

@@ -1,5 +1,5 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import Lwg, { Admin, DataAdmin, Tools } from "../Lwg/Lwg";
+import Lwg, { SceneAdmin, DataAdmin, Tools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _CheckIn, _Guide, _PersonalInfo, _Ranking, _Start } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
@@ -31,7 +31,7 @@ export class RankingItem extends DataAdmin._Item implements _otherPro {
         IconPic.skin = this.$data[_Ranking._Data._otherPro.iconSkin];
     }
 }
-export default class Ranking extends Admin._SceneBase {
+export default class Ranking extends SceneAdmin._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'rankpage');
         _Ranking._Data._List = this._ListVar('List');

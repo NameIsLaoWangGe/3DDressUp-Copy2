@@ -1,4 +1,4 @@
-import { Admin } from "./Lwg";
+import { SceneAdmin } from "./Lwg";
 
 export default class SubPkg {
     pkgFlag: number;
@@ -85,7 +85,7 @@ export default class SubPkg {
     loadPkg_OPPO() {
         console.log("loadPkg_OPPOsssssssss");
         if (this.pkgFlag == this.pkgInfo.length) {
-            Admin._openScene('PreLoad');
+            SceneAdmin._openScene('PreLoad');
             console.log("GameInit");
         } else {
             let info = this.pkgInfo[this.pkgFlag];

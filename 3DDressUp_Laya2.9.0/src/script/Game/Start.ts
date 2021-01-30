@@ -1,16 +1,15 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { Admin, Animation2D, TimerAdmin, _SceneName, Tools } from "../Lwg/Lwg";
+import { SceneAdmin, Animation2D, TimerAdmin, _SceneName, Tools, Click } from "../Lwg/Lwg";
 import { _3DScene } from "./_3D";
 import { _CheckIn, _DIYClothes, _Guide, _Ranking, _Start, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
-export default class Start extends Admin._SceneBase {
+export default class Start extends SceneAdmin._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'mainpage');
         ADManager.TAPoint(TaT.BtnShow, 'symaker');
         ADManager.TAPoint(TaT.BtnShow, 'lyqmaker');
         ADManager.TAPoint(TaT.BtnShow, 'xzmaker');
         ADManager.TAPoint(TaT.BtnShow, 'change');
-
         Tools._Node.childrenVisible2D(this._ImgVar('BtnParent'), false);
         _3DScene._ins().openStartAni(() => {
             this._ImgVar('BtnTop').pos(_3DScene._ins().btnTopPos.x, _3DScene._ins().btnTopPos.y);
@@ -24,6 +23,7 @@ export default class Start extends Admin._SceneBase {
             }
         });
     }
+
     lwgOpenAniAfter(): void {
         for (let index = 0; index < this._ImgVar('BtnParent').numChildren; index++) {
             const element = this._ImgVar('BtnParent').getChildAt(index) as Laya.Image;
@@ -70,6 +70,7 @@ export default class Start extends Admin._SceneBase {
             this._LabelVar('RankNum').text = `${obj[_Ranking._Data._otherPro.rankNum]}/50`;
         })
         this._evReg(_Start._event.photo, () => {
+            Click._absoluteSwitch = false;
             const sp = _3DScene._ins().cameraToSprite(this._Owner);
             TimerAdmin._frameOnce(10, this, () => {
                 _Tweeting._photo.take(this._Owner, 2);

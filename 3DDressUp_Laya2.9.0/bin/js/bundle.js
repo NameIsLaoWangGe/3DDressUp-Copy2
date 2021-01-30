@@ -1209,10 +1209,10 @@
         }
         _GameAdmin.switch = true;
         Lwg._GameAdmin = _GameAdmin;
-        let Admin;
-        (function (Admin) {
-            Admin._SceneControl = {};
-            Admin._SceneScript = {};
+        let SceneAdmin;
+        (function (SceneAdmin) {
+            SceneAdmin._SceneControl = {};
+            SceneAdmin._SceneScript = {};
             let _SceneName;
             (function (_SceneName) {
                 _SceneName["PreLoad"] = "PreLoad";
@@ -1251,8 +1251,8 @@
                 _SceneName["Settle"] = "Settle";
                 _SceneName["Special"] = "Special";
                 _SceneName["Compound"] = "Compound";
-            })(_SceneName = Admin._SceneName || (Admin._SceneName = {}));
-            Admin._PreLoadCutIn = {
+            })(_SceneName = SceneAdmin._SceneName || (SceneAdmin._SceneName = {}));
+            SceneAdmin._PreLoadCutIn = {
                 openName: null,
                 closeName: null,
                 func: null,
@@ -1260,19 +1260,19 @@
             };
             function _preLoadOpenScene(openName, closeName, func, zOrder) {
                 _openScene(_SceneName.PreLoadCutIn, closeName, func);
-                Admin._PreLoadCutIn.openName = openName;
-                Admin._PreLoadCutIn.closeName = closeName;
-                Admin._PreLoadCutIn.func = func;
-                Admin._PreLoadCutIn.zOrder = zOrder;
+                SceneAdmin._PreLoadCutIn.openName = openName;
+                SceneAdmin._PreLoadCutIn.closeName = closeName;
+                SceneAdmin._PreLoadCutIn.func = func;
+                SceneAdmin._PreLoadCutIn.zOrder = zOrder;
             }
-            Admin._preLoadOpenScene = _preLoadOpenScene;
+            SceneAdmin._preLoadOpenScene = _preLoadOpenScene;
             class _SceneChange {
                 static _openZOderUp() {
                     if (SceneAnimation._closeSwitch.value) {
                         let num = 0;
-                        for (const key in Admin._SceneControl) {
-                            if (Object.prototype.hasOwnProperty.call(Admin._SceneControl, key)) {
-                                const Scene = Admin._SceneControl[key];
+                        for (const key in SceneAdmin._SceneControl) {
+                            if (Object.prototype.hasOwnProperty.call(SceneAdmin._SceneControl, key)) {
+                                const Scene = SceneAdmin._SceneControl[key];
                                 if (Scene.parent) {
                                     Scene.zOrder = 0;
                                     num++;
@@ -1298,9 +1298,9 @@
                 static _closeZOderUP(CloseScene) {
                     if (SceneAnimation._closeSwitch.value) {
                         let num = 0;
-                        for (const key in Admin._SceneControl) {
-                            if (Object.prototype.hasOwnProperty.call(Admin._SceneControl, key)) {
-                                const Scene = Admin._SceneControl[key];
+                        for (const key in SceneAdmin._SceneControl) {
+                            if (Object.prototype.hasOwnProperty.call(SceneAdmin._SceneControl, key)) {
+                                const Scene = SceneAdmin._SceneControl[key];
                                 if (Scene.parent) {
                                     num++;
                                 }
@@ -1323,9 +1323,9 @@
                         else {
                             Laya.stage.addChild(this._openScene);
                         }
-                        if (Admin._SceneScript[this._openScene.name]) {
-                            if (!this._openScene.getComponent(Admin._SceneScript[this._openScene.name])) {
-                                this._openScene.addComponent(Admin._SceneScript[this._openScene.name]);
+                        if (SceneAdmin._SceneScript[this._openScene.name]) {
+                            if (!this._openScene.getComponent(SceneAdmin._SceneScript[this._openScene.name])) {
+                                this._openScene.addComponent(SceneAdmin._SceneScript[this._openScene.name]);
                             }
                         }
                         else {
@@ -1362,7 +1362,7 @@
             _SceneChange._closeSceneArr = [];
             _SceneChange._closeZOder = 0;
             _SceneChange._sceneNum = 1;
-            Admin._SceneChange = _SceneChange;
+            SceneAdmin._SceneChange = _SceneChange;
             function _openScene(openName, closeName, func, zOrder) {
                 Click._switch = false;
                 Laya.Scene.load('Scene/' + openName + '.json', Laya.Handler.create(this, function (scene) {
@@ -1371,31 +1371,31 @@
                         openScene.close();
                         console.log(`场景${openName}重复出现！前面的场景将会被关闭！`);
                     }
-                    _SceneChange._openScene = Admin._SceneControl[scene.name = openName] = scene;
-                    _SceneChange._closeSceneArr.push(Admin._SceneControl[closeName]);
-                    _SceneChange._closeZOder = closeName ? Admin._SceneControl[closeName].zOrder : 0;
+                    _SceneChange._openScene = SceneAdmin._SceneControl[scene.name = openName] = scene;
+                    _SceneChange._closeSceneArr.push(SceneAdmin._SceneControl[closeName]);
+                    _SceneChange._closeZOder = closeName ? SceneAdmin._SceneControl[closeName].zOrder : 0;
                     _SceneChange._openZOder = zOrder ? zOrder : null;
                     _SceneChange._openFunc = func ? func : () => { };
                     _SceneChange._open();
                 }));
             }
-            Admin._openScene = _openScene;
+            SceneAdmin._openScene = _openScene;
             function _closeScene(closeName, func) {
-                if (!Admin._SceneControl[closeName]) {
+                if (!SceneAdmin._SceneControl[closeName]) {
                     console.log(`场景${closeName}关闭失败，可能不存在！`);
                     return;
                 }
                 var closef = () => {
                     func && func();
                     Click._switch = true;
-                    Admin._SceneControl[closeName].close();
+                    SceneAdmin._SceneControl[closeName].close();
                 };
                 if (!SceneAnimation._closeSwitch.value) {
                     closef();
                     return;
                 }
-                _SceneChange._closeZOderUP(Admin._SceneControl[closeName]);
-                let script = Admin._SceneControl[closeName][Admin._SceneControl[closeName].name];
+                _SceneChange._closeZOderUP(SceneAdmin._SceneControl[closeName]);
+                let script = SceneAdmin._SceneControl[closeName][SceneAdmin._SceneControl[closeName].name];
                 if (script) {
                     if (script) {
                         Click._switch = false;
@@ -1409,7 +1409,7 @@
                             });
                         }
                         else {
-                            const delay = SceneAnimation._commonCloseAni(Admin._SceneControl[closeName]);
+                            const delay = SceneAnimation._commonCloseAni(SceneAdmin._SceneControl[closeName]);
                             Laya.timer.once(delay, this, () => {
                                 script.lwgBeforeCloseAni();
                                 closef();
@@ -1418,7 +1418,7 @@
                     }
                 }
             }
-            Admin._closeScene = _closeScene;
+            SceneAdmin._closeScene = _closeScene;
             class _ScriptBase extends Laya.Script {
                 constructor() {
                     super(...arguments);
@@ -1489,24 +1489,25 @@
                 ;
                 _btnDown(target, down, effect) {
                     Click._on(effect == undefined ? Click._Use.value : effect, target, this, (e) => {
-                        Click._switch && down && down(e);
+                        Click._absoluteSwitch && Click._switch && down && down(e);
                     }, null, null, null);
                 }
                 _btnMove(target, move, effect) {
                     Click._on(effect == undefined ? Click._Use.value : effect, target, this, null, (e) => {
-                        Click._switch && move && move(e);
+                        Click._absoluteSwitch && Click._switch && move && move(e);
                     }, null, null);
                 }
                 _btnUp(target, up, effect) {
                     Click._on(effect == undefined ? Click._Use.value : effect, target, this, null, null, (e) => {
-                        Click._switch && up && up(e);
+                        console.log(Click._absoluteSwitch);
+                        Click._absoluteSwitch && Click._switch && up && up(e);
                     }, null);
                 }
                 _btnOut(target, out, effect) {
-                    Click._on(effect == undefined ? Click._Use.value : effect, target, this, null, null, null, (e) => { Click._switch && out && out(e); });
+                    Click._on(effect == undefined ? Click._Use.value : effect, target, this, null, null, null, (e) => { Click._absoluteSwitch && Click._switch && out && out(e); });
                 }
                 _btnFour(target, down, move, up, out, effect) {
-                    Click._on(effect == null ? effect : Click._Use.value, target, this, (e) => { Click._switch && down && down(e); }, (e) => { Click._switch && move && move(e); }, (e) => { Click._switch && up && up(e); }, (e) => { Click._switch && out && out(e); });
+                    Click._on(effect == null ? effect : Click._Use.value, target, this, (e) => { Click._absoluteSwitch && Click._switch && down && down(e); }, (e) => { Click._absoluteSwitch && Click._switch && move && move(e); }, (e) => { Click._absoluteSwitch && Click._switch && up && up(e); }, (e) => { Click._absoluteSwitch && Click._switch && out && out(e); });
                 }
                 _openScene(openName, closeSelf, preLoadCutIn, func, zOrder) {
                     let closeName;
@@ -1514,14 +1515,14 @@
                         closeName = this.ownerSceneName;
                     }
                     if (!preLoadCutIn) {
-                        Admin._openScene(openName, closeName, func, zOrder);
+                        SceneAdmin._openScene(openName, closeName, func, zOrder);
                     }
                     else {
-                        Admin._preLoadOpenScene(openName, closeName, func, zOrder);
+                        SceneAdmin._preLoadOpenScene(openName, closeName, func, zOrder);
                     }
                 }
                 _closeScene(sceneName, func) {
-                    Admin._closeScene(sceneName ? sceneName : this.ownerSceneName, func);
+                    SceneAdmin._closeScene(sceneName ? sceneName : this.ownerSceneName, func);
                 }
                 lwgOnUpdate() { }
                 ;
@@ -1540,7 +1541,7 @@
                 lwgOnStageUp(e) { }
                 ;
             }
-            Admin._ScriptBase = _ScriptBase;
+            SceneAdmin._ScriptBase = _ScriptBase;
             class _SceneBase extends _ScriptBase {
                 constructor() {
                     super();
@@ -1683,7 +1684,7 @@
                     this.lwgOnDisable();
                 }
             }
-            Admin._SceneBase = _SceneBase;
+            SceneAdmin._SceneBase = _SceneBase;
             class _ObjectBase extends _ScriptBase {
                 constructor() {
                     super();
@@ -1844,8 +1845,8 @@
                     this.lwgOnDisable();
                 }
             }
-            Admin._ObjectBase = _ObjectBase;
-        })(Admin = Lwg.Admin || (Lwg.Admin = {}));
+            SceneAdmin._ObjectBase = _ObjectBase;
+        })(SceneAdmin = Lwg.SceneAdmin || (Lwg.SceneAdmin = {}));
         let _LwgNode;
         (function (_LwgNode) {
             class _Sprite extends Laya.Sprite {
@@ -2637,7 +2638,7 @@
                     }
                 };
                 if (!SceneAnimation._openSwitch.value) {
-                    Admin._SceneChange._close();
+                    SceneAdmin._SceneChange._close();
                     Laya.timer.once(SceneAnimation._closeAniDelay + SceneAnimation._closeAniTime, this, () => {
                         afterAni();
                     });
@@ -3223,39 +3224,59 @@
         })(StorageAdmin = Lwg.StorageAdmin || (Lwg.StorageAdmin = {}));
         let DataAdmin;
         (function (DataAdmin) {
-            class _Item extends Admin._ObjectBase {
+            class _Item extends SceneAdmin._ObjectBase {
                 constructor() {
                     super(...arguments);
                     this.$unlockWayType = {
                         $ads: 'ads',
                         $gold: 'gold',
-                        $customs: 'customs',
                         $diamond: 'diamond',
-                        $free: 'free',
+                        $customs: 'customs',
                         $check: 'check',
+                        $free: 'free',
                     };
                 }
-                get $name() { return this.$data ? this.$data['name'] : null; }
-                get $serial() { return this.$data ? this.$data['serial'] : null; }
-                get $sort() { return this.$data ? this.$data['sort'] : null; }
-                get $chName() { return this.$data ? this.$data['chName'] : null; }
-                get $classify() { return this.$data ? this.$data['classify'] : null; }
-                get $unlockWay() { return this.$data ? this.$data['unlockWay'] : null; }
-                get $conditionNum() { return this.$data ? this.$data['conditionNum'] : null; }
-                get $degreeNum() { return this.$data ? this.$data['degreeNum'] : null; }
-                get $otherDegreeNum() { return this.$data ? this.$data['otherDegreeNum'] : null; }
-                get $complete() { return this.$data ? this.$data['complete'] : null; }
-                get $otherComplete() { return this.$data ? this.$data['otherComplete'] : null; }
-                get $getAward() { return this.$data ? this.$data['getAward'] : null; }
-                get $otherGetAward() { return this.$data ? this.$data['otherGetAward'] : null; }
-                get $rewardType() { return this.$data ? this.$data['rewardType'] : null; }
-                get $otherRewardType() { return this.$data ? this.$data['otherRewardType'] : null; }
-                get $pitch() { return this.$data ? this.$data['pitch'] : null; }
+                get $name() { return this.$data['name']; }
+                ;
+                get $serial() { return this.$data['serial']; }
+                ;
+                get $sort() { return this.$data['sort']; }
+                ;
+                get $chName() { return this.$data['chName']; }
+                ;
+                get $classify() { return this.$data['classify']; }
+                ;
+                get $unlockWay() { return this.$data['unlockWay']; }
+                ;
+                get $otherUnlockWay() { return this.$data['otherUnlockWay']; }
+                ;
+                get $conditionNum() { return this.$data['conditionNum']; }
+                ;
+                get $otherConditionNum() { return this.$data['otherConditionNum']; }
+                ;
+                get $degreeNum() { return this.$data['degreeNum']; }
+                ;
+                get $otherDegreeNum() { return this.$data['otherDegreeNum']; }
+                ;
+                get $rewardType() { return this.$data['rewardType']; }
+                ;
+                get $otherRewardType() { return this.$data['otherRewardType']; }
+                ;
+                get $complete() { return this.$data['complete']; }
+                ;
+                get $otherComplete() { return this.$data['otherComplete']; }
+                ;
+                get $getAward() { return this.$data['getAward']; }
+                ;
+                get $otherGetAward() { return this.$data['otherGetAward']; }
+                ;
+                get $pitch() { return this.$data['pitch']; }
+                ;
                 get $data() {
                     if (!this['item/dataSource']) {
-                        console.log('data没有赋值！也可能是数据源赋值给data延时！');
+                        console.log('data没有赋值！也可能是数据延时！');
                     }
-                    return this['item/dataSource'];
+                    return this['item/dataSource'] ? this['item/dataSource'] : {};
                 }
                 set $data(data) { this['item/dataSource'] = data; }
                 get $dataIndex() { return this['item/dataIndex']; }
@@ -3285,23 +3306,25 @@
                         $chName: 'chName',
                         $classify: 'classify',
                         $unlockWay: 'unlockWay',
+                        $otherUnlockWay: 'otherUnlockWay',
                         $conditionNum: 'conditionNum',
+                        $otherConditionNum: 'otherConditionNum',
                         $degreeNum: 'degreeNum',
+                        $otherDegreeNum: 'otherDegreeNum',
+                        $rewardType: 'otherGetAward',
+                        $otherRewardType: 'otherRewardType',
                         $complete: 'complete',
                         $otherComplete: 'otherComplete',
                         $getAward: 'getAward',
-                        $pitch: 'pitch',
-                        $otherDegreeNum: 'otherDegreeNum',
                         $otherGetAward: 'otherGetAward',
-                        $rewardType: 'otherGetAward',
-                        $otherRewardType: 'otherRewardType',
+                        $pitch: 'pitch',
                     };
                     this._unlockWay = {
-                        $ads: 'ads',
-                        $gold: 'gold',
-                        $customs: 'customs',
-                        $diamond: 'diamond',
                         $free: 'free',
+                        $gold: 'gold',
+                        $diamond: 'diamond',
+                        $ads: 'ads',
+                        $customs: 'customs',
                         $check: 'check',
                     };
                     this._tableName = 'name';
@@ -5591,6 +5614,7 @@
         let Click;
         (function (Click) {
             Click._switch = true;
+            Click._absoluteSwitch = true;
             function _createButton() {
                 let Btn = new Laya.Sprite();
                 let img = new Laya.Image();
@@ -6429,7 +6453,7 @@
                 btn.zOrder = ZOder ? ZOder : 100;
                 var btnSetUp = function (e) {
                     e.stopPropagation();
-                    Admin._openScene(Admin._SceneName.Set);
+                    SceneAdmin._openScene(SceneAdmin._SceneName.Set);
                 };
                 Click._on(Click._Type.largen, btn, null, null, btnSetUp, null);
                 Setting._BtnSet = btn;
@@ -7657,7 +7681,7 @@
             LwgPreLoad._sumProgress = 0;
             LwgPreLoad._loadOrder = [];
             LwgPreLoad._loadOrderIndex = 0;
-            LwgPreLoad._loadType = Admin._SceneName.PreLoad;
+            LwgPreLoad._loadType = SceneAdmin._SceneName.PreLoad;
             let _ListName;
             (function (_ListName) {
                 _ListName["scene3D"] = "scene3D";
@@ -7724,7 +7748,7 @@
                 LwgPreLoad._currentProgress.value = 0;
             }
             LwgPreLoad._remakeLode = _remakeLode;
-            class _PreLoadScene extends Admin._SceneBase {
+            class _PreLoadScene extends SceneAdmin._SceneBase {
                 moduleOnAwake() {
                     LwgPreLoad._remakeLode();
                 }
@@ -7799,14 +7823,14 @@
                     EventAdmin._register(_Event.stepLoding, this, () => { this.startLodingRule(); });
                     EventAdmin._registerOnce(_Event.complete, this, () => {
                         Laya.timer.once(this.lwgAllComplete(), this, () => {
-                            Admin._SceneControl[LwgPreLoad._loadType] = this._Owner;
-                            if (LwgPreLoad._loadType !== Admin._SceneName.PreLoad) {
-                                Admin._PreLoadCutIn.openName && this._openScene(Admin._PreLoadCutIn.openName);
+                            SceneAdmin._SceneControl[LwgPreLoad._loadType] = this._Owner;
+                            if (LwgPreLoad._loadType !== SceneAdmin._SceneName.PreLoad) {
+                                SceneAdmin._PreLoadCutIn.openName && this._openScene(SceneAdmin._PreLoadCutIn.openName);
                             }
                             else {
                                 AudioAdmin._playMusic();
                                 this._openScene(_SceneName.Start, true, false, () => {
-                                    LwgPreLoad._loadType = Admin._SceneName.PreLoadCutIn;
+                                    LwgPreLoad._loadType = SceneAdmin._SceneName.PreLoadCutIn;
                                 });
                             }
                         });
@@ -7987,7 +8011,7 @@
         })(LwgPreLoad = Lwg.LwgPreLoad || (Lwg.LwgPreLoad = {}));
         let _LwgInit;
         (function (_LwgInit) {
-            class _LwgInitScene extends Admin._SceneBase {
+            class _LwgInitScene extends SceneAdmin._SceneBase {
                 lwgOpenAni() {
                     return 100;
                 }
@@ -8000,10 +8024,11 @@
         })(_LwgInit = Lwg._LwgInit || (Lwg._LwgInit = {}));
         let Execution;
         (function (Execution) {
+            let maxEx = 15;
             Execution._execution = {
                 get value() {
                     if (!this['Execution/executionNum']) {
-                        return Laya.LocalStorage.getItem('Execution/executionNumm') ? Number(Laya.LocalStorage.getItem('Execution/executionNum')) : 15;
+                        return Laya.LocalStorage.getItem('Execution/executionNumm') ? Number(Laya.LocalStorage.getItem('Execution/executionNum')) : maxEx;
                     }
                     return this['Execution/executionNum'];
                 },
@@ -8106,7 +8131,7 @@
                 });
             }
             Execution.createConsumeEx = createConsumeEx;
-            class ExecutionNode extends Admin._ObjectBase {
+            class ExecutionNode extends SceneAdmin._ObjectBase {
                 constructor() {
                     super(...arguments);
                     this.timeSwitch = true;
@@ -8116,24 +8141,24 @@
                 lwgOnAwake() {
                     this.Num = this._Owner.getChildByName('Num');
                     this.CountDown = this._Owner.getChildByName('CountDown');
-                    this.CountDown_board = this._Owner.getChildByName('CountDown_board');
+                    this.CountDown_Board = this._Owner.getChildByName('CountDown_Board');
                     this.countNum = 59;
                     this.CountDown.text = '00:' + this.countNum;
-                    this.CountDown_board.text = this.CountDown.text;
+                    this.CountDown_Board.text = this.CountDown.text;
                     let d = new Date;
                     if (d.getDate() !== Execution._addExDate.value) {
-                        Execution._execution.value = 15;
+                        Execution._execution.value = maxEx;
                     }
                     else {
                         if (d.getHours() == Execution._addExHours.value) {
                             console.log(d.getMinutes(), Execution._addMinutes.value);
                             Execution._execution.value += (d.getMinutes() - Execution._addMinutes.value);
-                            if (Execution._execution.value > 15) {
-                                Execution._execution.value = 15;
+                            if (Execution._execution.value > maxEx) {
+                                Execution._execution.value = maxEx;
                             }
                         }
                         else {
-                            Execution._execution.value = 15;
+                            Execution._execution.value = maxEx;
                         }
                     }
                     this.Num.value = Execution._execution.value.toString();
@@ -8155,22 +8180,22 @@
                         }
                         if (this.countNum >= 10 && this.countNum <= 59) {
                             this.CountDown.text = '00:' + this.countNum;
-                            this.CountDown_board.text = this.CountDown.text;
+                            this.CountDown_Board.text = this.CountDown.text;
                         }
                         else if (this.countNum >= 0 && this.countNum < 10) {
                             this.CountDown.text = '00:0' + this.countNum;
-                            this.CountDown_board.text = this.CountDown.text;
+                            this.CountDown_Board.text = this.CountDown.text;
                         }
                     }
                 }
                 lwgOnStart() {
                     TimerAdmin._frameLoop(1, this, () => {
-                        if (Number(this.Num.value) >= 15) {
+                        if (Number(this.Num.value) >= maxEx) {
                             if (this.timeSwitch) {
-                                Execution._execution.value = 15;
+                                Execution._execution.value = maxEx;
                                 this.Num.value = Execution._execution.value.toString();
                                 this.CountDown.text = '00:00';
-                                this.CountDown_board.text = this.CountDown.text;
+                                this.CountDown_Board.text = this.CountDown.text;
                                 this.countNum = 60;
                                 this.timeSwitch = false;
                             }
@@ -8186,10 +8211,10 @@
         })(Execution = Lwg.Execution || (Lwg.Execution = {}));
     })(Lwg || (Lwg = {}));
     var Lwg$1 = Lwg;
-    let Admin = Lwg.Admin;
+    let SceneAdmin = Lwg.SceneAdmin;
     let Platform = Lwg.Platform;
     let GameAdmin = Lwg._GameAdmin;
-    let _SceneName = Admin._SceneName;
+    let _SceneName = SceneAdmin._SceneName;
     let SceneAnimation = Lwg.SceneAnimation;
     let Adaptive = Lwg.Adaptive;
     let StorageAdmin = Lwg.StorageAdmin;
@@ -9116,6 +9141,7 @@
             StorageAdmin._num('Tweeting/like').value = val;
         }
     }
+    _Tweeting._prepareInto = false;
     _Tweeting._photo = {
         arr: [],
         take: (Scene, index) => {
@@ -9273,13 +9299,13 @@
                 time++;
                 this._LabelVar('Schedule').text = `${time}%`;
             }, () => {
-                let obj = _CutInRes[Admin._PreLoadCutIn.openName];
+                let obj = _CutInRes[SceneAdmin._PreLoadCutIn.openName];
                 obj = obj ? obj : {};
                 EventAdmin._notify(_LwgPreLoad._Event.importList, [obj]);
             });
         }
         lwgAllComplete() {
-            switch (Admin._PreLoadCutIn.openName) {
+            switch (SceneAdmin._PreLoadCutIn.openName) {
                 case 'MakePattern':
                     _3DDIYCloth._ins().remake(_DIYClothes._ins()._pitchClassify, _DIYClothes._ins()._pitchName);
                     _3DScene._ins().intoMakePattern();
@@ -9301,7 +9327,7 @@
                     _DIYClothes._ins().getClothesArr();
                     break;
                 case 'Start':
-                    if (Admin._PreLoadCutIn.closeName === 'MakePattern' && !_PreLoadCutIn._fromBack) {
+                    if (SceneAdmin._PreLoadCutIn.closeName === 'MakePattern' && !_PreLoadCutIn._fromBack) {
                         this.iconPhoto();
                     }
                     else {
@@ -9422,7 +9448,7 @@
         loadPkg_OPPO() {
             console.log("loadPkg_OPPOsssssssss");
             if (this.pkgFlag == this.pkgInfo.length) {
-                Admin._openScene('PreLoad');
+                SceneAdmin._openScene('PreLoad');
                 console.log("GameInit");
             }
             else {
@@ -9504,7 +9530,7 @@
         }
     }
 
-    class Guide extends Admin._SceneBase {
+    class Guide extends SceneAdmin._SceneBase {
         constructor() {
             super(...arguments);
             this.btnComX = Laya.stage.width - 250;
@@ -9987,9 +10013,9 @@
                     if (!getReward) {
                         AudioAdmin._playMusic(AudioAdmin._voiceUrl.bgm, 0, 1000);
                         console.log('观看完整广告才能获取奖励哦！');
-                        Admin._openScene(_SceneName.AdsHint, null, () => {
-                            console.log(Admin._SceneControl['AdsHint']);
-                            Admin._SceneControl['AdsHint']['AdsHint'].setCallBack(rewardAction);
+                        SceneAdmin._openScene(_SceneName.AdsHint, null, () => {
+                            console.log(SceneAdmin._SceneControl['AdsHint']);
+                            SceneAdmin._SceneControl['AdsHint']['AdsHint'].setCallBack(rewardAction);
                         });
                     }
                 });
@@ -10368,7 +10394,7 @@
                     _BackHint._3dToSp = _3DScene._ins().cameraToSprite(this.Scene);
                 }
                 _BackHint._fromScene = this.Scene;
-                Admin._openScene('BackHint');
+                SceneAdmin._openScene('BackHint');
             });
             this.BtnRollback = Tools._Node.createPrefab(_Res._list.prefab2D.BtnRollback.prefab, _Scene, [200, 79]);
             Click._on(Click._Use.value, this.BtnRollback, this, null, null, () => {
@@ -10553,7 +10579,7 @@
             }
         }
     }
-    class _Scissor extends Admin._ObjectBase {
+    class _Scissor extends SceneAdmin._ObjectBase {
         constructor() {
             super(...arguments);
             this.Ani = {
@@ -10806,7 +10832,7 @@
             }
         }
     }
-    class MakeTailor extends Admin._SceneBase {
+    class MakeTailor extends SceneAdmin._SceneBase {
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'jiancaipage');
             this._ImgVar('BG1').skin = `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/MakeTailorBG1.png`;
@@ -10878,13 +10904,13 @@
                 this._evNotify(_MakeTailor._event.scissorRemove, [() => {
                         _TaskClothes._ins().again(this._Owner);
                     }]);
-                Click._switch = false;
+                Click._switch.value = false;
                 TimerAdmin._frameOnce(60, this, () => {
                     this.UI.operationAppear(() => {
                         this.UI.btnAgainVinish(null, 200);
                         this.UI.btnCompleteAppear();
                     });
-                    Click._switch = true;
+                    Click._switch.value = true;
                 });
             };
         }
@@ -11022,7 +11048,7 @@
         }
     }
 
-    class Start extends Admin._SceneBase {
+    class Start extends SceneAdmin._SceneBase {
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'mainpage');
             ADManager.TAPoint(TaT.BtnShow, 'symaker');
@@ -11086,6 +11112,7 @@
                 this._LabelVar('RankNum').text = `${obj[_Ranking._Data._otherPro.rankNum]}/50`;
             });
             this._evReg(_Start._event.photo, () => {
+                Click._absoluteSwitch = false;
                 const sp = _3DScene._ins().cameraToSprite(this._Owner);
                 TimerAdmin._frameOnce(10, this, () => {
                     _Tweeting._photo.take(this._Owner, 2);
@@ -11386,7 +11413,7 @@
             }
         }
     }
-    class MakePattern extends Admin._SceneBase {
+    class MakePattern extends SceneAdmin._SceneBase {
         constructor() {
             super(...arguments);
             this.Tex = {
@@ -12041,7 +12068,7 @@
             }
         }
     }
-    class DressingRoom extends Admin._SceneBase {
+    class DressingRoom extends SceneAdmin._SceneBase {
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'changepage');
             _3DScene._ins().openMirror(this._ImgVar('MirrorSurface'));
@@ -12119,7 +12146,7 @@
         }
     }
 
-    class PersonalInfo extends Admin._SceneBase {
+    class PersonalInfo extends SceneAdmin._SceneBase {
         lwgOnAwake() {
             ADManager.TAPoint(TaT.BtnShow, 'changename');
             this._TextInputVar('NameValue').text = _PersonalInfo._name;
@@ -12219,7 +12246,7 @@
             IconPic.skin = this.$data[_Ranking._Data._otherPro.iconSkin];
         }
     }
-    class Ranking extends Admin._SceneBase {
+    class Ranking extends SceneAdmin._SceneBase {
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'rankpage');
             _Ranking._Data._List = this._ListVar('List');
@@ -12291,7 +12318,7 @@
         }
     }
 
-    class Tweeting_Main extends Admin._SceneBase {
+    class Tweeting_Main extends SceneAdmin._SceneBase {
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'weibopage');
             ADManager.TAPoint(TaT.BtnShow, 'photo_choose');
@@ -12350,6 +12377,7 @@
             const baseTime = 150;
             const baseDelay = 200;
             _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
+                Click._absoluteSwitch = true;
                 Animation2D.scale(this._ImgVar('Top'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 1);
                 Animation2D.scale(this._ImgVar('BtnSet'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 2);
                 Animation2D.scale(this._ImgVar('Body'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 3);
@@ -12384,7 +12412,7 @@
         }
     }
 
-    class Tweeting_ChoosePhotos extends Admin._SceneBase {
+    class Tweeting_ChoosePhotos extends SceneAdmin._SceneBase {
         lwgOnAwake() {
             this.photoArr = [this._ImgVar('Photo1'), this._ImgVar('Photo2'), this._ImgVar('Photo3')];
             for (let index = 0; index < this.photoArr.length; index++) {
@@ -12443,7 +12471,7 @@
         }
     }
 
-    class Tweeting_Dynamic extends Admin._SceneBase {
+    class Tweeting_Dynamic extends SceneAdmin._SceneBase {
         constructor() {
             super(...arguments);
             this.baseTime = 150;
@@ -12557,7 +12585,7 @@
         }
     }
 
-    class Tweeting_GetFans extends Admin._SceneBase {
+    class Tweeting_GetFans extends SceneAdmin._SceneBase {
         constructor() {
             super(...arguments);
             this.fansNum = 0;
@@ -12618,7 +12646,7 @@
         }
     }
 
-    class AdsHint extends Admin._SceneBase {
+    class AdsHint extends SceneAdmin._SceneBase {
         setCallBack(_adAction) {
             this.adAction = _adAction;
         }
@@ -12686,7 +12714,7 @@
             var adsClick = (e) => {
                 if (!this.$otherComplete) {
                     if (!_CheckIn._todayCheckIn) {
-                        if (_CheckIn._checkInNum + 1 === this.$serial) {
+                        if (_CheckIn._checkInNum + 1 >= this.$serial) {
                             func(e);
                         }
                     }
@@ -12745,19 +12773,23 @@
             AdsAlready.visible = this.$otherComplete;
             if (!this.$otherComplete) {
                 if (!_CheckIn._todayCheckIn) {
-                    if (_CheckIn._checkInNum + 1 === this.$serial) {
+                    if (_CheckIn._checkInNum + 1 >= this.$serial) {
                         this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
+                        this._ImgChild('BtnAdsReward').gray = false;
                     }
                     else {
                         this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei.png';
+                        this._ImgChild('BtnAdsReward').gray = true;
                     }
                 }
                 else {
                     if (_CheckIn._checkInNum >= this.$serial) {
                         this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
+                        this._ImgChild('BtnAdsReward').gray = false;
                     }
                     else {
                         this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei.png';
+                        this._ImgChild('BtnAdsReward').gray = true;
                     }
                 }
             }
@@ -12767,7 +12799,7 @@
             }
         }
     }
-    class CheckIn extends Admin._SceneBase {
+    class CheckIn extends SceneAdmin._SceneBase {
         lwgOnAwake() {
             _CheckIn._Data._List = this._ListVar('List');
             _CheckIn._Data._listRenderScript = _Item$3;
@@ -12842,7 +12874,7 @@
         }
     }
 
-    class BackHint extends Admin._SceneBase {
+    class BackHint extends SceneAdmin._SceneBase {
         constructor() {
             super(...arguments);
             this.closeAniType = null;
@@ -12888,7 +12920,7 @@
             };
             Click._Use.value = Click._Type.reduce;
             Adaptive._Use.value = [1280, 720];
-            Admin._SceneScript = {
+            SceneAdmin._SceneScript = {
                 PreLoad: PreLoad,
                 PreLoadCutIn: PreLoadCutIn,
                 Guide: Guide,

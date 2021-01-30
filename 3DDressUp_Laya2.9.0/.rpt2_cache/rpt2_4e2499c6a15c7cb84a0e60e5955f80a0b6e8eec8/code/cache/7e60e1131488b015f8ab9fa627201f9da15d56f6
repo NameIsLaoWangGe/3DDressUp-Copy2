@@ -1,0 +1,23 @@
+{
+  "code": "import { Adaptive, SceneAdmin, Click, Platform, SceneAnimation, _LwgInitScene } from \"./Lwg\";\r\nimport PreLoadCutIn from \"../Game/PreLoadCutIn\";\r\nimport SubPkg from \"./SubPkg\";\r\nimport Guide from \"../Game/Guide\";\r\nimport PreLoad from \"../Game/PreLoad\";\r\nimport MakeTailor from \"../Game/MakeTailor\";\r\nimport Start from \"../Game/Start\";\r\nimport MakePattern from \"../Game/MakePattern\";\r\nimport DressingRoom from \"../Game/DressingRoom\";\r\nimport PersonalInfo from \"../Game/PersonalInfo\";\r\nimport Ranking from \"../Game/Ranking\";\r\nimport Tweeting_Main from \"../Game/Tweeting_Main\";\r\nimport Tweeting_ChoosePhotos from \"../Game/Tweeting_ChoosePhotos\";\r\nimport Tweeting_Dynamic from \"../Game/Tweeting_Dynamic\";\r\nimport Tweeting_GetFans from \"../Game/Tweeting_GetFans\";\r\nimport AdsHint from \"../Game/AdsHint\";\r\nimport CheckIn from \"../Game/CheckIn\";\r\nimport { BackHint } from \"../Game/BackHint\";\r\nexport default class LwgInit extends _LwgInitScene {\r\n    lwgOnAwake() {\r\n        Platform._Ues.value = Platform._Tpye.OPPO;\r\n        Laya.MouseManager.multiTouchEnabled = false;\r\n        SceneAnimation._closeSwitch.value = true;\r\n        SceneAnimation._Use.value = {\r\n            class: SceneAnimation._shutters.Close,\r\n            type: SceneAnimation._shutters.Close._type.random,\r\n        };\r\n        Click._Use.value = Click._Type.reduce;\r\n        Adaptive._Use.value = [1280, 720];\r\n        SceneAdmin._SceneScript = {\r\n            PreLoad: PreLoad,\r\n            PreLoadCutIn: PreLoadCutIn,\r\n            Guide: Guide,\r\n            Start: Start,\r\n            MakeTailor: MakeTailor,\r\n            MakePattern: MakePattern,\r\n            DressingRoom: DressingRoom,\r\n            PersonalInfo: PersonalInfo,\r\n            Ranking: Ranking,\r\n            BackHint: BackHint,\r\n            Tweeting_Main: Tweeting_Main,\r\n            Tweeting_ChoosePhotos: Tweeting_ChoosePhotos,\r\n            Tweeting_Dynamic: Tweeting_Dynamic,\r\n            Tweeting_GetFans: Tweeting_GetFans,\r\n            AdsHint: AdsHint,\r\n            CheckIn: CheckIn,\r\n        };\r\n    }\r\n    lwgOnStart() {\r\n        if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {\r\n            let subPkg = new SubPkg();\r\n            subPkg.init();\r\n            this._Owner.close();\r\n        }\r\n        else {\r\n            this._openScene('PreLoad');\r\n        }\r\n    }\r\n}\r\n",
+  "references": [
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Lwg/Lwg.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/PreLoadCutIn.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Lwg/SubPkg.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/Guide.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/PreLoad.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/MakeTailor.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/Start.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/MakePattern.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/DressingRoom.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/PersonalInfo.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/Ranking.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/Tweeting_Main.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/Tweeting_ChoosePhotos.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/Tweeting_Dynamic.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/Tweeting_GetFans.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/AdsHint.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/CheckIn.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/BackHint.ts"
+  ]
+}

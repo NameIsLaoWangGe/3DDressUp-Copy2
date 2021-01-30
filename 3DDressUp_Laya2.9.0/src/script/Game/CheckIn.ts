@@ -1,5 +1,5 @@
 import ADManager from "../../TJ/Admanager";
-import { Admin, DataAdmin, DateAdmin, Dialogue } from "../Lwg/Lwg";
+import { SceneAdmin, DataAdmin, DateAdmin, Dialogue } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _CheckIn, _DIYClothes, _Guide, _MakePattern } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
@@ -49,7 +49,7 @@ class _Item extends DataAdmin._Item {
         var adsClick = (e: Laya.Event) => {
             if (!this.$otherComplete) {
                 if (!_CheckIn._todayCheckIn) {
-                    if (_CheckIn._checkInNum + 1 === this.$serial) {
+                    if (_CheckIn._checkInNum + 1 >= this.$serial) {
                         func(e);
                     }
                 } else {
@@ -103,16 +103,20 @@ class _Item extends DataAdmin._Item {
         AdsAlready.visible = this.$otherComplete;
         if (!this.$otherComplete) {
             if (!_CheckIn._todayCheckIn) {
-                if (_CheckIn._checkInNum + 1 === this.$serial) {
+                if (_CheckIn._checkInNum + 1 >= this.$serial) {
                     this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
+                    this._ImgChild('BtnAdsReward').gray = false;
                 } else {
                     this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei.png';
+                    this._ImgChild('BtnAdsReward').gray = true;
                 }
             } else {
                 if (_CheckIn._checkInNum >= this.$serial) {
                     this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
+                    this._ImgChild('BtnAdsReward').gray = false;
                 } else {
                     this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei.png';
+                    this._ImgChild('BtnAdsReward').gray = true;
                 }
             }
         } else {
@@ -121,7 +125,7 @@ class _Item extends DataAdmin._Item {
         }
     }
 }
-export default class CheckIn extends Admin._SceneBase {
+export default class CheckIn extends SceneAdmin._SceneBase {
     lwgOnAwake(): void {
         _CheckIn._Data._List = this._ListVar('List');
         _CheckIn._Data._listRenderScript = _Item;

@@ -1,5 +1,5 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import lwg, { Admin, DataAdmin, Dialogue, TimerAdmin, Tools } from "../Lwg/Lwg";
+import lwg, { SceneAdmin, DataAdmin, Dialogue, TimerAdmin, Tools } from "../Lwg/Lwg";
 import { LwgOPPO } from "../Lwg/LwgOPPO";
 import { _AllClothes } from "./_GameData";
 import { _GameEffects3D } from "./_GameEffects3D";
@@ -82,7 +82,7 @@ class _Item extends DataAdmin._Item implements _otherPro {
     }
 }
 
-export default class DressingRoom extends Admin._SceneBase {
+export default class DressingRoom extends SceneAdmin._SceneBase {
 
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'changepage');

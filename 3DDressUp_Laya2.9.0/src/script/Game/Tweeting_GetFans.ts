@@ -1,10 +1,10 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { Admin, Animation2D, Dialogue, TimerAdmin, Tools } from "../Lwg/Lwg";
+import { SceneAdmin, Animation2D, Dialogue, TimerAdmin, Tools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _Guide, _Ranking, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 
-export default class Tweeting_GetFans extends Admin._SceneBase {
+export default class Tweeting_GetFans extends SceneAdmin._SceneBase {
     pitchObj: any;
     fansNum = 0;
     lwgOnAwake(): void {

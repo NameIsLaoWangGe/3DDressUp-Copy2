@@ -1,0 +1,8 @@
+{
+  "code": "import ADManager from \"../../TJ/Admanager\";\r\nimport { SceneAdmin } from \"../Lwg/Lwg\";\r\nimport { _GameAni } from \"./_GameAni\";\r\nexport default class AdsHint extends SceneAdmin._SceneBase {\r\n    setCallBack(_adAction) {\r\n        this.adAction = _adAction;\r\n    }\r\n    lwgOpenAni() {\r\n        _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));\r\n        return 200;\r\n    }\r\n    lwgButton() {\r\n        this._btnUp(this._ImgVar('BtnClose'), () => {\r\n            this._closeScene();\r\n        });\r\n        this._btnUp(this._ImgVar('BtnConfirm'), () => {\r\n            ADManager.ShowReward(this.adAction, null);\r\n            this._closeScene();\r\n        });\r\n    }\r\n    lwgCloseAni() {\r\n        _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));\r\n        return 200;\r\n    }\r\n}\r\n",
+  "references": [
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/TJ/Admanager.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Lwg/Lwg.ts",
+    "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/_GameAni.ts"
+  ]
+}

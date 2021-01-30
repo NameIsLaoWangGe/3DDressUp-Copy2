@@ -1,4 +1,4 @@
-import { Adaptive, Admin, Click, Platform, SceneAnimation, _LwgInit, _LwgInitScene } from "./Lwg";
+import { Adaptive, SceneAdmin, Click, Platform, SceneAnimation, _LwgInit, _LwgInitScene } from "./Lwg";
 import PreLoadCutIn from "../Game/PreLoadCutIn";
 import SubPkg from "./SubPkg";
 import Guide from "../Game/Guide";
@@ -29,7 +29,7 @@ export default class LwgInit extends _LwgInitScene {
         };
         Click._Use.value = Click._Type.reduce;
         Adaptive._Use.value = [1280, 720];
-        Admin._SceneScript = {
+        SceneAdmin._SceneScript = {
             PreLoad: PreLoad,
             PreLoadCutIn: PreLoadCutIn,
             Guide: Guide,

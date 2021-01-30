@@ -1,5 +1,5 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { Admin, Animation2D, Click, Tools } from "../Lwg/Lwg";
+import { SceneAdmin, Animation2D, Click, Tools } from "../Lwg/Lwg";
 import { _3DScene } from "./_3D";
 import { _BackHint, _Guide } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
@@ -34,7 +34,7 @@ export class _UI {
                 _BackHint._3dToSp = _3DScene._ins().cameraToSprite(this.Scene);
             }
             _BackHint._fromScene = this.Scene;
-            Admin._openScene('BackHint');
+            SceneAdmin._openScene('BackHint');
         })
 
         this.BtnRollback = Tools._Node.createPrefab(_Res._list.prefab2D.BtnRollback.prefab, _Scene, [200, 79]) as Laya.Image;

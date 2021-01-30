@@ -1,9 +1,9 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { Admin, Color, TimerAdmin } from "../Lwg/Lwg";
+import { SceneAdmin, Color, TimerAdmin } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _Guide, _PersonalInfo, _Ranking } from "./_GameData";
 
-export default class PersonalInfo extends Admin._SceneBase {
+export default class PersonalInfo extends SceneAdmin._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.BtnShow, 'changename');
 

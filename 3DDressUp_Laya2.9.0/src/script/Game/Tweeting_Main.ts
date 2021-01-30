@@ -1,10 +1,10 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { Admin, Animation2D, TimerAdmin, Tools, _PreLoadScene } from "../Lwg/Lwg";
+import { SceneAdmin, Animation2D, TimerAdmin, Tools, _PreLoadScene, Click } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _DIYClothes, _Guide, _PersonalInfo, _PreLoadCutIn, _Ranking, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 
-export default class Tweeting_Main extends Admin._SceneBase {
+export default class Tweeting_Main extends SceneAdmin._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'weibopage');
         ADManager.TAPoint(TaT.BtnShow, 'photo_choose');
@@ -70,6 +70,7 @@ export default class Tweeting_Main extends Admin._SceneBase {
         const baseTime = 150;
         const baseDelay = 200;
         _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
+            Click._absoluteSwitch = true;
             Animation2D.scale(this._ImgVar('Top'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 1);
             Animation2D.scale(this._ImgVar('BtnSet'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 2);
             Animation2D.scale(this._ImgVar('Body'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 3);

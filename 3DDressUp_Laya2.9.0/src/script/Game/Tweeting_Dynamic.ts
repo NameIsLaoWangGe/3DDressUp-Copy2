@@ -1,9 +1,9 @@
-import { Admin, Animation2D, DateAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
+import { SceneAdmin, Animation2D, DateAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _PersonalInfo, _Ranking, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 
-export default class Tweeting_Dynamic extends Admin._SceneBase {
+export default class Tweeting_Dynamic extends SceneAdmin._SceneBase {
     baseTime = 150;
     baseDelay = 200;
 

@@ -505,6 +505,8 @@ export class _MakePattern {
     }
 }
 export class _Tweeting {
+    /**是否准备进入微博场景，如果准备进入则主界面按钮不可点击*/ 
+    static _prepareInto = false;
     /**过程中的照相*/
     static _photo = {
         arr: [],

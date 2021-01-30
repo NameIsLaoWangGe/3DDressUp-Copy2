@@ -1,5 +1,5 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { Admin, Animation2D, Animation3D, DataAdmin, Dialogue, StorageAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
+import { SceneAdmin, Animation2D, Animation3D, DataAdmin, Dialogue, StorageAdmin, TimerAdmin, Tools } from "../Lwg/Lwg";
 import { LwgOPPO } from "../Lwg/LwgOPPO";
 import { _3DDIYCloth, _3DScene } from "./_3D";
 import { _GameAni } from "./_GameAni";
@@ -119,7 +119,7 @@ class _Item extends DataAdmin._Item {
     }
 }
 
-export default class MakePattern extends Admin._SceneBase {
+export default class MakePattern extends SceneAdmin._SceneBase {
 
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'tiehuapage');

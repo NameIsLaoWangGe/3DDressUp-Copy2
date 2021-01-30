@@ -1,9 +1,9 @@
-import { Admin, Dialogue } from "../Lwg/Lwg";
+import { SceneAdmin, Dialogue } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _Guide, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 
-export default class Tweeting_ChoosePhotos extends Admin._SceneBase {
+export default class Tweeting_ChoosePhotos extends SceneAdmin._SceneBase {
     photoArr: Laya.Image[];
     lwgOnAwake(): void {
         this.photoArr = [this._ImgVar('Photo1'), this._ImgVar('Photo2'), this._ImgVar('Photo3')];

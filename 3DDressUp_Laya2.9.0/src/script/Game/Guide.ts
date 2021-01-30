@@ -1,8 +1,8 @@
-import { Admin, Animation2D, Effects2D, TimerAdmin, Tools, _SceneName } from "../Lwg/Lwg";
+import { SceneAdmin, Animation2D, Effects2D, TimerAdmin, Tools, _SceneName } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _Guide } from "./_GameData";
 /**裁剪界面的层级必须在最上面*/
-export default class Guide extends Admin._SceneBase {
+export default class Guide extends SceneAdmin._SceneBase {
     lwgOpenAni(): number {
         return 200;
     }
