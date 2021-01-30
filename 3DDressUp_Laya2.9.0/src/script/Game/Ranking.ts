@@ -18,30 +18,30 @@ export class RankingItem extends LwgData._Item implements _otherPro {
         return this.$data ? this.$data['fansNum'] : null;
     };
     $render(): void {
-        if (this.$data[_Ranking._Data._property.$classify] === _Ranking._Data._classify.self) {
+        if (this.$data[_Ranking._Data._ins()._property.$classify] === _Ranking._Data._ins()._classify.self) {
             this._ImgChild('Board').skin = `Game/UI/Ranking/x_di.png`;
-            this._LableChild('Name').text = _PersonalInfo._name;
+            this._LableChild('Name').text = _PersonalInfo._name.value;
         } else {
             this._ImgChild('Board').skin = `Game/UI/Ranking/w_di.png`;
-            this._LableChild('Name').text = this.$data[_Ranking._Data._property.$name];
+            this._LableChild('Name').text = this.$data[_Ranking._Data._ins()._property.$name];
         }
         this._LableChild('RankNum').text = String(this.$rankNum);
         this._LableChild('FansNum').text = String(this.$fansNum);
         const IconPic = this._LableChild('Icon').getChildAt(0) as Laya.Image;
-        IconPic.skin = this.$data[_Ranking._Data._otherPro.iconSkin];
+        IconPic.skin = this.$data[_Ranking._Data._ins()._otherPro.iconSkin];
     }
 }
 export default class Ranking extends LwgScene._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'rankpage');
-        _Ranking._Data._List = this._ListVar('List');
+        _Ranking._Data._ins()._List = this._ListVar('List');
         if (_Ranking._whereFrom === 'Tweeting') {
-            _Ranking._Data._addProValueForAll(_Ranking._Data._otherPro.fansNum, (): number => {
+            _Ranking._Data._ins()._addProValueForAll(_Ranking._Data._ins()._otherPro.fansNum, (): number => {
                 return LwgTools._Number.randomOneInt(100, 150);
             })
         }
-        this._evNotify(_Start._event.updateRanking);
-        _Ranking._Data._listRenderScript = RankingItem;
+        this._evNotify(_Start.Event.updateRanking);
+        _Ranking._Data._ins()._listRenderScript = RankingItem;
     }
 
     lwgOpenAni(): number {
@@ -56,25 +56,25 @@ export default class Ranking extends LwgScene._SceneBase {
     lwgOpenAniAfter(): void {
         if (_Ranking._whereFrom === 'Tweeting') {
             _GameEffects2D._fireworksCelebrate(() => {
-                !_Guide._complete && this._openScene('Guide', false, false, () => {
+                !_Guide._complete.value && this._openScene('Guide', false, false, () => {
                     this.BtnCloseClick();
                     const gP = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnClose').x, this._ImgVar('BtnClose').y));
-                    this._evNotify(_Guide.event.RankingCloseBtn, [gP.x, gP.y]);
+                    this._evNotify(_Guide.Event.RankingCloseBtn, [gP.x, gP.y]);
                 }, this._Owner.zOrder + 1);
             });
             _Ranking._whereFrom = 'Start';
         }
     }
     lwgOnStart(): void {
-        if (_Ranking._Data._getProperty(_Ranking._Data._pitchName, _Ranking._Data._otherPro.rankNum) === 1) {
-            _Ranking._Data._List.scrollTo(0);
+        if (_Ranking._Data._ins()._getProperty(_Ranking._Data._ins()._pitchName, _Ranking._Data._ins()._otherPro.rankNum) === 1) {
+            _Ranking._Data._ins()._List.scrollTo(0);
         } else {
             if (_Ranking._whereFrom === 'Tweeting') {
-                _Ranking._Data._listScrollToLast();
-                _Ranking._Data._listTweenToPitchChoose(-1, 1500);
+                _Ranking._Data._ins()._listScrollToLast();
+                _Ranking._Data._ins()._listTweenToPitchChoose(-1, 1500);
             } else {
-                _Ranking._Data._listScrollToLast();
-                _Ranking._Data._listTweenToPitchChoose(-1, 600);
+                _Ranking._Data._ins()._listScrollToLast();
+                _Ranking._Data._ins()._listTweenToPitchChoose(-1, 600);
             }
         }
     }
@@ -82,19 +82,19 @@ export default class Ranking extends LwgScene._SceneBase {
     BtnCloseClick(): void {
         this._btnUp(this._ImgVar('BtnClose'), () => {
             this._closeScene();
-            if (!_Guide._complete) {
-                this._evNotify(_Guide.event.closeGuide);
-                this._evNotify(_Start._event.BtnPersonalInfo);
+            if (!_Guide._complete.value) {
+                this._evNotify(_Guide.Event.closeGuide);
+                this._evNotify(_Start.Event.BtnPersonalInfo);
             }
         })
     }
     lwgButton(): void {
-        if (!_Guide._complete) return;
+        if (!_Guide._complete.value) return;
         this.BtnCloseClick();
     }
     lwgCloseAni(): number {
         return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-            _Guide._complete && !_CheckIn._todayCheckIn && this._openScene('CheckIn', false);
+            _Guide._complete.value && !_CheckIn._todayCheckIn && this._openScene('CheckIn', false);
         });
     }
 

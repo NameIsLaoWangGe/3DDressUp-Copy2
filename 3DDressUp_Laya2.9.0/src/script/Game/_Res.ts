@@ -143,7 +143,7 @@ export class _Res {
 
         json: {
             GeneralClothes: {
-                url: [`_LwgData/_MakeTailor/DIYClothes.json`, `_LwgData/_DressingRoom/GeneralClothes.json`],
+                url: `_LwgData/_DressingRoom/GeneralClothes.json`,
                 dataArr: new Array,
             },
             DIYClothes: {

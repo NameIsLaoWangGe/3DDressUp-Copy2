@@ -9,7 +9,7 @@ export default class Tweeting_GetFans extends  LwgScene._SceneBase {
     fansNum = 0;
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.BtnShow, 'ADrank');
-        this.pitchObj = _Ranking._Data._getPitchObj();
+        this.pitchObj = _Ranking._Data._ins()._getPitchObj();
         this.fansNum = LwgTools._Number.randomOneInt(115, 383);
         this.pitchObj['fansNum'] += this.fansNum;
         this._FontClipVar('FansNum').value = this.fansNum.toString();
@@ -17,8 +17,8 @@ export default class Tweeting_GetFans extends  LwgScene._SceneBase {
     lwgOpenAni(): number {
         _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
             _GameEffects2D._interfacePointJet();
-            !_Guide._complete && this._openScene('Guide', false, false, () => {
-                this._evNotify(_Guide.event.TweetingBtnDoubleFans, [this._ImgVar('BtnDouble')._lwg.gPoint.x, this._ImgVar('BtnDouble')._lwg.gPoint.y]);
+            !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                this._evNotify(_Guide.Event.TweetingBtnDoubleFans, [this._ImgVar('BtnDouble')._lwg.gPoint.x, this._ImgVar('BtnDouble')._lwg.gPoint.y]);
             });
             LwgTimer._loop(2000, this, () => {
                 LwgAni2D.bomb_LeftRight(this._ImgVar('BtnDouble'), 1.1, 250);
@@ -33,7 +33,7 @@ export default class Tweeting_GetFans extends  LwgScene._SceneBase {
             _Tweeting._photo.clear();
             this._closeScene('Tweeting_Dynamic');
             this._closeScene();
-            !_Guide._complete && this._evNotify(_Guide.event.closeGuide);
+            !_Guide._complete.value && this._evNotify(_Guide.Event.closeGuide);
         }
         this._btnUp(this._ImgVar('BtnOk'), () => {
             closeBefore();
@@ -45,7 +45,7 @@ export default class Tweeting_GetFans extends  LwgScene._SceneBase {
         }
         this._btnUp(this._ImgVar('BtnDouble'), () => {
             // 新手引导的时候直接给予奖励
-            if (!_Guide._complete) {
+            if (!_Guide._complete.value) {
                 double();
             } else {
                 ADManager.TAPoint(TaT.BtnClick, 'ADrank');

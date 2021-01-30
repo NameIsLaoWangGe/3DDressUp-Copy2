@@ -2,97 +2,91 @@ import { LwgData, LwgDate, LwgScene, LwgStorage, LwgTimer, LwgTools } from "../L
 import { _3DScene, _3DDIYCloth } from "./_3D";
 import { _Res } from "./_Res";
 
-class _RankingData extends LwgData._Table {
-    private static ins: _RankingData;
-    static _ins() {
-        if (!this.ins) {
-            this.ins = new _RankingData('RankingData', _Res._list.json.Ranking.dataArr, true);
-            if (!this.ins._arr[0]['iconSkin']) {
-                for (let index = 0; index < this.ins._arr.length; index++) {
-                    const element = this.ins._arr[index];
-                    element['iconSkin'] = `Game/UI/Ranking/IconSkin/avatar_${element[this.ins._property.$serial]}.png`;
-                }
-            }
-            this.ins._pitchName = '玩家';
-            this.ins._sortByProperty(this.ins._otherPro.fansNum, this.ins._otherPro.rankNum);
-        }
-        return this.ins;
-    }
-    _otherPro = {
-        rankNum: 'rankNum',
-        fansNum: 'fansNum',
-        iconSkin: 'iconSkin',
-    }
-    _classify = {
-        other: 'other',
-        self: 'self',
-    }
-}
-export class _Ranking {
+export module _Ranking {
     /**从哪个界面进来*/
-    static _whereFrom: string = 'Start';
-    static get _Data(): _RankingData {
-        return _RankingData._ins();
+    export let _whereFrom = 'Start';
+    export class _Data extends LwgData._Table {
+        private static ins: _Data;
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _Data('RankingData', _Res._list.json.Ranking.dataArr, true);
+                if (!this.ins._arr[0]['iconSkin']) {
+                    for (let index = 0; index < this.ins._arr.length; index++) {
+                        const element = this.ins._arr[index];
+                        element['iconSkin'] = `Game/UI/Ranking/IconSkin/avatar_${element[this.ins._property.$serial]}.png`;
+                    }
+                }
+                this.ins._pitchName = '玩家';
+                this.ins._sortByProperty(this.ins._otherPro.fansNum, this.ins._otherPro.rankNum);
+            }
+            return this.ins;
+        }
+        _otherPro = {
+            rankNum: 'rankNum',
+            fansNum: 'fansNum',
+            iconSkin: 'iconSkin',
+        }
+        _classify = {
+            other: 'other',
+            self: 'self',
+        }
     }
 }
-export class _Guide {
-    static event = {
-        closeGuide: 'Guide' + 'closeGuide',
-        vanishGuide: 'Guide' + 'vanishGuide',
+export module _Guide {
+    export enum Event {
+        closeGuide = 'Guide' + 'closeGuide',
+        vanishGuide = 'Guide' + 'vanishGuide',
 
-        StartBtnDress: 'Guide' + 'StartBtnDress',
+        StartBtnDress = 'Guide' + 'StartBtnDress',
 
-        MakeTailorPulldown: 'Guide' + 'MakeTailorPulldown',
-        MakeTailorChangeCloth: 'Guide' + 'MakeTailorChangeCloth',
-        MakeTailorBtnCom: 'Guide' + 'MakeTailorBtnCom',
-        MakeTailorStartTailor: 'Guide' + 'MakeTailorStartTailor',
-        MakeTailorNewTailor: 'Guide' + 'MakeTailorNewTailor',
-        MakeTailorCloseTailor: 'Guide' + 'MakeTailorCloseTailor',
-        MakeTailorOpenTailor: 'Guide' + 'MakeTailorOpenTailor',
+        MakeTailorPulldown = 'Guide' + 'MakeTailorPulldown',
+        MakeTailorChangeCloth = 'Guide' + 'MakeTailorChangeCloth',
+        MakeTailorBtnCom = 'Guide' + 'MakeTailorBtnCom',
+        MakeTailorStartTailor = 'Guide' + 'MakeTailorStartTailor',
+        MakeTailorNewTailor = 'Guide' + 'MakeTailorNewTailor',
+        MakeTailorCloseTailor = 'Guide' + 'MakeTailorCloseTailor',
+        MakeTailorOpenTailor = 'Guide' + 'MakeTailorOpenTailor',
 
-        MakePatternChooseClassify: 'Guide' + 'MakePatternChooseClassify',
-        MakePatternPattern1: 'Guide' + 'MakePatternPattern1',
-        MakePatternFrame1: 'Guide' + 'MakePatternFrame1',
-        MakePatternTurnFace: 'Guide' + 'MakePatternTurnFace',
-        MakePatternFrame2: 'Guide' + 'MakePatternFrame2',
-        MakePatternPattern2: 'Guide' + 'MakePatternPattern2',
-        MakePatternBtnCom: 'Guide' + 'MakePatternBtnCom',
+        MakePatternChooseClassify = 'Guide' + 'MakePatternChooseClassify',
+        MakePatternPattern1 = 'Guide' + 'MakePatternPattern1',
+        MakePatternFrame1 = 'Guide' + 'MakePatternFrame1',
+        MakePatternTurnFace = 'Guide' + 'MakePatternTurnFace',
+        MakePatternFrame2 = 'Guide' + 'MakePatternFrame2',
+        MakePatternPattern2 = 'Guide' + 'MakePatternPattern2',
+        MakePatternBtnCom = 'Guide' + 'MakePatternBtnCom',
 
-        TweetingBtnChoosePhoto: 'Guide' + 'TweetingBtnChoosePhoto',
-        TweetingChoosePhoto: 'Guide' + 'TweetingChoosePhoto',
-        TweetingBtnSend: 'Guide' + 'TweetingBtnSend',
-        TweetingBtnDoubleFans: 'Guide' + 'TweetingBtnDoubleFans',
+        TweetingBtnChoosePhoto = 'Guide' + 'TweetingBtnChoosePhoto',
+        TweetingChoosePhoto = 'Guide' + 'TweetingChoosePhoto',
+        TweetingBtnSend = 'Guide' + 'TweetingBtnSend',
+        TweetingBtnDoubleFans = 'Guide' + 'TweetingBtnDoubleFans',
 
-        RankingCloseBtn: 'Guide' + 'RankingCloseBtn',
+        RankingCloseBtn = 'Guide' + 'RankingCloseBtn',
 
-        PersonalInfoBtn: 'Guide' + 'PersonalInfoBtn',
-        PersonalInfoWriteName: 'Guide' + 'PersonalInfoWriteName',
-        PersonalInfoCloseBtn: 'Guide' + 'PersonalInfoCloseBtn',
+        PersonalInfoBtn = 'Guide' + 'PersonalInfoBtn',
+        PersonalInfoWriteName = 'Guide' + 'PersonalInfoWriteName',
+        PersonalInfoCloseBtn = 'Guide' + 'PersonalInfoCloseBtn',
 
-        DelayBtnCheckIn: 'Start' + 'DelayBtnCheckIn',
-        BtnCheckIn: 'Guide' + 'BtnCheckIn',
-        CheckInGetReward: 'Guide' + 'CheckInGetReward',
-        CheckInCloseBtn: 'Guide' + 'CheckInBtnClose',
+        DelayBtnCheckIn = 'Start' + 'DelayBtnCheckIn',
+        BtnCheckIn = 'Guide' + 'BtnCheckIn',
+        CheckInGetReward = 'Guide' + 'CheckInGetReward',
+        CheckInCloseBtn = 'Guide' + 'CheckInBtnClose',
 
-        StartOtherBtnClick: 'Guide' + 'StartOtherBtnClick',
+        StartOtherBtnClick = 'Guide' + 'StartOtherBtnClick',
     }
     /**引导是否完成*/
-    static get _complete(): boolean {
-        return LwgStorage._bool('_Guide_complete').value;
-    };
-    static set _complete(val: boolean) {
-        LwgStorage._bool('_Guide_complete').value = val;
+    export let _complete = {
+        get value(): boolean {
+            return LwgStorage._bool('_Guide_complete').value;
+        },
+        set value(val: boolean) {
+            LwgStorage._bool('_Guide_complete').value = val;
+        }
     }
-    static MmakeTailorPulldownSwicth: boolean = false;
-    static MmakeTailorBtnComSwicth: boolean = false;
+    export let MmakeTailorPulldownSwicth: boolean = false;
+    export let MmakeTailorBtnComSwicth: boolean = false;
 
-    static get MakePatternState(): string {
-        return this['/MakePatternState'] ? this['/MakePatternState'] : 'ChooseClassify';
-    };
-    static set MakePatternState(_state: string) {
-        this['/MakePatternState'] = _state;
-    }
-    static MakePatternStateType = {
+    export let MakePatternState = 'ChooseClassify';
+    export let MakePatternStateType = {
         ChooseClassify: `ChooseClassify`,
         Pattern1: 'Pattern1',
         Frame1: 'Frame1',
@@ -103,30 +97,32 @@ export class _Guide {
         closeGuide: 'closeGuide',
     }
 
-    static CheckInCloseBtn: boolean = false;
+    export let CheckInCloseBtn = false;
 }
-export class _PersonalInfo {
-    static get _name(): string {
-        return LwgStorage._str('playerName', null, 'You').value;
-    };
-    static set _name(str: string) {
-        LwgStorage._str('playerName').value = str;
+export module _PersonalInfo {
+    export let _name = {
+        get value(): string {
+            return LwgStorage._str('playerName', null, 'You').value;
+        },
+        set value(str: string) {
+            LwgStorage._str('playerName').value = str;
+        }
     }
 }
-export class _BackHint {
-    static _3dToSp: Laya.Sprite;
-    static _fromScene: Laya.Scene;
+export module _BackHint {
+    export let _3dToSp: Laya.Sprite;
+    export let _fromScene: Laya.Scene;
 }
-export class _PreLoadCutIn {
+export module _PreLoadCutIn {
     /**是不是从返回按钮中进来的，返回按钮中进来回主界面不会换装*/
-    static _fromBack: boolean = false;
+    export let _fromBack = false;
 }
-export class _Start {
-    static _whereFrom: string;
-    static _event = {
-        photo: 'Start' + 'photo',
-        updateRanking: 'Start' + 'updateRanking',
-        BtnPersonalInfo: 'Start' + 'BtnPersonalInfo',
+export module _Start {
+    export let _whereFrom: string;
+    export enum Event {
+        photo = 'Start' + 'photo',
+        updateRanking = 'Start' + 'updateRanking',
+        BtnPersonalInfo = 'Start' + 'BtnPersonalInfo',
     }
 }
 /**服装总数据*/
@@ -414,100 +410,94 @@ export class _DIYClothes extends LwgData._Table {
         return CloBox;
     }
 }
-export class _MakeTailor {
-    static _event = {
-        scissorTrigger: '_MakeTailor_scissorTrigger',
-        completeEffcet: '_MakeTailor_completeAni',
-        changeClothes: '_MakeTailor_changeClothes',
-        scissorAppear: '_MakeTailor_scissorAppear',
-        scissorPlay: '_MakeTailor_scissorPlay',
-        scissorStop: '_MakeTailor_scissorStop',
-        scissorRotation: '_MakeTailor_scissorRotation',
-        scissorAgain: '_MakeTailor_scissorSitu',
-        scissorRemove: '_MakeTailor_scissorRemove',
+export module _MakeTailor {
+    export enum Event {
+        scissorTrigger = '_MakeTailor_scissorTrigger',
+        completeEffcet = '_MakeTailor_completeAni',
+        changeClothes = '_MakeTailor_changeClothes',
+        scissorAppear = '_MakeTailor_scissorAppear',
+        scissorPlay = '_MakeTailor_scissorPlay',
+        scissorStop = '_MakeTailor_scissorStop',
+        scissorRotation = '_MakeTailor_scissorRotation',
+        scissorAgain = '_MakeTailor_scissorSitu',
+        scissorRemove = '_MakeTailor_scissorRemove',
     }
 }
-class _PatternData extends LwgData._Table {
-    private static ins: _PatternData;
-    static _ins(): _PatternData {
-        if (!this.ins) {
-            this.ins = new _PatternData('_Pattern', _Res._list.json.MakePattern.dataArr, true);
-            this.ins._pitchClassify = this.ins._classify.newYear;
-            //空位置用于站位 
-            this.ins.newYearArr = this.ins._getArrByClassify(this.ins._classify.newYear);
-            this.ins.newYearArr.push({}, {});
+export module _MakePattern {
+    export enum Event {
+        close = '_MakePattern_close',
+        createImg = '_MakePattern_createImg',
+    }
+    export class _Pattern extends LwgData._Table {
+        private static ins: _Pattern;
+        static _ins(): _Pattern {
+            if (!this.ins) {
+                this.ins = new _Pattern('_Pattern', _Res._list.json.MakePattern.dataArr, true);
+                this.ins._pitchClassify = this.ins._classify.newYear;
+                //空位置用于站位 
+                this.ins.newYearArr = this.ins._getArrByClassify(this.ins._classify.newYear);
+                this.ins.newYearArr.push({}, {});
 
-            this.ins.basicArr = this.ins._getArrByClassify(this.ins._classify.basic);
-            this.ins.basicArr.push({}, {});
+                this.ins.basicArr = this.ins._getArrByClassify(this.ins._classify.basic);
+                this.ins.basicArr.push({}, {});
 
-            this.ins.catArr = this.ins._getArrByClassify(this.ins._classify.cat);
-            this.ins.catArr.push({}, {});
+                this.ins.catArr = this.ins._getArrByClassify(this.ins._classify.cat);
+                this.ins.catArr.push({}, {});
 
-            this.ins.pinkArr = this.ins._getArrByClassify(this.ins._classify.pink);
-            this.ins.pinkArr.push({}, {});
+                this.ins.pinkArr = this.ins._getArrByClassify(this.ins._classify.pink);
+                this.ins.pinkArr.push({}, {});
 
-            this.ins.expressionArr = this.ins._getArrByClassify(this.ins._classify.expression);
-            this.ins.expressionArr.push({}, {});
+                this.ins.expressionArr = this.ins._getArrByClassify(this.ins._classify.expression);
+                this.ins.expressionArr.push({}, {});
+            }
+            return this.ins;
         }
-        return this.ins;
-    }
-    newYearArr: any[];
-    catArr: any[];
-    pinkArr: any[];
-    basicArr: any[];
-    expressionArr: any[];
-    _classify = {
-        newYear: 'newYear',
-        basic: 'basic',
-        cat: 'cat',
-        pink: 'pink',
-        expression: 'expression',
-    }
-}
-/**贴图位置偏移*/
-class _PatternDiff extends LwgData._Table {
-    private static ins: _PatternDiff;
-    static _ins(): _PatternDiff {
-        if (!this.ins) {
-            this.ins = new _PatternDiff('_DIYClothesDiff', _Res._list.json.DIYClothesDiff.dataArr, false);
+        newYearArr: any[];
+        catArr: any[];
+        pinkArr: any[];
+        basicArr: any[];
+        expressionArr: any[];
+        _classify = {
+            newYear: 'newYear',
+            basic: 'basic',
+            cat: 'cat',
+            pink: 'pink',
+            expression: 'expression',
         }
-        return this.ins;
     }
-    _otherPro = {
-        fDiffX: 'fDiffX',
-        fDiffY: 'fDiffY',
-        rDiffX: 'rDiffX',
-        rDiffY: 'rDiffY',
-    }
-    get fDiffX(): number {
-        return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'fDiffX');
-    };
-    get fDiffY(): number {
-        return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'fDiffY');
-    };
+    /**贴图位置偏移*/
+    export class _PatternDiff extends LwgData._Table {
+        private static ins: _PatternDiff;
+        static _ins(): _PatternDiff {
+            if (!this.ins) {
+                this.ins = new _PatternDiff('_DIYClothesDiff', _Res._list.json.DIYClothesDiff.dataArr, false);
+            }
+            return this.ins;
+        }
+        _otherPro = {
+            fDiffX: 'fDiffX',
+            fDiffY: 'fDiffY',
+            rDiffX: 'rDiffX',
+            rDiffY: 'rDiffY',
+        }
+        get fDiffX(): number {
+            return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'fDiffX');
+        };
+        get fDiffY(): number {
+            return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'fDiffY');
+        };
 
-    get rDiffX(): number {
-        return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'rDiffX');
-    };
-    get rDiffY(): number {
-        return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'rDiffY');
-    };
-}
-export class _MakePattern {
-    static _event = {
-        close: '_MakePattern_close',
-        createImg: '_MakePattern_createImg',
-    }
-    static get _Data(): _PatternData {
-        return _PatternData._ins();
-    }
-    static get _PatternDiff(): _PatternDiff {
-        return _PatternDiff._ins();
+        get rDiffX(): number {
+            return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'rDiffX');
+        };
+        get rDiffY(): number {
+            return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'rDiffY');
+        };
     }
 }
-export class _Tweeting {
+export module _Tweeting {
     /**过程中的照相*/
-    static _photo = {
+    export let _photo = {
         arr: [],
         take: (Scene: Laya.Scene, index: number) => {
             _Tweeting._photo.arr[index] && (_Tweeting._photo.arr[index] as Laya.Texture).destroy();
@@ -523,43 +513,57 @@ export class _Tweeting {
         }
     };
     /**关注数*/
-    static get _attentionNum(): number {
-        return LwgStorage._num('_MakePattern/attention', null, 180).value;
-    };
-    static set _attentionNum(val: number) {
-        LwgStorage._num('_MakePattern/attention').value = val;
+    export let _attentionNum = {
+        get value(): number {
+            return LwgStorage._num('_MakePattern/attention', null, 180).value;
+        },
+        set value(val: number) {
+            LwgStorage._num('_MakePattern/attention').value = val;
+        }
     }
     /**完成次数*/
-    static get _completeNum(): number {
-        return LwgStorage._num('_MakePattern/completeNum').value;
-    };
-    static set _completeNum(val: number) {
-        LwgStorage._num('_MakePattern/completeNum').value = val;
+    export let _completeNum = {
+        get value(): number {
+            return LwgStorage._num('_MakePattern/completeNum').value;
+        },
+        set value(val: number) {
+            LwgStorage._num('_MakePattern/completeNum').value = val;
+        }
     }
+
+
     /**被分享数*/
-    static get _forwardedNum(): number {
-        return LwgStorage._num('Tweeting/forwarded', null, LwgTools._Number.randomOneBySection(75, 125, true)).value;
-    };
-    static set _forwardedNum(val: number) {
-        LwgStorage._num('Tweeting/forwarded').value = val;
+    export let _forwardedNum = {
+        get value(): number {
+            return LwgStorage._num('Tweeting/forwarded', null, LwgTools._Number.randomOneBySection(75, 125, true)).value;
+        },
+        set value(val: number) {
+            LwgStorage._num('Tweeting/forwarded').value = val;
+        }
     }
+
     /**被评论数*/
-    static get _commentNum(): number {
-        return LwgStorage._num('Tweeting/Comment', null, LwgTools._Number.randomOneBySection(100, 150, true)).value;
-    };
-    static set _commentNum(val: number) {
-        LwgStorage._num('Tweeting/Comment').value = val;
+    export let _commentNum = {
+        get value(): number {
+            return LwgStorage._num('Tweeting/Comment', null, LwgTools._Number.randomOneBySection(100, 150, true)).value;
+        },
+        set value(val: number) {
+            LwgStorage._num('Tweeting/Comment').value = val;
+        }
     }
+
     /**被点赞数*/
-    static get _likeNum(): number {
-        return LwgStorage._num('Tweeting/like', null, LwgTools._Number.randomOneBySection(200, 250, true)).value;
-    };
-    static set _likeNum(val: number) {
-        LwgStorage._num('Tweeting/like').value = val;
+    export let _likeNum = {
+        get value(): number {
+            return LwgStorage._num('Tweeting/like', null, LwgTools._Number.randomOneBySection(200, 250, true)).value;
+        },
+        set value(val: number) {
+            LwgStorage._num('Tweeting/like').value = val;
+        }
     }
 
     /**玩家简介*/
-    static _brief = {
+    export let _brief = {
         getThree: (): string[] => {
             return LwgTools._Array.randomGetOut(_Tweeting._brief.all, 3);
         },
@@ -581,7 +585,7 @@ export class _Tweeting {
     }
 
     /**微博正文*/
-    static _mainBody = {
+    export let _mainBody = {
         getOne: (): string => {
             _Tweeting._mainBody.present = LwgTools._Array.randomGetOne(_Tweeting._mainBody.all);
             return _Tweeting._mainBody.present;
@@ -614,7 +618,7 @@ export class _Tweeting {
         ]
     };
     /**网友回复*/
-    static _reply = {
+    export let _reply = {
         getTow: (): string[] => {
             return LwgTools._Array.randomGetOut(_Tweeting._reply.all, 2);
         },
@@ -649,55 +653,63 @@ export class _Tweeting {
         ]
     }
     /**当前被选中的照片*/
-    static _photoIndex = 0;
+    export let _photoIndex = 0;
 
 }
-class _CheckInData extends LwgData._Table {
-    private static ins: _CheckInData;
-    static _ins(): _CheckInData {
-        if (!this.ins) {
-            this.ins = new _CheckInData('CheckIn', _Res._list.json.CheckIn.dataArr, true);
+export module _CheckIn {
+    export class _Data extends LwgData._Table {
+        private static ins: _Data;
+        static _ins(): _Data {
+            if (!this.ins) {
+                this.ins = new _Data('CheckIn', _Res._list.json.CheckIn.dataArr, true);
+            }
+            return this.ins;
         }
-        return this.ins;
+        _otherPro = {
+            checkAddition: 'checkAddition',
+            otherRewardType: 'otherRewardType',
+            otherRewardNum: 'otherRewardNum',
+            otherCompelet: 'otherCompelet',
+        }
     }
-    _otherPro = {
-        checkAddition: 'checkAddition',
-        otherRewardType: 'otherRewardType',
-        otherRewardNum: 'otherRewardNum',
-        otherCompelet: 'otherCompelet',
+
+    /**提前解锁全部奖励按广告，解锁了几次*/
+    export let _immediately = {
+        get value(): number {
+            return LwgStorage._num('_CheckIn/immediately').value;
+        },
+        set value(val: number) {
+            LwgStorage._num('_CheckIn/immediately').value = val;
+        }
     }
-}
-export class _CheckIn {
-    static get _Data(): _CheckInData {
-        return _CheckInData._ins();
-    }
-    /**提前解锁全部奖励按钮，解锁了几次*/
-    static get _immediately(): number {
-        return LwgStorage._num('_CheckIn/immediately').value;
-    };
-    static set _immediately(val: number) {
-        LwgStorage._num('_CheckIn/immediately').value = val;
-    }
+
     /**当前签到第几天了，4日签到为4天一个循环*/
-    static get _checkInNum(): number {
-        return LwgStorage._num('_CheckIn/checkInNum').value;
-    };
-    static set _checkInNum(val: number) {
-        LwgStorage._num('_CheckIn/checkInNum').value = val;
+    export let _checkInNum = {
+        /**提前解锁全部奖励按钮，解锁了几次*/
+        get value(): number {
+            return LwgStorage._num('_CheckIn/checkInNum').value;
+        },
+        set value(val: number) {
+            LwgStorage._num('_CheckIn/checkInNum').value = val;
+        }
     }
-    /**上次的签到日期，主要判断今日会不会弹出签到，不一样则弹出签到，一样则不弹出签到*/
-    static get _lastCheckDate(): number {
-        return LwgStorage._num('_CheckIn/lastCheckDate').value;
-    };
-    static set _lastCheckDate(val: number) {
-        LwgStorage._num('_CheckIn/lastCheckDate').value = val;
+
+    /**当前签到第几天了，4日签到为4天一个循环*/
+    export let _lastCheckDate = {
+        get value(): number {
+            return LwgStorage._num('_CheckIn/lastCheckDate').value;
+        },
+        set value(val: number) {
+            LwgStorage._num('_CheckIn/lastCheckDate').value = val;
+        }
     }
-    /**
-     * 今天是否已经签到
-     */
-    static get _todayCheckIn(): boolean {
-        return this._lastCheckDate == LwgDate._date.date ? true : false;
-    };
+
+    /**当前签到第几天了，4日签到为4天一个循环*/
+    export let _todayCheckIn = {
+        get value(): boolean {
+            return _lastCheckDate.value == LwgDate._date.date ? true : false;
+        },
+    }
 }
 
 

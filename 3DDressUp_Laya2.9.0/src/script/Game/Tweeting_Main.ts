@@ -1,26 +1,26 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import {  LwgScene, LwgAni2D, LwgTimer, LwgTools, LwgClick } from "../Lwg/Lwg";
+import { LwgScene, LwgAni2D, LwgTimer, LwgTools, LwgClick } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _DIYClothes, _Guide, _PersonalInfo, _PreLoadCutIn, _Ranking, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 
-export default class Tweeting_Main extends  LwgScene._SceneBase {
+export default class Tweeting_Main extends LwgScene._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'weibopage');
         ADManager.TAPoint(TaT.BtnShow, 'photo_choose');
         // 正文
         this._LabelVar('BodyText').text = _Tweeting._mainBody.getOne();
         // 名字
-        this._LabelVar('PlayerName').text = _PersonalInfo._name;
+        this._LabelVar('PlayerName').text = _PersonalInfo._name.value;
         // 玩家头部
         this._ImgVar('IconPic').skin = `Game/UI/Ranking/IconSkin/Ava.png`;
-        _Tweeting._attentionNum += LwgTools._Number.randomOneInt(50, 100);
-        this._LabelVar('AttentionNum').text = _Tweeting._attentionNum.toString();
-        this._LabelVar('FansNum').text = _Ranking._Data._getPitchProperty(_Ranking._Data._otherPro.fansNum);
+        _Tweeting._attentionNum.value += LwgTools._Number.randomOneInt(50, 100);
+        this._LabelVar('AttentionNum').text = _Tweeting._attentionNum.value.toString();
+        this._LabelVar('FansNum').text = _Ranking._Data._ins()._getPitchProperty(_Ranking._Data._ins()._otherPro.fansNum);
         // 完成次数增加也完成一些任务
-        _Tweeting._completeNum++;
+        _Tweeting._completeNum.value++;
         _DIYClothes._ins()._checkConditionUnlockWay(_DIYClothes._ins()._unlockWay.$customs, 1);
-        this._LabelVar('CompleteNum').text = _Tweeting._completeNum.toString();
+        this._LabelVar('CompleteNum').text = _Tweeting._completeNum.value.toString();
         // 热门
         const heatArr = LwgTools._Number.randomCountBySection(20, 50, 3);
         heatArr.sort();
@@ -33,8 +33,8 @@ export default class Tweeting_Main extends  LwgScene._SceneBase {
             const Brief = Rank.getChildByName('Brief') as Laya.Label;
             const Heat = Rank.getChildByName('Heat') as Laya.Label;
             const Icon = Rank.getChildByName('HeadIcon').getChildByName('Icon') as Laya.Image;
-            const data = _Ranking._Data._arr[index];
-            Name.text = data[_Ranking._Data._property.$name];
+            const data = _Ranking._Data._ins()._arr[index];
+            Name.text = data[_Ranking._Data._ins()._property.$name];
             Tag.skin = `Game/UI/Tweeting/Main/${index + 1}.png`;
             Brief.text = briefArr[index];
             Heat.text = `本周热度 ${heatArr[index]}万`;
@@ -80,8 +80,8 @@ export default class Tweeting_Main extends  LwgScene._SceneBase {
             LwgAni2D.bombs_Appear(this._ImgVar('BtnChoosePhotos'), 0, 1, 1.08, 0, baseTime * 2, () => {
                 LwgTimer._once(300, this, () => {
                     this.BtnChoosePhotosClick();
-                    !_Guide._complete && this._openScene('Guide', false, false, () => {
-                        this._evNotify(_Guide.event.TweetingBtnChoosePhoto, [this._ImgVar('BtnChoosePhotos')._lwg.gPoint.x, this._ImgVar('BtnChoosePhotos')._lwg.gPoint.y, this._ImgVar('Photo2')._lwg.gPoint.x + 65, this._ImgVar('Photo2')._lwg.gPoint.y + 65]);
+                    !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                        this._evNotify(_Guide.Event.TweetingBtnChoosePhoto, [this._ImgVar('BtnChoosePhotos')._lwg.gPoint.x, this._ImgVar('BtnChoosePhotos')._lwg.gPoint.y, this._ImgVar('Photo2')._lwg.gPoint.x + 65, this._ImgVar('Photo2')._lwg.gPoint.y + 65]);
                     })
                 })
                 _GameAni._fadeHint(this._ImgVar('BtnChoosePhotos').getChildByName('HintPic') as Laya.Image);

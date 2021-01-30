@@ -8,24 +8,26 @@ import { _Res } from "./_Res";
 class _Item extends LwgData._Item {
     $button(): void {
         this._btnUp(this._ImgChild('Reward'), (e: Laya.Event) => {
-            if (!_CheckIn._todayCheckIn) {
-                if (_CheckIn._checkInNum + 1 === this.$serial) {
-                    _CheckIn._lastCheckDate = LwgDate._date.date;
-                    _CheckIn._Data._setCompleteName(this.$name);
-                    _CheckIn._checkInNum++;
+            console.log(_CheckIn._lastCheckDate.value, _CheckIn._todayCheckIn.value);
+            if (!_CheckIn._todayCheckIn.value) {
+                if (_CheckIn._checkInNum.value + 1 === this.$serial) {
+                    _CheckIn._lastCheckDate.value = LwgDate._date.date;
+                    console.log(_CheckIn._lastCheckDate.value, _CheckIn._todayCheckIn.value);
+                    _CheckIn._Data._ins()._setCompleteName(this.$name);
+                    _CheckIn._checkInNum.value++;
 
                     if (this.$rewardType.substr(0, 3) === 'diy') {
                         _DIYClothes._ins()._setCompleteByName(this.$rewardType);
                         LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
                         _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                     } else if (this.$rewardType === 'cat') {
-                        _MakePattern._Data._setCompleteByClassify(this.$rewardType);
+                        _MakePattern._Pattern._ins()._setCompleteByClassify(this.$rewardType);
                         LwgDialogue.createHint_Middle('恭喜获得猫咪贴图一套');
                         _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                     }
-                    if (!_Guide._complete) {
+                    if (!_Guide._complete.value) {
                         _Guide.CheckInCloseBtn = true;
-                        this._evNotify(_Guide.event.CheckInCloseBtn, [this._SceneImg('BtnClose')._lwg.gPoint.x, this._SceneImg('BtnClose')._lwg.gPoint.y]);
+                        this._evNotify(_Guide.Event.CheckInCloseBtn, [this._SceneImg('BtnClose')._lwg.gPoint.x, this._SceneImg('BtnClose')._lwg.gPoint.y]);
                     }
                 }
             } else {
@@ -35,12 +37,12 @@ class _Item extends LwgData._Item {
 
         var func = (e: Laya.Event) => {
             ADManager.ShowReward(() => {
-                _CheckIn._Data._setOtherCompleteName(this.$name);
+                _CheckIn._Data._ins()._setOtherCompleteName(this.$name);
                 if (this.$otherRewardType.substr(0, 3) === 'diy') {
                     _DIYClothes._ins()._setCompleteByName(this.$otherRewardType);
                     LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
                 } else if (this.$otherRewardType === 'newYear') {
-                    _MakePattern._Data._setCompleteByClassify(this.$otherRewardType);
+                    _MakePattern._Pattern._ins()._setCompleteByClassify(this.$otherRewardType);
                     LwgDialogue.createHint_Middle('恭喜获得新年贴图一套');
                 }
                 _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
@@ -48,12 +50,12 @@ class _Item extends LwgData._Item {
         }
         var adsClick = (e: Laya.Event) => {
             if (!this.$otherComplete) {
-                if (!_CheckIn._todayCheckIn) {
-                    if (_CheckIn._checkInNum + 1 >= this.$serial) {
+                if (!_CheckIn._todayCheckIn.value) {
+                    if (_CheckIn._checkInNum.value + 1 >= this.$serial) {
                         func(e);
                     }
                 } else {
-                    if (_CheckIn._checkInNum >= this.$serial) {
+                    if (_CheckIn._checkInNum.value >= this.$serial) {
                         func(e);
                     }
                 }
@@ -78,8 +80,8 @@ class _Item extends LwgData._Item {
         }
         Already.visible = this.$complete;
         if (!this.$complete) {
-            if (_CheckIn._checkInNum + 1 === this.$serial) {
-                if (_CheckIn._todayCheckIn) {
+            if (_CheckIn._checkInNum.value + 1 === this.$serial) {
+                if (_CheckIn._todayCheckIn.value) {
                     this._ImgChild('Reward').skin = 'Game/UI/ChekIn/k_nei.png';
                 } else {
                     this._ImgChild('Reward').skin = 'Game/UI/ChekIn/k_nei1.png';
@@ -102,8 +104,8 @@ class _Item extends LwgData._Item {
         }
         AdsAlready.visible = this.$otherComplete;
         if (!this.$otherComplete) {
-            if (!_CheckIn._todayCheckIn) {
-                if (_CheckIn._checkInNum + 1 >= this.$serial) {
+            if (!_CheckIn._todayCheckIn.value) {
+                if (_CheckIn._checkInNum.value + 1 >= this.$serial) {
                     this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                     this._ImgChild('BtnAdsReward').gray = false;
                 } else {
@@ -111,7 +113,7 @@ class _Item extends LwgData._Item {
                     this._ImgChild('BtnAdsReward').gray = true;
                 }
             } else {
-                if (_CheckIn._checkInNum >= this.$serial) {
+                if (_CheckIn._checkInNum.value >= this.$serial) {
                     this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                     this._ImgChild('BtnAdsReward').gray = false;
                 } else {
@@ -127,11 +129,11 @@ class _Item extends LwgData._Item {
 }
 export default class CheckIn extends LwgScene._SceneBase {
     lwgOnAwake(): void {
-        _CheckIn._Data._List = this._ListVar('List');
-        _CheckIn._Data._listRenderScript = _Item;
-        _CheckIn._Data._List.scrollBar.touchScrollEnable = false;
-        this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately} / 4`;
-        if (_CheckIn._immediately >= 4 || _CheckIn._checkInNum >= 4) {
+        _CheckIn._Data._ins()._List = this._ListVar('List');
+        _CheckIn._Data._ins()._listRenderScript = _Item;
+        _CheckIn._Data._ins()._List.scrollBar.touchScrollEnable = false;
+        this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately.value} / 4`;
+        if (_CheckIn._immediately.value >= 4 || _CheckIn._checkInNum.value >= 4) {
             this._ImgVar('BtnImmediately').visible = false;
             this._LabelVar('Tip').text = `奖励已经全部领取！`;
         }
@@ -140,35 +142,35 @@ export default class CheckIn extends LwgScene._SceneBase {
         return _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
             this._openScene('Guide', false, false, () => {
                 this.BtnCloseClick();
-                !_Guide._complete && this._evNotify(_Guide.event.CheckInGetReward, [this._ImgVar('GuideTab1')._lwg.gPoint.x, this._ImgVar('GuideTab1')._lwg.gPoint.y]);
+                !_Guide._complete.value && this._evNotify(_Guide.Event.CheckInGetReward, [this._ImgVar('GuideTab1')._lwg.gPoint.x, this._ImgVar('GuideTab1')._lwg.gPoint.y]);
             })
         });
     }
 
     BtnCloseClick(): void {
         this._btnUp(this._ImgVar('BtnClose'), () => {
-            if (!_Guide._complete && _Guide.CheckInCloseBtn) {
-                _Guide._complete = true;
+            if (!_Guide._complete.value && _Guide.CheckInCloseBtn) {
+                _Guide._complete.value = true;
                 LwgDialogue.createHint_Middle('开启你的女神之路吧!');
-                this._evNotify(_Guide.event.closeGuide);
-                this._evNotify(_Guide.event.StartOtherBtnClick);
+                this._evNotify(_Guide.Event.closeGuide);
+                this._evNotify(_Guide.Event.StartOtherBtnClick);
             }
             this._closeScene();
         })
     }
 
     lwgButton(): void {
-        if (!_Guide._complete) return;
+        if (!_Guide._complete.value) return;
         this.BtnCloseClick();
         this._btnUp(this._ImgVar('BtnImmediately'), () => {
-            if (_CheckIn._immediately < 4) {
+            if (_CheckIn._immediately.value < 4) {
                 ADManager.ShowReward(() => {
-                    _CheckIn._immediately++;
-                    this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately} / 4 `;
-                    if (_CheckIn._immediately >= 4) {
+                    _CheckIn._immediately.value++;
+                    this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately.value} / 4 `;
+                    if (_CheckIn._immediately.value >= 4) {
                         this._ImgVar('BtnImmediately').visible = false;
                         const gP1 = this._ImgVar('GuideTab1')._lwg.gPoint;
-                        _CheckIn._Data._setAllCompleteDelay(300, (com: boolean) => {
+                        _CheckIn._Data._ins()._setAllCompleteDelay(300, (com: boolean) => {
                             const copyP1 = new Laya.Point(gP1.x, gP1.y);
                             if (!com) {
                                 _GameEffects2D._oneFireworks(copyP1);
@@ -176,7 +178,7 @@ export default class CheckIn extends LwgScene._SceneBase {
                             gP1.x += 165;
                         }, null, null);
                         const gP2 = this._ImgVar('GuideTab2')._lwg.gPoint;
-                        _CheckIn._Data._setAllOtherCompleteDelay(300, (com: boolean) => {
+                        _CheckIn._Data._ins()._setAllOtherCompleteDelay(300, (com: boolean) => {
                             const copyP2 = new Laya.Point(gP2.x, gP2.y);
                             if (!com) {
                                 _GameEffects2D._oneFireworks(copyP2);
@@ -186,8 +188,8 @@ export default class CheckIn extends LwgScene._SceneBase {
                             LwgDialogue.createHint_Middle('奖励已经全部获得，快去制作服装吧！');
                         });
                         _DIYClothes._ins()._setCompleteByNameArr(['diy_dress_003_final', 'diy_dress_007_final', 'diy_top_004_final', 'diy_bottom_005_final', 'diy_dress_006_final', 'diy_bottom_006_final']);
-                        _MakePattern._Data._setCompleteByClassify('cat');
-                        _MakePattern._Data._setCompleteByClassify('newYear');
+                        _MakePattern._Pattern._ins()._setCompleteByClassify('cat');
+                        _MakePattern._Pattern._ins()._setCompleteByClassify('newYear');
                     }
                 })
             } else {

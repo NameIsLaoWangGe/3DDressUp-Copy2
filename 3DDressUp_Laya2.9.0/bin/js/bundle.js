@@ -1125,10 +1125,10 @@
             };
             PlatformAdmin._Ues = {
                 get value() {
-                    return this['_platform_name'] ? this['_platform_name'] : null;
+                    return this['_platform/name'] ? this['_platform/name'] : null;
                 },
                 set value(val) {
-                    this['_platform_name'] = val;
+                    this['_platform/name'] = val;
                     switch (val) {
                         case PlatformAdmin._Tpye.WebTest:
                             Laya.LocalStorage.clear();
@@ -1246,7 +1246,7 @@
                 SceneAdmin._PreLoadCutIn.zOrder = zOrder;
             }
             SceneAdmin._preLoadOpenScene = _preLoadOpenScene;
-            class _SceneChange {
+            class _SceneServe {
                 static _openZOderUp() {
                     if (SceneAniAdmin._closeSwitch.value) {
                         let num = 0;
@@ -1336,13 +1336,13 @@
                     this._closeZOder = 0;
                 }
             }
-            _SceneChange._openScene = null;
-            _SceneChange._openZOder = 1;
-            _SceneChange._openFunc = null;
-            _SceneChange._closeSceneArr = [];
-            _SceneChange._closeZOder = 0;
-            _SceneChange._sceneNum = 1;
-            SceneAdmin._SceneChange = _SceneChange;
+            _SceneServe._openScene = null;
+            _SceneServe._openZOder = 1;
+            _SceneServe._openFunc = null;
+            _SceneServe._closeSceneArr = [];
+            _SceneServe._closeZOder = 0;
+            _SceneServe._sceneNum = 1;
+            SceneAdmin._SceneServe = _SceneServe;
             function _openScene(openName, closeName, func, zOrder) {
                 LwgClick._switch = false;
                 Laya.Scene.load('Scene/' + openName + '.json', Laya.Handler.create(this, function (scene) {
@@ -1351,12 +1351,14 @@
                         openScene.close();
                         console.log(`场景${openName}重复出现！前面的场景将会被关闭！`);
                     }
-                    _SceneChange._openScene = SceneAdmin._SceneControl[scene.name = openName] = scene;
-                    _SceneChange._closeSceneArr.push(SceneAdmin._SceneControl[closeName]);
-                    _SceneChange._closeZOder = closeName ? SceneAdmin._SceneControl[closeName].zOrder : 0;
-                    _SceneChange._openZOder = zOrder ? zOrder : null;
-                    _SceneChange._openFunc = func ? func : () => { };
-                    _SceneChange._open();
+                    _SceneServe._openScene = SceneAdmin._SceneControl[scene.name = openName] = scene;
+                    if (closeName && SceneAdmin._SceneControl[closeName]) {
+                        _SceneServe._closeSceneArr.push(SceneAdmin._SceneControl[closeName]);
+                        _SceneServe._closeZOder = SceneAdmin._SceneControl[closeName].zOrder;
+                    }
+                    _SceneServe._openZOder = zOrder ? zOrder : null;
+                    _SceneServe._openFunc = func ? func : () => { };
+                    _SceneServe._open();
                 }));
             }
             SceneAdmin._openScene = _openScene;
@@ -1374,7 +1376,7 @@
                     closef();
                     return;
                 }
-                _SceneChange._closeZOderUP(LwgScene._SceneControl[closeName]);
+                _SceneServe._closeZOderUP(LwgScene._SceneControl[closeName]);
                 const script = SceneAdmin._SceneControl[closeName][SceneAdmin._SceneControl[closeName].name];
                 if (script) {
                     if (script) {
@@ -1469,12 +1471,28 @@
                 ;
                 _btnDown(target, down, effect) {
                     LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, (e) => {
-                        LwgClick._absoluteSwitch && LwgClick._switch && down && down(e);
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && down && down(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
                     }, null, null, null);
                 }
                 _btnMove(target, move, effect) {
                     LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, (e) => {
-                        LwgClick._absoluteSwitch && LwgClick._switch && move && move(e);
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && move && move(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
                     }, null, null);
                 }
                 _btnUp(target, up, effect) {
@@ -1491,10 +1509,60 @@
                     }, null);
                 }
                 _btnOut(target, out, effect) {
-                    LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, null, (e) => { LwgClick._absoluteSwitch && LwgClick._switch && out && out(e); });
+                    LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, null, (e) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && out && out(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
+                    });
                 }
                 _btnFour(target, down, move, up, out, effect) {
-                    LwgClick._on(effect == null ? effect : LwgClick._Use.value, target, this, (e) => { LwgClick._absoluteSwitch && LwgClick._switch && down && down(e); }, (e) => { LwgClick._absoluteSwitch && LwgClick._switch && move && move(e); }, (e) => { LwgClick._absoluteSwitch && LwgClick._switch && up && up(e); }, (e) => { LwgClick._absoluteSwitch && LwgClick._switch && out && out(e); });
+                    LwgClick._on(effect == null ? effect : LwgClick._Use.value, target, this, (e) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && down && down(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
+                    }, (e) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && move && move(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
+                    }, (e) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && up && up(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
+                    }, (e) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && out && out(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
+                    });
                 }
                 _openScene(openName, closeSelf, preLoadCutIn, func, zOrder) {
                     let closeName;
@@ -1515,11 +1583,11 @@
                 ;
                 lwgOnDisable() { }
                 ;
-                onStageMouseDown(e) { LwgClick._switch && this.lwgOnStageDown(e); }
+                onStageMouseDown(e) { ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageDown(e); }
                 ;
-                onStageMouseMove(e) { LwgClick._switch && this.lwgOnStageMove(e); }
+                onStageMouseMove(e) { ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageMove(e); }
                 ;
-                onStageMouseUp(e) { LwgClick._switch && this.lwgOnStageUp(e); }
+                onStageMouseUp(e) { ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageUp(e); }
                 ;
                 lwgOnStageDown(e) { }
                 ;
@@ -1532,7 +1600,6 @@
             class _SceneBase extends _ScriptBase {
                 constructor() {
                     super();
-                    this._calssName = _BaseName.PreLoad;
                 }
                 get _Owner() {
                     return this.owner;
@@ -1598,12 +1665,12 @@
                         this._Owner.getChildByName('Background')['width'] = Laya.stage.width;
                         this._Owner.getChildByName('Background')['height'] = Laya.stage.height;
                     }
-                    if (this._Owner.name == null) {
+                    if (!this._Owner.name) {
                         console.log('场景名称失效，脚本赋值失败');
                     }
                     else {
-                        this.ownerSceneName = this._calssName = this._Owner.name;
-                        this._Owner[this._calssName] = this;
+                        this.ownerSceneName = this._Owner.name;
+                        this._Owner[this._Owner.name] = this;
                     }
                     this.moduleOnAwake();
                     this.lwgOnAwake();
@@ -1633,7 +1700,7 @@
                             LwgClick._switch = true;
                             this.lwgOpenAniAfter();
                             this.lwgButton();
-                            _SceneChange._close();
+                            _SceneServe._close();
                         });
                     }
                     else {
@@ -1800,7 +1867,7 @@
                     return this.getChild(name, '_TapFontClip');
                 }
                 onAwake() {
-                    this._Owner[this['__proto__']['constructor'].name] = this;
+                    this._Owner[this._Owner.name] = this;
                     this.ownerSceneName = this._Scene.name;
                     this._fPoint = new Laya.Point(this._Owner.x, this._Owner.y);
                     this._fGPoint = this._Parent.localToGlobal(new Laya.Point(this._Owner.x, this._Owner.y));
@@ -2291,7 +2358,7 @@
             };
             function _init() {
                 const d = new Date;
-                DateAdmin._loginInfo = StorageAdmin._arrayArr('DateAdmin._loginInfo');
+                DateAdmin._loginInfo = StorageAdmin._arrayArr('DateAdmin/loginInfo');
                 DateAdmin._loginInfo.value.push([d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getDay(), d.getHours(), d.getMinutes(), d.getSeconds()]);
                 let arr = [];
                 if (DateAdmin._loginInfo.value.length > 0) {
@@ -2301,18 +2368,18 @@
                 }
                 arr.push([d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getDay(), d.getHours(), d.getMinutes(), d.getSeconds()]);
                 DateAdmin._loginInfo.value = arr;
-                DateAdmin._loginCount = StorageAdmin._num('DateAdmin._loginCount');
+                DateAdmin._loginCount = StorageAdmin._num('DateAdmin/_loginCount');
                 DateAdmin._loginCount.value++;
                 DateAdmin._loginToday.num++;
             }
             DateAdmin._init = _init;
             DateAdmin._loginToday = {
                 get num() {
-                    return Laya.LocalStorage.getItem('DateAdmin._loginToday') ? Number(Laya.LocalStorage.getItem('DateAdmin._loginToday')) : 0;
+                    return Laya.LocalStorage.getItem('DateAdmin/loginToday') ? Number(Laya.LocalStorage.getItem('DateAdmin/loginToday')) : 0;
                 },
                 set num(val) {
                     if (DateAdmin._date.date == DateAdmin._loginInfo.value[DateAdmin._loginInfo.value.length - 1][2]) {
-                        Laya.LocalStorage.setItem('DateAdmin._loginToday', val.toString());
+                        Laya.LocalStorage.setItem('DateAdmin/loginToday', val.toString());
                     }
                 }
             };
@@ -2533,10 +2600,10 @@
         (function (AdaptiveAdmin) {
             AdaptiveAdmin._Use = {
                 get value() {
-                    return this['Adaptive_value'] ? this['Adaptive_value'] : null;
+                    return this['Adaptive/value'] ? this['Adaptive/value'] : null;
                 },
                 set value(val) {
-                    this['Adaptive_value'] = val;
+                    this['Adaptive/value'] = val;
                 }
             };
             function _stageWidth(arr) {
@@ -2608,10 +2675,10 @@
             };
             SceneAniAdmin._Use = {
                 get value() {
-                    return this['SceneAnimation_name'] ? this['SceneAnimation_name'] : null;
+                    return this['SceneAnimation/name'] ? this['SceneAnimation/name'] : null;
                 },
                 set value(val) {
-                    this['SceneAnimation_name'] = val;
+                    this['SceneAnimation/name'] = val;
                 }
             };
             SceneAniAdmin._closeAniDelay = 0;
@@ -2625,7 +2692,7 @@
                     }
                 };
                 if (!SceneAniAdmin._openSwitch.value) {
-                    LwgScene._SceneChange._close();
+                    LwgScene._SceneServe._close();
                     Laya.timer.once(SceneAniAdmin._closeAniDelay + SceneAniAdmin._closeAniTime, this, () => {
                         afterAni();
                     });
@@ -3060,10 +3127,10 @@
                     this[`_bool${name}`] = {
                         get value() {
                             if (Laya.LocalStorage.getItem(name)) {
-                                if (Laya.LocalStorage.getItem(name) == "false") {
+                                if (Laya.LocalStorage.getItem(name) === "false") {
                                     return false;
                                 }
-                                else if (Laya.LocalStorage.getItem(name) == "true") {
+                                else if (Laya.LocalStorage.getItem(name) === "true") {
                                     return true;
                                 }
                             }
@@ -5629,10 +5696,10 @@
             };
             ClickAdmin._Use = {
                 get value() {
-                    return this['Click_name'] ? this['Click_name'] : null;
+                    return this['Click/name'] ? this['Click/name'] : null;
                 },
                 set value(val) {
-                    this['Click_name'] = val;
+                    this['Click/name'] = val;
                 }
             };
             function _on(effect, target, caller, down, move, up, out) {
@@ -6390,7 +6457,7 @@
         (function (SetAdmin) {
             SetAdmin._sound = {
                 get switch() {
-                    return Laya.LocalStorage.getItem('Setting_sound') == '0' ? false : true;
+                    return Laya.LocalStorage.getItem('Setting/sound') == '0' ? false : true;
                 },
                 set switch(value) {
                     let val;
@@ -6400,30 +6467,30 @@
                     else {
                         val = 0;
                     }
-                    Laya.LocalStorage.setItem('Setting_sound', val.toString());
+                    Laya.LocalStorage.setItem('Setting/sound', val.toString());
                 }
             };
             SetAdmin._bgMusic = {
                 get switch() {
-                    return Laya.LocalStorage.getItem('Setting_bgMusic') == '0' ? false : true;
+                    return Laya.LocalStorage.getItem('Setting/bgMusic') == '0' ? false : true;
                 },
                 set switch(value) {
                     let val;
                     if (value) {
                         val = 1;
-                        Laya.LocalStorage.setItem('Setting_bgMusic', val.toString());
+                        Laya.LocalStorage.setItem('Setting/bgMusic', val.toString());
                         AudioAdmin._playMusic();
                     }
                     else {
                         val = 0;
-                        Laya.LocalStorage.setItem('Setting_bgMusic', val.toString());
+                        Laya.LocalStorage.setItem('Setting/bgMusic', val.toString());
                         AudioAdmin._stopMusic();
                     }
                 }
             };
             SetAdmin._shake = {
                 get switch() {
-                    return Laya.LocalStorage.getItem('Setting_shake') == '0' ? false : true;
+                    return Laya.LocalStorage.getItem('Setting/shake') == '0' ? false : true;
                 },
                 set switch(value) {
                     let val;
@@ -6433,7 +6500,7 @@
                     else {
                         val = 0;
                     }
-                    Laya.LocalStorage.setItem('Setting_shake', val.toString());
+                    Laya.LocalStorage.setItem('Setting/shake', val.toString());
                 }
             };
             function _createBtnSet(x, y, width, height, skin, parent, ZOder) {
@@ -7280,6 +7347,15 @@
                     }
                 }
                 _3D.rayScanning = rayScanning;
+                function rayScanningFirst(camera, scene3D, vector2) {
+                    let _ray = new Laya.Ray(new Laya.Vector3(0, 0, 0), new Laya.Vector3(0, 0, 0));
+                    let out = new Laya.HitResult();
+                    const _v2 = new Laya.Vector2(Laya.stage.clientScaleX * vector2.x, Laya.stage.clientScaleY * vector2.y);
+                    camera.viewportPointToRay(_v2, _ray);
+                    scene3D.physicsSimulation.rayCast(_ray, out);
+                    return out;
+                }
+                _3D.rayScanningFirst = rayScanningFirst;
                 function animatorPlay(Sp3D, aniName, normalizedTime, layerIndex) {
                     let sp3DAni = Sp3D.getComponent(Laya.Animator);
                     if (!sp3DAni) {
@@ -7447,7 +7523,7 @@
                         for (var j = 0; j < data2.length; j++) {
                             var obj2 = data2[j];
                             var obj2Name = obj2[property];
-                            if (obj2Name == name) {
+                            if (obj2Name == obj1Name) {
                                 isExist = true;
                                 break;
                             }
@@ -8062,7 +8138,7 @@
             ExecutionAdmin._execution = {
                 get value() {
                     if (!this['Execution/executionNum']) {
-                        return Laya.LocalStorage.getItem('Execution/executionNumm') ? Number(Laya.LocalStorage.getItem('Execution/executionNum')) : maxEx;
+                        return Laya.LocalStorage.getItem('Execution/executionNum') ? Number(Laya.LocalStorage.getItem('Execution/executionNum')) : maxEx;
                     }
                     return this['Execution/executionNum'];
                 },
@@ -8092,20 +8168,20 @@
                     return this['Execution/addExHours'];
                 },
                 set value(val) {
-                    this['_Execution_addExHours'] = val;
-                    Laya.LocalStorage.setItem('_Execution_addExHours', val.toString());
+                    this['Execution/addExHours'] = val;
+                    Laya.LocalStorage.setItem('Execution/addExHours', val.toString());
                 }
             };
             ExecutionAdmin._addMinutes = {
                 get value() {
-                    if (!this['_Execution_addMinutes']) {
-                        return Laya.LocalStorage.getItem('_Execution_addMinutes') ? Number(Laya.LocalStorage.getItem('_Execution_addMinutes')) : (new Date()).getMinutes();
+                    if (!this['Execution/addMinutes']) {
+                        return Laya.LocalStorage.getItem('Execution/addMinutes') ? Number(Laya.LocalStorage.getItem('Execution/addMinutes')) : (new Date()).getMinutes();
                     }
-                    return this['_Execution_addMinutes'];
+                    return this['Execution/addMinutes'];
                 },
                 set value(val) {
-                    this['_Execution_addMinutes'] = val;
-                    Laya.LocalStorage.setItem('_Execution_addMinutes', val.toString());
+                    this['Execution/addMinutes'] = val;
+                    Laya.LocalStorage.setItem('Execution/addMinutes', val.toString());
                 }
             };
             function _createExecutionNode(parent) {
@@ -8392,7 +8468,7 @@
         },
         json: {
             GeneralClothes: {
-                url: [`_LwgData/_MakeTailor/DIYClothes.json`, `_LwgData/_DressingRoom/GeneralClothes.json`],
+                url: `_LwgData/_DressingRoom/GeneralClothes.json`,
                 dataArr: new Array,
             },
             DIYClothes: {
@@ -8672,122 +8748,124 @@
         }
     }
 
-    class _RankingData extends LwgData._Table {
-        constructor() {
-            super(...arguments);
-            this._otherPro = {
-                rankNum: 'rankNum',
-                fansNum: 'fansNum',
-                iconSkin: 'iconSkin',
-            };
-            this._classify = {
-                other: 'other',
-                self: 'self',
-            };
-        }
-        static _ins() {
-            if (!this.ins) {
-                this.ins = new _RankingData('RankingData', _Res._list.json.Ranking.dataArr, true);
-                if (!this.ins._arr[0]['iconSkin']) {
-                    for (let index = 0; index < this.ins._arr.length; index++) {
-                        const element = this.ins._arr[index];
-                        element['iconSkin'] = `Game/UI/Ranking/IconSkin/avatar_${element[this.ins._property.$serial]}.png`;
-                    }
-                }
-                this.ins._pitchName = '玩家';
-                this.ins._sortByProperty(this.ins._otherPro.fansNum, this.ins._otherPro.rankNum);
+    var _Ranking;
+    (function (_Ranking) {
+        _Ranking._whereFrom = 'Start';
+        class _Data extends LwgData._Table {
+            constructor() {
+                super(...arguments);
+                this._otherPro = {
+                    rankNum: 'rankNum',
+                    fansNum: 'fansNum',
+                    iconSkin: 'iconSkin',
+                };
+                this._classify = {
+                    other: 'other',
+                    self: 'self',
+                };
             }
-            return this.ins;
+            static _ins() {
+                if (!this.ins) {
+                    this.ins = new _Data('RankingData', _Res._list.json.Ranking.dataArr, true);
+                    if (!this.ins._arr[0]['iconSkin']) {
+                        for (let index = 0; index < this.ins._arr.length; index++) {
+                            const element = this.ins._arr[index];
+                            element['iconSkin'] = `Game/UI/Ranking/IconSkin/avatar_${element[this.ins._property.$serial]}.png`;
+                        }
+                    }
+                    this.ins._pitchName = '玩家';
+                    this.ins._sortByProperty(this.ins._otherPro.fansNum, this.ins._otherPro.rankNum);
+                }
+                return this.ins;
+            }
         }
-    }
-    class _Ranking {
-        static get _Data() {
-            return _RankingData._ins();
-        }
-    }
-    _Ranking._whereFrom = 'Start';
-    class _Guide {
-        static get _complete() {
-            return LwgStorage._bool('_Guide_complete').value;
-        }
-        ;
-        static set _complete(val) {
-            LwgStorage._bool('_Guide_complete').value = val;
-        }
-        static get MakePatternState() {
-            return this['/MakePatternState'] ? this['/MakePatternState'] : 'ChooseClassify';
-        }
-        ;
-        static set MakePatternState(_state) {
-            this['/MakePatternState'] = _state;
-        }
-    }
-    _Guide.event = {
-        closeGuide: 'Guide' + 'closeGuide',
-        vanishGuide: 'Guide' + 'vanishGuide',
-        StartBtnDress: 'Guide' + 'StartBtnDress',
-        MakeTailorPulldown: 'Guide' + 'MakeTailorPulldown',
-        MakeTailorChangeCloth: 'Guide' + 'MakeTailorChangeCloth',
-        MakeTailorBtnCom: 'Guide' + 'MakeTailorBtnCom',
-        MakeTailorStartTailor: 'Guide' + 'MakeTailorStartTailor',
-        MakeTailorNewTailor: 'Guide' + 'MakeTailorNewTailor',
-        MakeTailorCloseTailor: 'Guide' + 'MakeTailorCloseTailor',
-        MakeTailorOpenTailor: 'Guide' + 'MakeTailorOpenTailor',
-        MakePatternChooseClassify: 'Guide' + 'MakePatternChooseClassify',
-        MakePatternPattern1: 'Guide' + 'MakePatternPattern1',
-        MakePatternFrame1: 'Guide' + 'MakePatternFrame1',
-        MakePatternTurnFace: 'Guide' + 'MakePatternTurnFace',
-        MakePatternFrame2: 'Guide' + 'MakePatternFrame2',
-        MakePatternPattern2: 'Guide' + 'MakePatternPattern2',
-        MakePatternBtnCom: 'Guide' + 'MakePatternBtnCom',
-        TweetingBtnChoosePhoto: 'Guide' + 'TweetingBtnChoosePhoto',
-        TweetingChoosePhoto: 'Guide' + 'TweetingChoosePhoto',
-        TweetingBtnSend: 'Guide' + 'TweetingBtnSend',
-        TweetingBtnDoubleFans: 'Guide' + 'TweetingBtnDoubleFans',
-        RankingCloseBtn: 'Guide' + 'RankingCloseBtn',
-        PersonalInfoBtn: 'Guide' + 'PersonalInfoBtn',
-        PersonalInfoWriteName: 'Guide' + 'PersonalInfoWriteName',
-        PersonalInfoCloseBtn: 'Guide' + 'PersonalInfoCloseBtn',
-        DelayBtnCheckIn: 'Start' + 'DelayBtnCheckIn',
-        BtnCheckIn: 'Guide' + 'BtnCheckIn',
-        CheckInGetReward: 'Guide' + 'CheckInGetReward',
-        CheckInCloseBtn: 'Guide' + 'CheckInBtnClose',
-        StartOtherBtnClick: 'Guide' + 'StartOtherBtnClick',
-    };
-    _Guide.MmakeTailorPulldownSwicth = false;
-    _Guide.MmakeTailorBtnComSwicth = false;
-    _Guide.MakePatternStateType = {
-        ChooseClassify: `ChooseClassify`,
-        Pattern1: 'Pattern1',
-        Frame1: 'Frame1',
-        TurnFace: 'TurnFace',
-        Frame2: 'Frame2',
-        Pattern2: 'Pattern2',
-        BtnCom: 'BtnCom',
-        closeGuide: 'closeGuide',
-    };
-    _Guide.CheckInCloseBtn = false;
-    class _PersonalInfo {
-        static get _name() {
-            return LwgStorage._str('playerName', null, 'You').value;
-        }
-        ;
-        static set _name(str) {
-            LwgStorage._str('playerName').value = str;
-        }
-    }
-    class _BackHint {
-    }
-    class _PreLoadCutIn {
-    }
-    _PreLoadCutIn._fromBack = false;
-    class _Start {
-    }
-    _Start._event = {
-        photo: 'Start' + 'photo',
-        updateRanking: 'Start' + 'updateRanking',
-        BtnPersonalInfo: 'Start' + 'BtnPersonalInfo',
-    };
+        _Ranking._Data = _Data;
+    })(_Ranking || (_Ranking = {}));
+    var _Guide;
+    (function (_Guide) {
+        let Event;
+        (function (Event) {
+            Event["closeGuide"] = "GuidecloseGuide";
+            Event["vanishGuide"] = "GuidevanishGuide";
+            Event["StartBtnDress"] = "GuideStartBtnDress";
+            Event["MakeTailorPulldown"] = "GuideMakeTailorPulldown";
+            Event["MakeTailorChangeCloth"] = "GuideMakeTailorChangeCloth";
+            Event["MakeTailorBtnCom"] = "GuideMakeTailorBtnCom";
+            Event["MakeTailorStartTailor"] = "GuideMakeTailorStartTailor";
+            Event["MakeTailorNewTailor"] = "GuideMakeTailorNewTailor";
+            Event["MakeTailorCloseTailor"] = "GuideMakeTailorCloseTailor";
+            Event["MakeTailorOpenTailor"] = "GuideMakeTailorOpenTailor";
+            Event["MakePatternChooseClassify"] = "GuideMakePatternChooseClassify";
+            Event["MakePatternPattern1"] = "GuideMakePatternPattern1";
+            Event["MakePatternFrame1"] = "GuideMakePatternFrame1";
+            Event["MakePatternTurnFace"] = "GuideMakePatternTurnFace";
+            Event["MakePatternFrame2"] = "GuideMakePatternFrame2";
+            Event["MakePatternPattern2"] = "GuideMakePatternPattern2";
+            Event["MakePatternBtnCom"] = "GuideMakePatternBtnCom";
+            Event["TweetingBtnChoosePhoto"] = "GuideTweetingBtnChoosePhoto";
+            Event["TweetingChoosePhoto"] = "GuideTweetingChoosePhoto";
+            Event["TweetingBtnSend"] = "GuideTweetingBtnSend";
+            Event["TweetingBtnDoubleFans"] = "GuideTweetingBtnDoubleFans";
+            Event["RankingCloseBtn"] = "GuideRankingCloseBtn";
+            Event["PersonalInfoBtn"] = "GuidePersonalInfoBtn";
+            Event["PersonalInfoWriteName"] = "GuidePersonalInfoWriteName";
+            Event["PersonalInfoCloseBtn"] = "GuidePersonalInfoCloseBtn";
+            Event["DelayBtnCheckIn"] = "StartDelayBtnCheckIn";
+            Event["BtnCheckIn"] = "GuideBtnCheckIn";
+            Event["CheckInGetReward"] = "GuideCheckInGetReward";
+            Event["CheckInCloseBtn"] = "GuideCheckInBtnClose";
+            Event["StartOtherBtnClick"] = "GuideStartOtherBtnClick";
+        })(Event = _Guide.Event || (_Guide.Event = {}));
+        _Guide._complete = {
+            get value() {
+                return LwgStorage._bool('_Guide_complete').value;
+            },
+            set value(val) {
+                LwgStorage._bool('_Guide_complete').value = val;
+            }
+        };
+        _Guide.MmakeTailorPulldownSwicth = false;
+        _Guide.MmakeTailorBtnComSwicth = false;
+        _Guide.MakePatternState = 'ChooseClassify';
+        _Guide.MakePatternStateType = {
+            ChooseClassify: `ChooseClassify`,
+            Pattern1: 'Pattern1',
+            Frame1: 'Frame1',
+            TurnFace: 'TurnFace',
+            Frame2: 'Frame2',
+            Pattern2: 'Pattern2',
+            BtnCom: 'BtnCom',
+            closeGuide: 'closeGuide',
+        };
+        _Guide.CheckInCloseBtn = false;
+    })(_Guide || (_Guide = {}));
+    var _PersonalInfo;
+    (function (_PersonalInfo) {
+        _PersonalInfo._name = {
+            get value() {
+                return LwgStorage._str('playerName', null, 'You').value;
+            },
+            set value(str) {
+                LwgStorage._str('playerName').value = str;
+            }
+        };
+    })(_PersonalInfo || (_PersonalInfo = {}));
+    var _BackHint;
+    (function (_BackHint) {
+    })(_BackHint || (_BackHint = {}));
+    var _PreLoadCutIn;
+    (function (_PreLoadCutIn) {
+        _PreLoadCutIn._fromBack = false;
+    })(_PreLoadCutIn || (_PreLoadCutIn = {}));
+    var _Start;
+    (function (_Start) {
+        let Event;
+        (function (Event) {
+            Event["photo"] = "Startphoto";
+            Event["updateRanking"] = "StartupdateRanking";
+            Event["BtnPersonalInfo"] = "StartBtnPersonalInfo";
+        })(Event = _Start.Event || (_Start.Event = {}));
+    })(_Start || (_Start = {}));
     class _AllClothes extends LwgData._Table {
         constructor() {
             super(...arguments);
@@ -9048,279 +9126,288 @@
             return CloBox;
         }
     }
-    class _MakeTailor {
-    }
-    _MakeTailor._event = {
-        scissorTrigger: '_MakeTailor_scissorTrigger',
-        completeEffcet: '_MakeTailor_completeAni',
-        changeClothes: '_MakeTailor_changeClothes',
-        scissorAppear: '_MakeTailor_scissorAppear',
-        scissorPlay: '_MakeTailor_scissorPlay',
-        scissorStop: '_MakeTailor_scissorStop',
-        scissorRotation: '_MakeTailor_scissorRotation',
-        scissorAgain: '_MakeTailor_scissorSitu',
-        scissorRemove: '_MakeTailor_scissorRemove',
-    };
-    class _PatternData extends LwgData._Table {
-        constructor() {
-            super(...arguments);
-            this._classify = {
-                newYear: 'newYear',
-                basic: 'basic',
-                cat: 'cat',
-                pink: 'pink',
-                expression: 'expression',
-            };
-        }
-        static _ins() {
-            if (!this.ins) {
-                this.ins = new _PatternData('_Pattern', _Res._list.json.MakePattern.dataArr, true);
-                this.ins._pitchClassify = this.ins._classify.newYear;
-                this.ins.newYearArr = this.ins._getArrByClassify(this.ins._classify.newYear);
-                this.ins.newYearArr.push({}, {});
-                this.ins.basicArr = this.ins._getArrByClassify(this.ins._classify.basic);
-                this.ins.basicArr.push({}, {});
-                this.ins.catArr = this.ins._getArrByClassify(this.ins._classify.cat);
-                this.ins.catArr.push({}, {});
-                this.ins.pinkArr = this.ins._getArrByClassify(this.ins._classify.pink);
-                this.ins.pinkArr.push({}, {});
-                this.ins.expressionArr = this.ins._getArrByClassify(this.ins._classify.expression);
-                this.ins.expressionArr.push({}, {});
+    var _MakeTailor;
+    (function (_MakeTailor) {
+        let Event;
+        (function (Event) {
+            Event["scissorTrigger"] = "_MakeTailor_scissorTrigger";
+            Event["completeEffcet"] = "_MakeTailor_completeAni";
+            Event["changeClothes"] = "_MakeTailor_changeClothes";
+            Event["scissorAppear"] = "_MakeTailor_scissorAppear";
+            Event["scissorPlay"] = "_MakeTailor_scissorPlay";
+            Event["scissorStop"] = "_MakeTailor_scissorStop";
+            Event["scissorRotation"] = "_MakeTailor_scissorRotation";
+            Event["scissorAgain"] = "_MakeTailor_scissorSitu";
+            Event["scissorRemove"] = "_MakeTailor_scissorRemove";
+        })(Event = _MakeTailor.Event || (_MakeTailor.Event = {}));
+    })(_MakeTailor || (_MakeTailor = {}));
+    var _MakePattern;
+    (function (_MakePattern) {
+        let Event;
+        (function (Event) {
+            Event["close"] = "_MakePattern_close";
+            Event["createImg"] = "_MakePattern_createImg";
+        })(Event = _MakePattern.Event || (_MakePattern.Event = {}));
+        class _Pattern extends LwgData._Table {
+            constructor() {
+                super(...arguments);
+                this._classify = {
+                    newYear: 'newYear',
+                    basic: 'basic',
+                    cat: 'cat',
+                    pink: 'pink',
+                    expression: 'expression',
+                };
             }
-            return this.ins;
-        }
-    }
-    class _PatternDiff extends LwgData._Table {
-        constructor() {
-            super(...arguments);
-            this._otherPro = {
-                fDiffX: 'fDiffX',
-                fDiffY: 'fDiffY',
-                rDiffX: 'rDiffX',
-                rDiffY: 'rDiffY',
-            };
-        }
-        static _ins() {
-            if (!this.ins) {
-                this.ins = new _PatternDiff('_DIYClothesDiff', _Res._list.json.DIYClothesDiff.dataArr, false);
+            static _ins() {
+                if (!this.ins) {
+                    this.ins = new _Pattern('_Pattern', _Res._list.json.MakePattern.dataArr, true);
+                    this.ins._pitchClassify = this.ins._classify.newYear;
+                    this.ins.newYearArr = this.ins._getArrByClassify(this.ins._classify.newYear);
+                    this.ins.newYearArr.push({}, {});
+                    this.ins.basicArr = this.ins._getArrByClassify(this.ins._classify.basic);
+                    this.ins.basicArr.push({}, {});
+                    this.ins.catArr = this.ins._getArrByClassify(this.ins._classify.cat);
+                    this.ins.catArr.push({}, {});
+                    this.ins.pinkArr = this.ins._getArrByClassify(this.ins._classify.pink);
+                    this.ins.pinkArr.push({}, {});
+                    this.ins.expressionArr = this.ins._getArrByClassify(this.ins._classify.expression);
+                    this.ins.expressionArr.push({}, {});
+                }
+                return this.ins;
             }
-            return this.ins;
         }
-        get fDiffX() {
-            return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'fDiffX');
-        }
-        ;
-        get fDiffY() {
-            return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'fDiffY');
-        }
-        ;
-        get rDiffX() {
-            return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'rDiffX');
-        }
-        ;
-        get rDiffY() {
-            return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'rDiffY');
-        }
-        ;
-    }
-    class _MakePattern {
-        static get _Data() {
-            return _PatternData._ins();
-        }
-        static get _PatternDiff() {
-            return _PatternDiff._ins();
-        }
-    }
-    _MakePattern._event = {
-        close: '_MakePattern_close',
-        createImg: '_MakePattern_createImg',
-    };
-    class _Tweeting {
-        static get _attentionNum() {
-            return LwgStorage._num('_MakePattern/attention', null, 180).value;
-        }
-        ;
-        static set _attentionNum(val) {
-            LwgStorage._num('_MakePattern/attention').value = val;
-        }
-        static get _completeNum() {
-            return LwgStorage._num('_MakePattern/completeNum').value;
-        }
-        ;
-        static set _completeNum(val) {
-            LwgStorage._num('_MakePattern/completeNum').value = val;
-        }
-        static get _forwardedNum() {
-            return LwgStorage._num('Tweeting/forwarded', null, LwgTools._Number.randomOneBySection(75, 125, true)).value;
-        }
-        ;
-        static set _forwardedNum(val) {
-            LwgStorage._num('Tweeting/forwarded').value = val;
-        }
-        static get _commentNum() {
-            return LwgStorage._num('Tweeting/Comment', null, LwgTools._Number.randomOneBySection(100, 150, true)).value;
-        }
-        ;
-        static set _commentNum(val) {
-            LwgStorage._num('Tweeting/Comment').value = val;
-        }
-        static get _likeNum() {
-            return LwgStorage._num('Tweeting/like', null, LwgTools._Number.randomOneBySection(200, 250, true)).value;
-        }
-        ;
-        static set _likeNum(val) {
-            LwgStorage._num('Tweeting/like').value = val;
-        }
-    }
-    _Tweeting._photo = {
-        arr: [],
-        take: (Scene, index) => {
-            _Tweeting._photo.arr[index] && _Tweeting._photo.arr[index].destroy();
-            _Tweeting._photo.arr[index] = Scene.drawToTexture(Laya.stage.width, Laya.stage.height, 0, 0);
-        },
-        clear: () => {
-            for (let index = 0; index < _Tweeting._photo.arr.length; index++) {
-                const element = _Tweeting._photo.arr[index];
-                element && element.destroy();
+        _MakePattern._Pattern = _Pattern;
+        class _PatternDiff extends LwgData._Table {
+            constructor() {
+                super(...arguments);
+                this._otherPro = {
+                    fDiffX: 'fDiffX',
+                    fDiffY: 'fDiffY',
+                    rDiffX: 'rDiffX',
+                    rDiffY: 'rDiffY',
+                };
             }
-            _Tweeting._photo.arr = [];
-            Laya.Resource.destroyUnusedResources();
-        }
-    };
-    _Tweeting._brief = {
-        getThree: () => {
-            return LwgTools._Array.randomGetOut(_Tweeting._brief.all, 3);
-        },
-        getOne: () => {
-            return LwgTools._Array.randomGetOut(_Tweeting._brief.all);
-        },
-        all: [
-            '世界很烦，但我要很可爱',
-            '生活就是见招拆招',
-            '忠于自己，热爱生活',
-            '我很有个性，但我不想签名',
-            'T^T	',
-            '你最怕什么',
-            '宁缺毋滥',
-            '围脖红人',
-            '剪裁大师',
-            '剪裁王',
-        ]
-    };
-    _Tweeting._mainBody = {
-        getOne: () => {
-            _Tweeting._mainBody.present = LwgTools._Array.randomGetOne(_Tweeting._mainBody.all);
-            return _Tweeting._mainBody.present;
-        },
-        present: null,
-        all: [
-            '不管几岁，反正少女心万岁≧▽≦',
-            '此处可爱贩卖机  24小时正常营业	',
-            '欢迎光临我的手工小店，我会制作更多大家喜欢的衣服哦',
-            '现在一定有个很可爱的人，在看我的这句话',
-            '辛辛苦苦做了好久，结果很满意，好喜欢哦',
-            '大家觉得我这套衣服怎么样',
-            '闲来无事，做了一套衣服，感觉还不错',
-            '我觉得吧，这次发挥的一般，下次会更好，敬请期待',
-            '浮游于这个世界所产生的热能 也比不过喜欢你的热忱	',
-            '时间会把对你最好的人留在最后，毕竟喜欢是一阵风，而爱是细水长流',
-            '人生难免遇上些许不如意，翻过这一页就会发现生活处处有美好',
-            '也许，只有制作衣服的时候，才会让自己的心静下来',
-            '讲道理，我觉得我的手艺还不错，我是不是可以考虑开一家店了？',
-            '技术还不太行，需要多多磨炼，再努力做几件衣服吧~',
-            '今天心情好，早早地起来做衣服了，我是可爱的小裁缝~啦啦啦~',
-            '给妈妈做了件衣服，妈妈说好喜欢~',
-            '还有什么可以比做自己喜欢的事更加让人开心的呢~',
-            '一些些自己的小设计，就可以让一件衣服焕发生机',
-            '也许只是一瞬间的灵感，我将会付之于行动来实现它',
-            '对于剪裁和搭配的热情，我不会输给任何人的~',
-            '加油，我会成为最好的设计师的，我会爆火！~',
-            '坚持不懈，认真对待自己的，努力成为最好的设计师！~',
-            '感谢大家的支持，我会努力的',
-        ]
-    };
-    _Tweeting._reply = {
-        getTow: () => {
-            return LwgTools._Array.randomGetOut(_Tweeting._reply.all, 2);
-        },
-        all: [
-            '加油，坚持，我看好你哦',
-            '好好看，我也想要',
-            '那么请问在哪里可以买到呢',
-            '有一说一，真的还可以',
-            '感觉，你做的越来越好了',
-            '我也想和你一样拥有如此灵巧的双手',
-            '真的好看，加油',
-            '我的天，这也太美了吧',
-            'OMG，买他买他！~',
-            '沙发~~',
-            '点赞这条回复，你会好运连连',
-            '求翻牌，你这也太美了吧',
-            '太适合仙女了吧',
-            '我也想学学，能教教我吗',
-            '感觉你能火，坚持，加油',
-            '感觉没有什么可以难倒你',
-            '我想和你一样心灵手巧',
-            '我的天，这是真的太好看了',
-            ' U1S1，是真漂亮~',
-            '我觉得你还可以更优秀~',
-            '不是我杠精，你这个真的，真可以，没的杠',
-            '好看是真好看，难也是真的难',
-            '感觉我学不会，咋办，好美',
-            '仙女穿起来也太好看了吧',
-            '花痴脸~这也太美了',
-            '坚持，我看好你哦，感觉你能火',
-            '天哪，这也太美了吧',
-        ]
-    };
-    _Tweeting._photoIndex = 0;
-    class _CheckInData extends LwgData._Table {
-        constructor() {
-            super(...arguments);
-            this._otherPro = {
-                checkAddition: 'checkAddition',
-                otherRewardType: 'otherRewardType',
-                otherRewardNum: 'otherRewardNum',
-                otherCompelet: 'otherCompelet',
-            };
-        }
-        static _ins() {
-            if (!this.ins) {
-                this.ins = new _CheckInData('CheckIn', _Res._list.json.CheckIn.dataArr, true);
+            static _ins() {
+                if (!this.ins) {
+                    this.ins = new _PatternDiff('_DIYClothesDiff', _Res._list.json.DIYClothesDiff.dataArr, false);
+                }
+                return this.ins;
             }
-            return this.ins;
+            get fDiffX() {
+                return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'fDiffX');
+            }
+            ;
+            get fDiffY() {
+                return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'fDiffY');
+            }
+            ;
+            get rDiffX() {
+                return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'rDiffX');
+            }
+            ;
+            get rDiffY() {
+                return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'rDiffY');
+            }
+            ;
         }
-    }
-    class _CheckIn {
-        static get _Data() {
-            return _CheckInData._ins();
+        _MakePattern._PatternDiff = _PatternDiff;
+    })(_MakePattern || (_MakePattern = {}));
+    var _Tweeting;
+    (function (_Tweeting) {
+        _Tweeting._photo = {
+            arr: [],
+            take: (Scene, index) => {
+                _Tweeting._photo.arr[index] && _Tweeting._photo.arr[index].destroy();
+                _Tweeting._photo.arr[index] = Scene.drawToTexture(Laya.stage.width, Laya.stage.height, 0, 0);
+            },
+            clear: () => {
+                for (let index = 0; index < _Tweeting._photo.arr.length; index++) {
+                    const element = _Tweeting._photo.arr[index];
+                    element && element.destroy();
+                }
+                _Tweeting._photo.arr = [];
+                Laya.Resource.destroyUnusedResources();
+            }
+        };
+        _Tweeting._attentionNum = {
+            get value() {
+                return LwgStorage._num('_MakePattern/attention', null, 180).value;
+            },
+            set value(val) {
+                LwgStorage._num('_MakePattern/attention').value = val;
+            }
+        };
+        _Tweeting._completeNum = {
+            get value() {
+                return LwgStorage._num('_MakePattern/completeNum').value;
+            },
+            set value(val) {
+                LwgStorage._num('_MakePattern/completeNum').value = val;
+            }
+        };
+        _Tweeting._forwardedNum = {
+            get value() {
+                return LwgStorage._num('Tweeting/forwarded', null, LwgTools._Number.randomOneBySection(75, 125, true)).value;
+            },
+            set value(val) {
+                LwgStorage._num('Tweeting/forwarded').value = val;
+            }
+        };
+        _Tweeting._commentNum = {
+            get value() {
+                return LwgStorage._num('Tweeting/Comment', null, LwgTools._Number.randomOneBySection(100, 150, true)).value;
+            },
+            set value(val) {
+                LwgStorage._num('Tweeting/Comment').value = val;
+            }
+        };
+        _Tweeting._likeNum = {
+            get value() {
+                return LwgStorage._num('Tweeting/like', null, LwgTools._Number.randomOneBySection(200, 250, true)).value;
+            },
+            set value(val) {
+                LwgStorage._num('Tweeting/like').value = val;
+            }
+        };
+        _Tweeting._brief = {
+            getThree: () => {
+                return LwgTools._Array.randomGetOut(_Tweeting._brief.all, 3);
+            },
+            getOne: () => {
+                return LwgTools._Array.randomGetOut(_Tweeting._brief.all);
+            },
+            all: [
+                '世界很烦，但我要很可爱',
+                '生活就是见招拆招',
+                '忠于自己，热爱生活',
+                '我很有个性，但我不想签名',
+                'T^T	',
+                '你最怕什么',
+                '宁缺毋滥',
+                '围脖红人',
+                '剪裁大师',
+                '剪裁王',
+            ]
+        };
+        _Tweeting._mainBody = {
+            getOne: () => {
+                _Tweeting._mainBody.present = LwgTools._Array.randomGetOne(_Tweeting._mainBody.all);
+                return _Tweeting._mainBody.present;
+            },
+            present: null,
+            all: [
+                '不管几岁，反正少女心万岁≧▽≦',
+                '此处可爱贩卖机  24小时正常营业	',
+                '欢迎光临我的手工小店，我会制作更多大家喜欢的衣服哦',
+                '现在一定有个很可爱的人，在看我的这句话',
+                '辛辛苦苦做了好久，结果很满意，好喜欢哦',
+                '大家觉得我这套衣服怎么样',
+                '闲来无事，做了一套衣服，感觉还不错',
+                '我觉得吧，这次发挥的一般，下次会更好，敬请期待',
+                '浮游于这个世界所产生的热能 也比不过喜欢你的热忱	',
+                '时间会把对你最好的人留在最后，毕竟喜欢是一阵风，而爱是细水长流',
+                '人生难免遇上些许不如意，翻过这一页就会发现生活处处有美好',
+                '也许，只有制作衣服的时候，才会让自己的心静下来',
+                '讲道理，我觉得我的手艺还不错，我是不是可以考虑开一家店了？',
+                '技术还不太行，需要多多磨炼，再努力做几件衣服吧~',
+                '今天心情好，早早地起来做衣服了，我是可爱的小裁缝~啦啦啦~',
+                '给妈妈做了件衣服，妈妈说好喜欢~',
+                '还有什么可以比做自己喜欢的事更加让人开心的呢~',
+                '一些些自己的小设计，就可以让一件衣服焕发生机',
+                '也许只是一瞬间的灵感，我将会付之于行动来实现它',
+                '对于剪裁和搭配的热情，我不会输给任何人的~',
+                '加油，我会成为最好的设计师的，我会爆火！~',
+                '坚持不懈，认真对待自己的，努力成为最好的设计师！~',
+                '感谢大家的支持，我会努力的',
+            ]
+        };
+        _Tweeting._reply = {
+            getTow: () => {
+                return LwgTools._Array.randomGetOut(_Tweeting._reply.all, 2);
+            },
+            all: [
+                '加油，坚持，我看好你哦',
+                '好好看，我也想要',
+                '那么请问在哪里可以买到呢',
+                '有一说一，真的还可以',
+                '感觉，你做的越来越好了',
+                '我也想和你一样拥有如此灵巧的双手',
+                '真的好看，加油',
+                '我的天，这也太美了吧',
+                'OMG，买他买他！~',
+                '沙发~~',
+                '点赞这条回复，你会好运连连',
+                '求翻牌，你这也太美了吧',
+                '太适合仙女了吧',
+                '我也想学学，能教教我吗',
+                '感觉你能火，坚持，加油',
+                '感觉没有什么可以难倒你',
+                '我想和你一样心灵手巧',
+                '我的天，这是真的太好看了',
+                ' U1S1，是真漂亮~',
+                '我觉得你还可以更优秀~',
+                '不是我杠精，你这个真的，真可以，没的杠',
+                '好看是真好看，难也是真的难',
+                '感觉我学不会，咋办，好美',
+                '仙女穿起来也太好看了吧',
+                '花痴脸~这也太美了',
+                '坚持，我看好你哦，感觉你能火',
+                '天哪，这也太美了吧',
+            ]
+        };
+        _Tweeting._photoIndex = 0;
+    })(_Tweeting || (_Tweeting = {}));
+    var _CheckIn;
+    (function (_CheckIn) {
+        class _Data extends LwgData._Table {
+            constructor() {
+                super(...arguments);
+                this._otherPro = {
+                    checkAddition: 'checkAddition',
+                    otherRewardType: 'otherRewardType',
+                    otherRewardNum: 'otherRewardNum',
+                    otherCompelet: 'otherCompelet',
+                };
+            }
+            static _ins() {
+                if (!this.ins) {
+                    this.ins = new _Data('CheckIn', _Res._list.json.CheckIn.dataArr, true);
+                }
+                return this.ins;
+            }
         }
-        static get _immediately() {
-            return LwgStorage._num('_CheckIn/immediately').value;
-        }
-        ;
-        static set _immediately(val) {
-            LwgStorage._num('_CheckIn/immediately').value = val;
-        }
-        static get _checkInNum() {
-            return LwgStorage._num('_CheckIn/checkInNum').value;
-        }
-        ;
-        static set _checkInNum(val) {
-            LwgStorage._num('_CheckIn/checkInNum').value = val;
-        }
-        static get _lastCheckDate() {
-            return LwgStorage._num('_CheckIn/lastCheckDate').value;
-        }
-        ;
-        static set _lastCheckDate(val) {
-            LwgStorage._num('_CheckIn/lastCheckDate').value = val;
-        }
-        static get _todayCheckIn() {
-            return this._lastCheckDate == LwgDate._date.date ? true : false;
-        }
-        ;
-    }
+        _CheckIn._Data = _Data;
+        _CheckIn._immediately = {
+            get value() {
+                return LwgStorage._num('_CheckIn/immediately').value;
+            },
+            set value(val) {
+                LwgStorage._num('_CheckIn/immediately').value = val;
+            }
+        };
+        _CheckIn._checkInNum = {
+            get value() {
+                return LwgStorage._num('_CheckIn/checkInNum').value;
+            },
+            set value(val) {
+                LwgStorage._num('_CheckIn/checkInNum').value = val;
+            }
+        };
+        _CheckIn._lastCheckDate = {
+            get value() {
+                return LwgStorage._num('_CheckIn/lastCheckDate').value;
+            },
+            set value(val) {
+                LwgStorage._num('_CheckIn/lastCheckDate').value = val;
+            }
+        };
+        _CheckIn._todayCheckIn = {
+            get value() {
+                return _CheckIn._lastCheckDate.value == LwgDate._date.date ? true : false;
+            },
+        };
+    })(_CheckIn || (_CheckIn = {}));
 
     class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
         lwgOpenAniAfter() {
@@ -9852,15 +9939,15 @@
                 });
             }
             const radius = 80;
-            this._evReg(_Guide.event.StartBtnDress, (x, y) => {
+            this._evReg(_Guide.Event.StartBtnDress, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_Guide.event.MakeTailorPulldown, () => {
+            this._evReg(_Guide.Event.MakeTailorPulldown, () => {
                 const x = Laya.stage.width - 95;
                 const y = Laya.stage.height / 2;
                 this.slideUpAppear(x, y, 165, 450, 20);
             });
-            this._evReg(_Guide.event.MakeTailorChangeCloth, () => {
+            this._evReg(_Guide.Event.MakeTailorChangeCloth, () => {
                 this._ImgVar('Hand').pos(this._ImgVar('SlideHand')._lwg.gPoint.x, this._ImgVar('SlideHand')._lwg.gPoint.y);
                 this._ImgVar('Hand').scale(1, 1);
                 this._ImgVar('Slide').scale(0, 0);
@@ -9868,7 +9955,7 @@
                 const y = 370;
                 this.moveCircleNoBg(x, y, radius);
             });
-            this._evReg(_Guide.event.MakeTailorBtnCom, () => {
+            this._evReg(_Guide.Event.MakeTailorBtnCom, () => {
                 this._AniVar('Click').stop();
                 this.boreholeCircle([[this.btnComX, this.btnComY, radius], [Laya.stage.width / 2, Laya.stage.height / 2, 350]], null, null, () => {
                     this.handMove(this.btnComX, this.btnComY, () => {
@@ -9876,35 +9963,35 @@
                     });
                 });
             });
-            this._evReg(_Guide.event.MakeTailorStartTailor, (Scissor) => {
+            this._evReg(_Guide.Event.MakeTailorStartTailor, (Scissor) => {
                 this.bgVanish();
                 this.handClear();
                 this.startScissorTailor(Scissor);
             });
-            this._evReg(_Guide.event.MakeTailorNewTailor, (LineName) => {
+            this._evReg(_Guide.Event.MakeTailorNewTailor, (LineName) => {
                 this.newScissorTailor(LineName);
             });
-            this._evReg(_Guide.event.MakeTailorCloseTailor, () => {
+            this._evReg(_Guide.Event.MakeTailorCloseTailor, () => {
                 if (!this.presentName)
                     return;
                 this._closeLine = true;
                 this.handClear();
                 this._ImgVar('Hand').scale(0, 0);
             });
-            this._evReg(_Guide.event.MakeTailorOpenTailor, () => {
+            this._evReg(_Guide.Event.MakeTailorOpenTailor, () => {
                 if (!this.presentName)
                     return;
                 this._closeLine = false;
                 this.handClear();
                 this.scissorTailor();
             });
-            this._evReg(_Guide.event.MakePatternChooseClassify, () => {
+            this._evReg(_Guide.Event.MakePatternChooseClassify, () => {
                 _Guide.MakePatternState = _Guide.MakePatternStateType.ChooseClassify;
                 const x = Laya.stage.width - 53;
                 const y = 270;
                 this.noMoveCircle(x, y, 60);
             });
-            this._evReg(_Guide.event.MakePatternPattern1, () => {
+            this._evReg(_Guide.Event.MakePatternPattern1, () => {
                 _Guide.MakePatternState = _Guide.MakePatternStateType.Pattern1;
                 const x = Laya.stage.width - 152;
                 const y = 310;
@@ -9925,74 +10012,74 @@
                     }
                 }
             });
-            this._evReg(_Guide.event.MakePatternFrame1, (Wireframe) => {
+            this._evReg(_Guide.Event.MakePatternFrame1, (Wireframe) => {
                 _Guide.MakePatternState = _Guide.MakePatternStateType.Frame1;
                 if (Wireframe)
                     this._Wireframe = Wireframe;
                 frameFunc();
             });
-            this._evReg(_Guide.event.MakePatternTurnFace, (x, y) => {
+            this._evReg(_Guide.Event.MakePatternTurnFace, (x, y) => {
                 _Guide.MakePatternState = _Guide.MakePatternStateType.TurnFace;
                 this.handClear();
                 this.moveCircleBg(x, y, radius);
             });
-            this._evReg(_Guide.event.MakePatternPattern2, () => {
+            this._evReg(_Guide.Event.MakePatternPattern2, () => {
                 _Guide.MakePatternState = _Guide.MakePatternStateType.Pattern2;
                 const x = Laya.stage.width - 152;
                 const y = 420;
                 this.pattenAni(x, y, Laya.stage.width / 2, y);
                 this.bgVanish();
             });
-            this._evReg(_Guide.event.MakePatternFrame2, (Wireframe) => {
+            this._evReg(_Guide.Event.MakePatternFrame2, (Wireframe) => {
                 _Guide.MakePatternState = _Guide.MakePatternStateType.Frame2;
                 if (Wireframe)
                     this._Wireframe = Wireframe;
                 frameFunc();
             });
-            this._evReg(_Guide.event.MakePatternBtnCom, (x, y) => {
+            this._evReg(_Guide.Event.MakePatternBtnCom, (x, y) => {
                 _Guide.MakePatternState = _Guide.MakePatternStateType.BtnCom;
                 this.handClear();
                 this.moveCircleBg(x, y, radius);
             });
-            this._evReg(_Guide.event.TweetingBtnChoosePhoto, (x, y, handX, handY) => {
+            this._evReg(_Guide.Event.TweetingBtnChoosePhoto, (x, y, handX, handY) => {
                 this.noMoveRoundrect(x, y, Laya.stage.width - 320 - 260, 290, 20, 500, handX, handY);
             });
-            this._evReg(_Guide.event.TweetingChoosePhoto, (x, y) => {
+            this._evReg(_Guide.Event.TweetingChoosePhoto, (x, y) => {
                 this.noMoveRoundrect(x, y, 260, 260, 20);
             });
-            this._evReg(_Guide.event.TweetingBtnSend, (x, y) => {
+            this._evReg(_Guide.Event.TweetingBtnSend, (x, y) => {
                 this.moveRoundrectNoBg(x, y, 220, 120, 20);
             });
-            this._evReg(_Guide.event.TweetingBtnDoubleFans, (x, y) => {
+            this._evReg(_Guide.Event.TweetingBtnDoubleFans, (x, y) => {
                 this.noMoveRoundrect(x, y, 230, 120, 20);
             });
-            this._evReg(_Guide.event.RankingCloseBtn, (x, y) => {
+            this._evReg(_Guide.Event.RankingCloseBtn, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_Guide.event.PersonalInfoBtn, (x, y) => {
+            this._evReg(_Guide.Event.PersonalInfoBtn, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_Guide.event.PersonalInfoWriteName, (x, y) => {
+            this._evReg(_Guide.Event.PersonalInfoWriteName, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_Guide.event.PersonalInfoCloseBtn, (x, y) => {
+            this._evReg(_Guide.Event.PersonalInfoCloseBtn, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_Guide.event.BtnCheckIn, (x, y) => {
+            this._evReg(_Guide.Event.BtnCheckIn, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_Guide.event.CheckInGetReward, (x, y) => {
+            this._evReg(_Guide.Event.CheckInGetReward, (x, y) => {
                 this.noMoveCircle(x, y, radius);
             });
-            this._evReg(_Guide.event.CheckInCloseBtn, (x, y) => {
+            this._evReg(_Guide.Event.CheckInCloseBtn, (x, y) => {
                 this.moveCircleBg(x, y, radius);
             });
-            this._evReg(_Guide.event.vanishGuide, () => {
+            this._evReg(_Guide.Event.vanishGuide, () => {
                 this._AniVar('Click').stop();
                 this.handVanish();
                 this.bgVanish();
             });
-            this._evReg(_Guide.event.closeGuide, () => {
+            this._evReg(_Guide.Event.closeGuide, () => {
                 this._closeScene();
             });
         }
@@ -10651,22 +10738,22 @@
                     });
                 },
                 event: () => {
-                    this._evReg(_MakeTailor._event.scissorAppear, () => {
+                    this._evReg(_MakeTailor.Event.scissorAppear, () => {
                         let time = 800;
                         LwgAni2D.move_rotate(this._Owner, this._fRotation + 360, this._fPoint, time, 0, () => {
                             this._Owner.rotation = this._fRotation;
                             this.Move.switch = true;
-                            if (!_Guide._complete)
-                                this._evNotify(_Guide.event.MakeTailorStartTailor, [this._Owner]);
+                            if (!_Guide._complete.value)
+                                this._evNotify(_Guide.Event.MakeTailorStartTailor, [this._Owner]);
                         });
                     });
-                    this._evReg(_MakeTailor._event.scissorPlay, () => {
+                    this._evReg(_MakeTailor.Event.scissorPlay, () => {
                         this.Ani.paly();
                     });
-                    this._evReg(_MakeTailor._event.scissorStop, () => {
+                    this._evReg(_MakeTailor.Event.scissorStop, () => {
                         this.Ani.stop();
                     });
-                    this._evReg(_MakeTailor._event.scissorRemove, (func) => {
+                    this._evReg(_MakeTailor.Event.scissorRemove, (func) => {
                         this.Move.switch = false;
                         let disX = 1500;
                         let disY = -600;
@@ -10683,12 +10770,12 @@
                             });
                         });
                     });
-                    this._evReg(_MakeTailor._event.scissorAgain, () => {
+                    this._evReg(_MakeTailor.Event.scissorAgain, () => {
                         LwgAni2D.move_rotate(this._Owner, this._fRotation, this._fPoint, 600, 100, () => {
                             _TaskClothes._ins().again(this._Scene);
                         });
                     });
-                    this._evReg(_MakeTailor._event.scissorRotation, (rotate) => {
+                    this._evReg(_MakeTailor.Event.scissorRotation, (rotate) => {
                         LwgTimer._clearAll([this._Owner]);
                         const time = 10;
                         let angle;
@@ -10728,10 +10815,10 @@
         lwgButton() {
             this._btnFour(Laya.stage, (e) => {
                 if (this.Move.switch) {
-                    this._evNotify(_MakeTailor._event.scissorPlay);
+                    this._evNotify(_MakeTailor.Event.scissorPlay);
                     this.Move.touchP = new Laya.Point(e.stageX, e.stageY);
-                    if (!_Guide._complete)
-                        this._evNotify(_Guide.event.MakeTailorCloseTailor, [this._Owner]);
+                    if (!_Guide._complete.value)
+                        this._evNotify(_Guide.Event.MakeTailorCloseTailor, [this._Owner]);
                 }
             }, (e) => {
                 if (this.Move.touchP && this.Move.switch) {
@@ -10740,22 +10827,22 @@
                     this._Owner.y += this.Move.diffP.y;
                     LwgTools._Node.tieByStage(this._Owner);
                     this.Move.touchP = new Laya.Point(e.stageX, e.stageY);
-                    this._evNotify(_MakeTailor._event.scissorPlay);
+                    this._evNotify(_MakeTailor.Event.scissorPlay);
                 }
             }, () => {
-                this._evNotify(_MakeTailor._event.scissorStop);
+                this._evNotify(_MakeTailor.Event.scissorStop);
                 this.Move.touchP = null;
-                if (!_Guide._complete) {
-                    this._evNotify(_Guide.event.MakeTailorOpenTailor, [this._Owner]);
+                if (!_Guide._complete.value) {
+                    this._evNotify(_Guide.Event.MakeTailorOpenTailor, [this._Owner]);
                 }
             });
         }
         onTriggerEnter(other, _Owner) {
             if (!other['cut'] && this.Move.switch) {
                 other['cut'] = true;
-                this._evNotify(_MakeTailor._event.scissorPlay);
-                this._evNotify(_MakeTailor._event.scissorStop);
-                LwgEvent._notify(_MakeTailor._event.scissorTrigger, [other.owner]);
+                this._evNotify(_MakeTailor.Event.scissorPlay);
+                this._evNotify(_MakeTailor.Event.scissorStop);
+                LwgEvent._notify(_MakeTailor.Event.scissorTrigger, [other.owner]);
                 this.Ani.effcts();
                 ADManager.VibrateShort();
             }
@@ -10766,7 +10853,7 @@
         ;
         $button() {
             this._btnUp(this._Owner, () => {
-                if (!_Guide._complete && this.$name !== 'diy_dress_002_final')
+                if (!_Guide._complete.value && this.$name !== 'diy_dress_002_final')
                     return;
                 if (this.$name === 'ads') {
                     return;
@@ -10774,7 +10861,7 @@
                 if (this.$complete) {
                     if (this.$name !== _DIYClothes._ins()._pitchName) {
                         _DIYClothes._ins()._setPitch(this.$name);
-                        this._evNotify(_MakeTailor._event.changeClothes);
+                        this._evNotify(_MakeTailor.Event.changeClothes);
                     }
                 }
                 else {
@@ -10790,7 +10877,7 @@
                                 if (_DIYClothes._ins()._checkCondition(this.$name)) {
                                     LwgDialogue.createHint_Middle('恭喜获得一件新服装！');
                                     _DIYClothes._ins()._setPitch(this.$name);
-                                    this._evNotify(_MakeTailor._event.changeClothes);
+                                    this._evNotify(_MakeTailor.Event.changeClothes);
                                 }
                             });
                             break;
@@ -10801,9 +10888,9 @@
                             break;
                     }
                 }
-                if (!_Guide._complete && this.$name == 'diy_dress_002_final') {
+                if (!_Guide._complete.value && this.$name == 'diy_dress_002_final') {
                     _Guide.MmakeTailorBtnComSwicth = true;
-                    this._evNotify(_Guide.event.MakeTailorBtnCom);
+                    this._evNotify(_Guide.Event.MakeTailorBtnCom);
                 }
                 ;
             });
@@ -10836,7 +10923,7 @@
                                 this._LableChild('UnlockWay').text = `制作衣服`;
                                 this._LableChild('UnlockWay').fontSize = 25;
                                 this._LableChild('UnlockWayNum').visible = true;
-                                this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum} /${this.$conditionNum})`;
+                                this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum.value} /${this.$conditionNum})`;
                                 break;
                             default:
                                 break;
@@ -10873,7 +10960,7 @@
             const arr = _DIYClothes._ins()._getArrByPitchClassify();
             _DIYClothes._ins()._listArray = arr;
             _DIYClothes._ins()._setPitch(arr[0][_DIYClothes._ins()._property.$name]);
-            if (!_Guide._complete)
+            if (!_Guide._complete.value)
                 _DIYClothes._ins()._List.scrollBar.touchScrollEnable = false;
         }
         lwgOnStart() {
@@ -10884,9 +10971,9 @@
                     this.UI.btnCompleteAppear(null, 400);
                 });
                 this.UI.btnBackAppear(() => {
-                    !_Guide._complete && this._openScene('Guide', false, false, () => {
+                    !_Guide._complete.value && this._openScene('Guide', false, false, () => {
                         _Guide.MmakeTailorPulldownSwicth = true;
-                        this._evNotify(_Guide.event.MakeTailorPulldown);
+                        this._evNotify(_Guide.Event.MakeTailorPulldown);
                     });
                 });
             });
@@ -10897,7 +10984,7 @@
         }
         lwgButton() {
             this.UI.btnCompleteClick = () => {
-                if (!_Guide._complete) {
+                if (!_Guide._complete.value) {
                     if (!_Guide.MmakeTailorBtnComSwicth) {
                         return;
                     }
@@ -10906,10 +10993,10 @@
                     this.UI.btnAgainAppear();
                 }, 200);
                 LwgTimer._frameOnce(30, this, () => {
-                    this._evNotify(_MakeTailor._event.scissorAppear);
+                    this._evNotify(_MakeTailor.Event.scissorAppear);
                 });
             };
-            if (!_Guide._complete) {
+            if (!_Guide._complete.value) {
                 this._btnFour(_DIYClothes._ins()._List, () => {
                     if (_Guide.MmakeTailorPulldownSwicth) {
                         if (!this['Pulldown']) {
@@ -10923,7 +11010,7 @@
                     if (_Guide.MmakeTailorPulldownSwicth && this['Pulldown'] && this['Pulldown'] > 2) {
                         _DIYClothes._ins()._List.tweenTo(4, 200, Laya.Handler.create(this, () => {
                             _Guide.MmakeTailorPulldownSwicth = false;
-                            this._evNotify(_Guide.event.MakeTailorChangeCloth);
+                            this._evNotify(_Guide.Event.MakeTailorChangeCloth);
                         }));
                     }
                     this['Pulldown'] = 1;
@@ -10931,7 +11018,7 @@
                 return;
             }
             this.UI.btnAgainClick = () => {
-                this._evNotify(_MakeTailor._event.scissorRemove, [() => {
+                this._evNotify(_MakeTailor.Event.scissorRemove, [() => {
                         _TaskClothes._ins().again(this._Owner);
                     }]);
                 LwgClick._switch = false;
@@ -10945,10 +11032,10 @@
             };
         }
         lwgEvent() {
-            this._evReg(_MakeTailor._event.changeClothes, () => {
+            this._evReg(_MakeTailor.Event.changeClothes, () => {
                 _TaskClothes._ins().changeClothes(this._Owner);
             });
-            this._evReg(_MakeTailor._event.scissorTrigger, (Dotted) => {
+            this._evReg(_MakeTailor.Event.scissorTrigger, (Dotted) => {
                 const Parent = Dotted.parent;
                 const value = _TaskClothes._ins()._checkCondition(Parent.name);
                 Dotted.visible = false;
@@ -10963,8 +11050,8 @@
                     Parent.cacheAs = "bitmap";
                 Eraser.graphics.drawCircle(Dotted.x, Dotted.y, 15, '#000000');
                 if (value) {
-                    if (!_Guide._complete)
-                        this._evNotify(_Guide.event.MakeTailorNewTailor, [Parent.name]);
+                    if (!_Guide._complete.value)
+                        this._evNotify(_Guide.Event.MakeTailorNewTailor, [Parent.name]);
                     for (let index = 0; index < _TaskClothes._ins().Clothes.getChildAt(0).numChildren; index++) {
                         const element = _TaskClothes._ins().Clothes.getChildAt(0).getChildAt(index);
                         if (element.name.substr(5, 2) == Dotted.parent.name.substr(4, 2)) {
@@ -11013,9 +11100,9 @@
                     }
                     if (_TaskClothes._ins()._checkAllCompelet()) {
                         LwgTools._Node.removeAllChildren(_TaskClothes._ins().LineParent);
-                        this._evNotify(_MakeTailor._event.scissorRemove);
+                        this._evNotify(_MakeTailor.Event.scissorRemove);
                         LwgTimer._frameOnce(80, this, () => {
-                            this._evNotify(_MakeTailor._event.completeEffcet);
+                            this._evNotify(_MakeTailor.Event.completeEffcet);
                         });
                         LwgTimer._frameOnce(280, this, () => {
                             _Tweeting._photo.take(this._Owner, 0);
@@ -11026,22 +11113,22 @@
                 const gPos = Dotted.parent.localToGlobal(new Laya.Point(Dotted.x, Dotted.y));
                 if (Dotted.name == 'A') {
                     if (this._ImgVar('Scissor').x <= gPos.x) {
-                        this._evNotify(_MakeTailor._event.scissorRotation, [Dotted.rotation]);
+                        this._evNotify(_MakeTailor.Event.scissorRotation, [Dotted.rotation]);
                     }
                     else {
-                        this._evNotify(_MakeTailor._event.scissorRotation, [180 + Dotted.rotation]);
+                        this._evNotify(_MakeTailor.Event.scissorRotation, [180 + Dotted.rotation]);
                     }
                 }
                 else {
                     if (this._ImgVar('Scissor').y >= gPos.y) {
-                        this._evNotify(_MakeTailor._event.scissorRotation, [Dotted.rotation]);
+                        this._evNotify(_MakeTailor.Event.scissorRotation, [Dotted.rotation]);
                     }
                     else {
-                        this._evNotify(_MakeTailor._event.scissorRotation, [180 + Dotted.rotation]);
+                        this._evNotify(_MakeTailor.Event.scissorRotation, [180 + Dotted.rotation]);
                     }
                 }
             });
-            this._evReg(_MakeTailor._event.completeEffcet, () => {
+            this._evReg(_MakeTailor.Event.completeEffcet, () => {
                 this.UI.btnBackVinish();
                 this.UI.btnAgainVinish();
                 LwgAudio._playVictorySound(null, null, null, 0.5);
@@ -11106,14 +11193,14 @@
                     if (index === this._ImgVar('BtnParent').numChildren - 1) {
                         LwgTimer._once(500, this, () => {
                             if (_Start._whereFrom === 'MakePattern') {
-                                this._evNotify(_Start._event.photo);
+                                this._evNotify(_Start.Event.photo);
                                 _Start._whereFrom = null;
                             }
                             else {
-                                if (!_Guide._complete) {
+                                if (!_Guide._complete.value) {
                                     this._openScene('Guide', false, false, () => {
                                         this.BtnDressClick();
-                                        this._evNotify(_Guide.event.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
+                                        this._evNotify(_Guide.Event.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
                                     });
                                 }
                                 else {
@@ -11127,22 +11214,21 @@
             }
         }
         lwgOnStart() {
-            LwgClick._assign = [];
-            this._evNotify(_Start._event.updateRanking);
+            this._evNotify(_Start.Event.updateRanking);
         }
         lwgEvent() {
-            this._evReg(_Guide.event.DelayBtnCheckIn, () => {
+            this._evReg(_Guide.Event.DelayBtnCheckIn, () => {
                 this.BtnCheckIn();
-                this._evNotify(_Guide.event.BtnCheckIn, [this._ImgVar('BtnCheckIn').x, this._ImgVar('BtnCheckIn').y]);
+                this._evNotify(_Guide.Event.BtnCheckIn, [this._ImgVar('BtnCheckIn').x, this._ImgVar('BtnCheckIn').y]);
             });
-            this._evReg(_Guide.event.StartOtherBtnClick, () => {
+            this._evReg(_Guide.Event.StartOtherBtnClick, () => {
                 this.lwgButton();
             });
-            this._evReg(_Start._event.updateRanking, () => {
-                let obj = _Ranking._Data._getPitchObj();
-                this._LabelVar('RankNum').text = `${obj[_Ranking._Data._otherPro.rankNum]}/50`;
+            this._evReg(_Start.Event.updateRanking, () => {
+                let obj = _Ranking._Data._ins()._getPitchObj();
+                this._LabelVar('RankNum').text = `${obj[_Ranking._Data._ins()._otherPro.rankNum]}/50`;
             });
-            this._evReg(_Start._event.photo, () => {
+            this._evReg(_Start.Event.photo, () => {
                 LwgClick._absoluteSwitch = false;
                 const sp = _3DScene._ins().cameraToSprite(this._Owner);
                 LwgTimer._frameOnce(10, this, () => {
@@ -11153,20 +11239,20 @@
                     });
                 });
             });
-            this._evReg(_Start._event.BtnPersonalInfo, () => {
+            this._evReg(_Start.Event.BtnPersonalInfo, () => {
                 LwgTimer._once(1000, this, () => {
                     this._openScene('Guide', false, false, () => {
                         this.BtnPersonalInfoClick();
-                        this._evNotify(_Guide.event.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
+                        this._evNotify(_Guide.Event.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
                     });
                 });
             });
         }
         BtnDressClick() {
             this._btnUp(this._ImgVar('BtnDress'), () => {
-                this._evNotify(_Guide.event.closeGuide);
+                this._evNotify(_Guide.Event.closeGuide);
                 let time = 0;
-                if (_Guide._complete) {
+                if (_Guide._complete.value) {
                     time = 300;
                 }
                 LwgTimer._once(time, this, () => {
@@ -11177,13 +11263,13 @@
         }
         BtnPersonalInfoClick() {
             this._btnUp(this._ImgVar('BtnPersonalInfo'), () => {
-                !_Guide._complete && this._evNotify(_Guide.event.vanishGuide);
+                !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
                 this._openScene('PersonalInfo', false);
             });
         }
         BtnCheckIn() {
             this._btnUp(this._ImgVar('BtnCheckIn'), () => {
-                !_Guide._complete && this._evNotify(_Guide.event.vanishGuide);
+                !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
                 this._openScene('CheckIn', false);
             });
         }
@@ -11193,7 +11279,7 @@
             this._openScene('MakeTailor', true, true);
         }
         lwgButton() {
-            if (!_Guide._complete)
+            if (!_Guide._complete.value)
                 return;
             this.BtnDressClick();
             const Clothes = _DIYClothes._ins();
@@ -11349,9 +11435,9 @@
                             break;
                         case this.$unlockWayType.$ads:
                             ADManager.ShowReward(() => {
-                                if (_MakePattern._Data._checkCondition(this.$name)) {
+                                if (_MakePattern._Pattern._ins()._checkCondition(this.$name)) {
                                     LwgDialogue.createHint_Middle('恭喜获得新贴图！');
-                                    _MakePattern._Data._setProperty(this.$name, _MakePattern._Data._property.$complete, true);
+                                    _MakePattern._Pattern._ins()._setProperty(this.$name, _MakePattern._Pattern._ins()._property.$complete, true);
                                 }
                             });
                             break;
@@ -11369,7 +11455,7 @@
                 this.create = false;
                 this.diffX = 0;
                 this.fX = e.stageX;
-                this._evNotify(_MakePattern._event.close);
+                this._evNotify(_MakePattern.Event.close);
             }, (e) => {
                 if (this['Cancal']) {
                     return;
@@ -11377,7 +11463,7 @@
                 if (!this.create) {
                     this.diffX = this.fX - e.stageX;
                     if (this.diffX >= 5) {
-                        this._evNotify(_MakePattern._event.createImg, [this.$name, this._gPoint]);
+                        this._evNotify(_MakePattern.Event.createImg, [this.$name, this._gPoint]);
                         this.create = true;
                     }
                 }
@@ -11386,7 +11472,7 @@
                     return;
                 }
                 this.create = true;
-                this._evNotify(_MakePattern._event.close);
+                this._evNotify(_MakePattern.Event.close);
             }, () => {
                 if (this['Cancal']) {
                     return;
@@ -11402,7 +11488,7 @@
             }
             else {
                 if (!this.$complete) {
-                    if (this.$unlockWay === _MakePattern._Data._unlockWay.$ads) {
+                    if (this.$unlockWay === _MakePattern._Pattern._ins()._unlockWay.$ads) {
                         this._ImgChild('AdsSign').visible = true;
                         this._LableChild('UnlockWay').visible = false;
                     }
@@ -11603,7 +11689,7 @@
                     _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
                 },
                 rotate: () => {
-                    if (!_Guide._complete)
+                    if (!_Guide._complete.value)
                         return;
                     if (this.Tex.diffP.x > 0) {
                         _3DDIYCloth._ins().rotate(1);
@@ -11669,19 +11755,19 @@
                     }, null, (e) => {
                         e.stopPropagation();
                         this.Tex.state = this.Tex.stateType.addTex;
-                        if (!_Guide._complete) {
+                        if (!_Guide._complete.value) {
                             if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame1) {
-                                this._evNotify(_Guide.event.MakePatternTurnFace, [this._ImgVar('BtnTurnFace')._lwg.gPoint.x, this._ImgVar('BtnTurnFace')._lwg.gPoint.y]);
+                                this._evNotify(_Guide.Event.MakePatternTurnFace, [this._ImgVar('BtnTurnFace')._lwg.gPoint.x, this._ImgVar('BtnTurnFace')._lwg.gPoint.y]);
                             }
                             else if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame2) {
-                                this._evNotify(_Guide.event.MakePatternBtnCom, [this._ImgVar('BtnComplete')._lwg.gPoint.x, this._ImgVar('BtnComplete')._lwg.gPoint.y]);
+                                this._evNotify(_Guide.Event.MakePatternBtnCom, [this._ImgVar('BtnComplete')._lwg.gPoint.x, this._ImgVar('BtnComplete')._lwg.gPoint.y]);
                             }
                         }
                     });
                     this._btnUp(this._ImgVar('BtnTurnFace'), (e) => {
-                        if (!_Guide._complete) {
+                        if (!_Guide._complete.value) {
                             if (_Guide.MakePatternState === _Guide.MakePatternStateType.TurnFace) {
-                                this._evNotify(_Guide.event.MakePatternPattern2);
+                                this._evNotify(_Guide.Event.MakePatternPattern2);
                             }
                             else {
                                 return;
@@ -11703,7 +11789,7 @@
                         this._ImgVar('Wireframe').visible = false;
                         this.Tex.state = this.Tex.stateType.rotate;
                     });
-                    if (!_Guide._complete)
+                    if (!_Guide._complete.value)
                         return;
                     this._btnUp(this._ImgVar('WClose'), (e) => {
                         e.stopPropagation();
@@ -11737,26 +11823,26 @@
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'tiehuapage');
             ADManager.TAPoint(TaT.LevelStart, `level_${_3DDIYCloth._ins().Present.name}`);
-            _MakePattern._Data._List = this._ListVar('List');
-            if (_MakePattern._Data._getProperty('newYear1', _MakePattern._Data._property.$complete) || !_Guide._complete) {
+            _MakePattern._Pattern._ins()._List = this._ListVar('List');
+            if (_MakePattern._Pattern._ins()._getProperty('newYear1', _MakePattern._Pattern._ins()._property.$complete) || !_Guide._complete.value) {
                 this.switchClassify('newYear');
-                _MakePattern._Data._listArray = _MakePattern._Data.newYearArr;
+                _MakePattern._Pattern._ins()._listArray = _MakePattern._Pattern._ins().newYearArr;
             }
             else {
                 this.switchClassify('basic');
-                _MakePattern._Data._listArray = _MakePattern._Data.basicArr;
+                _MakePattern._Pattern._ins()._listArray = _MakePattern._Pattern._ins().basicArr;
             }
-            _MakePattern._Data._List.scrollBar.touchScrollEnable = false;
-            _MakePattern._Data._listRenderScript = _Item$1;
-            this.Tex.fDiffX = _MakePattern._PatternDiff.fDiffX;
-            this.Tex.fDiffY = _MakePattern._PatternDiff.fDiffY;
-            this.Tex.rDiffX = _MakePattern._PatternDiff.rDiffX;
-            this.Tex.rDiffY = _MakePattern._PatternDiff.rDiffY;
+            _MakePattern._Pattern._ins()._List.scrollBar.touchScrollEnable = false;
+            _MakePattern._Pattern._ins()._listRenderScript = _Item$1;
+            this.Tex.fDiffX = _MakePattern._PatternDiff._ins().fDiffX;
+            this.Tex.fDiffY = _MakePattern._PatternDiff._ins().fDiffY;
+            this.Tex.rDiffX = _MakePattern._PatternDiff._ins().rDiffX;
+            this.Tex.rDiffY = _MakePattern._PatternDiff._ins().rDiffY;
         }
         lwgOpenAniAfter() {
             LwgTimer._frameOnce(60, this, () => {
-                !_Guide._complete && this._openScene('Guide', false, false, () => {
-                    this._evNotify(_Guide.event.MakePatternChooseClassify);
+                !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                    this._evNotify(_Guide.Event.MakePatternChooseClassify);
                 });
             });
         }
@@ -11786,21 +11872,21 @@
             this._SpriteVar('Front').y = this._ImgVar('Reverse').y = this._SpriteVar('Front').height = this._ImgVar('Reverse').height = _3DDIYCloth._ins().texHeight;
         }
         switchClassify(_name) {
-            if (!_Guide._complete && _name !== 'basic') {
+            if (!_Guide._complete.value && _name !== 'basic') {
                 return;
             }
             for (let index = 0; index < this._ImgVar('Part').numChildren; index++) {
                 const element = this._ImgVar('Part').getChildAt(index);
                 const name = element.getChildAt(0);
                 if (_name === element.name) {
-                    if (!_Guide._complete) {
+                    if (!_Guide._complete.value) {
                         if (_Guide.MakePatternState === _Guide.MakePatternStateType.ChooseClassify) {
-                            this._evNotify(_Guide.event.MakePatternPattern1);
+                            this._evNotify(_Guide.Event.MakePatternPattern1);
                         }
                     }
                     element.scale(1.1, 1.1);
-                    _MakePattern._Data._listArray = _MakePattern._Data[`${element.name}Arr`];
-                    _MakePattern._Data._pitchClassify = element.name;
+                    _MakePattern._Pattern._ins()._listArray = _MakePattern._Pattern._ins()[`${element.name}Arr`];
+                    _MakePattern._Pattern._ins()._pitchClassify = element.name;
                     element.skin = `Game/UI/Common/kuang_fen.png`;
                     name.color = '#fdfff4';
                     name.stroke = 5;
@@ -11822,9 +11908,9 @@
             }
             this.Tex.btn();
             this.UI.btnCompleteClick = () => {
-                if (!_Guide._complete) {
+                if (!_Guide._complete.value) {
                     if (_Guide.MakePatternState === _Guide.MakePatternStateType.BtnCom) {
-                        this._evNotify(_Guide.event.closeGuide);
+                        this._evNotify(_Guide.Event.closeGuide);
                     }
                     else {
                         return;
@@ -11863,7 +11949,7 @@
                     }, 200);
                 });
             };
-            if (!_Guide._complete)
+            if (!_Guide._complete.value)
                 return;
             this.UI.btnRollbackClick = () => {
                 _3DScene._ins().cameraToSprite(this._Owner);
@@ -11874,13 +11960,13 @@
             };
         }
         lwgEvent() {
-            this._evReg(_MakePattern._event.createImg, (name, gPoint) => {
+            this._evReg(_MakePattern.Event.createImg, (name, gPoint) => {
                 this.Tex.state = this.Tex.stateType.move;
                 this.Tex.createImg(name, gPoint);
                 this.Tex.turnFace();
             });
-            this._evReg(_MakePattern._event.close, () => {
-                if (!_Guide._complete)
+            this._evReg(_MakePattern.Event.close, () => {
+                if (!_Guide._complete.value)
                     return;
                 this.Tex.close();
                 this.Tex.state = this.Tex.stateType.none;
@@ -11926,7 +12012,7 @@
                 this['slideFY'] = e.stageY;
             }
             else {
-                if (!_Guide._complete) {
+                if (!_Guide._complete.value) {
                     return;
                 }
                 const point = new Laya.Point(e.stageX, e.stageY);
@@ -11946,17 +12032,17 @@
         onStageMouseMove(e) {
             this.Tex.operation(e);
             if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
-                if (!_Guide._complete)
+                if (!_Guide._complete.value)
                     return;
                 if (this['slideFY']) {
                     let diffY = this['slideFY'] - e.stageY;
-                    let index = _MakePattern._Data._List.startIndex;
+                    let index = _MakePattern._Pattern._ins()._List.startIndex;
                     if (Math.abs(diffY) > 25) {
                         if (diffY > 0) {
-                            _MakePattern._Data._List.tweenTo(index + 1, 100);
+                            _MakePattern._Pattern._ins()._List.tweenTo(index + 1, 100);
                         }
                         if (diffY < 0) {
-                            _MakePattern._Data._List.tweenTo(index - 1, 100);
+                            _MakePattern._Pattern._ins()._List.tweenTo(index - 1, 100);
                         }
                         this['slideFY'] = null;
                     }
@@ -11969,19 +12055,19 @@
         onStageMouseUp(e) {
             this['slideFY'] = null;
             if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
-                this._evNotify(_MakePattern._event.close);
+                this._evNotify(_MakePattern.Event.close);
             }
             else {
                 if (!this.Tex.checkInside()) {
                     this.Tex.close();
                 }
                 else {
-                    if (!_Guide._complete) {
+                    if (!_Guide._complete.value) {
                         if (_Guide.MakePatternState === _Guide.MakePatternStateType.Pattern1) {
-                            this._evNotify(_Guide.event.MakePatternFrame1, [this._ImgVar('Wireframe')]);
+                            this._evNotify(_Guide.Event.MakePatternFrame1, [this._ImgVar('Wireframe')]);
                         }
                         else if (_Guide.MakePatternState === _Guide.MakePatternStateType.Pattern2) {
-                            this._evNotify(_Guide.event.MakePatternFrame2, [this._ImgVar('Wireframe')]);
+                            this._evNotify(_Guide.Event.MakePatternFrame2, [this._ImgVar('Wireframe')]);
                         }
                     }
                     ;
@@ -12180,16 +12266,16 @@
     class PersonalInfo extends LwgScene._SceneBase {
         lwgOnAwake() {
             ADManager.TAPoint(TaT.BtnShow, 'changename');
-            this._TextInputVar('NameValue').text = _PersonalInfo._name;
-            const obj = _Ranking._Data._getPitchObj();
-            this._LabelVar('RankValue').text = obj[_Ranking._Data._otherPro.rankNum];
-            this._LabelVar('FansValue').text = obj[_Ranking._Data._otherPro.fansNum];
+            this._TextInputVar('NameValue').text = _PersonalInfo._name.value;
+            const obj = _Ranking._Data._ins()._getPitchObj();
+            this._LabelVar('RankValue').text = obj[_Ranking._Data._ins()._otherPro.rankNum];
+            this._LabelVar('FansValue').text = obj[_Ranking._Data._ins()._otherPro.fansNum];
         }
         lwgOpenAni() {
             return _GameAni._dialogOpenFadeOut(this._ImgVar('Background'), this._ImgVar('Content'), () => {
-                !_Guide._complete && this._openScene('Guide', false, false, () => {
+                !_Guide._complete.value && this._openScene('Guide', false, false, () => {
                     const gP = this._ImgVar('Name').localToGlobal(new Laya.Point(this._ImgVar('NameValue').x, this._ImgVar('NameValue').y));
-                    this._evNotify(_Guide.event.PersonalInfoWriteName, [gP.x, gP.y]);
+                    this._evNotify(_Guide.Event.PersonalInfoWriteName, [gP.x, gP.y]);
                 }, this._Owner.zOrder + 1);
                 LwgTimer._frameLoop(200, this, () => {
                     this._AniVar('ani1').play(0, false);
@@ -12203,7 +12289,7 @@
         }
         BtnCloseClick() {
             this._btnUp(this._ImgVar('BtnClose'), () => {
-                !_Guide._complete && this._evNotify(_Guide.event.vanishGuide);
+                !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
                 this._closeScene();
             });
         }
@@ -12218,7 +12304,7 @@
                 this._ImgVar('BtnWrite').scale(1, 1);
             });
             this._TextInputVar('NameValue').on(Laya.Event.FOCUS, this, () => {
-                !_Guide._complete && this._evNotify(_Guide.event.vanishGuide);
+                !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
             });
             this._TextInputVar('NameValue').on(Laya.Event.INPUT, this, () => {
             });
@@ -12232,20 +12318,20 @@
                 else {
                     this._TextInputVar('NameValue').fontSize = 24;
                 }
-                _PersonalInfo._name = this._TextInputVar('NameValue').text;
-                if (!_Guide._complete) {
+                _PersonalInfo._name.value = this._TextInputVar('NameValue').text;
+                if (!_Guide._complete.value) {
                     this.BtnCloseClick();
                     const gP = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnClose').x, this._ImgVar('BtnClose').y));
-                    this._evNotify(_Guide.event.PersonalInfoCloseBtn, [gP.x, gP.y]);
+                    this._evNotify(_Guide.Event.PersonalInfoCloseBtn, [gP.x, gP.y]);
                 }
             });
-            if (!_Guide._complete)
+            if (!_Guide._complete.value)
                 return;
             this.BtnCloseClick();
         }
         lwgCloseAni() {
             return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-                !_Guide._complete && this._evNotify(_Guide.event.DelayBtnCheckIn);
+                !_Guide._complete.value && this._evNotify(_Guide.Event.DelayBtnCheckIn);
             });
         }
         lwgOnDisable() {
@@ -12263,31 +12349,31 @@
         }
         ;
         $render() {
-            if (this.$data[_Ranking._Data._property.$classify] === _Ranking._Data._classify.self) {
+            if (this.$data[_Ranking._Data._ins()._property.$classify] === _Ranking._Data._ins()._classify.self) {
                 this._ImgChild('Board').skin = `Game/UI/Ranking/x_di.png`;
-                this._LableChild('Name').text = _PersonalInfo._name;
+                this._LableChild('Name').text = _PersonalInfo._name.value;
             }
             else {
                 this._ImgChild('Board').skin = `Game/UI/Ranking/w_di.png`;
-                this._LableChild('Name').text = this.$data[_Ranking._Data._property.$name];
+                this._LableChild('Name').text = this.$data[_Ranking._Data._ins()._property.$name];
             }
             this._LableChild('RankNum').text = String(this.$rankNum);
             this._LableChild('FansNum').text = String(this.$fansNum);
             const IconPic = this._LableChild('Icon').getChildAt(0);
-            IconPic.skin = this.$data[_Ranking._Data._otherPro.iconSkin];
+            IconPic.skin = this.$data[_Ranking._Data._ins()._otherPro.iconSkin];
         }
     }
     class Ranking extends LwgScene._SceneBase {
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'rankpage');
-            _Ranking._Data._List = this._ListVar('List');
+            _Ranking._Data._ins()._List = this._ListVar('List');
             if (_Ranking._whereFrom === 'Tweeting') {
-                _Ranking._Data._addProValueForAll(_Ranking._Data._otherPro.fansNum, () => {
+                _Ranking._Data._ins()._addProValueForAll(_Ranking._Data._ins()._otherPro.fansNum, () => {
                     return LwgTools._Number.randomOneInt(100, 150);
                 });
             }
-            this._evNotify(_Start._event.updateRanking);
-            _Ranking._Data._listRenderScript = RankingItem;
+            this._evNotify(_Start.Event.updateRanking);
+            _Ranking._Data._ins()._listRenderScript = RankingItem;
         }
         lwgOpenAni() {
             if (_Ranking._whereFrom === 'Tweeting') {
@@ -12301,47 +12387,47 @@
         lwgOpenAniAfter() {
             if (_Ranking._whereFrom === 'Tweeting') {
                 _GameEffects2D._fireworksCelebrate(() => {
-                    !_Guide._complete && this._openScene('Guide', false, false, () => {
+                    !_Guide._complete.value && this._openScene('Guide', false, false, () => {
                         this.BtnCloseClick();
                         const gP = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnClose').x, this._ImgVar('BtnClose').y));
-                        this._evNotify(_Guide.event.RankingCloseBtn, [gP.x, gP.y]);
+                        this._evNotify(_Guide.Event.RankingCloseBtn, [gP.x, gP.y]);
                     }, this._Owner.zOrder + 1);
                 });
                 _Ranking._whereFrom = 'Start';
             }
         }
         lwgOnStart() {
-            if (_Ranking._Data._getProperty(_Ranking._Data._pitchName, _Ranking._Data._otherPro.rankNum) === 1) {
-                _Ranking._Data._List.scrollTo(0);
+            if (_Ranking._Data._ins()._getProperty(_Ranking._Data._ins()._pitchName, _Ranking._Data._ins()._otherPro.rankNum) === 1) {
+                _Ranking._Data._ins()._List.scrollTo(0);
             }
             else {
                 if (_Ranking._whereFrom === 'Tweeting') {
-                    _Ranking._Data._listScrollToLast();
-                    _Ranking._Data._listTweenToPitchChoose(-1, 1500);
+                    _Ranking._Data._ins()._listScrollToLast();
+                    _Ranking._Data._ins()._listTweenToPitchChoose(-1, 1500);
                 }
                 else {
-                    _Ranking._Data._listScrollToLast();
-                    _Ranking._Data._listTweenToPitchChoose(-1, 600);
+                    _Ranking._Data._ins()._listScrollToLast();
+                    _Ranking._Data._ins()._listTweenToPitchChoose(-1, 600);
                 }
             }
         }
         BtnCloseClick() {
             this._btnUp(this._ImgVar('BtnClose'), () => {
                 this._closeScene();
-                if (!_Guide._complete) {
-                    this._evNotify(_Guide.event.closeGuide);
-                    this._evNotify(_Start._event.BtnPersonalInfo);
+                if (!_Guide._complete.value) {
+                    this._evNotify(_Guide.Event.closeGuide);
+                    this._evNotify(_Start.Event.BtnPersonalInfo);
                 }
             });
         }
         lwgButton() {
-            if (!_Guide._complete)
+            if (!_Guide._complete.value)
                 return;
             this.BtnCloseClick();
         }
         lwgCloseAni() {
             return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-                _Guide._complete && !_CheckIn._todayCheckIn && this._openScene('CheckIn', false);
+                _Guide._complete.value && !_CheckIn._todayCheckIn && this._openScene('CheckIn', false);
             });
         }
         lwgOnDisable() {
@@ -12354,14 +12440,14 @@
             ADManager.TAPoint(TaT.PageShow, 'weibopage');
             ADManager.TAPoint(TaT.BtnShow, 'photo_choose');
             this._LabelVar('BodyText').text = _Tweeting._mainBody.getOne();
-            this._LabelVar('PlayerName').text = _PersonalInfo._name;
+            this._LabelVar('PlayerName').text = _PersonalInfo._name.value;
             this._ImgVar('IconPic').skin = `Game/UI/Ranking/IconSkin/Ava.png`;
-            _Tweeting._attentionNum += LwgTools._Number.randomOneInt(50, 100);
-            this._LabelVar('AttentionNum').text = _Tweeting._attentionNum.toString();
-            this._LabelVar('FansNum').text = _Ranking._Data._getPitchProperty(_Ranking._Data._otherPro.fansNum);
-            _Tweeting._completeNum++;
+            _Tweeting._attentionNum.value += LwgTools._Number.randomOneInt(50, 100);
+            this._LabelVar('AttentionNum').text = _Tweeting._attentionNum.value.toString();
+            this._LabelVar('FansNum').text = _Ranking._Data._ins()._getPitchProperty(_Ranking._Data._ins()._otherPro.fansNum);
+            _Tweeting._completeNum.value++;
             _DIYClothes._ins()._checkConditionUnlockWay(_DIYClothes._ins()._unlockWay.$customs, 1);
-            this._LabelVar('CompleteNum').text = _Tweeting._completeNum.toString();
+            this._LabelVar('CompleteNum').text = _Tweeting._completeNum.value.toString();
             const heatArr = LwgTools._Number.randomCountBySection(20, 50, 3);
             heatArr.sort();
             const briefArr = _Tweeting._brief.getThree();
@@ -12373,8 +12459,8 @@
                 const Brief = Rank.getChildByName('Brief');
                 const Heat = Rank.getChildByName('Heat');
                 const Icon = Rank.getChildByName('HeadIcon').getChildByName('Icon');
-                const data = _Ranking._Data._arr[index];
-                Name.text = data[_Ranking._Data._property.$name];
+                const data = _Ranking._Data._ins()._arr[index];
+                Name.text = data[_Ranking._Data._ins()._property.$name];
                 Tag.skin = `Game/UI/Tweeting/Main/${index + 1}.png`;
                 Brief.text = briefArr[index];
                 Heat.text = `本周热度 ${heatArr[index]}万`;
@@ -12418,8 +12504,8 @@
                 LwgAni2D.bombs_Appear(this._ImgVar('BtnChoosePhotos'), 0, 1, 1.08, 0, baseTime * 2, () => {
                     LwgTimer._once(300, this, () => {
                         this.BtnChoosePhotosClick();
-                        !_Guide._complete && this._openScene('Guide', false, false, () => {
-                            this._evNotify(_Guide.event.TweetingBtnChoosePhoto, [this._ImgVar('BtnChoosePhotos')._lwg.gPoint.x, this._ImgVar('BtnChoosePhotos')._lwg.gPoint.y, this._ImgVar('Photo2')._lwg.gPoint.x + 65, this._ImgVar('Photo2')._lwg.gPoint.y + 65]);
+                        !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                            this._evNotify(_Guide.Event.TweetingBtnChoosePhoto, [this._ImgVar('BtnChoosePhotos')._lwg.gPoint.x, this._ImgVar('BtnChoosePhotos')._lwg.gPoint.y, this._ImgVar('Photo2')._lwg.gPoint.x + 65, this._ImgVar('Photo2')._lwg.gPoint.y + 65]);
                         });
                     });
                     _GameAni._fadeHint(this._ImgVar('BtnChoosePhotos').getChildByName('HintPic'));
@@ -12455,8 +12541,8 @@
         }
         lwgOpenAni() {
             return _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
-                !_Guide._complete && this._openScene('Guide', false, false, () => {
-                    this._evNotify(_Guide.event.TweetingChoosePhoto, [this._ImgVar('Photo1')._lwg.gPoint.x, this._ImgVar('Photo1')._lwg.gPoint.y]);
+                !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                    this._evNotify(_Guide.Event.TweetingChoosePhoto, [this._ImgVar('Photo1')._lwg.gPoint.x, this._ImgVar('Photo1')._lwg.gPoint.y]);
                 });
             });
         }
@@ -12472,7 +12558,7 @@
                             _Tweeting._photoIndex = index;
                             Tick.visible = true;
                             const gPBtnSend = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnSend').x, this._ImgVar('BtnSend').y));
-                            !_Guide._complete && this._evNotify(_Guide.event.TweetingBtnSend, [gPBtnSend.x, gPBtnSend.y]);
+                            !_Guide._complete.value && this._evNotify(_Guide.Event.TweetingBtnSend, [gPBtnSend.x, gPBtnSend.y]);
                         }
                         else {
                             _element.scale(1, 1);
@@ -12485,7 +12571,7 @@
             ;
             this._btnUp(this._ImgVar('BtnSend'), () => {
                 if (this._ImgVar('BtnSend').skin == 'Game/UI/Tweeting/ChoosePhotos/anniu_fasong.png') {
-                    !_Guide._complete && this._evNotify(_Guide.event.closeGuide);
+                    !_Guide._complete.value && this._evNotify(_Guide.Event.closeGuide);
                     this._closeScene();
                 }
                 else {
@@ -12568,22 +12654,22 @@
             const Icon = this._ImgVar('Head').getChildByName('HeadIcon').getChildAt(0);
             Icon.skin = `Game/UI/Ranking/IconSkin/Ava.png`;
             this._LabelVar('Brief').text = _Tweeting._brief.getOne()[0].toString();
-            this._LabelVar('PlayerName').text = _PersonalInfo._name;
+            this._LabelVar('PlayerName').text = _PersonalInfo._name.value;
             const left = 120;
             this._ImgVar('Middle').width = this._Owner.width - 160;
             this._ImgVar('Collect').x = (this._ImgVar('Middle').width - left * 2) * 0 / 4 + left;
-            _Tweeting._forwardedNum += 50;
-            this._ImgVar('Forwarded').getChildAt(0).text = _Tweeting._forwardedNum.toString();
+            _Tweeting._forwardedNum.value += 50;
+            this._ImgVar('Forwarded').getChildAt(0).text = _Tweeting._forwardedNum.value.toString();
             this._ImgVar('Forwarded').x = (this._ImgVar('Middle').width - left * 2) * 1 / 4 + left;
-            _Tweeting._commentNum += 50;
-            this._ImgVar('Comment').getChildAt(0).text = _Tweeting._commentNum.toString();
+            _Tweeting._commentNum.value += 50;
+            this._ImgVar('Comment').getChildAt(0).text = _Tweeting._commentNum.value.toString();
             this._ImgVar('Comment').x = (this._ImgVar('Middle').width - left * 2) * 2 / 4 + left;
-            _Tweeting._likeNum += 100;
-            this._ImgVar('Like').getChildAt(0).text = _Tweeting._likeNum.toString();
+            _Tweeting._likeNum.value += 100;
+            this._ImgVar('Like').getChildAt(0).text = _Tweeting._likeNum.value.toString();
             this._ImgVar('Like').x = (this._ImgVar('Middle').width - left * 2) * 3 / 4 + left;
             this._ImgVar('Bottom').width = this._Owner.width - 160;
             const iconArr = LwgTools._Number.randomCountBySection(1, 20, 2);
-            const twoObj = _Ranking._Data._randomCountObj(2);
+            const twoObj = _Ranking._Data._ins()._randomCountObj(2);
             for (let index = 0; index < 2; index++) {
                 const Reply = this._ImgVar(`Reply${index + 1}`);
                 const Icon1 = Reply.getChildByName('HeadIcon').getChildAt(0);
@@ -12623,7 +12709,7 @@
         }
         lwgOnAwake() {
             ADManager.TAPoint(TaT.BtnShow, 'ADrank');
-            this.pitchObj = _Ranking._Data._getPitchObj();
+            this.pitchObj = _Ranking._Data._ins()._getPitchObj();
             this.fansNum = LwgTools._Number.randomOneInt(115, 383);
             this.pitchObj['fansNum'] += this.fansNum;
             this._FontClipVar('FansNum').value = this.fansNum.toString();
@@ -12631,8 +12717,8 @@
         lwgOpenAni() {
             _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
                 _GameEffects2D._interfacePointJet();
-                !_Guide._complete && this._openScene('Guide', false, false, () => {
-                    this._evNotify(_Guide.event.TweetingBtnDoubleFans, [this._ImgVar('BtnDouble')._lwg.gPoint.x, this._ImgVar('BtnDouble')._lwg.gPoint.y]);
+                !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                    this._evNotify(_Guide.Event.TweetingBtnDoubleFans, [this._ImgVar('BtnDouble')._lwg.gPoint.x, this._ImgVar('BtnDouble')._lwg.gPoint.y]);
                 });
                 LwgTimer._loop(2000, this, () => {
                     LwgAni2D.bomb_LeftRight(this._ImgVar('BtnDouble'), 1.1, 250);
@@ -12646,7 +12732,7 @@
                 _Tweeting._photo.clear();
                 this._closeScene('Tweeting_Dynamic');
                 this._closeScene();
-                !_Guide._complete && this._evNotify(_Guide.event.closeGuide);
+                !_Guide._complete.value && this._evNotify(_Guide.Event.closeGuide);
             };
             this._btnUp(this._ImgVar('BtnOk'), () => {
                 closeBefore();
@@ -12657,7 +12743,7 @@
                 closeBefore();
             };
             this._btnUp(this._ImgVar('BtnDouble'), () => {
-                if (!_Guide._complete) {
+                if (!_Guide._complete.value) {
                     double();
                 }
                 else {
@@ -12703,24 +12789,26 @@
     class _Item$3 extends LwgData._Item {
         $button() {
             this._btnUp(this._ImgChild('Reward'), (e) => {
-                if (!_CheckIn._todayCheckIn) {
-                    if (_CheckIn._checkInNum + 1 === this.$serial) {
-                        _CheckIn._lastCheckDate = LwgDate._date.date;
-                        _CheckIn._Data._setCompleteName(this.$name);
-                        _CheckIn._checkInNum++;
+                console.log(_CheckIn._lastCheckDate.value, _CheckIn._todayCheckIn.value);
+                if (!_CheckIn._todayCheckIn.value) {
+                    if (_CheckIn._checkInNum.value + 1 === this.$serial) {
+                        _CheckIn._lastCheckDate.value = LwgDate._date.date;
+                        console.log(_CheckIn._lastCheckDate.value, _CheckIn._todayCheckIn.value);
+                        _CheckIn._Data._ins()._setCompleteName(this.$name);
+                        _CheckIn._checkInNum.value++;
                         if (this.$rewardType.substr(0, 3) === 'diy') {
                             _DIYClothes._ins()._setCompleteByName(this.$rewardType);
                             LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
                             _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                         }
                         else if (this.$rewardType === 'cat') {
-                            _MakePattern._Data._setCompleteByClassify(this.$rewardType);
+                            _MakePattern._Pattern._ins()._setCompleteByClassify(this.$rewardType);
                             LwgDialogue.createHint_Middle('恭喜获得猫咪贴图一套');
                             _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                         }
-                        if (!_Guide._complete) {
+                        if (!_Guide._complete.value) {
                             _Guide.CheckInCloseBtn = true;
-                            this._evNotify(_Guide.event.CheckInCloseBtn, [this._SceneImg('BtnClose')._lwg.gPoint.x, this._SceneImg('BtnClose')._lwg.gPoint.y]);
+                            this._evNotify(_Guide.Event.CheckInCloseBtn, [this._SceneImg('BtnClose')._lwg.gPoint.x, this._SceneImg('BtnClose')._lwg.gPoint.y]);
                         }
                     }
                 }
@@ -12730,13 +12818,13 @@
             });
             var func = (e) => {
                 ADManager.ShowReward(() => {
-                    _CheckIn._Data._setOtherCompleteName(this.$name);
+                    _CheckIn._Data._ins()._setOtherCompleteName(this.$name);
                     if (this.$otherRewardType.substr(0, 3) === 'diy') {
                         _DIYClothes._ins()._setCompleteByName(this.$otherRewardType);
                         LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
                     }
                     else if (this.$otherRewardType === 'newYear') {
-                        _MakePattern._Data._setCompleteByClassify(this.$otherRewardType);
+                        _MakePattern._Pattern._ins()._setCompleteByClassify(this.$otherRewardType);
                         LwgDialogue.createHint_Middle('恭喜获得新年贴图一套');
                     }
                     _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
@@ -12744,13 +12832,13 @@
             };
             var adsClick = (e) => {
                 if (!this.$otherComplete) {
-                    if (!_CheckIn._todayCheckIn) {
-                        if (_CheckIn._checkInNum + 1 >= this.$serial) {
+                    if (!_CheckIn._todayCheckIn.value) {
+                        if (_CheckIn._checkInNum.value + 1 >= this.$serial) {
                             func(e);
                         }
                     }
                     else {
-                        if (_CheckIn._checkInNum >= this.$serial) {
+                        if (_CheckIn._checkInNum.value >= this.$serial) {
                             func(e);
                         }
                     }
@@ -12776,8 +12864,8 @@
             }
             Already.visible = this.$complete;
             if (!this.$complete) {
-                if (_CheckIn._checkInNum + 1 === this.$serial) {
-                    if (_CheckIn._todayCheckIn) {
+                if (_CheckIn._checkInNum.value + 1 === this.$serial) {
+                    if (_CheckIn._todayCheckIn.value) {
                         this._ImgChild('Reward').skin = 'Game/UI/ChekIn/k_nei.png';
                     }
                     else {
@@ -12803,8 +12891,8 @@
             }
             AdsAlready.visible = this.$otherComplete;
             if (!this.$otherComplete) {
-                if (!_CheckIn._todayCheckIn) {
-                    if (_CheckIn._checkInNum + 1 >= this.$serial) {
+                if (!_CheckIn._todayCheckIn.value) {
+                    if (_CheckIn._checkInNum.value + 1 >= this.$serial) {
                         this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                         this._ImgChild('BtnAdsReward').gray = false;
                     }
@@ -12814,7 +12902,7 @@
                     }
                 }
                 else {
-                    if (_CheckIn._checkInNum >= this.$serial) {
+                    if (_CheckIn._checkInNum.value >= this.$serial) {
                         this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                         this._ImgChild('BtnAdsReward').gray = false;
                     }
@@ -12832,11 +12920,11 @@
     }
     class CheckIn extends LwgScene._SceneBase {
         lwgOnAwake() {
-            _CheckIn._Data._List = this._ListVar('List');
-            _CheckIn._Data._listRenderScript = _Item$3;
-            _CheckIn._Data._List.scrollBar.touchScrollEnable = false;
-            this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately} / 4`;
-            if (_CheckIn._immediately >= 4 || _CheckIn._checkInNum >= 4) {
+            _CheckIn._Data._ins()._List = this._ListVar('List');
+            _CheckIn._Data._ins()._listRenderScript = _Item$3;
+            _CheckIn._Data._ins()._List.scrollBar.touchScrollEnable = false;
+            this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately.value} / 4`;
+            if (_CheckIn._immediately.value >= 4 || _CheckIn._checkInNum.value >= 4) {
                 this._ImgVar('BtnImmediately').visible = false;
                 this._LabelVar('Tip').text = `奖励已经全部领取！`;
             }
@@ -12845,34 +12933,34 @@
             return _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
                 this._openScene('Guide', false, false, () => {
                     this.BtnCloseClick();
-                    !_Guide._complete && this._evNotify(_Guide.event.CheckInGetReward, [this._ImgVar('GuideTab1')._lwg.gPoint.x, this._ImgVar('GuideTab1')._lwg.gPoint.y]);
+                    !_Guide._complete.value && this._evNotify(_Guide.Event.CheckInGetReward, [this._ImgVar('GuideTab1')._lwg.gPoint.x, this._ImgVar('GuideTab1')._lwg.gPoint.y]);
                 });
             });
         }
         BtnCloseClick() {
             this._btnUp(this._ImgVar('BtnClose'), () => {
-                if (!_Guide._complete && _Guide.CheckInCloseBtn) {
-                    _Guide._complete = true;
+                if (!_Guide._complete.value && _Guide.CheckInCloseBtn) {
+                    _Guide._complete.value = true;
                     LwgDialogue.createHint_Middle('开启你的女神之路吧!');
-                    this._evNotify(_Guide.event.closeGuide);
-                    this._evNotify(_Guide.event.StartOtherBtnClick);
+                    this._evNotify(_Guide.Event.closeGuide);
+                    this._evNotify(_Guide.Event.StartOtherBtnClick);
                 }
                 this._closeScene();
             });
         }
         lwgButton() {
-            if (!_Guide._complete)
+            if (!_Guide._complete.value)
                 return;
             this.BtnCloseClick();
             this._btnUp(this._ImgVar('BtnImmediately'), () => {
-                if (_CheckIn._immediately < 4) {
+                if (_CheckIn._immediately.value < 4) {
                     ADManager.ShowReward(() => {
-                        _CheckIn._immediately++;
-                        this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately} / 4 `;
-                        if (_CheckIn._immediately >= 4) {
+                        _CheckIn._immediately.value++;
+                        this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately.value} / 4 `;
+                        if (_CheckIn._immediately.value >= 4) {
                             this._ImgVar('BtnImmediately').visible = false;
                             const gP1 = this._ImgVar('GuideTab1')._lwg.gPoint;
-                            _CheckIn._Data._setAllCompleteDelay(300, (com) => {
+                            _CheckIn._Data._ins()._setAllCompleteDelay(300, (com) => {
                                 const copyP1 = new Laya.Point(gP1.x, gP1.y);
                                 if (!com) {
                                     _GameEffects2D._oneFireworks(copyP1);
@@ -12880,7 +12968,7 @@
                                 gP1.x += 165;
                             }, null, null);
                             const gP2 = this._ImgVar('GuideTab2')._lwg.gPoint;
-                            _CheckIn._Data._setAllOtherCompleteDelay(300, (com) => {
+                            _CheckIn._Data._ins()._setAllOtherCompleteDelay(300, (com) => {
                                 const copyP2 = new Laya.Point(gP2.x, gP2.y);
                                 if (!com) {
                                     _GameEffects2D._oneFireworks(copyP2);
@@ -12890,8 +12978,8 @@
                                 LwgDialogue.createHint_Middle('奖励已经全部获得，快去制作服装吧！');
                             });
                             _DIYClothes._ins()._setCompleteByNameArr(['diy_dress_003_final', 'diy_dress_007_final', 'diy_top_004_final', 'diy_bottom_005_final', 'diy_dress_006_final', 'diy_bottom_006_final']);
-                            _MakePattern._Data._setCompleteByClassify('cat');
-                            _MakePattern._Data._setCompleteByClassify('newYear');
+                            _MakePattern._Pattern._ins()._setCompleteByClassify('cat');
+                            _MakePattern._Pattern._ins()._setCompleteByClassify('newYear');
                         }
                     });
                 }

@@ -130,21 +130,21 @@ class _Scissor extends  LwgScene._ObjectBase {
         },
 
         event: () => {
-            this._evReg(_MakeTailor._event.scissorAppear, () => {
+            this._evReg(_MakeTailor.Event.scissorAppear, () => {
                 let time = 800;
                 LwgAni2D.move_rotate(this._Owner, this._fRotation + 360, this._fPoint, time, 0, () => {
                     this._Owner.rotation = this._fRotation;
                     this.Move.switch = true;
-                    if (!_Guide._complete) this._evNotify(_Guide.event.MakeTailorStartTailor, [this._Owner]);
+                    if (!_Guide._complete.value) this._evNotify(_Guide.Event.MakeTailorStartTailor, [this._Owner]);
                 })
             })
-            this._evReg(_MakeTailor._event.scissorPlay, () => {
+            this._evReg(_MakeTailor.Event.scissorPlay, () => {
                 this.Ani.paly();
             })
-            this._evReg(_MakeTailor._event.scissorStop, () => {
+            this._evReg(_MakeTailor.Event.scissorStop, () => {
                 this.Ani.stop();
             })
-            this._evReg(_MakeTailor._event.scissorRemove, (func?: Function) => {
+            this._evReg(_MakeTailor.Event.scissorRemove, (func?: Function) => {
                 this.Move.switch = false;
                 let disX = 1500;
                 let disY = -600;
@@ -162,13 +162,13 @@ class _Scissor extends  LwgScene._ObjectBase {
                 })
             })
 
-            this._evReg(_MakeTailor._event.scissorAgain, () => {
+            this._evReg(_MakeTailor.Event.scissorAgain, () => {
                 LwgAni2D.move_rotate(this._Owner, this._fRotation, this._fPoint, 600, 100, () => {
                     _TaskClothes._ins().again(this._Scene);
                 });
             })
 
-            this._evReg(_MakeTailor._event.scissorRotation, (rotate: number) => {
+            this._evReg(_MakeTailor.Event.scissorRotation, (rotate: number) => {
                 LwgTimer._clearAll([this._Owner]);
                 const time = 10;
                 let angle: number;
@@ -204,9 +204,9 @@ class _Scissor extends  LwgScene._ObjectBase {
         this._btnFour(Laya.stage,
             (e: Laya.Event) => {
                 if (this.Move.switch) {
-                    this._evNotify(_MakeTailor._event.scissorPlay);
+                    this._evNotify(_MakeTailor.Event.scissorPlay);
                     this.Move.touchP = new Laya.Point(e.stageX, e.stageY);
-                    if (!_Guide._complete) this._evNotify(_Guide.event.MakeTailorCloseTailor, [this._Owner]);
+                    if (!_Guide._complete.value) this._evNotify(_Guide.Event.MakeTailorCloseTailor, [this._Owner]);
                 }
             },
             (e: Laya.Event) => {
@@ -216,14 +216,14 @@ class _Scissor extends  LwgScene._ObjectBase {
                     this._Owner.y += this.Move.diffP.y;
                     LwgTools._Node.tieByStage(this._Owner);
                     this.Move.touchP = new Laya.Point(e.stageX, e.stageY);
-                    this._evNotify(_MakeTailor._event.scissorPlay);
+                    this._evNotify(_MakeTailor.Event.scissorPlay);
                 }
             },
             () => {
-                this._evNotify(_MakeTailor._event.scissorStop);
+                this._evNotify(_MakeTailor.Event.scissorStop);
                 this.Move.touchP = null;
-                if (!_Guide._complete) {
-                    this._evNotify(_Guide.event.MakeTailorOpenTailor, [this._Owner]);
+                if (!_Guide._complete.value) {
+                    this._evNotify(_Guide.Event.MakeTailorOpenTailor, [this._Owner]);
 
                 }
             })
@@ -231,9 +231,9 @@ class _Scissor extends  LwgScene._ObjectBase {
     onTriggerEnter(other: Laya.CircleCollider, _Owner: Laya.CircleCollider): void {
         if (!other['cut'] && this.Move.switch) {
             other['cut'] = true;
-            this._evNotify(_MakeTailor._event.scissorPlay);
-            this._evNotify(_MakeTailor._event.scissorStop);
-            LwgEvent._notify(_MakeTailor._event.scissorTrigger, [other.owner]);
+            this._evNotify(_MakeTailor.Event.scissorPlay);
+            this._evNotify(_MakeTailor.Event.scissorStop);
+            LwgEvent._notify(_MakeTailor.Event.scissorTrigger, [other.owner]);
             this.Ani.effcts();
             ADManager.VibrateShort();
         }
@@ -244,7 +244,7 @@ class _Item extends LwgData._Item {
     $awake(): void { };
     $button(): void {
         this._btnUp(this._Owner, () => {
-            if (!_Guide._complete && this.$name !== 'diy_dress_002_final') return;
+            if (!_Guide._complete.value && this.$name !== 'diy_dress_002_final') return;
             if (this.$name === 'ads') {
                 return;
             }
@@ -252,7 +252,7 @@ class _Item extends LwgData._Item {
                 // 如果已选中则不会更换选择
                 if (this.$name !== _DIYClothes._ins()._pitchName) {
                     _DIYClothes._ins()._setPitch(this.$name);
-                    this._evNotify(_MakeTailor._event.changeClothes);
+                    this._evNotify(_MakeTailor.Event.changeClothes);
                 }
             }
             else {
@@ -268,7 +268,7 @@ class _Item extends LwgData._Item {
                             if (_DIYClothes._ins()._checkCondition(this.$name)) {
                                 LwgDialogue.createHint_Middle('恭喜获得一件新服装！');
                                 _DIYClothes._ins()._setPitch(this.$name);
-                                this._evNotify(_MakeTailor._event.changeClothes);
+                                this._evNotify(_MakeTailor.Event.changeClothes);
                             }
                         })
                         break;
@@ -279,9 +279,9 @@ class _Item extends LwgData._Item {
                         break;
                 }
             }
-            if (!_Guide._complete && this.$name == 'diy_dress_002_final') {
+            if (!_Guide._complete.value && this.$name == 'diy_dress_002_final') {
                 _Guide.MmakeTailorBtnComSwicth = true;
-                this._evNotify(_Guide.event.MakeTailorBtnCom);
+                this._evNotify(_Guide.Event.MakeTailorBtnCom);
             };
         })
     }
@@ -312,7 +312,7 @@ class _Item extends LwgData._Item {
                             this._LableChild('UnlockWay').text = `制作衣服`;
                             this._LableChild('UnlockWay').fontSize = 25;
                             this._LableChild('UnlockWayNum').visible = true;
-                            this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum} /${this.$conditionNum})`;
+                            this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum.value} /${this.$conditionNum})`;
                             break;
                         default:
                             break;
@@ -351,7 +351,7 @@ export default class MakeTailor extends  LwgScene._SceneBase {
         const arr = _DIYClothes._ins()._getArrByPitchClassify();
         _DIYClothes._ins()._listArray = arr;
         _DIYClothes._ins()._setPitch(arr[0][_DIYClothes._ins()._property.$name]);
-        if (!_Guide._complete) _DIYClothes._ins()._List.scrollBar.touchScrollEnable = false;
+        if (!_Guide._complete.value) _DIYClothes._ins()._List.scrollBar.touchScrollEnable = false;
     }
     UI: _UI;
     lwgOnStart(): void {
@@ -362,9 +362,9 @@ export default class MakeTailor extends  LwgScene._SceneBase {
                 this.UI.btnCompleteAppear(null, 400);
             });
             this.UI.btnBackAppear(() => {
-                !_Guide._complete && this._openScene('Guide', false, false, () => {
+                !_Guide._complete.value && this._openScene('Guide', false, false, () => {
                     _Guide.MmakeTailorPulldownSwicth = true;
-                    this._evNotify(_Guide.event.MakeTailorPulldown);
+                    this._evNotify(_Guide.Event.MakeTailorPulldown);
                 })
             });
         })
@@ -375,7 +375,7 @@ export default class MakeTailor extends  LwgScene._SceneBase {
     }
     lwgButton(): void {
         this.UI.btnCompleteClick = () => {
-            if (!_Guide._complete) {
+            if (!_Guide._complete.value) {
                 if (!_Guide.MmakeTailorBtnComSwicth) {
                     return;
                 }
@@ -384,12 +384,12 @@ export default class MakeTailor extends  LwgScene._SceneBase {
                 this.UI.btnAgainAppear();
             }, 200);
             LwgTimer._frameOnce(30, this, () => {
-                this._evNotify(_MakeTailor._event.scissorAppear);
+                this._evNotify(_MakeTailor.Event.scissorAppear);
             })
         }
 
         // 滑动的新手引导
-        if (!_Guide._complete) {
+        if (!_Guide._complete.value) {
             this._btnFour(_DIYClothes._ins()._List,
                 () => {
                     if (_Guide.MmakeTailorPulldownSwicth) {
@@ -405,7 +405,7 @@ export default class MakeTailor extends  LwgScene._SceneBase {
                     if (_Guide.MmakeTailorPulldownSwicth && this['Pulldown'] && this['Pulldown'] > 2) {
                         _DIYClothes._ins()._List.tweenTo(4, 200, Laya.Handler.create(this, () => {
                             _Guide.MmakeTailorPulldownSwicth = false;
-                            this._evNotify(_Guide.event.MakeTailorChangeCloth);
+                            this._evNotify(_Guide.Event.MakeTailorChangeCloth);
                         }));
                     }
                     this['Pulldown'] = 1;
@@ -414,7 +414,7 @@ export default class MakeTailor extends  LwgScene._SceneBase {
             return;
         }
         this.UI.btnAgainClick = () => {
-            this._evNotify(_MakeTailor._event.scissorRemove, [() => {
+            this._evNotify(_MakeTailor.Event.scissorRemove, [() => {
                 _TaskClothes._ins().again(this._Owner);
             }]);
               LwgClick._switch = false;
@@ -429,11 +429,11 @@ export default class MakeTailor extends  LwgScene._SceneBase {
     }
 
     lwgEvent(): void {
-        this._evReg(_MakeTailor._event.changeClothes, () => {
+        this._evReg(_MakeTailor.Event.changeClothes, () => {
             _TaskClothes._ins().changeClothes(this._Owner);
         })
 
-        this._evReg(_MakeTailor._event.scissorTrigger, (Dotted: Laya.Image) => {
+        this._evReg(_MakeTailor.Event.scissorTrigger, (Dotted: Laya.Image) => {
             const Parent = Dotted.parent as Laya.Sprite;
             const value = _TaskClothes._ins()._checkCondition(Parent.name);
             Dotted.visible = false;
@@ -447,7 +447,7 @@ export default class MakeTailor extends  LwgScene._SceneBase {
             if (Parent.cacheAs !== "bitmap") Parent.cacheAs = "bitmap";
             Eraser.graphics.drawCircle(Dotted.x, Dotted.y, 15, '#000000');
             if (value) {
-                if (!_Guide._complete) this._evNotify(_Guide.event.MakeTailorNewTailor, [Parent.name]);
+                if (!_Guide._complete.value) this._evNotify(_Guide.Event.MakeTailorNewTailor, [Parent.name]);
                 // 删除布料
                 for (let index = 0; index < _TaskClothes._ins().Clothes.getChildAt(0).numChildren; index++) {
                     const element = _TaskClothes._ins().Clothes.getChildAt(0).getChildAt(index) as Laya.Image;
@@ -500,9 +500,9 @@ export default class MakeTailor extends  LwgScene._SceneBase {
                 // 检测是否全部完成
                 if (_TaskClothes._ins()._checkAllCompelet()) {
                     LwgTools._Node.removeAllChildren(_TaskClothes._ins().LineParent);
-                    this._evNotify(_MakeTailor._event.scissorRemove);
+                    this._evNotify(_MakeTailor.Event.scissorRemove);
                     LwgTimer._frameOnce(80, this, () => {
-                        this._evNotify(_MakeTailor._event.completeEffcet);
+                        this._evNotify(_MakeTailor.Event.completeEffcet);
                     })
                     LwgTimer._frameOnce(280, this, () => {
                         _Tweeting._photo.take(this._Owner, 0);
@@ -514,20 +514,20 @@ export default class MakeTailor extends  LwgScene._SceneBase {
             const gPos = (Dotted.parent as Laya.Image).localToGlobal(new Laya.Point(Dotted.x, Dotted.y));
             if (Dotted.name == 'A') {
                 if (this._ImgVar('Scissor').x <= gPos.x) {
-                    this._evNotify(_MakeTailor._event.scissorRotation, [Dotted.rotation]);
+                    this._evNotify(_MakeTailor.Event.scissorRotation, [Dotted.rotation]);
                 } else {
-                    this._evNotify(_MakeTailor._event.scissorRotation, [180 + Dotted.rotation]);
+                    this._evNotify(_MakeTailor.Event.scissorRotation, [180 + Dotted.rotation]);
                 }
             } else {
                 if (this._ImgVar('Scissor').y >= gPos.y) {
-                    this._evNotify(_MakeTailor._event.scissorRotation, [Dotted.rotation]);
+                    this._evNotify(_MakeTailor.Event.scissorRotation, [Dotted.rotation]);
                 } else {
-                    this._evNotify(_MakeTailor._event.scissorRotation, [180 + Dotted.rotation]);
+                    this._evNotify(_MakeTailor.Event.scissorRotation, [180 + Dotted.rotation]);
                 }
             }
         })
 
-        this._evReg(_MakeTailor._event.completeEffcet, () => {
+        this._evReg(_MakeTailor.Event.completeEffcet, () => {
             this.UI.btnBackVinish();
             this.UI.btnAgainVinish();
             LwgAudio._playVictorySound(null, null, null, 0.5);

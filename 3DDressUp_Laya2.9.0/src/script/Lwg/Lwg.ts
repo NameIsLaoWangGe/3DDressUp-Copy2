@@ -20,10 +20,10 @@ export module Lwg {
         };
         export const _Ues = {
             get value(): string {
-                return this['_platform_name'] ? this['_platform_name'] : null;
+                return this['_platform/name'] ? this['_platform/name'] : null;
             },
             set value(val: string) {
-                this['_platform_name'] = val;
+                this['_platform/name'] = val;
                 switch (val) {
                     case _Tpye.WebTest:
                         Laya.LocalStorage.clear();
@@ -158,8 +158,8 @@ export module Lwg {
             _PreLoadCutIn.func = func;
             _PreLoadCutIn.zOrder = zOrder;
         }
-
-        export class _SceneChange {
+        /**场景转换站，控制场景打开和关闭的一些事宜*/
+        export class _SceneServe {
             static _openScene: Laya.Scene = null;
             static _openZOder: number = 1;
             static _openFunc: Function = null;
@@ -271,12 +271,14 @@ export module Lwg {
                     openScene.close();
                     console.log(`场景${openName}重复出现！前面的场景将会被关闭！`);
                 }
-                _SceneChange._openScene = _SceneControl[scene.name = openName] = scene;
-                _SceneChange._closeSceneArr.push(_SceneControl[closeName]);
-                _SceneChange._closeZOder = closeName ? _SceneControl[closeName].zOrder : 0;
-                _SceneChange._openZOder = zOrder ? zOrder : null;
-                _SceneChange._openFunc = func ? func : () => { };
-                _SceneChange._open();
+                _SceneServe._openScene = _SceneControl[scene.name = openName] = scene;
+                if (closeName && _SceneControl[closeName]) {
+                    _SceneServe._closeSceneArr.push(_SceneControl[closeName]);
+                    _SceneServe._closeZOder = _SceneControl[closeName].zOrder;
+                }
+                _SceneServe._openZOder = zOrder ? zOrder : null;
+                _SceneServe._openFunc = func ? func : () => { };
+                _SceneServe._open();
             }))
         }
 
@@ -301,7 +303,7 @@ export module Lwg {
                 closef();
                 return;
             }
-            _SceneChange._closeZOderUP(LwgScene._SceneControl[closeName]);
+            _SceneServe._closeZOderUP(LwgScene._SceneControl[closeName]);
             //如果内部场景消失动画被重写了，则执行内部场景消失动画，而不执行通用动画
             const script = _SceneControl[closeName][_SceneControl[closeName].name];
             if (script) {
@@ -576,7 +578,6 @@ export module Lwg {
         /**2D场景通用父类*/
         export class _SceneBase extends _ScriptBase {
             /**类名*/
-            private _calssName: string = _BaseName.PreLoad;
             constructor() {
                 super();
             }
@@ -647,12 +648,12 @@ export module Lwg {
                     this._Owner.getChildByName('Background')['height'] = Laya.stage.height;
                 }
                 // 类名
-                if (this._Owner.name == null) {
+                if (!this._Owner.name) {
                     console.log('场景名称失效，脚本赋值失败');
                 } else {
                     // 组件变为的self属性
-                    this.ownerSceneName = this._calssName = this._Owner.name;
-                    this._Owner[this._calssName] = this;
+                    this.ownerSceneName = this._Owner.name;
+                    this._Owner[this._Owner.name] = this;
                 }
                 this.moduleOnAwake();
                 this.lwgOnAwake();
@@ -684,7 +685,7 @@ export module Lwg {
                         LwgClick._switch = true;
                         this.lwgOpenAniAfter();
                         this.lwgButton();
-                        _SceneChange._close();
+                        _SceneServe._close();
                     });
                 } else {
                     SceneAniAdmin._commonOpenAni(this._Owner);
@@ -864,7 +865,7 @@ export module Lwg {
             }
             onAwake(): void {
                 // 组件变为的self属性
-                this._Owner[this['__proto__']['constructor'].name] = this;
+                this._Owner[this._Owner.name] = this;
                 this.ownerSceneName = this._Scene.name;
                 /**初始位置*/
                 this._fPoint = new Laya.Point(this._Owner.x, this._Owner.y);
@@ -926,7 +927,6 @@ export module Lwg {
             /**附加属性集合*/
             _lwg: _BoxProperty;
         }
-
         /**
          * 附加一些属性和方法
          * @export
@@ -1519,7 +1519,7 @@ export module Lwg {
         }
         export function _init(): void {
             const d = new Date;
-            _loginInfo = StorageAdmin._arrayArr('DateAdmin._loginInfo');
+            _loginInfo = StorageAdmin._arrayArr('DateAdmin/loginInfo');
             _loginInfo.value.push([d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getDay(), d.getHours(), d.getMinutes(), d.getSeconds()])
             let arr: Array<Array<any>> = [];
             if (_loginInfo.value.length > 0) {
@@ -1529,7 +1529,7 @@ export module Lwg {
             }
             arr.push([d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getDay(), d.getHours(), d.getMinutes(), d.getSeconds()]);
             _loginInfo.value = arr;
-            DateAdmin._loginCount = StorageAdmin._num('DateAdmin._loginCount');
+            DateAdmin._loginCount = StorageAdmin._num('DateAdmin/_loginCount');
             DateAdmin._loginCount.value++;
             DateAdmin._loginToday.num++;
         }
@@ -1540,11 +1540,11 @@ export module Lwg {
         /**今天登陆了几次*/
         export const _loginToday = {
             get num(): number {
-                return Laya.LocalStorage.getItem('DateAdmin._loginToday') ? Number(Laya.LocalStorage.getItem('DateAdmin._loginToday')) : 0;
+                return Laya.LocalStorage.getItem('DateAdmin/loginToday') ? Number(Laya.LocalStorage.getItem('DateAdmin/loginToday')) : 0;
             },
             set num(val: number) {
                 if (_date.date == _loginInfo.value[_loginInfo.value.length - 1][2]) {
-                    Laya.LocalStorage.setItem('DateAdmin._loginToday', val.toString());
+                    Laya.LocalStorage.setItem('DateAdmin/loginToday', val.toString());
                 }
             }
         }
@@ -1877,14 +1877,14 @@ export module Lwg {
     export module AdaptiveAdmin {
         export let _Use = {
             get value(): [number, number] {
-                return this['Adaptive_value'] ? this['Adaptive_value'] : null;
+                return this['Adaptive/value'] ? this['Adaptive/value'] : null;
             },
             /**
              * 设计分辨率
              *@param val [_designWidth，_desigheight]
              */
             set value(val: [number, number]) {
-                this['Adaptive_value'] = val;
+                this['Adaptive/value'] = val;
             }
         }
         /**
@@ -1968,13 +1968,13 @@ export module Lwg {
                 class: Object,
                 type: string,
             } {
-                return this['SceneAnimation_name'] ? this['SceneAnimation_name'] : null;
+                return this['SceneAnimation/name'] ? this['SceneAnimation/name'] : null;
             },
             set value(val: {
                 class: Object,
                 type: string,
             }) {
-                this['SceneAnimation_name'] = val;
+                this['SceneAnimation/name'] = val;
             }
         };
         /**关闭动画用时，关闭动画完成后再执行下一个场景的事项*/
@@ -1992,7 +1992,7 @@ export module Lwg {
                 }
             }
             if (!_openSwitch.value) {
-                LwgScene._SceneChange._close();
+                LwgScene._SceneServe._close();
                 Laya.timer.once(_closeAniDelay + _closeAniTime, this, () => {
                     afterAni();
                 })
@@ -2409,8 +2409,6 @@ export module Lwg {
         }
     }
 
-
-
     export module StorageAdmin {
         class admin {
             removeSelf(): void { }
@@ -2516,9 +2514,9 @@ export module Lwg {
                 this[`_bool${name}`] = {
                     get value(): any {
                         if (Laya.LocalStorage.getItem(name)) {
-                            if (Laya.LocalStorage.getItem(name) == "false") {
+                            if (Laya.LocalStorage.getItem(name) === "false") {
                                 return false;
-                            } else if (Laya.LocalStorage.getItem(name) == "true") {
+                            } else if (Laya.LocalStorage.getItem(name) === "true") {
                                 return true;
                             }
                         } else {
@@ -5894,10 +5892,10 @@ export module Lwg {
         }
         export let _Use = {
             get value(): string {
-                return this['Click_name'] ? this['Click_name'] : null;
+                return this['Click/name'] ? this['Click/name'] : null;
             },
             set value(val: string) {
-                this['Click_name'] = val;
+                this['Click/name'] = val;
             }
         }
         /**b
@@ -7184,7 +7182,7 @@ export module Lwg {
         /**音效设置*/
         export let _sound = {
             get switch(): boolean {
-                return Laya.LocalStorage.getItem('Setting_sound') == '0' ? false : true;
+                return Laya.LocalStorage.getItem('Setting/sound') == '0' ? false : true;
             },
             /**0表示关闭，1表示开启*/
             set switch(value: boolean) {
@@ -7194,25 +7192,25 @@ export module Lwg {
                 } else {
                     val = 0;
                 }
-                Laya.LocalStorage.setItem('Setting_sound', val.toString());
+                Laya.LocalStorage.setItem('Setting/sound', val.toString());
             }
         };
 
         /**背景音乐开关*/
         export let _bgMusic = {
             get switch(): boolean {
-                return Laya.LocalStorage.getItem('Setting_bgMusic') == '0' ? false : true;
+                return Laya.LocalStorage.getItem('Setting/bgMusic') == '0' ? false : true;
             },
             /**0表示关闭，1表示开启*/
             set switch(value: boolean) {
                 let val;
                 if (value) {
                     val = 1;
-                    Laya.LocalStorage.setItem('Setting_bgMusic', val.toString());
+                    Laya.LocalStorage.setItem('Setting/bgMusic', val.toString());
                     AudioAdmin._playMusic();
                 } else {
                     val = 0;
-                    Laya.LocalStorage.setItem('Setting_bgMusic', val.toString());
+                    Laya.LocalStorage.setItem('Setting/bgMusic', val.toString());
                     AudioAdmin._stopMusic();
                 }
             }
@@ -7221,7 +7219,7 @@ export module Lwg {
         /**震动开关*/
         export let _shake = {
             get switch(): boolean {
-                return Laya.LocalStorage.getItem('Setting_shake') == '0' ? false : true;
+                return Laya.LocalStorage.getItem('Setting/shake') == '0' ? false : true;
             },
             /**0表示关闭，1表示开启*/
             set switch(value: boolean) {
@@ -7231,7 +7229,7 @@ export module Lwg {
                 } else {
                     val = 0;
                 }
-                Laya.LocalStorage.setItem('Setting_shake', val.toString());
+                Laya.LocalStorage.setItem('Setting/shake', val.toString());
             }
         };
 
@@ -8648,7 +8646,7 @@ export module Lwg {
                     for (var j = 0; j < data2.length; j++) {
                         var obj2 = data2[j];
                         var obj2Name = obj2[property];
-                        if (obj2Name == name) {
+                        if (obj2Name == obj1Name) {
                             isExist = true;
                             break;
                         }
@@ -9370,7 +9368,7 @@ export module Lwg {
         export let _execution = {
             get value(): number {
                 if (!this['Execution/executionNum']) {
-                    return Laya.LocalStorage.getItem('Execution/executionNumm') ? Number(Laya.LocalStorage.getItem('Execution/executionNum')) : maxEx;
+                    return Laya.LocalStorage.getItem('Execution/executionNum') ? Number(Laya.LocalStorage.getItem('Execution/executionNum')) : maxEx;
                 }
                 return this['Execution/executionNum'];
             },
@@ -9400,20 +9398,20 @@ export module Lwg {
                 return this['Execution/addExHours'];
             },
             set value(val: number) {
-                this['_Execution_addExHours'] = val;
-                Laya.LocalStorage.setItem('_Execution_addExHours', val.toString());
+                this['Execution/addExHours'] = val;
+                Laya.LocalStorage.setItem('Execution/addExHours', val.toString());
             }
         };
         export let _addMinutes = {
             get value(): number {
-                if (!this['_Execution_addMinutes']) {
-                    return Laya.LocalStorage.getItem('_Execution_addMinutes') ? Number(Laya.LocalStorage.getItem('_Execution_addMinutes')) : (new Date()).getMinutes();
+                if (!this['Execution/addMinutes']) {
+                    return Laya.LocalStorage.getItem('Execution/addMinutes') ? Number(Laya.LocalStorage.getItem('Execution/addMinutes')) : (new Date()).getMinutes();
                 }
-                return this['_Execution_addMinutes'];
+                return this['Execution/addMinutes'];
             },
             set value(val: number) {
-                this['_Execution_addMinutes'] = val;
-                Laya.LocalStorage.setItem('_Execution_addMinutes', val.toString());
+                this['Execution/addMinutes'] = val;
+                Laya.LocalStorage.setItem('Execution/addMinutes', val.toString());
             }
         };
         /**指代当前剩余体力节点*/

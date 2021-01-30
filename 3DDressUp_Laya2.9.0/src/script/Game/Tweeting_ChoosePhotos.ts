@@ -17,8 +17,8 @@ export default class Tweeting_ChoosePhotos extends  LwgScene._SceneBase {
 
     lwgOpenAni(): number {
         return _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
-            !_Guide._complete && this._openScene('Guide', false, false, () => {
-                this._evNotify(_Guide.event.TweetingChoosePhoto, [this._ImgVar('Photo1')._lwg.gPoint.x, this._ImgVar('Photo1')._lwg.gPoint.y]);
+            !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                this._evNotify(_Guide.Event.TweetingChoosePhoto, [this._ImgVar('Photo1')._lwg.gPoint.x, this._ImgVar('Photo1')._lwg.gPoint.y]);
             });
         });
     }
@@ -34,7 +34,7 @@ export default class Tweeting_ChoosePhotos extends  LwgScene._SceneBase {
                         _Tweeting._photoIndex = index;
                         Tick.visible = true;
                         const gPBtnSend = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnSend').x, this._ImgVar('BtnSend').y));
-                        !_Guide._complete && this._evNotify(_Guide.event.TweetingBtnSend, [gPBtnSend.x, gPBtnSend.y]);
+                        !_Guide._complete.value && this._evNotify(_Guide.Event.TweetingBtnSend, [gPBtnSend.x, gPBtnSend.y]);
 
                     } else {
                         _element.scale(1, 1);
@@ -46,7 +46,7 @@ export default class Tweeting_ChoosePhotos extends  LwgScene._SceneBase {
         };
         this._btnUp(this._ImgVar('BtnSend'), () => {
             if (this._ImgVar('BtnSend').skin == 'Game/UI/Tweeting/ChoosePhotos/anniu_fasong.png') {
-                !_Guide._complete && this._evNotify(_Guide.event.closeGuide);
+                !_Guide._complete.value && this._evNotify(_Guide.Event.closeGuide);
                 this._closeScene();
             } else {
                 LwgDialogue.createHint_Middle('还未选择照片哦！');

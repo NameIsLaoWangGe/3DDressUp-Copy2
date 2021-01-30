@@ -1,5 +1,5 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import {  LwgScene, LwgAni2D, LwgAni3D, LwgData, LwgDialogue, LwgStorage, LwgTimer, LwgTools } from "../Lwg/Lwg";
+import { LwgScene, LwgAni2D, LwgAni3D, LwgData, LwgDialogue, LwgStorage, LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { LwgOPPO } from "../Lwg/LwgOPPO";
 import { _3DDIYCloth, _3DScene } from "./_3D";
 import { _GameAni } from "./_GameAni";
@@ -24,9 +24,9 @@ class _Item extends LwgData._Item {
                             break;
                         case this.$unlockWayType.$ads:
                             ADManager.ShowReward(() => {
-                                if (_MakePattern._Data._checkCondition(this.$name)) {
+                                if (_MakePattern._Pattern._ins()._checkCondition(this.$name)) {
                                     LwgDialogue.createHint_Middle('恭喜获得新贴图！');
-                                    _MakePattern._Data._setProperty(this.$name, _MakePattern._Data._property.$complete, true);
+                                    _MakePattern._Pattern._ins()._setProperty(this.$name, _MakePattern._Pattern._ins()._property.$complete, true);
                                 }
                             })
                             break;
@@ -43,7 +43,7 @@ class _Item extends LwgData._Item {
                 this.create = false;
                 this.diffX = 0;
                 this.fX = e.stageX;
-                this._evNotify(_MakePattern._event.close);
+                this._evNotify(_MakePattern.Event.close);
             },
             (e: Laya.Event) => {
                 if (this['Cancal']) {
@@ -52,7 +52,7 @@ class _Item extends LwgData._Item {
                 if (!this.create) {
                     this.diffX = this.fX - e.stageX;
                     if (this.diffX >= 5) {
-                        this._evNotify(_MakePattern._event.createImg, [this.$name, this._gPoint]);
+                        this._evNotify(_MakePattern.Event.createImg, [this.$name, this._gPoint]);
                         this.create = true;
                     }
                 }
@@ -62,7 +62,7 @@ class _Item extends LwgData._Item {
                     return;
                 }
                 this.create = true;
-                this._evNotify(_MakePattern._event.close);
+                this._evNotify(_MakePattern.Event.close);
             },
             () => {
                 if (this['Cancal']) {
@@ -79,7 +79,7 @@ class _Item extends LwgData._Item {
             this._LableChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = false;
         } else {
             if (!this.$complete) {
-                if (this.$unlockWay === _MakePattern._Data._unlockWay.$ads) {
+                if (this.$unlockWay === _MakePattern._Pattern._ins()._unlockWay.$ads) {
                     this._ImgChild('AdsSign').visible = true;
                     this._LableChild('UnlockWay').visible = false;
                 } else {
@@ -119,33 +119,33 @@ class _Item extends LwgData._Item {
     }
 }
 
-export default class MakePattern extends  LwgScene._SceneBase {
+export default class MakePattern extends LwgScene._SceneBase {
 
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'tiehuapage');
         ADManager.TAPoint(TaT.LevelStart, `level_${_3DDIYCloth._ins().Present.name}`);
 
-        _MakePattern._Data._List = this._ListVar('List');
+        _MakePattern._Pattern._ins()._List = this._ListVar('List');
         // 如果第一有了，选中就在第一列，否则停在第二列
-        if (_MakePattern._Data._getProperty('newYear1', _MakePattern._Data._property.$complete) || !_Guide._complete) {
+        if (_MakePattern._Pattern._ins()._getProperty('newYear1', _MakePattern._Pattern._ins()._property.$complete) || !_Guide._complete.value) {
             this.switchClassify('newYear');
-            _MakePattern._Data._listArray = _MakePattern._Data.newYearArr;
+            _MakePattern._Pattern._ins()._listArray = _MakePattern._Pattern._ins().newYearArr;
         } else {
             this.switchClassify('basic');
-            _MakePattern._Data._listArray = _MakePattern._Data.basicArr;
+            _MakePattern._Pattern._ins()._listArray = _MakePattern._Pattern._ins().basicArr;
         }
-        _MakePattern._Data._List.scrollBar.touchScrollEnable = false;
-        _MakePattern._Data._listRenderScript = _Item;
-        this.Tex.fDiffX = _MakePattern._PatternDiff.fDiffX;
-        this.Tex.fDiffY = _MakePattern._PatternDiff.fDiffY;
-        this.Tex.rDiffX = _MakePattern._PatternDiff.rDiffX;
-        this.Tex.rDiffY = _MakePattern._PatternDiff.rDiffY;
+        _MakePattern._Pattern._ins()._List.scrollBar.touchScrollEnable = false;
+        _MakePattern._Pattern._ins()._listRenderScript = _Item;
+        this.Tex.fDiffX = _MakePattern._PatternDiff._ins().fDiffX;
+        this.Tex.fDiffY = _MakePattern._PatternDiff._ins().fDiffY;
+        this.Tex.rDiffX = _MakePattern._PatternDiff._ins().rDiffX;
+        this.Tex.rDiffY = _MakePattern._PatternDiff._ins().rDiffY;
     }
 
     lwgOpenAniAfter(): void {
         LwgTimer._frameOnce(60, this, () => {
-            !_Guide._complete && this._openScene('Guide', false, false, () => {
-                this._evNotify(_Guide.event.MakePatternChooseClassify);
+            !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                this._evNotify(_Guide.Event.MakePatternChooseClassify);
             })
         })
     }
@@ -184,21 +184,21 @@ export default class MakePattern extends  LwgScene._SceneBase {
 
     /**设置分类*/
     switchClassify(_name: string): void {
-        if (!_Guide._complete && _name !== 'basic') {
+        if (!_Guide._complete.value && _name !== 'basic') {
             return;
         }
         for (let index = 0; index < this._ImgVar('Part').numChildren; index++) {
             const element = this._ImgVar('Part').getChildAt(index) as Laya.Image;
             const name = element.getChildAt(0) as Laya.Label;
             if (_name === element.name) {
-                if (!_Guide._complete) {
+                if (!_Guide._complete.value) {
                     if (_Guide.MakePatternState === _Guide.MakePatternStateType.ChooseClassify) {
-                        this._evNotify(_Guide.event.MakePatternPattern1);
+                        this._evNotify(_Guide.Event.MakePatternPattern1);
                     }
                 }
                 element.scale(1.1, 1.1);
-                _MakePattern._Data._listArray = _MakePattern._Data[`${element.name}Arr`];
-                _MakePattern._Data._pitchClassify = element.name;
+                _MakePattern._Pattern._ins()._listArray = _MakePattern._Pattern._ins()[`${element.name}Arr`];
+                _MakePattern._Pattern._ins()._pitchClassify = element.name;
                 element.skin = `Game/UI/Common/kuang_fen.png`;
                 name.color = '#fdfff4';
                 name.stroke = 5;
@@ -221,9 +221,9 @@ export default class MakePattern extends  LwgScene._SceneBase {
 
         this.Tex.btn();
         this.UI.btnCompleteClick = () => {
-            if (!_Guide._complete) {
+            if (!_Guide._complete.value) {
                 if (_Guide.MakePatternState === _Guide.MakePatternStateType.BtnCom) {
-                    this._evNotify(_Guide.event.closeGuide);
+                    this._evNotify(_Guide.Event.closeGuide);
                 } else {
                     return;
                 }
@@ -265,7 +265,7 @@ export default class MakePattern extends  LwgScene._SceneBase {
                 }, 200);
             });
         }
-        if (!_Guide._complete) return;
+        if (!_Guide._complete.value) return;
         this.UI.btnRollbackClick = () => {
             _3DScene._ins().cameraToSprite(this._Owner);
             this._openScene('MakeTailor', true, true);
@@ -276,13 +276,13 @@ export default class MakePattern extends  LwgScene._SceneBase {
     }
 
     lwgEvent(): void {
-        this._evReg(_MakePattern._event.createImg, (name: string, gPoint: Laya.Point) => {
+        this._evReg(_MakePattern.Event.createImg, (name: string, gPoint: Laya.Point) => {
             this.Tex.state = this.Tex.stateType.move;
             this.Tex.createImg(name, gPoint);
             this.Tex.turnFace();
         })
-        this._evReg(_MakePattern._event.close, () => {
-            if (!_Guide._complete) return;
+        this._evReg(_MakePattern.Event.close, () => {
+            if (!_Guide._complete.value) return;
             this.Tex.close();
             this.Tex.state = this.Tex.stateType.none;
         })
@@ -533,7 +533,7 @@ export default class MakePattern extends  LwgScene._SceneBase {
             _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
         },
         rotate: () => {
-            if (!_Guide._complete) return;
+            if (!_Guide._complete.value) return;
             if (this.Tex.diffP.x > 0) {
                 _3DDIYCloth._ins().rotate(1);
             } else {
@@ -599,19 +599,19 @@ export default class MakePattern extends  LwgScene._SceneBase {
                 , (e: Laya.Event) => {
                     e.stopPropagation();
                     this.Tex.state = this.Tex.stateType.addTex;
-                    if (!_Guide._complete) {
+                    if (!_Guide._complete.value) {
                         if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame1) {
-                            this._evNotify(_Guide.event.MakePatternTurnFace, [this._ImgVar('BtnTurnFace')._lwg.gPoint.x, this._ImgVar('BtnTurnFace')._lwg.gPoint.y]);
+                            this._evNotify(_Guide.Event.MakePatternTurnFace, [this._ImgVar('BtnTurnFace')._lwg.gPoint.x, this._ImgVar('BtnTurnFace')._lwg.gPoint.y]);
                         } else if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame2) {
-                            this._evNotify(_Guide.event.MakePatternBtnCom, [this._ImgVar('BtnComplete')._lwg.gPoint.x, this._ImgVar('BtnComplete')._lwg.gPoint.y]);
+                            this._evNotify(_Guide.Event.MakePatternBtnCom, [this._ImgVar('BtnComplete')._lwg.gPoint.x, this._ImgVar('BtnComplete')._lwg.gPoint.y]);
                         }
                     }
                 })
 
             this._btnUp(this._ImgVar('BtnTurnFace'), (e: Laya.Event) => {
-                if (!_Guide._complete) {
+                if (!_Guide._complete.value) {
                     if (_Guide.MakePatternState === _Guide.MakePatternStateType.TurnFace) {
-                        this._evNotify(_Guide.event.MakePatternPattern2);
+                        this._evNotify(_Guide.Event.MakePatternPattern2);
                     } else {
                         return;
                     }
@@ -632,7 +632,7 @@ export default class MakePattern extends  LwgScene._SceneBase {
                 this.Tex.state = this.Tex.stateType.rotate;
             })
 
-            if (!_Guide._complete) return;
+            if (!_Guide._complete.value) return;
             this._btnUp(this._ImgVar('WClose'), (e: Laya.Event) => {
                 e.stopPropagation();
                 this.Tex.close();
@@ -668,7 +668,7 @@ export default class MakePattern extends  LwgScene._SceneBase {
             this['slideFY'] = e.stageY;
         } else {
             // 点击位置离框子太远则消失
-            if (!_Guide._complete) {
+            if (!_Guide._complete.value) {
                 return;
             }
             const point = new Laya.Point(e.stageX, e.stageY);
@@ -688,16 +688,16 @@ export default class MakePattern extends  LwgScene._SceneBase {
         this.Tex.operation(e);
         if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
             // 移动list
-            if (!_Guide._complete) return;
+            if (!_Guide._complete.value) return;
             if (this['slideFY']) {
                 let diffY = this['slideFY'] - e.stageY;
-                let index = _MakePattern._Data._List.startIndex;
+                let index = _MakePattern._Pattern._ins()._List.startIndex;
                 if (Math.abs(diffY) > 25) {
                     if (diffY > 0) {
-                        _MakePattern._Data._List.tweenTo(index + 1, 100);
+                        _MakePattern._Pattern._ins()._List.tweenTo(index + 1, 100);
                     }
                     if (diffY < 0) {
-                        _MakePattern._Data._List.tweenTo(index - 1, 100);
+                        _MakePattern._Pattern._ins()._List.tweenTo(index - 1, 100);
                     }
                     this['slideFY'] = null;
                 }
@@ -711,17 +711,17 @@ export default class MakePattern extends  LwgScene._SceneBase {
         this['slideFY'] = null;
         // 在可以移动图片的位置进行移动
         if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
-            this._evNotify(_MakePattern._event.close);
+            this._evNotify(_MakePattern.Event.close);
         } else {
             // 在列表上抬起则关闭
             if (!this.Tex.checkInside()) {
                 this.Tex.close();
             } else {
-                if (!_Guide._complete) {
+                if (!_Guide._complete.value) {
                     if (_Guide.MakePatternState === _Guide.MakePatternStateType.Pattern1) {
-                        this._evNotify(_Guide.event.MakePatternFrame1, [this._ImgVar('Wireframe')]);
+                        this._evNotify(_Guide.Event.MakePatternFrame1, [this._ImgVar('Wireframe')]);
                     } else if (_Guide.MakePatternState === _Guide.MakePatternStateType.Pattern2) {
-                        this._evNotify(_Guide.event.MakePatternFrame2, [this._ImgVar('Wireframe')]);
+                        this._evNotify(_Guide.Event.MakePatternFrame2, [this._ImgVar('Wireframe')]);
                     }
                 };
             }

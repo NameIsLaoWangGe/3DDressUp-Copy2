@@ -33,13 +33,13 @@ export default class Start extends LwgScene._SceneBase {
                 if (index === this._ImgVar('BtnParent').numChildren - 1) {
                     LwgTimer._once(500, this, () => {
                         if (_Start._whereFrom === 'MakePattern') {
-                            this._evNotify(_Start._event.photo);
+                            this._evNotify(_Start.Event.photo);
                             _Start._whereFrom = null;
                         } else {
-                            if (!_Guide._complete) {
+                            if (!_Guide._complete.value) {
                                 this._openScene('Guide', false, false, () => {
                                     this.BtnDressClick();
-                                    this._evNotify(_Guide.event.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
+                                    this._evNotify(_Guide.Event.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
                                 })
                             } else {
                                 !_CheckIn._todayCheckIn && this._openScene('CheckIn', false);
@@ -52,24 +52,24 @@ export default class Start extends LwgScene._SceneBase {
         }
     }
     lwgOnStart(): void {
-        this._evNotify(_Start._event.updateRanking);
+        this._evNotify(_Start.Event.updateRanking);
     }
 
     lwgEvent(): void {
-        this._evReg(_Guide.event.DelayBtnCheckIn, () => {
+        this._evReg(_Guide.Event.DelayBtnCheckIn, () => {
             this.BtnCheckIn();
-            this._evNotify(_Guide.event.BtnCheckIn, [this._ImgVar('BtnCheckIn').x, this._ImgVar('BtnCheckIn').y]);
+            this._evNotify(_Guide.Event.BtnCheckIn, [this._ImgVar('BtnCheckIn').x, this._ImgVar('BtnCheckIn').y]);
         })
 
-        this._evReg(_Guide.event.StartOtherBtnClick, () => {
+        this._evReg(_Guide.Event.StartOtherBtnClick, () => {
             this.lwgButton();
         })
 
-        this._evReg(_Start._event.updateRanking, () => {
-            let obj = _Ranking._Data._getPitchObj();
-            this._LabelVar('RankNum').text = `${obj[_Ranking._Data._otherPro.rankNum]}/50`;
+        this._evReg(_Start.Event.updateRanking, () => {
+            let obj = _Ranking._Data._ins()._getPitchObj();
+            this._LabelVar('RankNum').text = `${obj[_Ranking._Data._ins()._otherPro.rankNum]}/50`;
         })
-        this._evReg(_Start._event.photo, () => {
+        this._evReg(_Start.Event.photo, () => {
             LwgClick._absoluteSwitch = false;
             const sp = _3DScene._ins().cameraToSprite(this._Owner);
             LwgTimer._frameOnce(10, this, () => {
@@ -81,11 +81,11 @@ export default class Start extends LwgScene._SceneBase {
             })
         })
 
-        this._evReg(_Start._event.BtnPersonalInfo, () => {
+        this._evReg(_Start.Event.BtnPersonalInfo, () => {
             LwgTimer._once(1000, this, () => {
                 this._openScene('Guide', false, false, () => {
                     this.BtnPersonalInfoClick();
-                    this._evNotify(_Guide.event.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
+                    this._evNotify(_Guide.Event.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
                 })
             })
         })
@@ -93,9 +93,9 @@ export default class Start extends LwgScene._SceneBase {
 
     BtnDressClick(): void {
         this._btnUp(this._ImgVar('BtnDress'), () => {
-            this._evNotify(_Guide.event.closeGuide);
+            this._evNotify(_Guide.Event.closeGuide);
             let time = 0;
-            if (_Guide._complete) {
+            if (_Guide._complete.value) {
                 time = 300;
             }
             LwgTimer._once(time, this, () => {
@@ -107,14 +107,14 @@ export default class Start extends LwgScene._SceneBase {
 
     BtnPersonalInfoClick(): void {
         this._btnUp(this._ImgVar('BtnPersonalInfo'), () => {
-            !_Guide._complete && this._evNotify(_Guide.event.vanishGuide);
+            !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
             this._openScene('PersonalInfo', false);
         })
     }
 
     BtnCheckIn(): void {
         this._btnUp(this._ImgVar('BtnCheckIn'), () => {
-            !_Guide._complete && this._evNotify(_Guide.event.vanishGuide);
+            !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
             this._openScene('CheckIn', false);
         })
     }
@@ -126,7 +126,7 @@ export default class Start extends LwgScene._SceneBase {
     }
 
     lwgButton(): void {
-        if (!_Guide._complete) return;
+        if (!_Guide._complete.value) return;
         this.BtnDressClick();
         const Clothes = _DIYClothes._ins();
         this._btnUp(this._ImgVar('BtnTop'), () => {

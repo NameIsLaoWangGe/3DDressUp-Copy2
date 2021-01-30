@@ -68,26 +68,26 @@ export default class Tweeting_Dynamic extends  LwgScene._SceneBase {
 
         this._LabelVar('Brief').text = _Tweeting._brief.getOne()[0].toString();
 
-        this._LabelVar('PlayerName').text = _PersonalInfo._name;
+        this._LabelVar('PlayerName').text = _PersonalInfo._name.value;
         const left = 120;
         this._ImgVar('Middle').width = this._Owner.width - 160;
         this._ImgVar('Collect').x = (this._ImgVar('Middle').width - left * 2) * 0 / 4 + left;
 
-        _Tweeting._forwardedNum += 50;
-        (this._ImgVar('Forwarded').getChildAt(0) as Laya.Label).text = _Tweeting._forwardedNum.toString();
+        _Tweeting._forwardedNum.value += 50;
+        (this._ImgVar('Forwarded').getChildAt(0) as Laya.Label).text = _Tweeting._forwardedNum.value.toString();
         this._ImgVar('Forwarded').x = (this._ImgVar('Middle').width - left * 2) * 1 / 4 + left;
 
-        _Tweeting._commentNum += 50;
-        (this._ImgVar('Comment').getChildAt(0) as Laya.Label).text = _Tweeting._commentNum.toString();
+        _Tweeting._commentNum.value += 50;
+        (this._ImgVar('Comment').getChildAt(0) as Laya.Label).text = _Tweeting._commentNum.value.toString();
         this._ImgVar('Comment').x = (this._ImgVar('Middle').width - left * 2) * 2 / 4 + left;
 
-        _Tweeting._likeNum += 100;
-        (this._ImgVar('Like').getChildAt(0) as Laya.Label).text = _Tweeting._likeNum.toString();
+        _Tweeting._likeNum.value += 100;
+        (this._ImgVar('Like').getChildAt(0) as Laya.Label).text = _Tweeting._likeNum.value.toString();
         this._ImgVar('Like').x = (this._ImgVar('Middle').width - left * 2) * 3 / 4 + left;
 
         this._ImgVar('Bottom').width = this._Owner.width - 160;
         const iconArr = LwgTools._Number.randomCountBySection(1, 20, 2);
-        const twoObj = _Ranking._Data._randomCountObj(2);
+        const twoObj = _Ranking._Data._ins()._randomCountObj(2);
         for (let index = 0; index < 2; index++) {
             const Reply = this._ImgVar(`Reply${index + 1}`)
             const Icon1 = Reply.getChildByName('HeadIcon').getChildAt(0) as Laya.Image;
