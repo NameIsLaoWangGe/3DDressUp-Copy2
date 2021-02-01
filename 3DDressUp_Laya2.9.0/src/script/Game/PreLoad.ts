@@ -8,6 +8,10 @@ import { _Res } from "./_Res";
 export default class PreLoad extends LwgPreLoad._PreLoadScene {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'loadpage');
+
+        let radian: number = Math.atan2(-16, -9);
+        let angle: number = radian * (180 / Math.PI);
+        console.log(angle);
     }
     count = 0;
     lwgOnStart(): void {

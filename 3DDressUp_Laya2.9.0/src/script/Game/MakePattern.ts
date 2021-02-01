@@ -52,7 +52,7 @@ class _Item extends LwgData._Item {
                 if (!this.create) {
                     this.diffX = this.fX - e.stageX;
                     if (this.diffX >= 5) {
-                        this._evNotify(_MakePattern.Event.createImg, [this.$name, this._gPoint]);
+                        this._evNotify(_MakePattern.Event.createImg, [this.$name, this._Owner._lwg.gPoint]);
                         this.create = true;
                     }
                 }
@@ -426,7 +426,7 @@ export default class MakePattern extends LwgScene._SceneBase {
                 let _width = this._ImgVar(this.Tex.dir).width;
                 let _height = this._ImgVar(this.Tex.dir).height;
                 //通过xz的角度计算x的比例，俯视
-                let angleXZ = LwgTools._Point.pointByAngle(_3DDIYCloth._ins().ModelTap.transform.position.x - out.point.x, _3DDIYCloth._ins().ModelTap.transform.position.z - out.point.z);
+                let angleXZ = LwgTools._Point.pointByAngleOld(_3DDIYCloth._ins().ModelTap.transform.position.x - out.point.x, _3DDIYCloth._ins().ModelTap.transform.position.z - out.point.z);
                 // let _angleY: number;
                 if (this.Tex.dir == this.Tex.dirType.Front) {
                     // _angleY = angleXZ + _3DDIYCloth._ins().simRY;
@@ -525,7 +525,7 @@ export default class MakePattern extends LwgScene._SceneBase {
             this._ImgVar('Wireframe').width = this._ImgVar('WConversion').x = lPoint.x;
             this._ImgVar('Wireframe').height = this._ImgVar('WConversion').y = lPoint.y;
             const gPoint = this._Owner.localToGlobal(new Laya.Point(this._ImgVar('Wireframe').x, this._ImgVar('Wireframe').y));
-            this.Tex.Img.rotation = this.Tex.DisImg.rotation = this._ImgVar('Wireframe').rotation = LwgTools._Point.pointByAngle(e.stageX - gPoint.x, e.stageY - gPoint.y) + 45;
+            this.Tex.Img.rotation = this.Tex.DisImg.rotation = this._ImgVar('Wireframe').rotation = LwgTools._Point.pointByAngleOld(e.stageX - gPoint.x, e.stageY - gPoint.y) + 45;
             const scaleWidth = this._ImgVar('Wireframe').width - this.Tex.wireframeSize[0];
             const scaleheight = this._ImgVar('Wireframe').height - this.Tex.wireframeSize[1];
             this.Tex.DisImg.width = this.Tex.Img.width = this.Tex.imgSize[0] + scaleWidth;

@@ -1,3 +1,4 @@
+
 /**综合模板*/
 export module Lwg {
     /**平台*/
@@ -588,7 +589,7 @@ export module Lwg {
             private getVar(name: string, type: string): any {
                 if (!this[`_Scene${type}${name}`]) {
                     if (this._Owner[name]) {
-                        _LwgNode._addProperty(this._Owner[name]);
+                        NodeAdmin._addProperty(this._Owner[name]);
                         return this[`_Scene${type}${name}`] = this._Owner[name];
                     } else {
                         console.log('场景内不存在var节点：', name);
@@ -612,7 +613,7 @@ export module Lwg {
             _BoxVar(name: string): Laya.Box {
                 return this.getVar(name, '_BoxVar');
             }
-            _ImgVar(name: string): _LwgNode._Image {
+            _ImgVar(name: string): NodeAdmin._Image {
                 return this.getVar(name, '_ImgVar');
             }
             _LabelVar(name: string): Laya.Label {
@@ -734,8 +735,8 @@ export module Lwg {
                 this.clear();
             }
             /**挂载当前脚本的节点*/
-            get _Owner(): Laya.Sprite {
-                return this.owner as Laya.Sprite;
+            get _Owner(): NodeAdmin._Sprite {
+                return this.owner as NodeAdmin._Sprite;
             }
             /**初始位置*/
             _fPoint: Laya.Point;
@@ -756,9 +757,6 @@ export module Lwg {
                 if (this._Owner.parent) {
                     return this.owner.parent as Laya.Image | Laya.Sprite;
                 }
-            }
-            get _gPoint(): Laya.Point {
-                return this._Parent.localToGlobal(new Laya.Point(this._Owner.x, this._Owner.y));
             }
             /**物理组件*/
             get _RigidBody(): Laya.RigidBody {
@@ -791,7 +789,7 @@ export module Lwg {
             private getSceneVar(name: string, type: string): any {
                 if (!this[`_Scene${type}${name}`]) {
                     if (this._Scene[name]) {
-                        _LwgNode._addProperty(this._Scene[name]);
+                        NodeAdmin._addProperty(this._Scene[name]);
                         return this[`_Scene${type}${name}`] = this._Scene[name];
                     } else {
                         console.log(`场景内不存在var节点${name}`);
@@ -806,7 +804,7 @@ export module Lwg {
             _SceneAni(name: string): Laya.Animation {
                 return this.getSceneVar(name, '_SceneAni');
             }
-            _SceneImg(name: string): _LwgNode._Image {
+            _SceneImg(name: string): NodeAdmin._Image {
                 return this.getSceneVar(name, '_SceneImg');
             }
             _SceneLabel(name: string): Laya.Label {
@@ -864,6 +862,7 @@ export module Lwg {
                 return this.getChild(name, '_TapFontClip');
             }
             onAwake(): void {
+                NodeAdmin._addProperty(this._Owner);
                 // 组件变为的self属性
                 this._Owner[this._Owner.name] = this;
                 this.ownerSceneName = this._Scene.name;
@@ -902,7 +901,7 @@ export module Lwg {
     }
 
     /**节点的拓展*/
-    export module _LwgNode {
+    export module NodeAdmin {
         export type _BaseProperty = {
             /**获取世界坐标*/
             gPoint: Laya.Point;
@@ -931,7 +930,7 @@ export module Lwg {
          * 附加一些属性和方法
          * @export
          * @param {Laya.Sprite} _node 节点
-         * @param {string} [_nodeType] 节点类型不同，有些属性也不尽相同
+         * @param {string} [_nodeType] 节点类型不同，有些属性也不尽相同,如果为null则使用基本属性
          * @return {*}  {void}
          */
         export function _addProperty(node: Laya.Sprite, nodeType?: string): void {
@@ -945,6 +944,7 @@ export module Lwg {
                     break;
 
                 default:
+                    _proType as _BaseProperty;
                     break;
             }
             _proType = {
@@ -1985,6 +1985,7 @@ export module Lwg {
         /**通用场景进场动画*/
         export function _commonOpenAni(Scene: Laya.Scene): number {
             var afterAni = () => {
+                LwgScene._SceneServe._close();
                 LwgClick._switch = true;
                 if (Scene[Scene.name]) {
                     Scene[Scene.name].lwgOpenAniAfter();
@@ -4184,7 +4185,7 @@ export module Lwg {
                  * @memberof boxBase
                  */
                 _positionByARY(angleSpeed: number, radius: number, speedY: number, distance: number, stateSwitch?: Function): void {
-                    const pXZ = ToolsAdmin._Point.getRoundPos(this._positionByARY_FA += angleSpeed, radius, new Laya.Point(this.fPosition.x, this.fPosition.z));
+                    const pXZ = ToolsAdmin._Point.getRoundPosOld(this._positionByARY_FA += angleSpeed, radius, new Laya.Point(this.fPosition.x, this.fPosition.z));
                     this.box.transform.position = new Laya.Vector3(pXZ.x, this.box.transform.position.y += speedY, pXZ.y);
                     if (this.box.transform.position.y - this.fPosition.y > distance) {
                         stateSwitch && stateSwitch();
@@ -4203,7 +4204,7 @@ export module Lwg {
                  */
                 _positionARXY_R(angle: number, speedR: number, distance?: number, stateSwitch?: Function): void {
                     this._positionARXY_FR += speedR;
-                    const point = ToolsAdmin._Point.getRoundPos(angle, this._positionARXY_FR, new Laya.Point(0, 0));
+                    const point = ToolsAdmin._Point.getRoundPosOld(angle, this._positionARXY_FR, new Laya.Point(0, 0));
                     this.box.transform.position = new Laya.Vector3(this.fPosition.x + point.x, this.fPosition.y + point.y, this.fPosition.z);
                     if (this._positionARXY_FR >= distance) {
                         stateSwitch && stateSwitch();
@@ -5302,7 +5303,7 @@ export module Lwg {
                     } else {
                         if (!moveCaller.vinish) {
                             radius += _speed;
-                            let point = ToolsAdmin._Point.getRoundPos(_angle, radius, centerPoint0);
+                            let point = ToolsAdmin._Point.getRoundPosOld(_angle, radius, centerPoint0);
                             Img.pos(point.x, point.y);
                             if (radius > _distance) {
                                 moveCaller.move = false;
@@ -5315,7 +5316,7 @@ export module Lwg {
                                 Laya.timer.clearAll(moveCaller);
                             }
                             radius += _speed / 2;
-                            let point = ToolsAdmin._Point.getRoundPos(_angle, radius, centerPoint0);
+                            let point = ToolsAdmin._Point.getRoundPosOld(_angle, radius, centerPoint0);
                             Img.pos(point.x, point.y);
                         }
                     }
@@ -5381,7 +5382,7 @@ export module Lwg {
                         }
                         acc += accelerated0;
                         radius += speed0 + acc;
-                        let point = ToolsAdmin._Point.getRoundPos(angle0, radius, centerPoint0);
+                        let point = ToolsAdmin._Point.getRoundPosOld(angle0, radius, centerPoint0);
                         Img.pos(point.x, point.y);
                     }
                 })
@@ -5549,7 +5550,7 @@ export module Lwg {
                             Laya.timer.clearAll(moveCaller);
                         }
                     }
-                    let point = ToolsAdmin._Point.getRoundPos(angle0, radius, centerPoint0);
+                    let point = ToolsAdmin._Point.getRoundPosOld(angle0, radius, centerPoint0);
                     Img.pos(point.x, point.y);
                 })
                 return Img;
@@ -5594,7 +5595,7 @@ export module Lwg {
                         acc += accelerated;
                         radius0 -= (speed0 + acc);
                     }
-                    let point = ToolsAdmin._Point.getRoundPos(angle, radius0, centerPoint);
+                    let point = ToolsAdmin._Point.getRoundPosOld(angle, radius0, centerPoint);
                     Img.pos(point.x, point.y);
                     if (point.distance(centerPoint.x, centerPoint.y) <= 20 || point.distance(centerPoint.x, centerPoint.y) >= 1000) {
                         Img.removeSelf();
@@ -5826,7 +5827,7 @@ export module Lwg {
                     let targetXY = [posArray[index][0], posArray[index][1]];
                     let distance = (new Laya.Point(Img.x, Img.y)).distance(targetXY[0], targetXY[1]);
                     if (parallel) {
-                        Img.rotation = ToolsAdmin._Point.pointByAngle(Img.x - targetXY[0], Img.y - targetXY[1]) + 180;
+                        Img.rotation = ToolsAdmin._Point.pointByAngleOld(Img.x - targetXY[0], Img.y - targetXY[1]) + 180;
                     }
                     let time = speed * 100 + distance / 5;
                     if (index == posArray.length + 1) {
@@ -7459,8 +7460,6 @@ export module Lwg {
         }
         /**节点相关*/
         export module _Node {
-
-
             /**
              * 一个节点不会超出他的父节点
              * @param Node 节点
@@ -7845,10 +7844,11 @@ export module Lwg {
                * @return {*}  {Laya.Sprite}
                */
             export function createPrefab(prefab: Laya.Prefab, Parent?: Laya.Node, point?: [number, number], script?: any, zOrder?: number, name?: string): Laya.Sprite {
-                let Sp: Laya.Sprite = Laya.Pool.getItemByCreateFun(name ? name : prefab.json['props']['name'], prefab.create, prefab);
+                const Sp: Laya.Sprite = Laya.Pool.getItemByCreateFun(name ? name : prefab.json['props']['name'], prefab.create, prefab);
                 Parent && Parent.addChild(Sp);
                 point && Sp.pos(point[0], point[1]);
                 script && Sp.addComponent(script);
+                NodeAdmin._addProperty(Sp);
                 if (zOrder) Sp.zOrder = zOrder;
                 return Sp;
             }
@@ -8053,7 +8053,6 @@ export module Lwg {
         }
         /**坐标相关*/
         export module _Point {
-
             /**
              * @export 获取当前节点在另一个节点坐标系中的局部坐标
              * @param {Laya.Sprite} element 坐标节点
@@ -8068,8 +8067,8 @@ export module Lwg {
              * 根据角度计算弧度
              * @param angle 角度
              */
-            export function angleByRad(angle: number) {
-                return angle / 180 * Math.PI;
+            export function angleByRadian(angle: number) {
+                return Math.PI / 180 * angle;
             }
             /**
               * 在Laya2维世界中
@@ -8077,13 +8076,28 @@ export module Lwg {
               * @param x 坐标x
               * @param y 坐标y
               * */
-            export function pointByAngle(x: number, y: number): number {
-                let radian: number = Math.atan2(x, y) //弧度  0.6435011087932844
-                let angle: number = 90 - radian * (180 / Math.PI); //角度  36.86989764584402;
+            export function pointByAngleOld(x: number, y: number): number {
+                const radian: number = Math.atan2(x, y);
+                let angle: number = 90 - radian * (180 / Math.PI);
                 if (angle <= 0) {
                     angle = 270 + (90 + angle);
                 }
                 return angle - 90;
+            };
+
+            /**
+             * 在Laya2维世界中
+             * 求向量的夹角在坐标系中的角度
+             * @param x 坐标x
+             * @param y 坐标y
+             * */
+            export function pointByAngleNew(x: number, y: number): number {
+                const radian: number = Math.atan2(y, x);
+                let angle: number = radian * (180 / Math.PI);
+                if (angle <= 0) {
+                    angle = 360 + angle;
+                }
+                return angle;
             };
 
             /**
@@ -8092,9 +8106,22 @@ export module Lwg {
               * @param x 坐标x
               * @param y 坐标y
               * */
-            export function angleByPoint(angle): Laya.Point {
-                let radian = (90 - angle) / (180 / Math.PI);
-                let p = new Laya.Point(Math.sin(radian), Math.cos(radian));
+            export function angleByPoint(angle: number): Laya.Point {
+                const radian = (90 - angle) / (180 / Math.PI);
+                const p = new Laya.Point(Math.sin(radian), Math.cos(radian));
+                p.normalize();
+                return p;
+            };
+
+            /**
+              * 在Laya2维世界中,属性检查器中的角度
+              * 通过一个角度，返回一个单位向量
+              * @param x 坐标x
+              * @param y 坐标y
+              * */
+            export function angleByPointNew(angle: number): Laya.Point {
+                const rad = angleByRadian(angle);
+                const p = new Laya.Point(Math.cos(rad), Math.sin(rad));
                 p.normalize();
                 return p;
             };
@@ -8119,13 +8146,13 @@ export module Lwg {
              * @param len 长度
              * */
             export function angleAndLenByPoint(angle: number, len: number): Laya.Point {
-                if (angle % 90 === 0 || !angle) {
-                    //debugger
-                }
-                const speedXY = { x: 0, y: 0 };
-                speedXY.x = len * Math.cos(angle * Math.PI / 180);
-                speedXY.y = len * Math.sin(angle * Math.PI / 180);
-                return new Laya.Point(speedXY.x, speedXY.y);
+                // if (angle % 90 === 0) {
+                //     //debugger
+                // }
+                const point = new Laya.Point();
+                point.x = len * Math.cos(angle * Math.PI / 180);
+                point.y = len * Math.sin(angle * Math.PI / 180);
+                return point;
             }
 
             /**
@@ -8134,14 +8161,26 @@ export module Lwg {
             * @param radius 半径
             * @param centerPos 原点
             */
-            export function getRoundPos(angle: number, radius: number, centerPos: Laya.Point): Laya.Point {
-                var center = centerPos; //圆心坐标
-                var radius = radius; //半径
-                var hudu = (2 * Math.PI / 360) * angle; //90度角的弧度
-
-                var X = center.x + Math.sin(hudu) * radius; //求出90度角的x坐标
-                var Y = center.y - Math.cos(hudu) * radius; //求出90度角的y坐标
+            export function getRoundPosOld(angle: number, radius: number, centerPos: Laya.Point): Laya.Point {
+                const radian = angleByRadian(angle);
+                const X = centerPos.x + Math.sin(radian) * radius;
+                const Y = centerPos.y - Math.cos(radian) * radius;
                 return new Laya.Point(X, Y);
+            }
+
+            /**
+            * 求圆上的点的坐标，可以根据角度和半径作出圆形位移
+            * @param angle 角度
+            * @param radius 半径
+            * @param centerPos 原点
+            */
+            export function getRoundPosNew(angle: number, radius: number, centerPos: Laya.Point): Laya.Point {
+                const radian = angleByRadian(angle);
+                //  Math.sin(hudu)返回y和斜边radius的比值-1*1；
+                //  Math.cos(hudu)返回x和斜边radius的比值-1*1；
+                const x = centerPos.x + Math.cos(radian) * radius;
+                const y = centerPos.y + Math.sin(radian) * radius;
+                return new Laya.Point(x, y);
             }
 
             /**
@@ -9575,6 +9614,7 @@ export let LwgGame = Lwg.GameAdmin;
 export let LwgScene = Lwg.SceneAdmin;
 export let LwgAdaptive = Lwg.AdaptiveAdmin;
 export let LwgSceneAni = Lwg.SceneAniAdmin;
+export let LwgNode = Lwg.NodeAdmin;
 export let LwgDialogue = Lwg.Dialogue;
 export let LwgEvent = Lwg.EventAdmin;
 export let LwgTimer = Lwg.TimerAdmin;

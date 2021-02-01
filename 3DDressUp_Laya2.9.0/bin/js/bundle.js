@@ -1607,7 +1607,7 @@
                 getVar(name, type) {
                     if (!this[`_Scene${type}${name}`]) {
                         if (this._Owner[name]) {
-                            _LwgNode._addProperty(this._Owner[name]);
+                            NodeAdmin._addProperty(this._Owner[name]);
                             return this[`_Scene${type}${name}`] = this._Owner[name];
                         }
                         else {
@@ -1761,9 +1761,6 @@
                         return this.owner.parent;
                     }
                 }
-                get _gPoint() {
-                    return this._Parent.localToGlobal(new Laya.Point(this._Owner.x, this._Owner.y));
-                }
                 get _RigidBody() {
                     if (!this._Owner['_OwnerRigidBody']) {
                         this._Owner['_OwnerRigidBody'] = this._Owner.getComponent(Laya.RigidBody);
@@ -1791,7 +1788,7 @@
                 getSceneVar(name, type) {
                     if (!this[`_Scene${type}${name}`]) {
                         if (this._Scene[name]) {
-                            _LwgNode._addProperty(this._Scene[name]);
+                            NodeAdmin._addProperty(this._Scene[name]);
                             return this[`_Scene${type}${name}`] = this._Scene[name];
                         }
                         else {
@@ -1867,6 +1864,7 @@
                     return this.getChild(name, '_TapFontClip');
                 }
                 onAwake() {
+                    NodeAdmin._addProperty(this._Owner);
                     this._Owner[this._Owner.name] = this;
                     this.ownerSceneName = this._Scene.name;
                     this._fPoint = new Laya.Point(this._Owner.x, this._Owner.y);
@@ -1901,17 +1899,17 @@
             }
             SceneAdmin._ObjectBase = _ObjectBase;
         })(SceneAdmin = Lwg.SceneAdmin || (Lwg.SceneAdmin = {}));
-        let _LwgNode;
-        (function (_LwgNode) {
+        let NodeAdmin;
+        (function (NodeAdmin) {
             class _Sprite extends Laya.Sprite {
             }
-            _LwgNode._Sprite = _Sprite;
+            NodeAdmin._Sprite = _Sprite;
             class _Image extends Laya.Image {
             }
-            _LwgNode._Image = _Image;
+            NodeAdmin._Image = _Image;
             class _Box extends Laya.Box {
             }
-            _LwgNode._Box = _Box;
+            NodeAdmin._Box = _Box;
             function _addProperty(node, nodeType) {
                 let _proType;
                 switch (nodeType) {
@@ -1922,6 +1920,7 @@
                         _proType;
                         break;
                     default:
+                        _proType;
                         break;
                 }
                 _proType = {
@@ -1936,8 +1935,8 @@
                 };
                 node['_lwg'] = _proType;
             }
-            _LwgNode._addProperty = _addProperty;
-        })(_LwgNode = Lwg._LwgNode || (Lwg._LwgNode = {}));
+            NodeAdmin._addProperty = _addProperty;
+        })(NodeAdmin = Lwg.NodeAdmin || (Lwg.NodeAdmin = {}));
         let Dialogue;
         (function (Dialogue) {
             let Skin;
@@ -2685,6 +2684,7 @@
             SceneAniAdmin._closeAniTime = 0;
             function _commonOpenAni(Scene) {
                 var afterAni = () => {
+                    LwgScene._SceneServe._close();
                     LwgClick._switch = true;
                     if (Scene[Scene.name]) {
                         Scene[Scene.name].lwgOpenAniAfter();
@@ -4392,7 +4392,7 @@
                         this.box.meshRenderer.material = m;
                     }
                     _positionByARY(angleSpeed, radius, speedY, distance, stateSwitch) {
-                        const pXZ = ToolsAdmin._Point.getRoundPos(this._positionByARY_FA += angleSpeed, radius, new Laya.Point(this.fPosition.x, this.fPosition.z));
+                        const pXZ = ToolsAdmin._Point.getRoundPosOld(this._positionByARY_FA += angleSpeed, radius, new Laya.Point(this.fPosition.x, this.fPosition.z));
                         this.box.transform.position = new Laya.Vector3(pXZ.x, this.box.transform.position.y += speedY, pXZ.y);
                         if (this.box.transform.position.y - this.fPosition.y > distance) {
                             stateSwitch && stateSwitch();
@@ -4400,7 +4400,7 @@
                     }
                     _positionARXY_R(angle, speedR, distance, stateSwitch) {
                         this._positionARXY_FR += speedR;
-                        const point = ToolsAdmin._Point.getRoundPos(angle, this._positionARXY_FR, new Laya.Point(0, 0));
+                        const point = ToolsAdmin._Point.getRoundPosOld(angle, this._positionARXY_FR, new Laya.Point(0, 0));
                         this.box.transform.position = new Laya.Vector3(this.fPosition.x + point.x, this.fPosition.y + point.y, this.fPosition.z);
                         if (this._positionARXY_FR >= distance) {
                             stateSwitch && stateSwitch();
@@ -5214,7 +5214,7 @@
                         else {
                             if (!moveCaller.vinish) {
                                 radius += _speed;
-                                let point = ToolsAdmin._Point.getRoundPos(_angle, radius, centerPoint0);
+                                let point = ToolsAdmin._Point.getRoundPosOld(_angle, radius, centerPoint0);
                                 Img.pos(point.x, point.y);
                                 if (radius > _distance) {
                                     moveCaller.move = false;
@@ -5228,7 +5228,7 @@
                                     Laya.timer.clearAll(moveCaller);
                                 }
                                 radius += _speed / 2;
-                                let point = ToolsAdmin._Point.getRoundPos(_angle, radius, centerPoint0);
+                                let point = ToolsAdmin._Point.getRoundPosOld(_angle, radius, centerPoint0);
                                 Img.pos(point.x, point.y);
                             }
                         }
@@ -5278,7 +5278,7 @@
                             }
                             acc += accelerated0;
                             radius += speed0 + acc;
-                            let point = ToolsAdmin._Point.getRoundPos(angle0, radius, centerPoint0);
+                            let point = ToolsAdmin._Point.getRoundPosOld(angle0, radius, centerPoint0);
                             Img.pos(point.x, point.y);
                         }
                     });
@@ -5419,7 +5419,7 @@
                                 Laya.timer.clearAll(moveCaller);
                             }
                         }
-                        let point = ToolsAdmin._Point.getRoundPos(angle0, radius, centerPoint0);
+                        let point = ToolsAdmin._Point.getRoundPosOld(angle0, radius, centerPoint0);
                         Img.pos(point.x, point.y);
                     });
                     return Img;
@@ -5451,7 +5451,7 @@
                             acc += accelerated;
                             radius0 -= (speed0 + acc);
                         }
-                        let point = ToolsAdmin._Point.getRoundPos(angle, radius0, centerPoint);
+                        let point = ToolsAdmin._Point.getRoundPosOld(angle, radius0, centerPoint);
                         Img.pos(point.x, point.y);
                         if (point.distance(centerPoint.x, centerPoint.y) <= 20 || point.distance(centerPoint.x, centerPoint.y) >= 1000) {
                             Img.removeSelf();
@@ -5645,7 +5645,7 @@
                         let targetXY = [posArray[index][0], posArray[index][1]];
                         let distance = (new Laya.Point(Img.x, Img.y)).distance(targetXY[0], targetXY[1]);
                         if (parallel) {
-                            Img.rotation = ToolsAdmin._Point.pointByAngle(Img.x - targetXY[0], Img.y - targetXY[1]) + 180;
+                            Img.rotation = ToolsAdmin._Point.pointByAngleOld(Img.x - targetXY[0], Img.y - targetXY[1]) + 180;
                         }
                         let time = speed * 100 + distance / 5;
                         if (index == posArray.length + 1) {
@@ -6978,10 +6978,11 @@
                 }
                 _Node.showExcludedChild3D = showExcludedChild3D;
                 function createPrefab(prefab, Parent, point, script, zOrder, name) {
-                    let Sp = Laya.Pool.getItemByCreateFun(name ? name : prefab.json['props']['name'], prefab.create, prefab);
+                    const Sp = Laya.Pool.getItemByCreateFun(name ? name : prefab.json['props']['name'], prefab.create, prefab);
                     Parent && Parent.addChild(Sp);
                     point && Sp.pos(point[0], point[1]);
                     script && Sp.addComponent(script);
+                    NodeAdmin._addProperty(Sp);
                     if (zOrder)
                         Sp.zOrder = zOrder;
                     return Sp;
@@ -7144,27 +7145,45 @@
                     return Other.globalToLocal(gPoint);
                 }
                 _Point.getOtherLocal = getOtherLocal;
-                function angleByRad(angle) {
-                    return angle / 180 * Math.PI;
+                function angleByRadian(angle) {
+                    return Math.PI / 180 * angle;
                 }
-                _Point.angleByRad = angleByRad;
-                function pointByAngle(x, y) {
-                    let radian = Math.atan2(x, y);
+                _Point.angleByRadian = angleByRadian;
+                function pointByAngleOld(x, y) {
+                    const radian = Math.atan2(x, y);
                     let angle = 90 - radian * (180 / Math.PI);
                     if (angle <= 0) {
                         angle = 270 + (90 + angle);
                     }
                     return angle - 90;
                 }
-                _Point.pointByAngle = pointByAngle;
+                _Point.pointByAngleOld = pointByAngleOld;
+                ;
+                function pointByAngleNew(x, y) {
+                    const radian = Math.atan2(y, x);
+                    let angle = radian * (180 / Math.PI);
+                    if (angle <= 0) {
+                        angle = 360 + angle;
+                    }
+                    return angle;
+                }
+                _Point.pointByAngleNew = pointByAngleNew;
                 ;
                 function angleByPoint(angle) {
-                    let radian = (90 - angle) / (180 / Math.PI);
-                    let p = new Laya.Point(Math.sin(radian), Math.cos(radian));
+                    const radian = (90 - angle) / (180 / Math.PI);
+                    const p = new Laya.Point(Math.sin(radian), Math.cos(radian));
                     p.normalize();
                     return p;
                 }
                 _Point.angleByPoint = angleByPoint;
+                ;
+                function angleByPointNew(angle) {
+                    const rad = angleByRadian(angle);
+                    const p = new Laya.Point(Math.cos(rad), Math.sin(rad));
+                    p.normalize();
+                    return p;
+                }
+                _Point.angleByPointNew = angleByPointNew;
                 ;
                 function dotRotatePoint(x0, y0, x1, y1, angle) {
                     let x2 = x0 + (x1 - x0) * Math.cos(angle * Math.PI / 180) - (y1 - y0) * Math.sin(angle * Math.PI / 180);
@@ -7173,23 +7192,26 @@
                 }
                 _Point.dotRotatePoint = dotRotatePoint;
                 function angleAndLenByPoint(angle, len) {
-                    if (angle % 90 === 0 || !angle) {
-                    }
-                    const speedXY = { x: 0, y: 0 };
-                    speedXY.x = len * Math.cos(angle * Math.PI / 180);
-                    speedXY.y = len * Math.sin(angle * Math.PI / 180);
-                    return new Laya.Point(speedXY.x, speedXY.y);
+                    const point = new Laya.Point();
+                    point.x = len * Math.cos(angle * Math.PI / 180);
+                    point.y = len * Math.sin(angle * Math.PI / 180);
+                    return point;
                 }
                 _Point.angleAndLenByPoint = angleAndLenByPoint;
-                function getRoundPos(angle, radius, centerPos) {
-                    var center = centerPos;
-                    var radius = radius;
-                    var hudu = (2 * Math.PI / 360) * angle;
-                    var X = center.x + Math.sin(hudu) * radius;
-                    var Y = center.y - Math.cos(hudu) * radius;
+                function getRoundPosOld(angle, radius, centerPos) {
+                    const radian = angleByRadian(angle);
+                    const X = centerPos.x + Math.sin(radian) * radius;
+                    const Y = centerPos.y - Math.cos(radian) * radius;
                     return new Laya.Point(X, Y);
                 }
-                _Point.getRoundPos = getRoundPos;
+                _Point.getRoundPosOld = getRoundPosOld;
+                function getRoundPosNew(angle, radius, centerPos) {
+                    const radian = angleByRadian(angle);
+                    const x = centerPos.x + Math.cos(radian) * radius;
+                    const y = centerPos.y + Math.sin(radian) * radius;
+                    return new Laya.Point(x, y);
+                }
+                _Point.getRoundPosNew = getRoundPosNew;
                 function randomPointByCenter(centerPos, radiusX, radiusY, count) {
                     if (!count) {
                         count = 1;
@@ -8326,6 +8348,7 @@
     let LwgScene = Lwg.SceneAdmin;
     let LwgAdaptive = Lwg.AdaptiveAdmin;
     let LwgSceneAni = Lwg.SceneAniAdmin;
+    let LwgNode = Lwg.NodeAdmin;
     let LwgDialogue = Lwg.Dialogue;
     let LwgEvent = Lwg.EventAdmin;
     let LwgTimer = Lwg.TimerAdmin;
@@ -10409,6 +10432,9 @@
         }
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'loadpage');
+            let radian = Math.atan2(-16, -9);
+            let angle = radian * (180 / Math.PI);
+            console.log(angle);
         }
         lwgOnStart() {
             const scale = 1.2;
@@ -11463,7 +11489,7 @@
                 if (!this.create) {
                     this.diffX = this.fX - e.stageX;
                     if (this.diffX >= 5) {
-                        this._evNotify(_MakePattern.Event.createImg, [this.$name, this._gPoint]);
+                        this._evNotify(_MakePattern.Event.createImg, [this.$name, this._Owner._lwg.gPoint]);
                         this.create = true;
                     }
                 }
@@ -11600,7 +11626,7 @@
                         this._SpriteVar(this.Tex.dir).addChild(this.Tex.Img);
                         let _width = this._ImgVar(this.Tex.dir).width;
                         let _height = this._ImgVar(this.Tex.dir).height;
-                        let angleXZ = LwgTools._Point.pointByAngle(_3DDIYCloth._ins().ModelTap.transform.position.x - out.point.x, _3DDIYCloth._ins().ModelTap.transform.position.z - out.point.z);
+                        let angleXZ = LwgTools._Point.pointByAngleOld(_3DDIYCloth._ins().ModelTap.transform.position.x - out.point.x, _3DDIYCloth._ins().ModelTap.transform.position.z - out.point.z);
                         if (this.Tex.dir == this.Tex.dirType.Front) {
                             this.Tex.Img.x = _width - _width / 180 * (angleXZ + 90);
                         }
@@ -11681,7 +11707,7 @@
                     this._ImgVar('Wireframe').width = this._ImgVar('WConversion').x = lPoint.x;
                     this._ImgVar('Wireframe').height = this._ImgVar('WConversion').y = lPoint.y;
                     const gPoint = this._Owner.localToGlobal(new Laya.Point(this._ImgVar('Wireframe').x, this._ImgVar('Wireframe').y));
-                    this.Tex.Img.rotation = this.Tex.DisImg.rotation = this._ImgVar('Wireframe').rotation = LwgTools._Point.pointByAngle(e.stageX - gPoint.x, e.stageY - gPoint.y) + 45;
+                    this.Tex.Img.rotation = this.Tex.DisImg.rotation = this._ImgVar('Wireframe').rotation = LwgTools._Point.pointByAngleOld(e.stageX - gPoint.x, e.stageY - gPoint.y) + 45;
                     const scaleWidth = this._ImgVar('Wireframe').width - this.Tex.wireframeSize[0];
                     const scaleheight = this._ImgVar('Wireframe').height - this.Tex.wireframeSize[1];
                     this.Tex.DisImg.width = this.Tex.Img.width = this.Tex.imgSize[0] + scaleWidth;
