@@ -67,7 +67,7 @@ export default class Start extends LwgScene._SceneBase {
 
         this._evReg(_Start.Event.updateRanking, () => {
             let obj = _Ranking._Data._ins()._getPitchObj();
-            this._LabelVar('RankNum').text = `${obj[_Ranking._Data._ins()._otherPro.rankNum]}/50`;
+            this._LabelVar('RankNum').text = `${obj[_Ranking._Data._ins()._mergePro.rankNum]}/50`;
         })
         this._evReg(_Start.Event.photo, () => {
             LwgClick._absoluteSwitch = false;

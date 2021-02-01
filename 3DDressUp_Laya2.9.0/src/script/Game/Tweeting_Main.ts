@@ -16,10 +16,10 @@ export default class Tweeting_Main extends LwgScene._SceneBase {
         this._ImgVar('IconPic').skin = `Game/UI/Ranking/IconSkin/Ava.png`;
         _Tweeting._attentionNum.value += LwgTools._Number.randomOneInt(50, 100);
         this._LabelVar('AttentionNum').text = _Tweeting._attentionNum.value.toString();
-        this._LabelVar('FansNum').text = _Ranking._Data._ins()._getPitchProperty(_Ranking._Data._ins()._otherPro.fansNum);
+        this._LabelVar('FansNum').text = _Ranking._Data._ins()._getPitchProperty(_Ranking._Data._ins()._mergePro.fansNum);
         // 完成次数增加也完成一些任务
         _Tweeting._completeNum.value++;
-        _DIYClothes._ins()._checkConditionUnlockWay(_DIYClothes._ins()._unlockWay.$customs, 1);
+        _DIYClothes._ins()._checkConditionUnlockWay(_DIYClothes._ins()._unlockWay.customs, 1);
         this._LabelVar('CompleteNum').text = _Tweeting._completeNum.value.toString();
         // 热门
         const heatArr = LwgTools._Number.randomCountBySection(20, 50, 3);
@@ -34,7 +34,7 @@ export default class Tweeting_Main extends LwgScene._SceneBase {
             const Heat = Rank.getChildByName('Heat') as Laya.Label;
             const Icon = Rank.getChildByName('HeadIcon').getChildByName('Icon') as Laya.Image;
             const data = _Ranking._Data._ins()._arr[index];
-            Name.text = data[_Ranking._Data._ins()._property.$name];
+            Name.text = data[_Ranking._Data._ins()._property.name];
             Tag.skin = `Game/UI/Tweeting/Main/${index + 1}.png`;
             Brief.text = briefArr[index];
             Heat.text = `本周热度 ${heatArr[index]}万`;

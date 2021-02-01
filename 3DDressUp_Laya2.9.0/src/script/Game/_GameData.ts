@@ -1,8 +1,14 @@
-import { LwgData, LwgDate, LwgScene, LwgStorage, LwgTimer, LwgTools } from "../Lwg/Lwg";
+import Lwg, { LwgData, LwgDate, LwgScene, LwgStorage, LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { _3DScene, _3DDIYCloth } from "./_3D";
 import { _Res } from "./_Res";
 
 export module _Ranking {
+    export class _mergePro extends Lwg.DataAdmin._BaseProperty {
+        constructor() { super() };
+        rankNum: any = 'rankNum';
+        fansNum: any = 'fansNum';
+        iconSkin: any = 'iconSkin';
+    }
     /**从哪个界面进来*/
     export let _whereFrom = 'Start';
     export class _Data extends LwgData._Table {
@@ -10,21 +16,17 @@ export module _Ranking {
         static _ins() {
             if (!this.ins) {
                 this.ins = new _Data('RankingData', _Res._list.json.Ranking.dataArr, true);
+                this.ins._mergePro = new _mergePro();
                 if (!this.ins._arr[0]['iconSkin']) {
                     for (let index = 0; index < this.ins._arr.length; index++) {
                         const element = this.ins._arr[index];
-                        element['iconSkin'] = `Game/UI/Ranking/IconSkin/avatar_${element[this.ins._property.$serial]}.png`;
+                        element['iconSkin'] = `Game/UI/Ranking/IconSkin/avatar_${element[this.ins._property.serial]}.png`;
                     }
                 }
                 this.ins._pitchName = '玩家';
-                this.ins._sortByProperty(this.ins._otherPro.fansNum, this.ins._otherPro.rankNum);
+                this.ins._sortByProperty(this.ins._mergePro.fansNum, this.ins._mergePro.rankNum);
             }
             return this.ins;
-        }
-        _otherPro = {
-            rankNum: 'rankNum',
-            fansNum: 'fansNum',
-            iconSkin: 'iconSkin',
         }
         _classify = {
             other: 'other',
@@ -165,7 +167,7 @@ export class _AllClothes extends LwgData._Table {
         let DIYArr = _DIYClothes._ins()._getArrByNoProperty(_DIYClothes._ins()._otherPro.icon, "");
         const copyArr = LwgTools._ObjArray.arrCopy(DIYArr);
         // 将类型修改为'DIY'
-        LwgTools._ObjArray.modifyProValue(copyArr, this._property.$classify, 'DIY');
+        LwgTools._ObjArray.modifyProValue(copyArr, this._property.classify, 'DIY');
         this._addObjectArr(copyArr);
         return copyArr;
     }
@@ -189,7 +191,7 @@ export class _AllClothes extends LwgData._Table {
                     _classifySp.active = true;
                     for (let k = 0; k < _classifySp.numChildren; k++) {
                         const cloth = _classifySp.getChildAt(k) as Laya.SkinnedMeshSprite3D;
-                        if (cloth.name === obj[this._property.$name]) {
+                        if (cloth.name === obj[this._property.name]) {
                             cloth.active = true;
                             const delay = start ? 40 : 15;
                             if (classify === 'DIY') {

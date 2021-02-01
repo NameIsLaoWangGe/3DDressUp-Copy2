@@ -8,20 +8,19 @@ import { _Res } from "./_Res";
 class _Item extends LwgData._Item {
     $button(): void {
         this._btnUp(this._ImgChild('Reward'), (e: Laya.Event) => {
-            console.log(_CheckIn._lastCheckDate.value, _CheckIn._todayCheckIn.value);
             if (!_CheckIn._todayCheckIn.value) {
-                if (_CheckIn._checkInNum.value + 1 === this.$serial) {
+                if (_CheckIn._checkInNum.value + 1 === this.$data.serial) {
                     _CheckIn._lastCheckDate.value = LwgDate._date.date;
                     console.log(_CheckIn._lastCheckDate.value, _CheckIn._todayCheckIn.value);
-                    _CheckIn._Data._ins()._setCompleteName(this.$name);
+                    _CheckIn._Data._ins()._setCompleteName(this.$data.name);
                     _CheckIn._checkInNum.value++;
 
-                    if (this.$rewardType.substr(0, 3) === 'diy') {
-                        _DIYClothes._ins()._setCompleteByName(this.$rewardType);
+                    if (this.$data.rewardType.substr(0, 3) === 'diy') {
+                        _DIYClothes._ins()._setCompleteByName(this.$data.rewardType);
                         LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
                         _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
-                    } else if (this.$rewardType === 'cat') {
-                        _MakePattern._Pattern._ins()._setCompleteByClassify(this.$rewardType);
+                    } else if (this.$data.rewardType === 'cat') {
+                        _MakePattern._Pattern._ins()._setCompleteByClassify(this.$data.rewardType);
                         LwgDialogue.createHint_Middle('恭喜获得猫咪贴图一套');
                         _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                     }
@@ -37,25 +36,25 @@ class _Item extends LwgData._Item {
 
         var func = (e: Laya.Event) => {
             ADManager.ShowReward(() => {
-                _CheckIn._Data._ins()._setOtherCompleteName(this.$name);
-                if (this.$otherRewardType.substr(0, 3) === 'diy') {
-                    _DIYClothes._ins()._setCompleteByName(this.$otherRewardType);
+                _CheckIn._Data._ins()._setOtherCompleteName(this.$data.name);
+                if (this.$data.otherRewardType.substr(0, 3) === 'diy') {
+                    _DIYClothes._ins()._setCompleteByName(this.$data.otherRewardType);
                     LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
-                } else if (this.$otherRewardType === 'newYear') {
-                    _MakePattern._Pattern._ins()._setCompleteByClassify(this.$otherRewardType);
+                } else if (this.$data.otherRewardType === 'newYear') {
+                    _MakePattern._Pattern._ins()._setCompleteByClassify(this.$data.otherRewardType);
                     LwgDialogue.createHint_Middle('恭喜获得新年贴图一套');
                 }
                 _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
             })
         }
         var adsClick = (e: Laya.Event) => {
-            if (!this.$otherComplete) {
+            if (!this.$data.otherComplete) {
                 if (!_CheckIn._todayCheckIn.value) {
-                    if (_CheckIn._checkInNum.value + 1 >= this.$serial) {
+                    if (_CheckIn._checkInNum.value + 1 >= this.$data.serial) {
                         func(e);
                     }
                 } else {
-                    if (_CheckIn._checkInNum.value >= this.$serial) {
+                    if (_CheckIn._checkInNum.value >= this.$data.serial) {
                         func(e);
                     }
                 }
@@ -68,19 +67,19 @@ class _Item extends LwgData._Item {
     }
 
     $render(): void {
-        this._LableChild('DayNum').text = this.$name;
+        this._LableChild('DayNum').text = this.$data.name;
         const Already = this._ImgChild('Reward').getChildByName('Already') as Laya.Label;
         const Icon = this._ImgChild('Reward').getChildByName('Icon') as Laya.Image;
-        if (this.$rewardType.substr(0, 3) === 'diy') {
-            Icon.skin = _DIYClothes._ins().getDIYCutIcon(this.$rewardType);
+        if (this.$data.rewardType.substr(0, 3) === 'diy') {
+            Icon.skin = _DIYClothes._ins().getDIYCutIcon(this.$data.rewardType);
             Icon.scale(0.55, 0.55);
-        } else if (this.$rewardType === 'cat') {
-            Icon.skin = `Pattern/${this.$rewardType}1.png`;
+        } else if (this.$data.rewardType === 'cat') {
+            Icon.skin = `Pattern/${this.$data.rewardType}1.png`;
             Icon.scale(0.18, 0.18);
         }
-        Already.visible = this.$complete;
-        if (!this.$complete) {
-            if (_CheckIn._checkInNum.value + 1 === this.$serial) {
+        Already.visible = this.$data.complete;
+        if (!this.$data.complete) {
+            if (_CheckIn._checkInNum.value + 1 === this.$data.serial) {
                 if (_CheckIn._todayCheckIn.value) {
                     this._ImgChild('Reward').skin = 'Game/UI/ChekIn/k_nei.png';
                 } else {
@@ -95,17 +94,17 @@ class _Item extends LwgData._Item {
 
         const AdsAlready = this._ImgChild('AdsReward').getChildByName('Already') as Laya.Label;
         const AdsIcon = this._ImgChild('AdsReward').getChildByName('Icon') as Laya.Image;
-        if (this.$otherRewardType.substr(0, 3) === 'diy') {
-            AdsIcon.skin = _DIYClothes._ins().getDIYCutIcon(this.$otherRewardType);
+        if (this.$data.otherRewardType.substr(0, 3) === 'diy') {
+            AdsIcon.skin = _DIYClothes._ins().getDIYCutIcon(this.$data.otherRewardType);
             AdsIcon.scale(0.55, 0.55);
-        } else if (this.$otherRewardType === 'newYear') {
-            AdsIcon.skin = `Pattern/${this.$otherRewardType}1.png`;
+        } else if (this.$data.otherRewardType === 'newYear') {
+            AdsIcon.skin = `Pattern/${this.$data.otherRewardType}1.png`;
             AdsIcon.scale(0.16, 0.16);
         }
-        AdsAlready.visible = this.$otherComplete;
-        if (!this.$otherComplete) {
+        AdsAlready.visible = this.$data.otherComplete;
+        if (!this.$data.otherComplete) {
             if (!_CheckIn._todayCheckIn.value) {
-                if (_CheckIn._checkInNum.value + 1 >= this.$serial) {
+                if (_CheckIn._checkInNum.value + 1 >= this.$data.serial) {
                     this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                     this._ImgChild('BtnAdsReward').gray = false;
                 } else {
@@ -113,7 +112,7 @@ class _Item extends LwgData._Item {
                     this._ImgChild('BtnAdsReward').gray = true;
                 }
             } else {
-                if (_CheckIn._checkInNum.value >= this.$serial) {
+                if (_CheckIn._checkInNum.value >= this.$data.serial) {
                     this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                     this._ImgChild('BtnAdsReward').gray = false;
                 } else {

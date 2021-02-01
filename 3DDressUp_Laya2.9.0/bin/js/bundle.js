@@ -3278,61 +3278,44 @@
         })(StorageAdmin = Lwg.StorageAdmin || (Lwg.StorageAdmin = {}));
         let DataAdmin;
         (function (DataAdmin) {
+            class _BaseProperty {
+                constructor() {
+                    this.name = 'name';
+                    this.serial = 'serial';
+                    this.sort = 'sort';
+                    this.chName = 'chName';
+                    this.classify = 'classify';
+                    this.unlockWay = 'unlockWay';
+                    this.otherUnlockWay = 'otherUnlockWay';
+                    this.conditionNum = 'conditionNum';
+                    this.otherConditionNum = 'otherConditionNum';
+                    this.degreeNum = 'degreeNum';
+                    this.otherDegreeNum = 'otherDegreeNum';
+                    this.rewardType = 'otherGetAward';
+                    this.otherRewardType = 'otherRewardType';
+                    this.complete = 'complete';
+                    this.otherComplete = 'otherComplete';
+                    this.getAward = 'getAward';
+                    this.otherGetAward = 'otherGetAward';
+                    this.pitch = 'pitch';
+                }
+            }
+            DataAdmin._BaseProperty = _BaseProperty;
+            ;
+            DataAdmin._unlockWayType = {
+                ads: 'ads',
+                gold: 'gold',
+                diamond: 'diamond',
+                customs: 'customs',
+                check: 'check',
+                free: 'free',
+            };
             class _Item extends SceneAdmin._ObjectBase {
                 constructor() {
                     super(...arguments);
-                    this.$unlockWayType = {
-                        $ads: 'ads',
-                        $gold: 'gold',
-                        $diamond: 'diamond',
-                        $customs: 'customs',
-                        $check: 'check',
-                        $free: 'free',
-                    };
+                    this.$data = null;
+                    this.$unlockWayType = DataAdmin._unlockWayType;
                 }
-                get $name() { return this.$data['name']; }
-                ;
-                get $serial() { return this.$data['serial']; }
-                ;
-                get $sort() { return this.$data['sort']; }
-                ;
-                get $chName() { return this.$data['chName']; }
-                ;
-                get $classify() { return this.$data['classify']; }
-                ;
-                get $unlockWay() { return this.$data['unlockWay']; }
-                ;
-                get $otherUnlockWay() { return this.$data['otherUnlockWay']; }
-                ;
-                get $conditionNum() { return this.$data['conditionNum']; }
-                ;
-                get $otherConditionNum() { return this.$data['otherConditionNum']; }
-                ;
-                get $degreeNum() { return this.$data['degreeNum']; }
-                ;
-                get $otherDegreeNum() { return this.$data['otherDegreeNum']; }
-                ;
-                get $rewardType() { return this.$data['rewardType']; }
-                ;
-                get $otherRewardType() { return this.$data['otherRewardType']; }
-                ;
-                get $complete() { return this.$data['complete']; }
-                ;
-                get $otherComplete() { return this.$data['otherComplete']; }
-                ;
-                get $getAward() { return this.$data['getAward']; }
-                ;
-                get $otherGetAward() { return this.$data['otherGetAward']; }
-                ;
-                get $pitch() { return this.$data['pitch']; }
-                ;
-                get $data() {
-                    if (!this['item/dataSource']) {
-                        console.log('data没有赋值！也可能是数据延时！');
-                    }
-                    return this['item/dataSource'] ? this['item/dataSource'] : {};
-                }
-                set $data(data) { this['item/dataSource'] = data; }
                 get $dataIndex() { return this['item/dataIndex']; }
                 set $dataIndex(_dataIndex) { this['item/dataIndex'] = _dataIndex; }
                 get $dataArrName() { return this['item/dataArrName']; }
@@ -3341,6 +3324,11 @@
                 }
                 $render() { }
                 ;
+                lwglistRender(data, index) {
+                    this.$data = data;
+                    this.$dataIndex = index;
+                    this.$render();
+                }
                 $button() { }
                 ;
                 $awake() { }
@@ -3353,42 +3341,16 @@
             DataAdmin._Item = _Item;
             class _Table {
                 constructor(tableName, _tableArr, localStorage, lastVtableName, lastProArr) {
-                    this._property = {
-                        $name: 'name',
-                        $serial: 'serial',
-                        $sort: 'sort',
-                        $chName: 'chName',
-                        $classify: 'classify',
-                        $unlockWay: 'unlockWay',
-                        $otherUnlockWay: 'otherUnlockWay',
-                        $conditionNum: 'conditionNum',
-                        $otherConditionNum: 'otherConditionNum',
-                        $degreeNum: 'degreeNum',
-                        $otherDegreeNum: 'otherDegreeNum',
-                        $rewardType: 'otherGetAward',
-                        $otherRewardType: 'otherRewardType',
-                        $complete: 'complete',
-                        $otherComplete: 'otherComplete',
-                        $getAward: 'getAward',
-                        $otherGetAward: 'otherGetAward',
-                        $pitch: 'pitch',
-                    };
-                    this._unlockWay = {
-                        $free: 'free',
-                        $gold: 'gold',
-                        $diamond: 'diamond',
-                        $ads: 'ads',
-                        $customs: 'customs',
-                        $check: 'check',
-                    };
+                    this._unlockWay = DataAdmin._unlockWayType;
                     this._tableName = 'name';
                     this._lastArr = [];
                     this._localStorage = false;
+                    this._property = new _BaseProperty;
                     if (tableName) {
                         this._tableName = tableName;
                         if (localStorage) {
                             this._localStorage = localStorage;
-                            this._arr = addCompare(_tableArr, tableName, this._property.$name);
+                            this._arr = addCompare(_tableArr, tableName, this._property.name);
                             if (lastVtableName) {
                                 if (lastProArr) {
                                     this._compareLastInforByPro(lastVtableName, lastProArr);
@@ -3424,12 +3386,8 @@
                             if (!_item) {
                                 _item = cell.addComponent(this._listRenderScript);
                             }
-                            _item.$dataArrName = this._tableName;
-                            _item.$dataIndex = index;
-                            _item.$data = this._listArray[index];
-                            _item.$render();
+                            _item.lwglistRender(this._listArray[index], index);
                         }
-                        this._listRender && this._listRender(cell, index);
                     });
                     list.selectHandler = new Laya.Handler(this, (index) => {
                         this._listSelect && this._listSelect(index);
@@ -3457,7 +3415,7 @@
                         const elementLast = this._lastArr[index];
                         for (let index = 0; index < this._arr.length; index++) {
                             const element = this._arr[index];
-                            if (elementLast[this._property.$name] === element[this._property.$name]) {
+                            if (elementLast[this._property.name] === element[this._property.name]) {
                                 for (let index = 0; index < proArr.length; index++) {
                                     const proName = proArr[index];
                                     element[proName] = elementLast[proName];
@@ -3474,14 +3432,14 @@
                             const _lastelement = this._lastArr[i];
                             for (let j = 0; j < this._arr.length; j++) {
                                 const element = this._arr[j];
-                                if (_lastelement[this._property.$complete]) {
-                                    element[this._property.$complete] = true;
+                                if (_lastelement[this._property.complete]) {
+                                    element[this._property.complete] = true;
                                 }
-                                if (_lastelement[this._property.$getAward]) {
-                                    element[this._property.$getAward] = true;
+                                if (_lastelement[this._property.getAward]) {
+                                    element[this._property.getAward] = true;
                                 }
-                                if (_lastelement[this._property.$degreeNum] > element[this._property.$degreeNum]) {
-                                    element[this._property.$getAward] = _lastelement[this._property.$degreeNum];
+                                if (_lastelement[this._property.degreeNum] > element[this._property.degreeNum]) {
+                                    element[this._property.getAward] = _lastelement[this._property.degreeNum];
                                 }
                             }
                         }
@@ -3505,7 +3463,7 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.$name] == name) {
+                            if (element[this._property.name] == name) {
                                 value = element[pro];
                                 break;
                             }
@@ -3519,8 +3477,8 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.$name] == name) {
-                                value = element[this._property.$conditionNum];
+                            if (element[this._property.name] == name) {
+                                value = element[this._property.conditionNum];
                                 break;
                             }
                         }
@@ -3531,7 +3489,7 @@
                 _getPitchIndexArr() {
                     for (let index = 0; index < this._arr.length; index++) {
                         const element = this._arr[index];
-                        if (element[this._property.$name] === this._pitchName) {
+                        if (element[this._property.name] === this._pitchName) {
                             return index;
                         }
                     }
@@ -3540,7 +3498,7 @@
                     if (this._List) {
                         for (let index = 0; index < this._List.array.length; index++) {
                             const element = this._List.array[index];
-                            if (element[this._property.$name] === this._pitchName) {
+                            if (element[this._property.name] === this._pitchName) {
                                 return index;
                             }
                         }
@@ -3566,7 +3524,7 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.$name] == name) {
+                            if (element[this._property.name] == name) {
                                 element[pro] = value;
                                 this._refreshAndStorage();
                                 break;
@@ -3580,8 +3538,8 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.$name] == name) {
-                                element[this._property.$complete] = true;
+                            if (element[this._property.name] == name) {
+                                element[this._property.complete] = true;
                                 this._refreshAndStorage();
                                 return;
                             }
@@ -3594,8 +3552,8 @@
                         const element = this._arr[index];
                         for (let index = 0; index < nameArr.length; index++) {
                             const name = nameArr[index];
-                            if (element[this._property.$name] === name) {
-                                element[this._property.$complete] = true;
+                            if (element[this._property.name] === name) {
+                                element[this._property.complete] = true;
                             }
                         }
                     }
@@ -3607,7 +3565,7 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.$name] == name) {
+                            if (element[this._property.name] == name) {
                                 obj = element;
                                 break;
                             }
@@ -3617,11 +3575,11 @@
                 }
                 _setProSoleByClassify(name, pro, value) {
                     const obj = this._getObjByName(name);
-                    const objArr = this._getArrByClassify(obj[this._property.$classify]);
+                    const objArr = this._getArrByClassify(obj[this._property.classify]);
                     for (const key in objArr) {
                         if (Object.prototype.hasOwnProperty.call(objArr, key)) {
                             const element = objArr[key];
-                            if (element[this._property.$name] == name) {
+                            if (element[this._property.name] == name) {
                                 element[pro] = value;
                             }
                             else {
@@ -3639,23 +3597,23 @@
                     this._refreshAndStorage();
                 }
                 _setAllComplete() {
-                    this._setAllProPerty(this._property.$complete, true);
+                    this._setAllProPerty(this._property.complete, true);
                     this._refreshAndStorage();
                 }
                 _setCompleteName(name) {
-                    this._setProperty(name, this._property.$complete, true);
+                    this._setProperty(name, this._property.complete, true);
                     this._refreshAndStorage();
                 }
                 _setOtherCompleteName(name) {
-                    this._setProperty(name, this._property.$otherComplete, true);
+                    this._setProperty(name, this._property.otherComplete, true);
                     this._refreshAndStorage();
                 }
                 _setAllCompleteDelay(delay, eachFrontFunc, eachEndFunc, comFunc) {
                     for (let index = 0; index < this._arr.length; index++) {
                         TimerAdmin._once(delay * index, this, () => {
                             const element = this._arr[index];
-                            eachFrontFunc && eachFrontFunc(element[this._property.$complete]);
-                            element[this._property.$complete] = true;
+                            eachFrontFunc && eachFrontFunc(element[this._property.complete]);
+                            element[this._property.complete] = true;
                             eachEndFunc && eachEndFunc();
                             if (index === this._arr.length - 1) {
                                 comFunc && comFunc();
@@ -3665,15 +3623,15 @@
                     }
                 }
                 _setAllOtherComplete() {
-                    this._setAllProPerty(this._property.$otherComplete, true);
+                    this._setAllProPerty(this._property.otherComplete, true);
                     this._refreshAndStorage();
                 }
                 _setAllOtherCompleteDelay(delay, eachFrontFunc, eachEndFunc, comFunc) {
                     for (let index = 0; index < this._arr.length; index++) {
                         TimerAdmin._once(delay * index, this, () => {
                             const element = this._arr[index];
-                            eachFrontFunc && eachFrontFunc(element[this._property.$otherComplete]);
-                            element[this._property.$otherComplete] = true;
+                            eachFrontFunc && eachFrontFunc(element[this._property.otherComplete]);
+                            element[this._property.otherComplete] = true;
                             eachEndFunc && eachEndFunc();
                             if (index === this._arr.length - 1) {
                                 comFunc && comFunc();
@@ -3747,7 +3705,7 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.$classify] == classify) {
+                            if (element[this._property.classify] == classify) {
                                 arr.push(element);
                             }
                         }
@@ -3759,7 +3717,7 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.$unlockWay] === _unlockWay) {
+                            if (element[this._property.unlockWay] === _unlockWay) {
                                 arr.push(element);
                             }
                         }
@@ -3771,7 +3729,7 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.$classify] == this._pitchClassify) {
+                            if (element[this._property.classify] == this._pitchClassify) {
                                 arr.push(element);
                             }
                         }
@@ -3792,7 +3750,7 @@
                 }
                 _getPitchClassfiyName() {
                     const obj = this._getObjByName(this._pitchName);
-                    return obj[this._property.$classify];
+                    return obj[this._property.classify];
                 }
                 _getArrByNoProperty(proName, value) {
                     let arr = [];
@@ -3836,7 +3794,7 @@
                     for (const key in arr) {
                         if (Object.prototype.hasOwnProperty.call(arr, key)) {
                             const element = arr[key];
-                            element[this._property.$complete] = true;
+                            element[this._property.complete] = true;
                         }
                     }
                     this._refreshAndStorage();
@@ -3845,17 +3803,17 @@
                 _checkCondition(name, number, func) {
                     let com = null;
                     number = number == undefined ? 1 : number;
-                    let degreeNum = this._getProperty(name, this._property.$degreeNum);
-                    let condition = this._getProperty(name, this._property.$conditionNum);
-                    let complete = this._getProperty(name, this._property.$complete);
+                    let degreeNum = this._getProperty(name, this._property.degreeNum);
+                    let condition = this._getProperty(name, this._property.conditionNum);
+                    let complete = this._getProperty(name, this._property.complete);
                     if (!complete) {
                         if (condition <= degreeNum + number) {
-                            this._setProperty(name, this._property.$degreeNum, condition);
-                            this._setProperty(name, this._property.$complete, true);
+                            this._setProperty(name, this._property.degreeNum, condition);
+                            this._setProperty(name, this._property.complete, true);
                             com = true;
                         }
                         else {
-                            this._setProperty(name, this._property.$degreeNum, degreeNum + number);
+                            this._setProperty(name, this._property.degreeNum, degreeNum + number);
                             com = false;
                         }
                     }
@@ -3872,8 +3830,8 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.$unlockWay] === _unlockWay) {
-                                this._checkCondition(element[this._property.$name], num ? num : 1);
+                            if (element[this._property.unlockWay] === _unlockWay) {
+                                this._checkCondition(element[this._property.name], num ? num : 1);
                             }
                         }
                     }
@@ -3883,7 +3841,7 @@
                     let bool = true;
                     for (let index = 0; index < this._arr.length; index++) {
                         const element = this._arr[index];
-                        if (!element[this._property.$complete]) {
+                        if (!element[this._property.complete]) {
                             bool = false;
                             return bool;
                         }
@@ -3981,12 +3939,12 @@
                     let _calssify;
                     for (let index = 0; index < this._arr.length; index++) {
                         const element = this._arr[index];
-                        if (element[this._property.$name] == name) {
-                            element[this._property.$pitch] = true;
-                            _calssify = element[this._property.$classify];
+                        if (element[this._property.name] == name) {
+                            element[this._property.pitch] = true;
+                            _calssify = element[this._property.classify];
                         }
                         else {
-                            element[this._property.$pitch] = false;
+                            element[this._property.pitch] = false;
                         }
                     }
                     this._pitchClassify = _calssify;
@@ -3997,7 +3955,7 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.$name] === this._pitchName) {
+                            if (element[this._property.name] === this._pitchName) {
                                 return element;
                             }
                         }
@@ -4007,7 +3965,7 @@
                     let _obj = ToolsAdmin._ObjArray.objCopy(obj);
                     for (let index = 0; index < this._arr.length; index++) {
                         const element = this._arr[index];
-                        if (element[this._property.$name] === _obj[this._property.$name]) {
+                        if (element[this._property.name] === _obj[this._property.name]) {
                             this._arr[index] == _obj;
                         }
                     }
@@ -4019,7 +3977,7 @@
                         const obj = _objArr[i];
                         for (let j = 0; j < this._arr.length; j++) {
                             const element = this._arr[j];
-                            if (obj && obj[this._property.$name] === element[this._property.$name]) {
+                            if (obj && obj[this._property.name] === element[this._property.name]) {
                                 this._arr[j] = obj;
                                 _objArr.splice(i, 1);
                                 i--;
@@ -8773,15 +8731,20 @@
 
     var _Ranking;
     (function (_Ranking) {
+        class mergePro extends Lwg$1.DataAdmin._BaseProperty {
+            constructor() {
+                super();
+                this.rankNum = 'rankNum';
+                this.fansNum = 'fansNum';
+                this.iconSkin = 'iconSkin';
+            }
+            ;
+        }
+        _Ranking.mergePro = mergePro;
         _Ranking._whereFrom = 'Start';
         class _Data extends LwgData._Table {
             constructor() {
                 super(...arguments);
-                this._otherPro = {
-                    rankNum: 'rankNum',
-                    fansNum: 'fansNum',
-                    iconSkin: 'iconSkin',
-                };
                 this._classify = {
                     other: 'other',
                     self: 'self',
@@ -8790,14 +8753,15 @@
             static _ins() {
                 if (!this.ins) {
                     this.ins = new _Data('RankingData', _Res._list.json.Ranking.dataArr, true);
+                    this.ins._mergePro = new mergePro();
                     if (!this.ins._arr[0]['iconSkin']) {
                         for (let index = 0; index < this.ins._arr.length; index++) {
                             const element = this.ins._arr[index];
-                            element['iconSkin'] = `Game/UI/Ranking/IconSkin/avatar_${element[this.ins._property.$serial]}.png`;
+                            element['iconSkin'] = `Game/UI/Ranking/IconSkin/avatar_${element[this.ins._property.serial]}.png`;
                         }
                     }
                     this.ins._pitchName = '玩家';
-                    this.ins._sortByProperty(this.ins._otherPro.fansNum, this.ins._otherPro.rankNum);
+                    this.ins._sortByProperty(this.ins._mergePro.fansNum, this.ins._mergePro.rankNum);
                 }
                 return this.ins;
             }
@@ -8926,7 +8890,7 @@
         collectDIY() {
             let DIYArr = _DIYClothes._ins()._getArrByNoProperty(_DIYClothes._ins()._otherPro.icon, "");
             const copyArr = LwgTools._ObjArray.arrCopy(DIYArr);
-            LwgTools._ObjArray.modifyProValue(copyArr, this._property.$classify, 'DIY');
+            LwgTools._ObjArray.modifyProValue(copyArr, this._property.classify, 'DIY');
             this._addObjectArr(copyArr);
             return copyArr;
         }
@@ -8945,7 +8909,7 @@
                         _classifySp.active = true;
                         for (let k = 0; k < _classifySp.numChildren; k++) {
                             const cloth = _classifySp.getChildAt(k);
-                            if (cloth.name === obj[this._property.$name]) {
+                            if (cloth.name === obj[this._property.name]) {
                                 cloth.active = true;
                                 const delay = start ? 40 : 15;
                                 if (classify === 'DIY') {
@@ -10432,9 +10396,6 @@
         }
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'loadpage');
-            let radian = Math.atan2(-16, -9);
-            let angle = radian * (180 / Math.PI);
-            console.log(angle);
         }
         lwgOnStart() {
             const scale = 1.2;
@@ -10714,9 +10675,9 @@
                 if (Line.numChildren > 0) {
                     let data = {};
                     data['Line'] = Line;
-                    data[this._property.$name] = Line.name;
-                    data[this._property.$conditionNum] = Line.numChildren;
-                    data[this._property.$degreeNum] = 0;
+                    data[this._property.name] = Line.name;
+                    data[this._property.conditionNum] = Line.numChildren;
+                    data[this._property.degreeNum] = 0;
                     this._arr.push(data);
                 }
             }
@@ -10879,42 +10840,42 @@
         ;
         $button() {
             this._btnUp(this._Owner, () => {
-                if (!_Guide._complete.value && this.$name !== 'diy_dress_002_final')
+                if (!_Guide._complete.value && this.$data.name !== 'diy_dress_002_final')
                     return;
-                if (this.$name === 'ads') {
+                if (this.$data.name === 'ads') {
                     return;
                 }
-                if (this.$complete) {
-                    if (this.$name !== _DIYClothes._ins()._pitchName) {
-                        _DIYClothes._ins()._setPitch(this.$name);
+                if (this.$data.complete) {
+                    if (this.$data.name !== _DIYClothes._ins()._pitchName) {
+                        _DIYClothes._ins()._setPitch(this.$data.name);
                         this._evNotify(_MakeTailor.Event.changeClothes);
                     }
                 }
                 else {
-                    switch (this.$unlockWay) {
-                        case this.$unlockWayType.$check:
+                    switch (this.$data.unlockWay) {
+                        case this.$unlockWayType.check:
                             LwgDialogue.createHint_Middle('请前往签到页面获取');
                             break;
-                        case this.$unlockWayType.$customs:
-                            LwgDialogue.createHint_Middle(`制作${this.$conditionNum}件才能衣服获取哦！`);
+                        case this.$unlockWayType.customs:
+                            LwgDialogue.createHint_Middle(`制作${this.$data.conditionNum}件才能衣服获取哦！`);
                             break;
-                        case this.$unlockWayType.$ads:
+                        case this.$unlockWayType.ads:
                             ADManager.ShowReward(() => {
-                                if (_DIYClothes._ins()._checkCondition(this.$name)) {
+                                if (_DIYClothes._ins()._checkCondition(this.$data.name)) {
                                     LwgDialogue.createHint_Middle('恭喜获得一件新服装！');
-                                    _DIYClothes._ins()._setPitch(this.$name);
+                                    _DIYClothes._ins()._setPitch(this.$data.name);
                                     this._evNotify(_MakeTailor.Event.changeClothes);
                                 }
                             });
                             break;
-                        case this.$unlockWayType.$free:
+                        case this.$unlockWayType.free:
                             LwgDialogue.createHint_Middle(`免费获得`);
                             break;
                         default:
                             break;
                     }
                 }
-                if (!_Guide._complete.value && this.$name == 'diy_dress_002_final') {
+                if (!_Guide._complete.value && this.$data.name == 'diy_dress_002_final') {
                     _Guide.MmakeTailorBtnComSwicth = true;
                     this._evNotify(_Guide.Event.MakeTailorBtnCom);
                 }
@@ -10923,15 +10884,15 @@
         }
         $render() {
             this._LableChild('UnlockWayNum').visible = false;
-            if (this.$name == 'ads') {
+            if (this.$data.name == 'ads') {
                 if (!this._BoxChild('NativeRoot')) {
                     LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
                 }
                 this._ImgChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
             }
             else {
-                if (!this.$complete) {
-                    if (this.$unlockWay === _DIYClothes._ins()._unlockWay.$ads) {
+                if (!this.$data.complete) {
+                    if (this.$data.unlockWay === _DIYClothes._ins()._unlockWay.ads) {
                         this._ImgChild('AdsSign').visible = true;
                         this._LableChild('UnlockWay').visible = false;
                         this._ImgChild('Mask').visible = false;
@@ -10939,17 +10900,17 @@
                     else {
                         this._ImgChild('AdsSign').visible = false;
                         this._LableChild('UnlockWay').visible = true;
-                        switch (this.$unlockWay) {
-                            case _DIYClothes._ins()._unlockWay.$check:
+                        switch (this.$data.unlockWay) {
+                            case _DIYClothes._ins()._unlockWay.check:
                                 this._LableChild('UnlockWay').text = '签到';
                                 this._LableChild('UnlockWay').fontSize = 30;
                                 this._LableChild('UnlockWayNum').visible = false;
                                 break;
-                            case _DIYClothes._ins()._unlockWay.$customs:
+                            case _DIYClothes._ins()._unlockWay.customs:
                                 this._LableChild('UnlockWay').text = `制作衣服`;
                                 this._LableChild('UnlockWay').fontSize = 25;
                                 this._LableChild('UnlockWayNum').visible = true;
-                                this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum.value} /${this.$conditionNum})`;
+                                this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum.value} /${this.$data.conditionNum})`;
                                 break;
                             default:
                                 break;
@@ -10960,13 +10921,13 @@
                 else {
                     this._ImgChild('Mask').visible = this._ImgChild('AdsSign').visible = this._LableChild('UnlockWay').visible = false;
                 }
-                this._ImgChild('Icon').gray = !this.$complete;
+                this._ImgChild('Icon').gray = !this.$data.complete;
                 if (this._BoxChild('NativeRoot'))
                     this._BoxChild('NativeRoot').destroy();
                 this._ImgChild('Icon').visible = this._ImgChild('Board').visible = true;
-                this._ImgChild('Icon').skin = _DIYClothes._ins().getDIYCutIcon(this.$name);
+                this._ImgChild('Icon').skin = _DIYClothes._ins().getDIYCutIcon(this.$data.name);
                 this._ImgChild('Board').skin = `Lwg/UI/ui_orthogon_green.png`;
-                if (this.$pitch) {
+                if (this.$data.pitch) {
                     this._ImgChild('Board').skin = `Game/UI/Common/xuanzhong.png`;
                 }
                 else {
@@ -10985,7 +10946,7 @@
             _DIYClothes._ins()._List = this._ListVar('List');
             const arr = _DIYClothes._ins()._getArrByPitchClassify();
             _DIYClothes._ins()._listArray = arr;
-            _DIYClothes._ins()._setPitch(arr[0][_DIYClothes._ins()._property.$name]);
+            _DIYClothes._ins()._setPitch(arr[0][_DIYClothes._ins()._property.name]);
             if (!_Guide._complete.value)
                 _DIYClothes._ins()._List.scrollBar.touchScrollEnable = false;
         }
@@ -11252,7 +11213,7 @@
             });
             this._evReg(_Start.Event.updateRanking, () => {
                 let obj = _Ranking._Data._ins()._getPitchObj();
-                this._LabelVar('RankNum').text = `${obj[_Ranking._Data._ins()._otherPro.rankNum]}/50`;
+                this._LabelVar('RankNum').text = `${obj[_Ranking._Data._ins()._mergePro.rankNum]}/50`;
             });
             this._evReg(_Start.Event.photo, () => {
                 LwgClick._absoluteSwitch = false;
@@ -11451,19 +11412,19 @@
         }
         $button() {
             this._btnFour(this._ImgChild('Icon'), (e) => {
-                if (!this.$complete) {
-                    switch (this.$unlockWay) {
-                        case this.$unlockWayType.$check:
+                if (!this.$data.complete) {
+                    switch (this.$data.unlockWay) {
+                        case this.$unlockWayType.check:
                             LwgDialogue.createHint_Middle('请前往签到页面获取');
                             break;
-                        case this.$unlockWayType.$customs:
-                            LwgDialogue.createHint_Middle(`制作${this.$conditionNum}件衣服才能获取！`);
+                        case this.$unlockWayType.customs:
+                            LwgDialogue.createHint_Middle(`制作${this.$data.conditionNum}件衣服才能获取！`);
                             break;
-                        case this.$unlockWayType.$ads:
+                        case this.$unlockWayType.ads:
                             ADManager.ShowReward(() => {
-                                if (_MakePattern._Pattern._ins()._checkCondition(this.$name)) {
+                                if (_MakePattern._Pattern._ins()._checkCondition(this.$data.name)) {
                                     LwgDialogue.createHint_Middle('恭喜获得新贴图！');
-                                    _MakePattern._Pattern._ins()._setProperty(this.$name, _MakePattern._Pattern._ins()._property.$complete, true);
+                                    _MakePattern._Pattern._ins()._setProperty(this.$data.name, _MakePattern._Pattern._ins()._property.complete, true);
                                 }
                             });
                             break;
@@ -11471,7 +11432,7 @@
                             break;
                     }
                 }
-                if (this.$name === 'ads' || !this.$name || !this.$complete) {
+                if (this.$data.name === 'ads' || !this.$data.name || !this.$data.complete) {
                     this['Cancal'] = true;
                     return;
                 }
@@ -11489,7 +11450,7 @@
                 if (!this.create) {
                     this.diffX = this.fX - e.stageX;
                     if (this.diffX >= 5) {
-                        this._evNotify(_MakePattern.Event.createImg, [this.$name, this._Owner._lwg.gPoint]);
+                        this._evNotify(_MakePattern.Event.createImg, [this.$data.name, this._Owner._lwg.gPoint]);
                         this.create = true;
                     }
                 }
@@ -11508,30 +11469,30 @@
         }
         $render() {
             this._LableChild('UnlockWayNum').visible = false;
-            if (this.$name === 'ads') {
+            if (this.$data.name === 'ads') {
                 !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
                 this._LableChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = false;
             }
             else {
-                if (!this.$complete) {
-                    if (this.$unlockWay === _MakePattern._Pattern._ins()._unlockWay.$ads) {
+                if (!this.$data.complete) {
+                    if (this.$data.unlockWay === _MakePattern._Pattern._ins()._unlockWay.ads) {
                         this._ImgChild('AdsSign').visible = true;
                         this._LableChild('UnlockWay').visible = false;
                     }
                     else {
                         this._LableChild('AdsSign').visible = false;
                         this._LableChild('UnlockWay').visible = true;
-                        switch (this.$unlockWay) {
-                            case _DIYClothes._ins()._unlockWay.$check:
+                        switch (this.$data.unlockWay) {
+                            case _DIYClothes._ins()._unlockWay.check:
                                 this._LableChild('UnlockWay').text = '签到';
                                 this._LableChild('UnlockWay').fontSize = 30;
                                 this._LableChild('UnlockWayNum').visible = false;
                                 break;
-                            case _DIYClothes._ins()._unlockWay.$customs:
+                            case _DIYClothes._ins()._unlockWay.customs:
                                 this._LableChild('UnlockWay').text = `制作衣服`;
                                 this._LableChild('UnlockWay').fontSize = 25;
                                 this._LableChild('UnlockWayNum').visible = true;
-                                this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum} /${this.$conditionNum})`;
+                                this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum} /${this.$data.conditionNum})`;
                                 break;
                             default:
                                 break;
@@ -11543,11 +11504,11 @@
                     this._LableChild('Mask').visible = this._ImgChild('AdsSign').visible = this._LableChild('UnlockWay').visible = false;
                 }
                 this._ImgChild('Icon').visible = true;
-                this._ImgChild('Icon').gray = !this.$complete;
+                this._ImgChild('Icon').gray = !this.$data.complete;
                 if (this._BoxChild('NativeRoot'))
                     this._BoxChild('NativeRoot').destroy();
-                if (this.$name) {
-                    this._ImgChild('Icon').skin = `Pattern/${this.$name}.png`;
+                if (this.$data.name) {
+                    this._ImgChild('Icon').skin = `Pattern/${this.$data.name}.png`;
                 }
                 else {
                     this._LableChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = false;
@@ -11850,7 +11811,7 @@
             ADManager.TAPoint(TaT.PageShow, 'tiehuapage');
             ADManager.TAPoint(TaT.LevelStart, `level_${_3DDIYCloth._ins().Present.name}`);
             _MakePattern._Pattern._ins()._List = this._ListVar('List');
-            if (_MakePattern._Pattern._ins()._getProperty('newYear1', _MakePattern._Pattern._ins()._property.$complete) || !_Guide._complete.value) {
+            if (_MakePattern._Pattern._ins()._getProperty('newYear1', _MakePattern._Pattern._ins()._property.complete) || !_Guide._complete.value) {
                 this.switchClassify('newYear');
                 _MakePattern._Pattern._ins()._listArray = _MakePattern._Pattern._ins().newYearArr;
             }
@@ -12142,68 +12103,56 @@
     }
 
     class _Item$2 extends LwgData._Item {
-        get $icon() {
-            return this.$data ? this.$data['icon'] : null;
-        }
-        set $icon(_icon) {
-            this.$data['icon'] = _icon;
-        }
-        get $putOn() {
-            return this.$data ? this.$data['putOn'] : null;
-        }
-        set $putOn(_icon) {
-            this.$data['putOn'] = _icon;
-        }
         $button() {
             this._btnUp(this._Owner, (e) => {
-                if (this.$name === 'ads') {
+                if (this.$data.name === 'ads') {
                     return;
                 }
-                if (_AllClothes._ins()._getProperty(this.$name, _AllClothes._ins()._property.$complete)) {
-                    _AllClothes._ins().accurateChange(this.$data['part'], this.$name);
+                if (_AllClothes._ins()._getProperty(this.$data.name, _AllClothes._ins()._property.complete)) {
+                    _AllClothes._ins().accurateChange(this.$data['part'], this.$data.name);
                     _GameEffects3D._showCloth(_3DScene._ins()._Owner);
                 }
                 else {
                     ADManager.ShowReward(() => {
-                        if (_AllClothes._ins()._checkCondition(this.$name)) {
+                        if (_AllClothes._ins()._checkCondition(this.$data.name)) {
                             LwgDialogue.createHint_Middle('恭喜获得新服装！');
-                            _AllClothes._ins().accurateChange(this.$data['part'], this.$name);
+                            _AllClothes._ins().accurateChange(this.$data['part'], this.$data.name);
                         }
                     });
                 }
             }, null);
         }
         $render() {
-            if (this.$name === 'ads') {
+            if (this.$data.name === 'ads') {
                 !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
                 this._ImgChild('Mask').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
             }
             else {
                 this._BoxChild('NativeRoot') && this._BoxChild('NativeRoot').destroy();
                 this._ImgChild('Icon').visible = this._ImgChild('Board').visible = true;
-                if (this.$putOn) {
+                if (this.$data.putOn) {
                     this._ImgChild('Board').skin = `Game/UI/Common/xuanzhong.png`;
                 }
                 else {
                     this._ImgChild('Board').skin = null;
                 }
-                if (this.$classify === _AllClothes._ins()._classify.DIY) {
+                if (this.$data.classify === _AllClothes._ins()._classify.DIY) {
                     if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
-                        this._ImgChild('Icon').skin = LwgOPPO._getStoragePic(this.$name);
+                        this._ImgChild('Icon').skin = LwgOPPO._getStoragePic(this.$data.name);
                         this._ImgChild('Icon').size(110, 130);
                         this._ImgChild('Icon').scale(1, 1);
                     }
                     else {
-                        this._ImgChild('Icon').skin = this.$icon;
+                        this._ImgChild('Icon').skin = this.$data.icon;
                     }
                 }
                 else {
                     this._ImgChild('Icon').size(null, null);
                     this._ImgChild('Icon').scale(0.9, 0.9);
-                    this._ImgChild('Icon').skin = _AllClothes._ins().getGeneralIcon(this.$name);
+                    this._ImgChild('Icon').skin = _AllClothes._ins().getGeneralIcon(this.$data.name);
                 }
             }
-            if (this.$complete) {
+            if (this.$data.complete) {
                 this._ImgChild('Mask').visible = this._ImgChild('AdsSign').visible = false;
             }
             else {
@@ -12294,8 +12243,8 @@
             ADManager.TAPoint(TaT.BtnShow, 'changename');
             this._TextInputVar('NameValue').text = _PersonalInfo._name.value;
             const obj = _Ranking._Data._ins()._getPitchObj();
-            this._LabelVar('RankValue').text = obj[_Ranking._Data._ins()._otherPro.rankNum];
-            this._LabelVar('FansValue').text = obj[_Ranking._Data._ins()._otherPro.fansNum];
+            this._LabelVar('RankValue').text = obj[_Ranking._Data._ins()._mergePro.rankNum];
+            this._LabelVar('FansValue').text = obj[_Ranking._Data._ins()._mergePro.fansNum];
         }
         lwgOpenAni() {
             return _GameAni._dialogOpenFadeOut(this._ImgVar('Background'), this._ImgVar('Content'), () => {
@@ -12366,27 +12315,19 @@
     }
 
     class RankingItem extends LwgData._Item {
-        get $rankNum() {
-            return this.$data ? this.$data['rankNum'] : null;
-        }
-        ;
-        get $fansNum() {
-            return this.$data ? this.$data['fansNum'] : null;
-        }
-        ;
         $render() {
-            if (this.$data[_Ranking._Data._ins()._property.$classify] === _Ranking._Data._ins()._classify.self) {
+            if (this.$data.classify === _Ranking._Data._ins()._classify.self) {
                 this._ImgChild('Board').skin = `Game/UI/Ranking/x_di.png`;
                 this._LableChild('Name').text = _PersonalInfo._name.value;
             }
             else {
                 this._ImgChild('Board').skin = `Game/UI/Ranking/w_di.png`;
-                this._LableChild('Name').text = this.$data[_Ranking._Data._ins()._property.$name];
+                this._LableChild('Name').text = this.$data[_Ranking._Data._ins()._property.name];
             }
-            this._LableChild('RankNum').text = String(this.$rankNum);
-            this._LableChild('FansNum').text = String(this.$fansNum);
+            this._LableChild('RankNum').text = String(this.$data.rankNum);
+            this._LableChild('FansNum').text = String(this.$data.fansNum);
             const IconPic = this._LableChild('Icon').getChildAt(0);
-            IconPic.skin = this.$data[_Ranking._Data._ins()._otherPro.iconSkin];
+            IconPic.skin = this.$data.iconSkin;
         }
     }
     class Ranking extends LwgScene._SceneBase {
@@ -12394,7 +12335,7 @@
             ADManager.TAPoint(TaT.PageShow, 'rankpage');
             _Ranking._Data._ins()._List = this._ListVar('List');
             if (_Ranking._whereFrom === 'Tweeting') {
-                _Ranking._Data._ins()._addProValueForAll(_Ranking._Data._ins()._otherPro.fansNum, () => {
+                _Ranking._Data._ins()._addProValueForAll(_Ranking._Data._ins()._mergePro.fansNum, () => {
                     return LwgTools._Number.randomOneInt(100, 150);
                 });
             }
@@ -12423,7 +12364,7 @@
             }
         }
         lwgOnStart() {
-            if (_Ranking._Data._ins()._getProperty(_Ranking._Data._ins()._pitchName, _Ranking._Data._ins()._otherPro.rankNum) === 1) {
+            if (_Ranking._Data._ins()._getProperty(_Ranking._Data._ins()._pitchName, _Ranking._Data._ins()._mergePro.rankNum) === 1) {
                 _Ranking._Data._ins()._List.scrollTo(0);
             }
             else {
@@ -12470,9 +12411,9 @@
             this._ImgVar('IconPic').skin = `Game/UI/Ranking/IconSkin/Ava.png`;
             _Tweeting._attentionNum.value += LwgTools._Number.randomOneInt(50, 100);
             this._LabelVar('AttentionNum').text = _Tweeting._attentionNum.value.toString();
-            this._LabelVar('FansNum').text = _Ranking._Data._ins()._getPitchProperty(_Ranking._Data._ins()._otherPro.fansNum);
+            this._LabelVar('FansNum').text = _Ranking._Data._ins()._getPitchProperty(_Ranking._Data._ins()._mergePro.fansNum);
             _Tweeting._completeNum.value++;
-            _DIYClothes._ins()._checkConditionUnlockWay(_DIYClothes._ins()._unlockWay.$customs, 1);
+            _DIYClothes._ins()._checkConditionUnlockWay(_DIYClothes._ins()._unlockWay.customs, 1);
             this._LabelVar('CompleteNum').text = _Tweeting._completeNum.value.toString();
             const heatArr = LwgTools._Number.randomCountBySection(20, 50, 3);
             heatArr.sort();
@@ -12486,7 +12427,7 @@
                 const Heat = Rank.getChildByName('Heat');
                 const Icon = Rank.getChildByName('HeadIcon').getChildByName('Icon');
                 const data = _Ranking._Data._ins()._arr[index];
-                Name.text = data[_Ranking._Data._ins()._property.$name];
+                Name.text = data[_Ranking._Data._ins()._property.name];
                 Tag.skin = `Game/UI/Tweeting/Main/${index + 1}.png`;
                 Brief.text = briefArr[index];
                 Heat.text = `本周热度 ${heatArr[index]}万`;
@@ -12815,20 +12756,19 @@
     class _Item$3 extends LwgData._Item {
         $button() {
             this._btnUp(this._ImgChild('Reward'), (e) => {
-                console.log(_CheckIn._lastCheckDate.value, _CheckIn._todayCheckIn.value);
                 if (!_CheckIn._todayCheckIn.value) {
-                    if (_CheckIn._checkInNum.value + 1 === this.$serial) {
+                    if (_CheckIn._checkInNum.value + 1 === this.$data.serial) {
                         _CheckIn._lastCheckDate.value = LwgDate._date.date;
                         console.log(_CheckIn._lastCheckDate.value, _CheckIn._todayCheckIn.value);
-                        _CheckIn._Data._ins()._setCompleteName(this.$name);
+                        _CheckIn._Data._ins()._setCompleteName(this.$data.name);
                         _CheckIn._checkInNum.value++;
-                        if (this.$rewardType.substr(0, 3) === 'diy') {
-                            _DIYClothes._ins()._setCompleteByName(this.$rewardType);
+                        if (this.$data.rewardType.substr(0, 3) === 'diy') {
+                            _DIYClothes._ins()._setCompleteByName(this.$data.rewardType);
                             LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
                             _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                         }
-                        else if (this.$rewardType === 'cat') {
-                            _MakePattern._Pattern._ins()._setCompleteByClassify(this.$rewardType);
+                        else if (this.$data.rewardType === 'cat') {
+                            _MakePattern._Pattern._ins()._setCompleteByClassify(this.$data.rewardType);
                             LwgDialogue.createHint_Middle('恭喜获得猫咪贴图一套');
                             _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                         }
@@ -12844,27 +12784,27 @@
             });
             var func = (e) => {
                 ADManager.ShowReward(() => {
-                    _CheckIn._Data._ins()._setOtherCompleteName(this.$name);
-                    if (this.$otherRewardType.substr(0, 3) === 'diy') {
-                        _DIYClothes._ins()._setCompleteByName(this.$otherRewardType);
+                    _CheckIn._Data._ins()._setOtherCompleteName(this.$data.name);
+                    if (this.$data.otherRewardType.substr(0, 3) === 'diy') {
+                        _DIYClothes._ins()._setCompleteByName(this.$data.otherRewardType);
                         LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
                     }
-                    else if (this.$otherRewardType === 'newYear') {
-                        _MakePattern._Pattern._ins()._setCompleteByClassify(this.$otherRewardType);
+                    else if (this.$data.otherRewardType === 'newYear') {
+                        _MakePattern._Pattern._ins()._setCompleteByClassify(this.$data.otherRewardType);
                         LwgDialogue.createHint_Middle('恭喜获得新年贴图一套');
                     }
                     _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                 });
             };
             var adsClick = (e) => {
-                if (!this.$otherComplete) {
+                if (!this.$data.otherComplete) {
                     if (!_CheckIn._todayCheckIn.value) {
-                        if (_CheckIn._checkInNum.value + 1 >= this.$serial) {
+                        if (_CheckIn._checkInNum.value + 1 >= this.$data.serial) {
                             func(e);
                         }
                     }
                     else {
-                        if (_CheckIn._checkInNum.value >= this.$serial) {
+                        if (_CheckIn._checkInNum.value >= this.$data.serial) {
                             func(e);
                         }
                     }
@@ -12877,20 +12817,20 @@
             this._btnUp(this._ImgChild('BtnAdsReward'), adsClick);
         }
         $render() {
-            this._LableChild('DayNum').text = this.$name;
+            this._LableChild('DayNum').text = this.$data.name;
             const Already = this._ImgChild('Reward').getChildByName('Already');
             const Icon = this._ImgChild('Reward').getChildByName('Icon');
-            if (this.$rewardType.substr(0, 3) === 'diy') {
-                Icon.skin = _DIYClothes._ins().getDIYCutIcon(this.$rewardType);
+            if (this.$data.rewardType.substr(0, 3) === 'diy') {
+                Icon.skin = _DIYClothes._ins().getDIYCutIcon(this.$data.rewardType);
                 Icon.scale(0.55, 0.55);
             }
-            else if (this.$rewardType === 'cat') {
-                Icon.skin = `Pattern/${this.$rewardType}1.png`;
+            else if (this.$data.rewardType === 'cat') {
+                Icon.skin = `Pattern/${this.$data.rewardType}1.png`;
                 Icon.scale(0.18, 0.18);
             }
-            Already.visible = this.$complete;
-            if (!this.$complete) {
-                if (_CheckIn._checkInNum.value + 1 === this.$serial) {
+            Already.visible = this.$data.complete;
+            if (!this.$data.complete) {
+                if (_CheckIn._checkInNum.value + 1 === this.$data.serial) {
                     if (_CheckIn._todayCheckIn.value) {
                         this._ImgChild('Reward').skin = 'Game/UI/ChekIn/k_nei.png';
                     }
@@ -12907,18 +12847,18 @@
             }
             const AdsAlready = this._ImgChild('AdsReward').getChildByName('Already');
             const AdsIcon = this._ImgChild('AdsReward').getChildByName('Icon');
-            if (this.$otherRewardType.substr(0, 3) === 'diy') {
-                AdsIcon.skin = _DIYClothes._ins().getDIYCutIcon(this.$otherRewardType);
+            if (this.$data.otherRewardType.substr(0, 3) === 'diy') {
+                AdsIcon.skin = _DIYClothes._ins().getDIYCutIcon(this.$data.otherRewardType);
                 AdsIcon.scale(0.55, 0.55);
             }
-            else if (this.$otherRewardType === 'newYear') {
-                AdsIcon.skin = `Pattern/${this.$otherRewardType}1.png`;
+            else if (this.$data.otherRewardType === 'newYear') {
+                AdsIcon.skin = `Pattern/${this.$data.otherRewardType}1.png`;
                 AdsIcon.scale(0.16, 0.16);
             }
-            AdsAlready.visible = this.$otherComplete;
-            if (!this.$otherComplete) {
+            AdsAlready.visible = this.$data.otherComplete;
+            if (!this.$data.otherComplete) {
                 if (!_CheckIn._todayCheckIn.value) {
-                    if (_CheckIn._checkInNum.value + 1 >= this.$serial) {
+                    if (_CheckIn._checkInNum.value + 1 >= this.$data.serial) {
                         this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                         this._ImgChild('BtnAdsReward').gray = false;
                     }
@@ -12928,7 +12868,7 @@
                     }
                 }
                 else {
-                    if (_CheckIn._checkInNum.value >= this.$serial) {
+                    if (_CheckIn._checkInNum.value >= this.$data.serial) {
                         this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
                         this._ImgChild('BtnAdsReward').gray = false;
                     }

@@ -5,30 +5,20 @@ import { _CheckIn, _Guide, _PersonalInfo, _Ranking, _Start } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
 
-export type _otherPro = {
-    $rankNum: any;
-    $fansNum: any;
-} & Lwg.DataAdmin._BaseProperty;
-
-export class RankingItem extends LwgData._Item implements _otherPro {
-    get $rankNum(): string {
-        return this.$data ? this.$data['rankNum'] : null;
-    };
-    get $fansNum(): string {
-        return this.$data ? this.$data['fansNum'] : null;
-    };
+export class RankingItem extends LwgData._Item {
+    $data: _Ranking._mergePro;
     $render(): void {
-        if (this.$data[_Ranking._Data._ins()._property.$classify] === _Ranking._Data._ins()._classify.self) {
+        if (this.$data.classify === _Ranking._Data._ins()._classify.self) {
             this._ImgChild('Board').skin = `Game/UI/Ranking/x_di.png`;
             this._LableChild('Name').text = _PersonalInfo._name.value;
         } else {
             this._ImgChild('Board').skin = `Game/UI/Ranking/w_di.png`;
-            this._LableChild('Name').text = this.$data[_Ranking._Data._ins()._property.$name];
+            this._LableChild('Name').text = this.$data[_Ranking._Data._ins()._property.name];
         }
-        this._LableChild('RankNum').text = String(this.$rankNum);
-        this._LableChild('FansNum').text = String(this.$fansNum);
+        this._LableChild('RankNum').text = String(this.$data.rankNum);
+        this._LableChild('FansNum').text = String(this.$data.fansNum);
         const IconPic = this._LableChild('Icon').getChildAt(0) as Laya.Image;
-        IconPic.skin = this.$data[_Ranking._Data._ins()._otherPro.iconSkin];
+        IconPic.skin = this.$data.iconSkin;
     }
 }
 export default class Ranking extends LwgScene._SceneBase {
@@ -36,7 +26,7 @@ export default class Ranking extends LwgScene._SceneBase {
         ADManager.TAPoint(TaT.PageShow, 'rankpage');
         _Ranking._Data._ins()._List = this._ListVar('List');
         if (_Ranking._whereFrom === 'Tweeting') {
-            _Ranking._Data._ins()._addProValueForAll(_Ranking._Data._ins()._otherPro.fansNum, (): number => {
+            _Ranking._Data._ins()._addProValueForAll(_Ranking._Data._ins()._mergePro.fansNum, (): number => {
                 return LwgTools._Number.randomOneInt(100, 150);
             })
         }
@@ -66,7 +56,7 @@ export default class Ranking extends LwgScene._SceneBase {
         }
     }
     lwgOnStart(): void {
-        if (_Ranking._Data._ins()._getProperty(_Ranking._Data._ins()._pitchName, _Ranking._Data._ins()._otherPro.rankNum) === 1) {
+        if (_Ranking._Data._ins()._getProperty(_Ranking._Data._ins()._pitchName, _Ranking._Data._ins()._mergePro.rankNum) === 1) {
             _Ranking._Data._ins()._List.scrollTo(0);
         } else {
             if (_Ranking._whereFrom === 'Tweeting') {

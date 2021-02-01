@@ -9,44 +9,32 @@ import { _3DScene } from "./_3D";
 
 /**表格中的其他类型*/
 export type _otherPro = {
-    $icon: any;
-    $putOn: any;
+    icon: any;
+    putOn: any;
 } & lwg.DataAdmin._BaseProperty;
 
-class _Item extends LwgData._Item implements _otherPro {
-    get $icon(): string {
-        return this.$data ? this.$data['icon'] : null;
-    }
-    set $icon(_icon: string) {
-        this.$data['icon'] = _icon;
-    }
-    get $putOn(): string {
-        return this.$data ? this.$data['putOn'] : null;
-    }
-    set $putOn(_icon: string) {
-        this.$data['putOn'] = _icon;
-    }
-
+class _Item extends LwgData._Item {
+    $data: _otherPro;
     $button(): void {
         this._btnUp(this._Owner, (e: Laya.Event) => {
-            if (this.$name === 'ads') {
+            if (this.$data.name === 'ads') {
                 return;
             }
-            if (_AllClothes._ins()._getProperty(this.$name, _AllClothes._ins()._property.$complete)) {
-                _AllClothes._ins().accurateChange(this.$data['part'], this.$name);
+            if (_AllClothes._ins()._getProperty(this.$data.name, _AllClothes._ins()._property.complete)) {
+                _AllClothes._ins().accurateChange(this.$data['part'], this.$data.name);
                 _GameEffects3D._showCloth(_3DScene._ins()._Owner);
             } else {
                 ADManager.ShowReward(() => {
-                    if (_AllClothes._ins()._checkCondition(this.$name)) {
+                    if (_AllClothes._ins()._checkCondition(this.$data.name)) {
                         LwgDialogue.createHint_Middle('恭喜获得新服装！');
-                        _AllClothes._ins().accurateChange(this.$data['part'], this.$name);
+                        _AllClothes._ins().accurateChange(this.$data['part'], this.$data.name);
                     }
                 })
             }
         }, null)
     }
     $render(): void {
-        if (this.$name === 'ads') {
+        if (this.$data.name === 'ads') {
             !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
             this._ImgChild('Mask').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
         } else {
@@ -54,27 +42,27 @@ class _Item extends LwgData._Item implements _otherPro {
 
             this._ImgChild('Icon').visible = this._ImgChild('Board').visible = true;
 
-            if (this.$putOn) {
+            if (this.$data.putOn) {
                 this._ImgChild('Board').skin = `Game/UI/Common/xuanzhong.png`;
             } else {
                 this._ImgChild('Board').skin = null;
             }
             // 如果是OPPO，直接获取图片，如果不是则获取表格中的图片数据
-            if (this.$classify === _AllClothes._ins()._classify.DIY) {
+            if (this.$data.classify === _AllClothes._ins()._classify.DIY) {
                 if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
-                    this._ImgChild('Icon').skin = LwgOPPO._getStoragePic(this.$name);
+                    this._ImgChild('Icon').skin = LwgOPPO._getStoragePic(this.$data.name);
                     this._ImgChild('Icon').size(110, 130);
                     this._ImgChild('Icon').scale(1, 1);
                 } else {
-                    this._ImgChild('Icon').skin = this.$icon;
+                    this._ImgChild('Icon').skin = this.$data.icon;
                 }
             } else {
                 this._ImgChild('Icon').size(null, null);
                 this._ImgChild('Icon').scale(0.9, 0.9);
-                this._ImgChild('Icon').skin = _AllClothes._ins().getGeneralIcon(this.$name);
+                this._ImgChild('Icon').skin = _AllClothes._ins().getGeneralIcon(this.$data.name);
             }
         }
-        if (this.$complete) {
+        if (this.$data.complete) {
             this._ImgChild('Mask').visible = this._ImgChild('AdsSign').visible = false;
         } else {
             this._ImgChild('Mask').visible = this._ImgChild('AdsSign').visible = true;

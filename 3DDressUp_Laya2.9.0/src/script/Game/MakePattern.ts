@@ -14,19 +14,19 @@ class _Item extends LwgData._Item {
     $button(): void {
         this._btnFour(this._ImgChild('Icon'),
             (e: Laya.Event) => {
-                if (!this.$complete) {
-                    switch (this.$unlockWay) {
-                        case this.$unlockWayType.$check:
+                if (!this.$data.complete) {
+                    switch (this.$data.unlockWay) {
+                        case this.$unlockWayType.check:
                             LwgDialogue.createHint_Middle('请前往签到页面获取');
                             break;
-                        case this.$unlockWayType.$customs:
-                            LwgDialogue.createHint_Middle(`制作${this.$conditionNum}件衣服才能获取！`);
+                        case this.$unlockWayType.customs:
+                            LwgDialogue.createHint_Middle(`制作${this.$data.conditionNum}件衣服才能获取！`);
                             break;
-                        case this.$unlockWayType.$ads:
+                        case this.$unlockWayType.ads:
                             ADManager.ShowReward(() => {
-                                if (_MakePattern._Pattern._ins()._checkCondition(this.$name)) {
+                                if (_MakePattern._Pattern._ins()._checkCondition(this.$data.name)) {
                                     LwgDialogue.createHint_Middle('恭喜获得新贴图！');
-                                    _MakePattern._Pattern._ins()._setProperty(this.$name, _MakePattern._Pattern._ins()._property.$complete, true);
+                                    _MakePattern._Pattern._ins()._setProperty(this.$data.name, _MakePattern._Pattern._ins()._property.complete, true);
                                 }
                             })
                             break;
@@ -34,7 +34,7 @@ class _Item extends LwgData._Item {
                             break;
                     }
                 }
-                if (this.$name === 'ads' || !this.$name || !this.$complete) {
+                if (this.$data.name === 'ads' || !this.$data.name || !this.$data.complete) {
                     this['Cancal'] = true;
                     return;
                 } else {
@@ -52,7 +52,7 @@ class _Item extends LwgData._Item {
                 if (!this.create) {
                     this.diffX = this.fX - e.stageX;
                     if (this.diffX >= 5) {
-                        this._evNotify(_MakePattern.Event.createImg, [this.$name, this._Owner._lwg.gPoint]);
+                        this._evNotify(_MakePattern.Event.createImg, [this.$data.name, this._Owner._lwg.gPoint]);
                         this.create = true;
                     }
                 }
@@ -74,28 +74,28 @@ class _Item extends LwgData._Item {
 
     $render(): void {
         this._LableChild('UnlockWayNum').visible = false;
-        if (this.$name === 'ads') {
+        if (this.$data.name === 'ads') {
             !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
             this._LableChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = false;
         } else {
-            if (!this.$complete) {
-                if (this.$unlockWay === _MakePattern._Pattern._ins()._unlockWay.$ads) {
+            if (!this.$data.complete) {
+                if (this.$data.unlockWay === _MakePattern._Pattern._ins()._unlockWay.ads) {
                     this._ImgChild('AdsSign').visible = true;
                     this._LableChild('UnlockWay').visible = false;
                 } else {
                     this._LableChild('AdsSign').visible = false;
                     this._LableChild('UnlockWay').visible = true;
-                    switch (this.$unlockWay) {
-                        case _DIYClothes._ins()._unlockWay.$check:
+                    switch (this.$data.unlockWay) {
+                        case _DIYClothes._ins()._unlockWay.check:
                             this._LableChild('UnlockWay').text = '签到';
                             this._LableChild('UnlockWay').fontSize = 30;
                             this._LableChild('UnlockWayNum').visible = false;
                             break;
-                        case _DIYClothes._ins()._unlockWay.$customs:
+                        case _DIYClothes._ins()._unlockWay.customs:
                             this._LableChild('UnlockWay').text = `制作衣服`;
                             this._LableChild('UnlockWay').fontSize = 25;
                             this._LableChild('UnlockWayNum').visible = true;
-                            this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum} /${this.$conditionNum})`;
+                            this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum} /${this.$data.conditionNum})`;
                             break;
                         default:
                             break;
@@ -106,11 +106,11 @@ class _Item extends LwgData._Item {
                 this._LableChild('Mask').visible = this._ImgChild('AdsSign').visible = this._LableChild('UnlockWay').visible = false;
             }
             this._ImgChild('Icon').visible = true;
-            this._ImgChild('Icon').gray = !this.$complete;
+            this._ImgChild('Icon').gray = !this.$data.complete;
             if (this._BoxChild('NativeRoot')) this._BoxChild('NativeRoot').destroy();
             // 有些是空的占位置用的
-            if (this.$name) {
-                this._ImgChild('Icon').skin = `Pattern/${this.$name}.png`;
+            if (this.$data.name) {
+                this._ImgChild('Icon').skin = `Pattern/${this.$data.name}.png`;
             } else {
                 this._LableChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = false;
                 this._ImgChild('Icon').skin = null;
@@ -127,7 +127,7 @@ export default class MakePattern extends LwgScene._SceneBase {
 
         _MakePattern._Pattern._ins()._List = this._ListVar('List');
         // 如果第一有了，选中就在第一列，否则停在第二列
-        if (_MakePattern._Pattern._ins()._getProperty('newYear1', _MakePattern._Pattern._ins()._property.$complete) || !_Guide._complete.value) {
+        if (_MakePattern._Pattern._ins()._getProperty('newYear1', _MakePattern._Pattern._ins()._property.complete) || !_Guide._complete.value) {
             this.switchClassify('newYear');
             _MakePattern._Pattern._ins()._listArray = _MakePattern._Pattern._ins().newYearArr;
         } else {

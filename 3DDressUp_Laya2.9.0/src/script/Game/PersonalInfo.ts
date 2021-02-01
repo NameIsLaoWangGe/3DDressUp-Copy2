@@ -9,8 +9,8 @@ export default class PersonalInfo extends  LwgScene._SceneBase {
 
         this._TextInputVar('NameValue').text = _PersonalInfo._name.value;
         const obj = _Ranking._Data._ins()._getPitchObj();
-        this._LabelVar('RankValue').text = obj[_Ranking._Data._ins()._otherPro.rankNum];
-        this._LabelVar('FansValue').text = obj[_Ranking._Data._ins()._otherPro.fansNum];
+        this._LabelVar('RankValue').text = obj[_Ranking._Data._ins()._mergePro.rankNum];
+        this._LabelVar('FansValue').text = obj[_Ranking._Data._ins()._mergePro.fansNum];
     }
 
     lwgOpenAni(): number {

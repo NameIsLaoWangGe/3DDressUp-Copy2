@@ -76,9 +76,9 @@ export class _TaskClothes extends LwgData._Table {
             if (Line.numChildren > 0) {
                 let data = {};
                 data['Line'] = Line;
-                data[this._property.$name] = Line.name;
-                data[this._property.$conditionNum] = Line.numChildren;
-                data[this._property.$degreeNum] = 0;
+                data[this._property.name] = Line.name;
+                data[this._property.conditionNum] = Line.numChildren;
+                data[this._property.degreeNum] = 0;
                 this._arr.push(data);
             }
         }
@@ -244,42 +244,42 @@ class _Item extends LwgData._Item {
     $awake(): void { };
     $button(): void {
         this._btnUp(this._Owner, () => {
-            if (!_Guide._complete.value && this.$name !== 'diy_dress_002_final') return;
-            if (this.$name === 'ads') {
+            if (!_Guide._complete.value && this.$data.name !== 'diy_dress_002_final') return;
+            if (this.$data.name === 'ads') {
                 return;
             }
-            if (this.$complete) {
+            if (this.$data.complete) {
                 // 如果已选中则不会更换选择
-                if (this.$name !== _DIYClothes._ins()._pitchName) {
-                    _DIYClothes._ins()._setPitch(this.$name);
+                if (this.$data.name !== _DIYClothes._ins()._pitchName) {
+                    _DIYClothes._ins()._setPitch(this.$data.name);
                     this._evNotify(_MakeTailor.Event.changeClothes);
                 }
             }
             else {
-                switch (this.$unlockWay) {
-                    case this.$unlockWayType.$check:
+                switch (this.$data.unlockWay) {
+                    case this.$unlockWayType.check:
                         LwgDialogue.createHint_Middle('请前往签到页面获取');
                         break;
-                    case this.$unlockWayType.$customs:
-                        LwgDialogue.createHint_Middle(`制作${this.$conditionNum}件才能衣服获取哦！`);
+                    case this.$unlockWayType.customs:
+                        LwgDialogue.createHint_Middle(`制作${this.$data.conditionNum}件才能衣服获取哦！`);
                         break;
-                    case this.$unlockWayType.$ads:
+                    case this.$unlockWayType.ads:
                         ADManager.ShowReward(() => {
-                            if (_DIYClothes._ins()._checkCondition(this.$name)) {
+                            if (_DIYClothes._ins()._checkCondition(this.$data.name)) {
                                 LwgDialogue.createHint_Middle('恭喜获得一件新服装！');
-                                _DIYClothes._ins()._setPitch(this.$name);
+                                _DIYClothes._ins()._setPitch(this.$data.name);
                                 this._evNotify(_MakeTailor.Event.changeClothes);
                             }
                         })
                         break;
-                    case this.$unlockWayType.$free:
+                    case this.$unlockWayType.free:
                         LwgDialogue.createHint_Middle(`免费获得`);
                         break;
                     default:
                         break;
                 }
             }
-            if (!_Guide._complete.value && this.$name == 'diy_dress_002_final') {
+            if (!_Guide._complete.value && this.$data.name == 'diy_dress_002_final') {
                 _Guide.MmakeTailorBtnComSwicth = true;
                 this._evNotify(_Guide.Event.MakeTailorBtnCom);
             };
@@ -288,31 +288,31 @@ class _Item extends LwgData._Item {
 
     $render(): void {
         this._LableChild('UnlockWayNum').visible = false;
-        if (this.$name == 'ads') {
+        if (this.$data.name == 'ads') {
             if (!this._BoxChild('NativeRoot')) {
                 LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
             }
             this._ImgChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
         } else {
-            if (!this.$complete) {
-                if (this.$unlockWay === _DIYClothes._ins()._unlockWay.$ads) {
+            if (!this.$data.complete) {
+                if (this.$data.unlockWay === _DIYClothes._ins()._unlockWay.ads) {
                     this._ImgChild('AdsSign').visible = true;
                     this._LableChild('UnlockWay').visible = false;
                     this._ImgChild('Mask').visible = false;
                 } else {
                     this._ImgChild('AdsSign').visible = false;
                     this._LableChild('UnlockWay').visible = true;
-                    switch (this.$unlockWay) {
-                        case _DIYClothes._ins()._unlockWay.$check:
+                    switch (this.$data.unlockWay) {
+                        case _DIYClothes._ins()._unlockWay.check:
                             this._LableChild('UnlockWay').text = '签到';
                             this._LableChild('UnlockWay').fontSize = 30;
                             this._LableChild('UnlockWayNum').visible = false;
                             break;
-                        case _DIYClothes._ins()._unlockWay.$customs:
+                        case _DIYClothes._ins()._unlockWay.customs:
                             this._LableChild('UnlockWay').text = `制作衣服`;
                             this._LableChild('UnlockWay').fontSize = 25;
                             this._LableChild('UnlockWayNum').visible = true;
-                            this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum.value} /${this.$conditionNum})`;
+                            this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum.value} /${this.$data.conditionNum})`;
                             break;
                         default:
                             break;
@@ -322,12 +322,12 @@ class _Item extends LwgData._Item {
             } else {
                 this._ImgChild('Mask').visible = this._ImgChild('AdsSign').visible = this._LableChild('UnlockWay').visible = false;
             }
-            this._ImgChild('Icon').gray = !this.$complete;
+            this._ImgChild('Icon').gray = !this.$data.complete;
             if (this._BoxChild('NativeRoot')) this._BoxChild('NativeRoot').destroy();
             this._ImgChild('Icon').visible = this._ImgChild('Board').visible = true;
-            this._ImgChild('Icon').skin = _DIYClothes._ins().getDIYCutIcon(this.$name);
+            this._ImgChild('Icon').skin = _DIYClothes._ins().getDIYCutIcon(this.$data.name);
             this._ImgChild('Board').skin = `Lwg/UI/ui_orthogon_green.png`;
-            if (this.$pitch) {
+            if (this.$data.pitch) {
                 this._ImgChild('Board').skin = `Game/UI/Common/xuanzhong.png`;
             } else {
                 this._ImgChild('Board').skin = null;
@@ -350,7 +350,7 @@ export default class MakeTailor extends  LwgScene._SceneBase {
         _DIYClothes._ins()._List = this._ListVar('List');
         const arr = _DIYClothes._ins()._getArrByPitchClassify();
         _DIYClothes._ins()._listArray = arr;
-        _DIYClothes._ins()._setPitch(arr[0][_DIYClothes._ins()._property.$name]);
+        _DIYClothes._ins()._setPitch(arr[0][_DIYClothes._ins()._property.name]);
         if (!_Guide._complete.value) _DIYClothes._ins()._List.scrollBar.touchScrollEnable = false;
     }
     UI: _UI;
