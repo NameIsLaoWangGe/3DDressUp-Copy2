@@ -1,5 +1,6 @@
 import { LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { _CutInRes, _Res } from "./_Res";
+import { _SceneName } from "./_SceneName";
 export class _3DScene {
     private static ins: _3DScene;
     aniName = {
@@ -205,7 +206,7 @@ export class _3DScene {
         this.fillLight_Left1.active = false;
         this.fillLight_Right1.active = false;
         this._MirrorCamera.active = false;
-        if (whereFrom == 'preload') {
+        if (whereFrom === _SceneName.PreLoad) {
             this._bg1Mat.albedoTexture = _Res._list.texture2D.bgStart.texture2D;
         } else {
             this._bg1Mat.albedoTexture = _CutInRes.Start.texture2D.bgStart.texture2D;

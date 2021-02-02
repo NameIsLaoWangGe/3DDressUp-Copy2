@@ -3,6 +3,7 @@ import { _3DDIYCloth, _3DScene } from "./_3D";
 import { _GameAni } from "./_GameAni";
 import { _AllClothes, _DIYClothes, _PreLoadCutIn } from "./_GameData";
 import { _CutInRes } from "./_Res";
+import { _SceneName } from "./_SceneName";
 export default class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
     lwgOpenAniAfter(): void {
         let time = 0;
@@ -11,13 +12,13 @@ export default class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
             this._LabelVar('Schedule').text = `${time}%`;
         }, () => {
             let obj = _CutInRes[LwgScene._PreLoadCutIn.openName];
-            obj = obj ? obj : {};
+            obj =  _CutInRes[LwgScene._PreLoadCutIn.openName] ? obj : {};
             LwgEvent._notify(LwgPreLoad._Event.importList, [obj]);
         })
     }
     lwgAllComplete(): number {
         switch (LwgScene._PreLoadCutIn.openName) {
-            case 'MakePattern':
+            case _SceneName.MakePattern:
                 _3DDIYCloth._ins().remake(_DIYClothes._ins()._pitchClassify, _DIYClothes._ins()._pitchName);
                 _3DScene._ins().intoMakePattern();
                 // 提前设置皮肤
@@ -33,19 +34,18 @@ export default class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
                     _3DDIYCloth._ins().addTexture2D(getTex());
                 }));
                 break;
-            case 'MakeTailor':
+            case _SceneName.MakeTailor:
                 _3DScene._ins().intoMakeTailor();
-                _DIYClothes._ins().ClothesArr = null;
                 _DIYClothes._ins().getClothesArr();
                 break;
-            case 'Start':
-                if (LwgScene._PreLoadCutIn.closeName === 'MakePattern' && !_PreLoadCutIn._fromBack) {
+            case _SceneName.Start:
+                if (LwgScene._PreLoadCutIn.closeName === _SceneName.MakePattern && !_PreLoadCutIn._fromBack) {
                     this.iconPhoto();
                 } else {
                     _3DScene._ins().intoStart();
                 }
                 break;
-            case 'DressingRoom':
+            case _SceneName.DressingRoom:
                 _3DScene._ins().intogeDressingRoom();
             default:
                 break;

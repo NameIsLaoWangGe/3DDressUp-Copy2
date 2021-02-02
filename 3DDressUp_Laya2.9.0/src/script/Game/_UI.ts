@@ -1,9 +1,10 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { LwgScene, LwgAni2D, LwgClick, LwgTools } from "../Lwg/Lwg";
+import { LwgScene, LwgAni2D, LwgClick, LwgTools, LwgPlatform, LwgTimer } from "../Lwg/Lwg";
 import { _3DScene } from "./_3D";
 import { _BackHint, _Guide } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
+import { _SceneName } from "./_SceneName";
 
 /**通用UI*/
 export class _UI {
@@ -29,12 +30,19 @@ export class _UI {
         this.BtnBack = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnBack.prefab, _Scene, [77, 79]) as Laya.Image;
         LwgClick._on(LwgClick._Use.value, this.BtnBack, this, null, null, () => {
             if (!_Guide._complete) return;
-            ADManager.TAPoint(TaT.BtnShow, 'back_main');
+
             if (_3DScene._ins()._Owner.active) {
                 _BackHint._3dToSp = _3DScene._ins().cameraToSprite(this.Scene);
             }
-            _BackHint._fromScene = this.Scene;
-            LwgScene._openScene('BackHint');
+            ADManager.TAPoint(TaT.BtnShow, 'back_main');
+            if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                _BackHint._whereScene = this.Scene;
+                LwgScene._openScene(_SceneName.BackHint);
+            } else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                LwgTimer._frameOnce(10,this,()=>{
+                    this.Scene[this.Scene.name]._openScene(_SceneName.Start, true, true);
+                })
+            }
         })
 
         this.BtnRollback = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnRollback.prefab, _Scene, [200, 79]) as Laya.Image;

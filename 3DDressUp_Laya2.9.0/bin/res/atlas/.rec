@@ -87,7 +87,6 @@ P 3D581962 wireframeBlack1.png
 D Lwg/Voice
 R EB9067B0 bgm.mp3
 D TJ/Promo
-D Game/UI/01Repertory
 D Game/UI/AdsHint
 R 4552D47E di.png
 P 680DA65C guankan.png
@@ -136,6 +135,7 @@ R 255CF98B dikuang.png
 P BA88A1FE duihao.png
 P 01BB0212 fanhuiL.png
 P CA7B7BF1 fanhuiR.png
+P 949DA1CA fx_di.png
 P 9670C816 guanbi.png
 P 8CDCC78D juxing.png
 R D7DFF281 kuang.png
@@ -148,6 +148,7 @@ P 543D5896 xuanzhong.png
 P E996F255 you.png
 P F9C91A64 zan.png
 P 91745C3A zuo.png
+P EDE986AB zz.png
 D Game/UI/Design
 D Game/UI/Draw
 D Game/UI/DressingRoom
@@ -201,6 +202,12 @@ P 116FBB7F touxiang.png
 R 5D2BE64E w_di.png
 R 08D0EECE x_di.png
 P D96724AA zuozhe.png
+D Game/UI/Share
+P 970B01CA df.png
+P FE7C9D7F jc.png
+P 611CCCF9 lx.png
+P CB81FADA zb.png
+R 945DEED6 巅峰回顾.png
 D Game/UI/Start
 P 4AA40E4B diandao.png
 P 6D159C0F hudong.png
@@ -255,31 +262,6 @@ P 812725A6 yjjx.png
 P 3ECD784B yjjx14.png
 P 9949D19A yuansheng2.png
 P BBB689A3 zt_1_10.png
-D Game/UI/01Repertory/AdsHint
-D Game/UI/01Repertory/Card
-D Game/UI/01Repertory/CheckIn
-D Game/UI/01Repertory/Common
-D Game/UI/01Repertory/Compound
-D Game/UI/01Repertory/Defeated
-D Game/UI/01Repertory/DesignPic
-D Game/UI/01Repertory/DrawCard
-D Game/UI/01Repertory/Game
-D Game/UI/01Repertory/MakeClothes
-D Game/UI/01Repertory/PreLoad
-D Game/UI/01Repertory/PropTry
-D Game/UI/01Repertory/Resurgence
-D Game/UI/01Repertory/SelectLevel
-D Game/UI/01Repertory/Set
-D Game/UI/01Repertory/Settle
-D Game/UI/01Repertory/Share
-D Game/UI/01Repertory/Shop
-D Game/UI/01Repertory/Skin
-D Game/UI/01Repertory/SkinQualified
-D Game/UI/01Repertory/Special
-D Game/UI/01Repertory/Start
-D Game/UI/01Repertory/Task
-D Game/UI/01Repertory/Victory
-D Game/UI/01Repertory/VictoryBox
 D Game/UI/Clothes/Icon
 D Game/UI/DressingRoom/PartIcon
 P F6EE425F Accessories.png

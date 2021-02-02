@@ -123,20 +123,22 @@ export module Lwg {
         /**和场景名称一样的脚本,这个脚本唯一，不可随意调用*/
         export let _SceneScript = {};
         /**常用场景的名称，和脚本默认导出类名保持一致*/
-        export enum _BaseName {
-            PreLoad = 'PreLoad',
-            PreLoadCutIn = 'PreLoadCutIn',
-            Guide = 'Guide',
-            Start = 'Start',
-            Shop = 'Shop',
-            Task = 'Task',
-            Set = 'Set',
-            Victory = 'Victory',
-            Defeated = 'Defeated',
-            CheckIn = 'CheckIn',
-            LwgInit = 'LwgInit',
-            SelectLevel = 'SelectLevel',
-            Settle = 'Settle',
+        export class _BaseName {
+            static PreLoad = 'PreLoad';
+            static PreLoadCutIn = 'PreLoadCutIn';
+            static Guide = 'Guide';
+            static Start = 'Start';
+            static Shop = 'Shop';
+            static Task = 'Task';
+            static Set = 'Set';
+            static Victory = 'Victory';
+            static Defeated = 'Defeated';
+            static CheckIn = 'CheckIn';
+            static LwgInit = 'LwgInit';
+            static SelectLevel = 'SelectLevel';
+            static Settle = 'Settle';
+            static Share = 'Share';
+            static Ranking = 'Ranking';
         }
         /**预加载完毕后，需要打开的场景信息*/
         export const _PreLoadCutIn = {
@@ -2671,40 +2673,40 @@ export module Lwg {
         export class _BaseProperty {
             constructor() { }
             /**名称是必须有的属性，可以是数字,不可以重名*/
-            name: any = 'name';
+            name?: any = 'name';
             /**用于排序或者是某些资源的索引关联*/
-            serial: any = 'serial';
+            serial?: any = 'serial';
             /**通过某个属性值进行排序*/
-            sort: any = 'sort';
+            sort?: any = 'sort';
             /**有时候会有个中文名*/
-            chName: any = 'chName';
+            chName?: any = 'chName';
             /**分类*/
-            classify: any = 'classify';
+            classify?: any = 'classify';
             /**解锁方式*/
-            unlockWay: any = 'unlockWay';
+            unlockWay?: any = 'unlockWay';
             /**另一个解锁方式*/
-            otherUnlockWay: any = 'otherUnlockWay';
+            otherUnlockWay?: any = 'otherUnlockWay';
             /**奖励类型或者名称*/
-            conditionNum: any = 'conditionNum';
+            conditionNum?: any = 'conditionNum';
             /**另一个奖励条件，对比条件值，达到了多少*/
-            otherConditionNum: any = 'otherConditionNum';
+            otherConditionNum?: any = 'otherConditionNum';
             /**对比条件值，达到了多少*/
-            degreeNum: any = 'degreeNum';
+            degreeNum?: any = 'degreeNum';
             /**另一个奖励条件，对比条件值，达到了多少*/
-            otherDegreeNum: any = 'otherDegreeNum';
+            otherDegreeNum?: any = 'otherDegreeNum';
             /**达到，取得，完成,解锁*/
-            rewardType: any = 'otherGetAward';
+            rewardType?: any = 'otherGetAward';
             /**附加一个达到，取得，完成,解锁*/
-            otherRewardType: any = 'otherRewardType';
+            otherRewardType?: any = 'otherRewardType';
 
-            complete: any = 'complete';
-            otherComplete: any = 'otherComplete';
+            complete?: any = 'complete';
+            otherComplete?: any = 'otherComplete';
             /**奖励的状态，如果不有规律的奖励，需要手动领取*/
-            getAward: any = 'getAward';
+            getAward?: any = 'getAward';
             /**附加奖励的状态，如果不有规律的奖励，需要手动领取*/
-            otherGetAward: any = 'otherGetAward';
+            otherGetAward?: any = 'otherGetAward';
             /**是否被选中*/
-            pitch: any = 'pitch';
+            pitch?: any = 'pitch';
         };
         /**基础获取途径*/
         export type _BaseUnlockWay = {
@@ -2742,6 +2744,8 @@ export module Lwg {
             lwglistRender(data: _BaseProperty, index: number): void {
                 this.$data = data;
                 this.$dataIndex = index;
+                //如果 this.$data 没有被渲染到则不可以渲染；
+                if (!this.$data) return;
                 this.$render();
             }
             /**事件注册*/
@@ -2770,10 +2774,10 @@ export module Lwg {
             _classify: any;
             /**数据表名称*/
             _tableName: string = 'name';
-            get _arr(): Array<any> {
+            get _arr(): _BaseProperty[] {
                 return this[`_${this._tableName}arr`];
             }
-            set _arr(arr: Array<any>) {
+            set _arr(arr: _BaseProperty[]) {
                 this[`_${this._tableName}arr`] = arr;
                 Laya.LocalStorage.setJSON(this._tableName, JSON.stringify(this[`_${this._tableName}arr`]));
             }
@@ -3657,6 +3661,23 @@ export module Lwg {
                 }
                 this._refreshAndStorage();
             }
+
+            /**
+             * 通过名称删除数组中的某个对象,如果有好几个，则全部删掉
+             * @param {string} name
+             * @memberof _Table
+             */
+            _deleteObjByName(name: string): void {
+                for (let index = 0; index < this._arr.length; index++) {
+                    const element = this._arr[index];
+                    if (element.name === name) {
+                        this._arr.splice(index, 1);
+                        index--;
+                    }
+                }
+                this._refreshAndStorage();
+            }
+
 
             /**
              * 根据某个值进行排序,并且直给予一个sort属性记录，会更新本地存储
@@ -5803,14 +5824,6 @@ export module Lwg {
         }
         /**按钮音效*/
         export let _audioUrl: string;
-        /**
-         * 动态创建一个按钮
-         */
-        export function _createButton(): void {
-            let Btn = new Laya.Sprite();
-            let img = new Laya.Image();
-            let label = new Laya.Label();
-        }
         /**点击效果类型*/
         export let _Type = {
             /**无效果*/
@@ -5828,19 +5841,15 @@ export module Lwg {
                 this['Click/name'] = val;
             }
         }
-        /**b
-         * 点击事件注册,可以用(e)=>{}简写传递的函数参数
-         * @param effect 效果类型 1.'largen'
-         * @param target 节点
-         * @param caller 执行域
-         * @param down 按下函数
-         * @param move 移动函数
-         * @param up 抬起函数
-         * @param out 出屏幕函数
+
+        /**
+         * @export 根据点击效果返回控制对象
+         * @param {string} effectType 类型
+         * @return {*}  {*}
          */
-        export function _on(effect: string, target: Laya.Node, caller: any, down?: Function, move?: Function, up?: Function, out?: Function): void {
+        export function _effectSwitch(effectType: string): any {
             let btnEffect: any;
-            switch (effect) {
+            switch (effectType) {
                 case _Type.no:
                     btnEffect = new _NoEffect();
                     break;
@@ -5854,6 +5863,21 @@ export module Lwg {
                     btnEffect = new _NoEffect();
                     break;
             }
+            return btnEffect;
+        }
+
+        /**b
+         * 点击事件注册,可以用(e)=>{}简写传递的函数参数
+         * @param effect 效果类型 1.'largen'
+         * @param target 节点
+         * @param caller 执行域
+         * @param down 按下函数
+         * @param move 移动函数
+         * @param up 抬起函数
+         * @param out 出屏幕函数
+         */
+        export function _on(effect: string, target: Laya.Node, caller: any, down?: Function, move?: Function, up?: Function, out?: Function): void {
+            const btnEffect = _effectSwitch(effect);
             target.on(Laya.Event.MOUSE_DOWN, caller, down);
             target.on(Laya.Event.MOUSE_MOVE, caller, move);
             target.on(Laya.Event.MOUSE_UP, caller, up);
@@ -5875,27 +5899,11 @@ export module Lwg {
          * @param out 出屏幕函数
          */
         export function _off(effect: string, target: any, caller: any, down?: Function, move?: Function, up?: Function, out?: Function): void {
-            let btnEffect: any;
-            switch (effect) {
-                case _Type.no:
-                    btnEffect = new _NoEffect();
-                    break;
-                case _Type.largen:
-                    btnEffect = new _Largen();
-                    break;
-                case _Type.reduce:
-                    btnEffect = new _Largen();
-                    break;
-                default:
-                    btnEffect = new _NoEffect();
-                    break;
-            }
-
+            const btnEffect = _effectSwitch(effect);
             target._off(Laya.Event.MOUSE_DOWN, caller, down);
             target._off(Laya.Event.MOUSE_MOVE, caller, move);
             target._off(Laya.Event.MOUSE_UP, caller, up);
             target._off(Laya.Event.MOUSE_OUT, caller, out);
-
             target._off(Laya.Event.MOUSE_DOWN, caller, btnEffect.down);
             target._off(Laya.Event.MOUSE_MOVE, caller, btnEffect.move);
             target._off(Laya.Event.MOUSE_UP, caller, btnEffect.up);
@@ -5931,7 +5939,6 @@ export module Lwg {
         * 点击放大的按钮点击效果,每个类是一种效果，和点击的声音一一对应
         */
         export class _Reduce {
-
             down(event: Laya.Event): void {
                 event.currentTarget.scale(0.9, 0.9);
                 AudioAdmin._playSound(LwgClick._audioUrl);
@@ -6859,7 +6866,7 @@ export module Lwg {
         /**
          * 简单移动,初始位置可以为null
          * @param node 节点
-         * @param targetX 目标x位置
+         * @param targetX 目���x位置
          * @param targetY 目标y位置
          * @param time 花费时间
          * @param delayed 延时时间
@@ -8326,7 +8333,7 @@ export module Lwg {
                 let _ray: Laya.Ray = new Laya.Ray(new Laya.Vector3(0, 0, 0), new Laya.Vector3(0, 0, 0));
                 /**射线扫描结果*/
                 let outs: Array<Laya.HitResult> = new Array<Laya.HitResult>();
-                // 如果被画布canvas并不和stage一样大，那么stage会被缩放，位置需要补回来，舞台在画布内，vector2是舞台坐标，要转换为canvas坐标，
+                // 如果被画布canvas并不和stage一样大，那么stage会被缩放，位置需要补回来，舞台在画布内，vector2是舞台坐��，要转换为canvas坐标，
                 const _v2 = new Laya.Vector2(Laya.stage.clientScaleX * vector2.x, Laya.stage.clientScaleY * vector2.y);
                 //射线碰撞到碰撞框，碰撞框的isTrigger属性要勾上，这样只检测碰撞，不产生碰撞反应
                 camera.viewportPointToRay(_v2, _ray);

@@ -6,6 +6,7 @@ import { _GameEffects3D } from "./_GameEffects3D";
 import { _Res } from "./_Res";
 import { _UI } from "./_UI";
 import { _3DScene } from "./_3D";
+import { _SceneName } from "./_SceneName";
 
 /**表格中的其他类型*/
 export type _otherPro = {
@@ -105,7 +106,7 @@ export default class DressingRoom extends LwgScene._SceneBase {
                 _3DScene._ins().closeMirror();
                 _3DScene._ins().cameraToSprite(this._Owner);
                 Laya.Resource.destroyUnusedResources();
-                this._openScene('Start', true, true);
+                this._openScene(_SceneName.Start, true, true);
                 this.UI.btnBackVinish();
             }, 200);
         }

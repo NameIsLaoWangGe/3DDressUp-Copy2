@@ -85,7 +85,7 @@ export default class RecordManager {
         console.log("******************吊起分享 ？？？？？", RecordManager.grv, RecordManager.grv.videoPath);
         if (RecordManager.grv.videoPath) {
             let p = new TJ.Platform.AppRt.Extern.TT.ShareAppMessageParam();
-            p.extra.videoTopics = ["涂鸦小画手", "番茄小游戏", "抖音小游戏"]
+            p.extra.videoTopics = ["女神修炼手册", "番茄小游戏", "抖音小游戏"]
             p.channel = "video";
             p.success = () => {
                 LwgDialogue.createHint_Middle("分享成功!");

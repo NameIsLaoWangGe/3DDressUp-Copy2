@@ -3,6 +3,7 @@ import { LwgScene, LwgAni2D, LwgTimer, LwgTools, LwgClick } from "../Lwg/Lwg";
 import { _3DScene } from "./_3D";
 import { _CheckIn, _DIYClothes, _Guide, _Ranking, _Start, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
+import { _SceneName } from "./_SceneName";
 export default class Start extends LwgScene._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'mainpage');
@@ -32,7 +33,7 @@ export default class Start extends LwgScene._SceneBase {
             LwgAni2D.bombs_Appear(element, 0, 1, 1.2, 0, 200, () => {
                 if (index === this._ImgVar('BtnParent').numChildren - 1) {
                     LwgTimer._once(500, this, () => {
-                        if (_Start._whereFrom === 'MakePattern') {
+                        if (_Start._whereFrom === _SceneName.MakePattern) {
                             this._evNotify(_Start.Event.photo);
                             _Start._whereFrom = null;
                         } else {
@@ -42,7 +43,7 @@ export default class Start extends LwgScene._SceneBase {
                                     this._evNotify(_Guide.Event.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
                                 })
                             } else {
-                                !_CheckIn._todayCheckIn && this._openScene('CheckIn', false);
+                                !_CheckIn._todayCheckIn && this._openScene(_SceneName.CheckIn, false);
                             }
                         }
                     })
@@ -76,14 +77,14 @@ export default class Start extends LwgScene._SceneBase {
                 _Tweeting._photo.take(this._Owner, 2);
                 sp.destroy();
                 LwgTimer._frameOnce(10, this, () => {
-                    this._openScene('Tweeting_Main', false);
+                    this._openScene(_SceneName.Tweeting_Main, false);
                 })
             })
         })
 
         this._evReg(_Start.Event.BtnPersonalInfo, () => {
             LwgTimer._once(1000, this, () => {
-                this._openScene('Guide', false, false, () => {
+                this._openScene(_SceneName.Guide, false, false, () => {
                     this.BtnPersonalInfoClick();
                     this._evNotify(_Guide.Event.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
                 })
@@ -108,21 +109,21 @@ export default class Start extends LwgScene._SceneBase {
     BtnPersonalInfoClick(): void {
         this._btnUp(this._ImgVar('BtnPersonalInfo'), () => {
             !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
-            this._openScene('PersonalInfo', false);
+            this._openScene(_SceneName.PersonalInfo, false);
         })
     }
 
     BtnCheckIn(): void {
         this._btnUp(this._ImgVar('BtnCheckIn'), () => {
             !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
-            this._openScene('CheckIn', false);
+            this._openScene(_SceneName.CheckIn, false);
         })
     }
 
     openMakeTailor(_classify: string): void {
         _DIYClothes._ins()._pitchClassify = _classify;
         _3DScene._ins().cameraToSprite(this._Owner);
-        this._openScene('MakeTailor', true, true);
+        this._openScene(_SceneName.MakeTailor, true, true);
     }
 
     lwgButton(): void {
@@ -143,13 +144,13 @@ export default class Start extends LwgScene._SceneBase {
 
         this.BtnPersonalInfoClick();
         this._btnUp(this._ImgVar('BtnRanking'), () => {
-            _Ranking._whereFrom = 'Start';
-            this._openScene('Ranking', false);
+            _Ranking._whereFrom = _SceneName.Start;
+            this._openScene(_SceneName.Ranking, false);
         })
         this._btnUp(this._ImgVar('BtnDressingRoom'), () => {
             ADManager.TAPoint(TaT.BtnClick, 'change');
             _3DScene._ins().cameraToSprite(this._Owner);
-            this._openScene('DressingRoom', true, true);
+            this._openScene(_SceneName.DressingRoom, true, true);
         })
         this.BtnCheckIn();
     }

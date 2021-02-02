@@ -1216,22 +1216,24 @@
         (function (SceneAdmin) {
             SceneAdmin._SceneControl = {};
             SceneAdmin._SceneScript = {};
-            let _BaseName;
-            (function (_BaseName) {
-                _BaseName["PreLoad"] = "PreLoad";
-                _BaseName["PreLoadCutIn"] = "PreLoadCutIn";
-                _BaseName["Guide"] = "Guide";
-                _BaseName["Start"] = "Start";
-                _BaseName["Shop"] = "Shop";
-                _BaseName["Task"] = "Task";
-                _BaseName["Set"] = "Set";
-                _BaseName["Victory"] = "Victory";
-                _BaseName["Defeated"] = "Defeated";
-                _BaseName["CheckIn"] = "CheckIn";
-                _BaseName["LwgInit"] = "LwgInit";
-                _BaseName["SelectLevel"] = "SelectLevel";
-                _BaseName["Settle"] = "Settle";
-            })(_BaseName = SceneAdmin._BaseName || (SceneAdmin._BaseName = {}));
+            class _BaseName {
+            }
+            _BaseName.PreLoad = 'PreLoad';
+            _BaseName.PreLoadCutIn = 'PreLoadCutIn';
+            _BaseName.Guide = 'Guide';
+            _BaseName.Start = 'Start';
+            _BaseName.Shop = 'Shop';
+            _BaseName.Task = 'Task';
+            _BaseName.Set = 'Set';
+            _BaseName.Victory = 'Victory';
+            _BaseName.Defeated = 'Defeated';
+            _BaseName.CheckIn = 'CheckIn';
+            _BaseName.LwgInit = 'LwgInit';
+            _BaseName.SelectLevel = 'SelectLevel';
+            _BaseName.Settle = 'Settle';
+            _BaseName.Share = 'Share';
+            _BaseName.Ranking = 'Ranking';
+            SceneAdmin._BaseName = _BaseName;
             SceneAdmin._PreLoadCutIn = {
                 openName: null,
                 closeName: null,
@@ -3327,6 +3329,8 @@
                 lwglistRender(data, index) {
                     this.$data = data;
                     this.$dataIndex = index;
+                    if (!this.$data)
+                        return;
                     this.$render();
                 }
                 $button() { }
@@ -3988,6 +3992,16 @@
                     for (let k = 0; k < _objArr.length; k++) {
                         const element = _objArr[k];
                         this._arr.push(element);
+                    }
+                    this._refreshAndStorage();
+                }
+                _deleteObjByName(name) {
+                    for (let index = 0; index < this._arr.length; index++) {
+                        const element = this._arr[index];
+                        if (element.name === name) {
+                            this._arr.splice(index, 1);
+                            index--;
+                        }
                     }
                     this._refreshAndStorage();
                 }
@@ -5641,12 +5655,6 @@
                 return assign;
             }
             ClickAdmin._checkAssign = _checkAssign;
-            function _createButton() {
-                let Btn = new Laya.Sprite();
-                let img = new Laya.Image();
-                let label = new Laya.Label();
-            }
-            ClickAdmin._createButton = _createButton;
             ClickAdmin._Type = {
                 no: 'no',
                 largen: 'largen',
@@ -5660,9 +5668,9 @@
                     this['Click/name'] = val;
                 }
             };
-            function _on(effect, target, caller, down, move, up, out) {
+            function _effectSwitch(effectType) {
                 let btnEffect;
-                switch (effect) {
+                switch (effectType) {
                     case ClickAdmin._Type.no:
                         btnEffect = new _NoEffect();
                         break;
@@ -5676,6 +5684,11 @@
                         btnEffect = new _NoEffect();
                         break;
                 }
+                return btnEffect;
+            }
+            ClickAdmin._effectSwitch = _effectSwitch;
+            function _on(effect, target, caller, down, move, up, out) {
+                const btnEffect = _effectSwitch(effect);
                 target.on(Laya.Event.MOUSE_DOWN, caller, down);
                 target.on(Laya.Event.MOUSE_MOVE, caller, move);
                 target.on(Laya.Event.MOUSE_UP, caller, up);
@@ -5687,21 +5700,7 @@
             }
             ClickAdmin._on = _on;
             function _off(effect, target, caller, down, move, up, out) {
-                let btnEffect;
-                switch (effect) {
-                    case ClickAdmin._Type.no:
-                        btnEffect = new _NoEffect();
-                        break;
-                    case ClickAdmin._Type.largen:
-                        btnEffect = new _Largen();
-                        break;
-                    case ClickAdmin._Type.reduce:
-                        btnEffect = new _Largen();
-                        break;
-                    default:
-                        btnEffect = new _NoEffect();
-                        break;
-                }
+                const btnEffect = _effectSwitch(effect);
                 target._off(Laya.Event.MOUSE_DOWN, caller, down);
                 target._off(Laya.Event.MOUSE_MOVE, caller, move);
                 target._off(Laya.Event.MOUSE_UP, caller, up);
@@ -8505,6 +8504,19 @@
         }
     };
 
+    class _SceneName extends LwgScene._BaseName {
+    }
+    _SceneName.MakeTailor = 'MakeTailor';
+    _SceneName.MakePattern = 'MakePattern';
+    _SceneName.DressingRoom = 'DressingRoom';
+    _SceneName.Tweeting_ChoosePhotos = 'Tweeting_ChoosePhotos';
+    _SceneName.Tweeting_Dynamic = 'Tweeting_Dynamic';
+    _SceneName.Tweeting_GetFans = 'Tweeting_GetFans';
+    _SceneName.Tweeting_Main = 'Tweeting_Main';
+    _SceneName.AdsHint = 'AdsHint';
+    _SceneName.BackHint = 'BackHint';
+    _SceneName.PersonalInfo = 'PersonalInfo';
+
     class _3DScene {
         constructor() {
             this.aniName = {
@@ -8624,7 +8636,7 @@
             this.fillLight_Left1.active = false;
             this.fillLight_Right1.active = false;
             this._MirrorCamera.active = false;
-            if (whereFrom == 'preload') {
+            if (whereFrom === _SceneName.PreLoad) {
                 this._bg1Mat.albedoTexture = _Res._list.texture2D.bgStart.texture2D;
             }
             else {
@@ -8731,7 +8743,7 @@
 
     var _Ranking;
     (function (_Ranking) {
-        class mergePro extends Lwg$1.DataAdmin._BaseProperty {
+        class _mergePro extends Lwg$1.DataAdmin._BaseProperty {
             constructor() {
                 super();
                 this.rankNum = 'rankNum';
@@ -8740,8 +8752,8 @@
             }
             ;
         }
-        _Ranking.mergePro = mergePro;
-        _Ranking._whereFrom = 'Start';
+        _Ranking._mergePro = _mergePro;
+        _Ranking._whereFrom = _SceneName.Start;
         class _Data extends LwgData._Table {
             constructor() {
                 super(...arguments);
@@ -8753,7 +8765,7 @@
             static _ins() {
                 if (!this.ins) {
                     this.ins = new _Data('RankingData', _Res._list.json.Ranking.dataArr, true);
-                    this.ins._mergePro = new mergePro();
+                    this.ins._mergePro = new _mergePro();
                     if (!this.ins._arr[0]['iconSkin']) {
                         for (let index = 0; index < this.ins._arr.length; index++) {
                             const element = this.ins._arr[index];
@@ -8877,6 +8889,9 @@
         static _ins() {
             if (!this.ins) {
                 this.ins = new _AllClothes('ClothesGeneral', _Res._list.json.GeneralClothes.dataArr, true);
+                if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                    this.ins._deleteObjByName('ads');
+                }
             }
             return this.ins;
         }
@@ -9066,6 +9081,9 @@
         static _ins() {
             if (!this.ins) {
                 this.ins = new _DIYClothes('DIYClothes', _Res._list.json.DIYClothes.dataArr, true);
+                if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                    this.ins._deleteObjByName('ads');
+                }
             }
             return this.ins;
         }
@@ -9081,6 +9099,7 @@
             return [obj[`${this._otherPro.color}1`], obj[`${this._otherPro.color}2`]];
         }
         getClothesArr() {
+            _DIYClothes._ins().ClothesArr = null;
             if (!this.ClothesArr) {
                 this.ClothesArr = [];
                 const dataArr = _DIYClothes._ins()._arr;
@@ -9132,8 +9151,9 @@
     (function (_MakePattern) {
         let Event;
         (function (Event) {
-            Event["close"] = "_MakePattern_close";
-            Event["createImg"] = "_MakePattern_createImg";
+            Event["close"] = "_MakePattern/close";
+            Event["createImg"] = "_MakePattern/createImg";
+            Event["byteDanceBackStart"] = "_MakePattern/byteDanceBackStart";
         })(Event = _MakePattern.Event || (_MakePattern.Event = {}));
         class _Pattern extends LwgData._Table {
             constructor() {
@@ -9150,6 +9170,9 @@
                 if (!this.ins) {
                     this.ins = new _Pattern('_Pattern', _Res._list.json.MakePattern.dataArr, true);
                     this.ins._pitchClassify = this.ins._classify.newYear;
+                    if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                        this.ins._deleteObjByName('ads');
+                    }
                     this.ins.newYearArr = this.ins._getArrByClassify(this.ins._classify.newYear);
                     this.ins.newYearArr.push({}, {});
                     this.ins.basicArr = this.ins._getArrByClassify(this.ins._classify.basic);
@@ -9395,6 +9418,10 @@
             },
         };
     })(_CheckIn || (_CheckIn = {}));
+    var _Share;
+    (function (_Share) {
+        _Share._whereFrom = 'MakePattern';
+    })(_Share || (_Share = {}));
 
     class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
         lwgOpenAniAfter() {
@@ -9404,13 +9431,13 @@
                 this._LabelVar('Schedule').text = `${time}%`;
             }, () => {
                 let obj = _CutInRes[LwgScene._PreLoadCutIn.openName];
-                obj = obj ? obj : {};
+                obj = _CutInRes[LwgScene._PreLoadCutIn.openName] ? obj : {};
                 LwgEvent._notify(LwgPreLoad._Event.importList, [obj]);
             });
         }
         lwgAllComplete() {
             switch (LwgScene._PreLoadCutIn.openName) {
-                case 'MakePattern':
+                case _SceneName.MakePattern:
                     _3DDIYCloth._ins().remake(_DIYClothes._ins()._pitchClassify, _DIYClothes._ins()._pitchName);
                     _3DScene._ins().intoMakePattern();
                     this._ImgVar('Front').loadImage(_DIYClothes._ins().getPitchTexBasicUrl(), Laya.Handler.create(this, () => {
@@ -9425,20 +9452,19 @@
                         _3DDIYCloth._ins().addTexture2D(getTex());
                     }));
                     break;
-                case 'MakeTailor':
+                case _SceneName.MakeTailor:
                     _3DScene._ins().intoMakeTailor();
-                    _DIYClothes._ins().ClothesArr = null;
                     _DIYClothes._ins().getClothesArr();
                     break;
-                case 'Start':
-                    if (LwgScene._PreLoadCutIn.closeName === 'MakePattern' && !_PreLoadCutIn._fromBack) {
+                case _SceneName.Start:
+                    if (LwgScene._PreLoadCutIn.closeName === _SceneName.MakePattern && !_PreLoadCutIn._fromBack) {
                         this.iconPhoto();
                     }
                     else {
                         _3DScene._ins().intoStart();
                     }
                     break;
-                case 'DressingRoom':
+                case _SceneName.DressingRoom:
                     _3DScene._ins().intogeDressingRoom();
                 default:
                     break;
@@ -10457,7 +10483,7 @@
                 }
             });
             _AllClothes._ins().changeClothStart();
-            _3DScene._ins().intoStart('preload');
+            _3DScene._ins().intoStart(_SceneName.PreLoad);
             return 2000;
         }
         lwgCloseAni() {
@@ -10493,12 +10519,19 @@
             LwgClick._on(LwgClick._Use.value, this.BtnBack, this, null, null, () => {
                 if (!_Guide._complete)
                     return;
-                ADManager.TAPoint(TaT.BtnShow, 'back_main');
                 if (_3DScene._ins()._Owner.active) {
                     _BackHint._3dToSp = _3DScene._ins().cameraToSprite(this.Scene);
                 }
-                _BackHint._fromScene = this.Scene;
-                LwgScene._openScene('BackHint');
+                ADManager.TAPoint(TaT.BtnShow, 'back_main');
+                if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                    _BackHint._whereScene = this.Scene;
+                    LwgScene._openScene(_SceneName.BackHint);
+                }
+                else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                    LwgTimer._frameOnce(10, this, () => {
+                        this.Scene[this.Scene.name]._openScene(_SceneName.Start, true, true);
+                    });
+                }
             });
             this.BtnRollback = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnRollback.prefab, _Scene, [200, 79]);
             LwgClick._on(LwgClick._Use.value, this.BtnRollback, this, null, null, () => {
@@ -10958,7 +10991,7 @@
                     this.UI.btnCompleteAppear(null, 400);
                 });
                 this.UI.btnBackAppear(() => {
-                    !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                    !_Guide._complete.value && this._openScene(_SceneName.Guide, false, false, () => {
                         _Guide.MmakeTailorPulldownSwicth = true;
                         this._evNotify(_Guide.Event.MakeTailorPulldown);
                     });
@@ -11093,7 +11126,7 @@
                         });
                         LwgTimer._frameOnce(280, this, () => {
                             _Tweeting._photo.take(this._Owner, 0);
-                            this._openScene('MakePattern', true, true);
+                            this._openScene(_SceneName.MakePattern, true, true);
                         });
                     }
                 }
@@ -11179,7 +11212,7 @@
                 LwgAni2D.bombs_Appear(element, 0, 1, 1.2, 0, 200, () => {
                     if (index === this._ImgVar('BtnParent').numChildren - 1) {
                         LwgTimer._once(500, this, () => {
-                            if (_Start._whereFrom === 'MakePattern') {
+                            if (_Start._whereFrom === _SceneName.MakePattern) {
                                 this._evNotify(_Start.Event.photo);
                                 _Start._whereFrom = null;
                             }
@@ -11191,7 +11224,7 @@
                                     });
                                 }
                                 else {
-                                    !_CheckIn._todayCheckIn && this._openScene('CheckIn', false);
+                                    !_CheckIn._todayCheckIn && this._openScene(_SceneName.CheckIn, false);
                                 }
                             }
                         });
@@ -11222,13 +11255,13 @@
                     _Tweeting._photo.take(this._Owner, 2);
                     sp.destroy();
                     LwgTimer._frameOnce(10, this, () => {
-                        this._openScene('Tweeting_Main', false);
+                        this._openScene(_SceneName.Tweeting_Main, false);
                     });
                 });
             });
             this._evReg(_Start.Event.BtnPersonalInfo, () => {
                 LwgTimer._once(1000, this, () => {
-                    this._openScene('Guide', false, false, () => {
+                    this._openScene(_SceneName.Guide, false, false, () => {
                         this.BtnPersonalInfoClick();
                         this._evNotify(_Guide.Event.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
                     });
@@ -11251,19 +11284,19 @@
         BtnPersonalInfoClick() {
             this._btnUp(this._ImgVar('BtnPersonalInfo'), () => {
                 !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
-                this._openScene('PersonalInfo', false);
+                this._openScene(_SceneName.PersonalInfo, false);
             });
         }
         BtnCheckIn() {
             this._btnUp(this._ImgVar('BtnCheckIn'), () => {
                 !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
-                this._openScene('CheckIn', false);
+                this._openScene(_SceneName.CheckIn, false);
             });
         }
         openMakeTailor(_classify) {
             _DIYClothes._ins()._pitchClassify = _classify;
             _3DScene._ins().cameraToSprite(this._Owner);
-            this._openScene('MakeTailor', true, true);
+            this._openScene(_SceneName.MakeTailor, true, true);
         }
         lwgButton() {
             if (!_Guide._complete.value)
@@ -11282,13 +11315,13 @@
             });
             this.BtnPersonalInfoClick();
             this._btnUp(this._ImgVar('BtnRanking'), () => {
-                _Ranking._whereFrom = 'Start';
-                this._openScene('Ranking', false);
+                _Ranking._whereFrom = _SceneName.Start;
+                this._openScene(_SceneName.Ranking, false);
             });
             this._btnUp(this._ImgVar('BtnDressingRoom'), () => {
                 ADManager.TAPoint(TaT.BtnClick, 'change');
                 _3DScene._ins().cameraToSprite(this._Owner);
-                this._openScene('DressingRoom', true, true);
+                this._openScene(_SceneName.DressingRoom, true, true);
             });
             this.BtnCheckIn();
         }
@@ -11296,6 +11329,111 @@
             ADManager.TAPoint(TaT.PageLeave, 'mainpage');
         }
     }
+
+    class RecordManager {
+        constructor() {
+            this.GRV = null;
+            this.isRecordVideoing = false;
+            this.isVideoRecord = false;
+            this.videoRecordTimer = 0;
+            this.isHasVideoRecord = false;
+        }
+        static Init() {
+            RecordManager.grv = new TJ.Platform.AppRt.DevKit.TT.GameRecorderVideo();
+        }
+        static startAutoRecord() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            if (RecordManager.grv == null)
+                RecordManager.Init();
+            if (RecordManager.recording)
+                return;
+            RecordManager.autoRecording = true;
+            console.log("******************开始录屏");
+            RecordManager._start();
+            RecordManager.lastRecordTime = Date.now();
+        }
+        static stopAutoRecord() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            if (!RecordManager.autoRecording) {
+                console.log("RecordManager.autoRecording", RecordManager.autoRecording);
+                return false;
+            }
+            RecordManager.autoRecording = false;
+            RecordManager._end(false);
+            if (Date.now() - RecordManager.lastRecordTime > 6000) {
+                return true;
+            }
+            if (Date.now() - RecordManager.lastRecordTime < 3000) {
+                console.log("小于3秒");
+                return false;
+            }
+            return true;
+        }
+        static startRecord() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            if (RecordManager.autoRecording) {
+                this.stopAutoRecord();
+            }
+            RecordManager.recording = true;
+            RecordManager._start();
+            RecordManager.lastRecordTime = Date.now();
+        }
+        static stopRecord() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            console.log("time:" + (Date.now() - RecordManager.lastRecordTime));
+            if (Date.now() - RecordManager.lastRecordTime <= 3000) {
+                return false;
+            }
+            RecordManager.recording = false;
+            RecordManager._end(true);
+            return true;
+        }
+        static _start() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            console.log("******************180s  ？？？？？");
+            RecordManager.grv.Start(180);
+        }
+        static _end(share) {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            console.log("******************180结束 ？？？？？");
+            RecordManager.grv.Stop(share);
+        }
+        static _share(type, successedAc, completedAc = null, failAc = null) {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            console.log("******************吊起分享 ？？？？？", RecordManager.grv, RecordManager.grv.videoPath);
+            if (RecordManager.grv.videoPath) {
+                let p = new TJ.Platform.AppRt.Extern.TT.ShareAppMessageParam();
+                p.extra.videoTopics = ["女神修炼手册", "番茄小游戏", "抖音小游戏"];
+                p.channel = "video";
+                p.success = () => {
+                    LwgDialogue.createHint_Middle("分享成功!");
+                    successedAc();
+                };
+                p.fail = () => {
+                    if (type === 'noAward') {
+                        LwgDialogue.createHint_Middle("分享失败！");
+                    }
+                    else {
+                        LwgDialogue.createHint_Middle("分享成功后才能获取奖励！");
+                    }
+                    failAc();
+                };
+                RecordManager.grv.Share(p);
+            }
+            else {
+                LwgDialogue.createHint_Middle("暂无视频，玩一局游戏之后分享！");
+            }
+        }
+    }
+    RecordManager.recording = false;
+    RecordManager.autoRecording = false;
 
     var LwgOPPO;
     (function (LwgOPPO) {
@@ -11828,7 +11966,7 @@
         }
         lwgOpenAniAfter() {
             LwgTimer._frameOnce(60, this, () => {
-                !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                !_Guide._complete.value && this._openScene(_SceneName.Guide, false, false, () => {
                     this._evNotify(_Guide.Event.MakePatternChooseClassify);
                 });
             });
@@ -11903,48 +12041,59 @@
                         return;
                     }
                 }
-                this.Tex.frameRestore();
-                this.Tex.dir = this.Tex.dirType.Front;
-                this.Tex.turnFace(() => {
-                    _3DScene._ins().cameraToSprite(this._Owner);
-                    LwgTimer._frameOnce(5, this, () => {
-                        _Tweeting._photo.take(this._Owner, 1);
-                    });
-                    this.texStorage();
-                    LwgAni2D.fadeOut(this._ImgVar('BtnL'), 1, 0, 200);
-                    LwgAni2D.fadeOut(this._ImgVar('BtnR'), 1, 0, 200);
-                    this.UI.operationVinish(() => {
-                        this.UI.btnBackVinish(null, 200);
-                        this.UI.btnBackVinish();
-                        this.UI.btnRollbackVinish();
-                        this.UI.btnAgainVinish(() => {
-                        });
-                        var close = () => {
-                            _3DScene._ins().cameraToSprite(this._Owner);
-                            _Start._whereFrom = 'MakePattern';
-                            this._openScene('Start', true, true);
-                        };
-                        if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
-                            LwgOPPO._screenShootByRatio((data) => {
-                                LwgOPPO._picSave(data['tempFilePath'], _3DDIYCloth._ins().name);
-                                close();
-                            }, 0.28, null, 0.72, null, null, 0.1);
-                        }
-                        else {
-                            close();
-                        }
-                    }, 200);
-                });
+                if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                    RecordManager.stopAutoRecord();
+                    this._openScene(_SceneName.Share, false);
+                    _Share._whereFrom = _SceneName.MakePattern;
+                    return;
+                }
+                else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                    this.backStart();
+                }
             };
             if (!_Guide._complete.value)
                 return;
             this.UI.btnRollbackClick = () => {
                 _3DScene._ins().cameraToSprite(this._Owner);
-                this._openScene('MakeTailor', true, true);
+                this._openScene(_SceneName.MakeTailor, true, true);
             };
             this.UI.btnAgainClick = () => {
                 this.Tex.again();
             };
+        }
+        backStart() {
+            this.Tex.frameRestore();
+            this.Tex.dir = this.Tex.dirType.Front;
+            this.Tex.turnFace(() => {
+                _3DScene._ins().cameraToSprite(this._Owner);
+                LwgTimer._frameOnce(5, this, () => {
+                    _Tweeting._photo.take(this._Owner, 1);
+                });
+                this.texStorage();
+                LwgAni2D.fadeOut(this._ImgVar('BtnL'), 1, 0, 200);
+                LwgAni2D.fadeOut(this._ImgVar('BtnR'), 1, 0, 200);
+            });
+            this.UI.operationVinish(() => {
+                this.UI.btnBackVinish(null, 200);
+                this.UI.btnBackVinish();
+                this.UI.btnRollbackVinish();
+                this.UI.btnAgainVinish(() => {
+                });
+                var close = () => {
+                    _3DScene._ins().cameraToSprite(this._Owner);
+                    _Start._whereFrom = _SceneName.MakePattern;
+                    this._openScene(_SceneName.Start, true, true);
+                };
+                if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
+                    LwgOPPO._screenShootByRatio((data) => {
+                        LwgOPPO._picSave(data['tempFilePath'], _3DDIYCloth._ins().name);
+                        close();
+                    }, 0.28, null, 0.72, null, null, 0.1);
+                }
+                else {
+                    close();
+                }
+            }, 200);
         }
         lwgEvent() {
             this._evReg(_MakePattern.Event.createImg, (name, gPoint) => {
@@ -11957,6 +12106,11 @@
                     return;
                 this.Tex.close();
                 this.Tex.state = this.Tex.stateType.none;
+            });
+            this._evReg(_MakePattern.Event.byteDanceBackStart, () => {
+                if (!_Guide._complete.value)
+                    return;
+                this.backStart();
             });
         }
         texStorage() {
@@ -11991,7 +12145,7 @@
             }
             LwgStorage._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texF}`).value = fArr;
             LwgStorage._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texR}`).value = rArr;
-            _Ranking._whereFrom = this._Owner.name;
+            _Ranking._whereFrom = _SceneName.Tweeting_GetFans;
         }
         onStageMouseDown(e) {
             this.Tex.touchP = new Laya.Point(e.stageX, e.stageY);
@@ -12192,7 +12346,7 @@
                     _3DScene._ins().closeMirror();
                     _3DScene._ins().cameraToSprite(this._Owner);
                     Laya.Resource.destroyUnusedResources();
-                    this._openScene('Start', true, true);
+                    this._openScene(_SceneName.Start, true, true);
                     this.UI.btnBackVinish();
                 }, 200);
             };
@@ -12334,7 +12488,7 @@
         lwgOnAwake() {
             ADManager.TAPoint(TaT.PageShow, 'rankpage');
             _Ranking._Data._ins()._List = this._ListVar('List');
-            if (_Ranking._whereFrom === 'Tweeting') {
+            if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
                 _Ranking._Data._ins()._addProValueForAll(_Ranking._Data._ins()._mergePro.fansNum, () => {
                     return LwgTools._Number.randomOneInt(100, 150);
                 });
@@ -12343,7 +12497,7 @@
             _Ranking._Data._ins()._listRenderScript = RankingItem;
         }
         lwgOpenAni() {
-            if (_Ranking._whereFrom === 'Tweeting') {
+            if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
                 _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('Background'));
             }
             else {
@@ -12352,15 +12506,15 @@
             return 200;
         }
         lwgOpenAniAfter() {
-            if (_Ranking._whereFrom === 'Tweeting') {
+            if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
                 _GameEffects2D._fireworksCelebrate(() => {
-                    !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                    !_Guide._complete.value && this._openScene(_SceneName.Guide, false, false, () => {
                         this.BtnCloseClick();
                         const gP = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnClose').x, this._ImgVar('BtnClose').y));
                         this._evNotify(_Guide.Event.RankingCloseBtn, [gP.x, gP.y]);
                     }, this._Owner.zOrder + 1);
                 });
-                _Ranking._whereFrom = 'Start';
+                _Ranking._whereFrom = _SceneName.Start;
             }
         }
         lwgOnStart() {
@@ -12368,7 +12522,7 @@
                 _Ranking._Data._ins()._List.scrollTo(0);
             }
             else {
-                if (_Ranking._whereFrom === 'Tweeting') {
+                if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
                     _Ranking._Data._ins()._listScrollToLast();
                     _Ranking._Data._ins()._listTweenToPitchChoose(-1, 1500);
                 }
@@ -12483,7 +12637,7 @@
         BtnChoosePhotosClick() {
             this._btnUp(this._ImgVar('BtnChoosePhotos'), () => {
                 ADManager.TAPoint(TaT.BtnClick, 'photo_choose');
-                this._openScene('Tweeting_ChoosePhotos', false);
+                this._openScene(_SceneName.Tweeting_ChoosePhotos, false);
             }, 'null');
         }
         lwgButton() {
@@ -12548,7 +12702,7 @@
         }
         lwgCloseAni() {
             return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
-                this._openScene('Tweeting_Dynamic', false);
+                this._openScene(_SceneName.Tweeting_Dynamic, false);
             });
         }
         lwgOnDisable() {
@@ -12565,7 +12719,7 @@
             this._ImgVar('Photo').texture = _Tweeting._photo.arr[_Tweeting._photoIndex];
             _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), null, () => {
                 LwgAni2D.scale(this._ImgVar('Head'), 0, 0, 1, 1, this.baseTime * 2, this.baseDelay * 1.5, () => {
-                    this._closeScene('Tweeting_Main');
+                    this._closeScene(_SceneName.Tweeting_Main);
                     this.bodyTextAppear(() => {
                         LwgAni2D.scale(this._ImgVar('Middle'), 0, 0, 1, 1, this.baseTime * 2, this.baseDelay * 1.5, () => {
                             LwgAni2D.scale(this._ImgVar('Bottom'), 0, 0, 1, 1, this.baseTime * 2, this.baseDelay * 1.5, () => {
@@ -12607,7 +12761,7 @@
                                 LikeNum2.text = textNum1.toString();
                             }, () => {
                                 LwgTimer._frameOnce(60, this, () => {
-                                    this._openScene('Tweeting_GetFans', false);
+                                    this._openScene(_SceneName.Tweeting_GetFans, false);
                                 });
                             });
                         });
@@ -12684,7 +12838,7 @@
         lwgOpenAni() {
             _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
                 _GameEffects2D._interfacePointJet();
-                !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                !_Guide._complete.value && this._openScene(_SceneName.Guide, false, false, () => {
                     this._evNotify(_Guide.Event.TweetingBtnDoubleFans, [this._ImgVar('BtnDouble')._lwg.gPoint.x, this._ImgVar('BtnDouble')._lwg.gPoint.y]);
                 });
                 LwgTimer._loop(2000, this, () => {
@@ -12695,9 +12849,9 @@
         }
         lwgButton() {
             var closeBefore = () => {
-                _Ranking._whereFrom = 'Tweeting';
+                _Ranking._whereFrom = _SceneName.Tweeting_GetFans;
                 _Tweeting._photo.clear();
-                this._closeScene('Tweeting_Dynamic');
+                this._closeScene(_SceneName.Tweeting_Dynamic);
                 this._closeScene();
                 !_Guide._complete.value && this._evNotify(_Guide.Event.closeGuide);
             };
@@ -12723,7 +12877,7 @@
         }
         lwgCloseAni() {
             return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
-                this._openScene('Ranking', false);
+                this._openScene(_SceneName.Ranking, false);
             });
         }
         lwgOnDisable() {
@@ -12897,7 +13051,7 @@
         }
         lwgOpenAni() {
             return _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-                this._openScene('Guide', false, false, () => {
+                this._openScene(_SceneName.Guide, false, false, () => {
                     this.BtnCloseClick();
                     !_Guide._complete.value && this._evNotify(_Guide.Event.CheckInGetReward, [this._ImgVar('GuideTab1')._lwg.gPoint.x, this._ImgVar('GuideTab1')._lwg.gPoint.y]);
                 });
@@ -12959,6 +13113,44 @@
         }
     }
 
+    class Share extends LwgScene._SceneBase {
+        lwgOpenAni() {
+            this._ImgVar('BtnShare').visible = false;
+            return _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('Background'), () => {
+                this._ImgVar('BtnShare').visible = true;
+                _GameAni._dialogOpenPopup(this._ImgVar('BtnShare'));
+            });
+        }
+        closeFunc() {
+            if (_Share._whereFrom === _SceneName.MakePattern) {
+                this._evNotify(_MakePattern.Event.byteDanceBackStart);
+            }
+            else if (_Share._whereFrom === _SceneName.DressingRoom) {
+            }
+        }
+        lwgButton() {
+            var func = () => {
+                RecordManager._share('noAward', () => {
+                    this.closeFunc();
+                });
+            };
+            this._btnUp(this._ImgVar('BtnShare'), () => {
+                func();
+            });
+            this._btnUp(this._ImgVar('BtnBoard'), () => {
+                func();
+            });
+            this._btnUp(this._ImgVar('BtnClose'), () => {
+                this._closeScene();
+            });
+        }
+        lwgCloseAni() {
+            return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
+                this.closeFunc();
+            });
+        }
+    }
+
     class BackHint extends LwgScene._SceneBase {
         constructor() {
             super(...arguments);
@@ -12972,7 +13164,7 @@
                 _PreLoadCutIn._fromBack = true;
                 _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
                     this._Owner.close();
-                    _BackHint._fromScene[_BackHint._fromScene.name]._openScene('Start', true, true);
+                    _BackHint._whereScene[_BackHint._whereScene.name]._openScene(_SceneName.Start, true, true);
                 });
             });
             var close = () => {
@@ -12996,7 +13188,8 @@
 
     class LwgInit extends LwgAdmin._InitScene {
         lwgOnAwake() {
-            LwgPlatform._Ues.value = LwgPlatform._Tpye.OPPO;
+            LwgPlatform._Ues.value = LwgPlatform._Tpye.Bytedance;
+            Laya.Stat.show();
             Laya.MouseManager.multiTouchEnabled = false;
             LwgSceneAni._closeSwitch.value = true;
             LwgSceneAni._Use.value = {
@@ -13022,6 +13215,7 @@
                 Tweeting_GetFans: Tweeting_GetFans,
                 AdsHint: AdsHint,
                 CheckIn: CheckIn,
+                Share: Share,
             };
         }
         lwgOnStart() {

@@ -4,6 +4,7 @@ import { _GameAni } from "./_GameAni";
 import { _CheckIn, _DIYClothes, _Guide, _MakePattern } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
+import { _SceneName } from "./_SceneName";
 
 class _Item extends LwgData._Item {
     $button(): void {
@@ -139,7 +140,7 @@ export default class CheckIn extends LwgScene._SceneBase {
     }
     lwgOpenAni(): number {
         return _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-            this._openScene('Guide', false, false, () => {
+            this._openScene(_SceneName.Guide, false, false, () => {
                 this.BtnCloseClick();
                 !_Guide._complete.value && this._evNotify(_Guide.Event.CheckInGetReward, [this._ImgVar('GuideTab1')._lwg.gPoint.x, this._ImgVar('GuideTab1')._lwg.gPoint.y]);
             })

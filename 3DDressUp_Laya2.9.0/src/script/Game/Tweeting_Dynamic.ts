@@ -2,6 +2,7 @@ import {  LwgScene, LwgAni2D, LwgDate, LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _PersonalInfo, _Ranking, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
+import { _SceneName } from "./_SceneName";
 
 export default class Tweeting_Dynamic extends  LwgScene._SceneBase {
     baseTime = 150;
@@ -11,7 +12,7 @@ export default class Tweeting_Dynamic extends  LwgScene._SceneBase {
         this._ImgVar('Photo').texture = _Tweeting._photo.arr[_Tweeting._photoIndex];
         _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), null, () => {
             LwgAni2D.scale(this._ImgVar('Head'), 0, 0, 1, 1, this.baseTime * 2, this.baseDelay * 1.5, () => {
-                this._closeScene('Tweeting_Main');
+                this._closeScene(_SceneName.Tweeting_Main);
                 this.bodyTextAppear(() => {
                     LwgAni2D.scale(this._ImgVar('Middle'), 0, 0, 1, 1, this.baseTime * 2, this.baseDelay * 1.5, () => {
                         LwgAni2D.scale(this._ImgVar('Bottom'), 0, 0, 1, 1, this.baseTime * 2, this.baseDelay * 1.5, () => {
@@ -52,7 +53,7 @@ export default class Tweeting_Dynamic extends  LwgScene._SceneBase {
                             LikeNum2.text = textNum1.toString();
                         }, () => {
                             LwgTimer._frameOnce(60, this, () => {
-                                this._openScene('Tweeting_GetFans', false);
+                                this._openScene(_SceneName.Tweeting_GetFans, false);
                             })
                         })
                     });

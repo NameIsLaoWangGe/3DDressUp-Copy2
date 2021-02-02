@@ -15,12 +15,13 @@ import Tweeting_Dynamic from "../Game/Tweeting_Dynamic";
 import Tweeting_GetFans from "../Game/Tweeting_GetFans";
 import AdsHint from "../Game/AdsHint";
 import CheckIn from "../Game/CheckIn";
-import { BackHint } from "../Game/BackHint";
+import Share from "../Game/Share";
+import BackHint from "../Game/BackHint";
 
 export default class LwgInit extends LwgAdmin._InitScene {
     lwgOnAwake(): void {
-        LwgPlatform._Ues.value = LwgPlatform._Tpye.OPPO;
-        // Laya.Stat.show();
+        LwgPlatform._Ues.value = LwgPlatform._Tpye.Bytedance;
+        Laya.Stat.show();
         Laya.MouseManager.multiTouchEnabled = false;
         LwgSceneAni._closeSwitch.value = true;
         LwgSceneAni._Use.value = {
@@ -46,6 +47,7 @@ export default class LwgInit extends LwgAdmin._InitScene {
             Tweeting_GetFans: Tweeting_GetFans,
             AdsHint: AdsHint,
             CheckIn: CheckIn,
+            Share: Share,
         };
     }
     lwgOnStart(): void {

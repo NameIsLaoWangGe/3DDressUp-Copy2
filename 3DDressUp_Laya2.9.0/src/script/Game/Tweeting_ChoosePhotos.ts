@@ -1,9 +1,10 @@
-import {  LwgScene, LwgDialogue } from "../Lwg/Lwg";
+import { LwgScene, LwgDialogue } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _Guide, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
+import { _SceneName } from "./_SceneName";
 
-export default class Tweeting_ChoosePhotos extends  LwgScene._SceneBase {
+export default class Tweeting_ChoosePhotos extends LwgScene._SceneBase {
     photoArr: Laya.Image[];
     lwgOnAwake(): void {
         this.photoArr = [this._ImgVar('Photo1'), this._ImgVar('Photo2'), this._ImgVar('Photo3')];
@@ -55,7 +56,7 @@ export default class Tweeting_ChoosePhotos extends  LwgScene._SceneBase {
     }
     lwgCloseAni(): number {
         return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
-            this._openScene('Tweeting_Dynamic', false);
+            this._openScene(_SceneName.Tweeting_Dynamic, false);
         });
     }
     lwgOnDisable(): void {

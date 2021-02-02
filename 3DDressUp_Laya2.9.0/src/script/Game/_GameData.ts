@@ -1,6 +1,9 @@
-import Lwg, { LwgData, LwgDate, LwgScene, LwgStorage, LwgTimer, LwgTools } from "../Lwg/Lwg";
+import Lwg, { LwgData, LwgDate, LwgPlatform, LwgScene, LwgStorage, LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { _3DScene, _3DDIYCloth } from "./_3D";
 import { _Res } from "./_Res";
+import { _SceneName } from "./_SceneName";
+
+
 
 export module _Ranking {
     export class _mergePro extends Lwg.DataAdmin._BaseProperty {
@@ -10,7 +13,7 @@ export module _Ranking {
         iconSkin: any = 'iconSkin';
     }
     /**从哪个界面进来*/
-    export let _whereFrom = 'Start';
+    export let _whereFrom = _SceneName.Start;
     export class _Data extends LwgData._Table {
         private static ins: _Data;
         static _ins() {
@@ -113,7 +116,7 @@ export module _PersonalInfo {
 }
 export module _BackHint {
     export let _3dToSp: Laya.Sprite;
-    export let _fromScene: Laya.Scene;
+    export let _whereScene: Laya.Scene;
 }
 export module _PreLoadCutIn {
     /**是不是从返回按钮中进来的，返回按钮中进来回主界面不会换装*/
@@ -133,6 +136,9 @@ export class _AllClothes extends LwgData._Table {
     static _ins() {
         if (!this.ins) {
             this.ins = new _AllClothes('ClothesGeneral', _Res._list.json.GeneralClothes.dataArr, true);
+            if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                this.ins._deleteObjByName('ads');
+            }
         }
         return this.ins;
     }
@@ -342,6 +348,9 @@ export class _DIYClothes extends LwgData._Table {
     static _ins() {
         if (!this.ins) {
             this.ins = new _DIYClothes('DIYClothes', _Res._list.json.DIYClothes.dataArr, true);
+            if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                this.ins._deleteObjByName('ads');
+            }
         }
         return this.ins;
     };
@@ -378,6 +387,7 @@ export class _DIYClothes extends LwgData._Table {
     ClothesArr: Array<Laya.Sprite>;
     /**当前选中的类别中所有的服装*/
     getClothesArr(): Array<any> {
+        _DIYClothes._ins().ClothesArr = null;
         if (!this.ClothesArr) {
             this.ClothesArr = [];
             const dataArr = _DIYClothes._ins()._arr;
@@ -427,8 +437,9 @@ export module _MakeTailor {
 }
 export module _MakePattern {
     export enum Event {
-        close = '_MakePattern_close',
-        createImg = '_MakePattern_createImg',
+        close = '_MakePattern/close',
+        createImg = '_MakePattern/createImg',
+        byteDanceBackStart = '_MakePattern/byteDanceBackStart',
     }
     export class _Pattern extends LwgData._Table {
         private static ins: _Pattern;
@@ -436,6 +447,9 @@ export module _MakePattern {
             if (!this.ins) {
                 this.ins = new _Pattern('_Pattern', _Res._list.json.MakePattern.dataArr, true);
                 this.ins._pitchClassify = this.ins._classify.newYear;
+                if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                    this.ins._deleteObjByName('ads');
+                }
                 //空位置用于站位 
                 this.ins.newYearArr = this.ins._getArrByClassify(this.ins._classify.newYear);
                 this.ins.newYearArr.push({}, {});
@@ -712,6 +726,9 @@ export module _CheckIn {
             return _lastCheckDate.value == LwgDate._date.date ? true : false;
         },
     }
+}
+export module _Share {
+    export let _whereFrom: string = 'MakePattern';
 }
 
 

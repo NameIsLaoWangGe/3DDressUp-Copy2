@@ -1,7 +1,8 @@
-import {  LwgScene } from "../Lwg/Lwg";
+import { LwgScene } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _BackHint, _PreLoadCutIn } from "./_GameData";
-export class BackHint extends  LwgScene._SceneBase {
+import { _SceneName } from "./_SceneName";
+export default class BackHint extends LwgScene._SceneBase {
     closeAniType = null;
     lwgOpenAni(): number {
         return _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
@@ -11,7 +12,7 @@ export class BackHint extends  LwgScene._SceneBase {
             _PreLoadCutIn._fromBack = true;
             _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
                 this._Owner.close();
-                _BackHint._fromScene[_BackHint._fromScene.name]._openScene('Start', true, true);
+                _BackHint._whereScene[_BackHint._whereScene.name]._openScene(_SceneName.Start, true, true);
             });
         })
 

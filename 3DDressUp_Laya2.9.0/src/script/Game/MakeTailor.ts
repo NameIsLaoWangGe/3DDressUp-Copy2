@@ -1,8 +1,9 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import {  LwgScene, LwgAni2D, LwgAudio, LwgClick, LwgData, LwgDialogue, LwgEff2D, LwgEvent, LwgTimer, LwgTools } from "../Lwg/Lwg";
+import { LwgScene, LwgAni2D, LwgAudio, LwgClick, LwgData, LwgDialogue, LwgEff2D, LwgEvent, LwgTimer, LwgTools } from "../Lwg/Lwg";
 import { _DIYClothes, _Guide, _MakeTailor, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
+import { _SceneName } from "./_SceneName";
 import { _UI } from "./_UI";
 
 /**当前任务服装数据*/
@@ -86,7 +87,7 @@ export class _TaskClothes extends LwgData._Table {
 }
 
 /**剪刀*/
-class _Scissor extends  LwgScene._ObjectBase {
+class _Scissor extends LwgScene._ObjectBase {
     lwgOnAwake(): void {
         this._Owner.pos(this.Ani.vanishP.x, this.Ani.vanishP.y);
     }
@@ -337,7 +338,7 @@ class _Item extends LwgData._Item {
     }
 }
 
-export default class MakeTailor extends  LwgScene._SceneBase {
+export default class MakeTailor extends LwgScene._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'jiancaipage');
 
@@ -362,7 +363,7 @@ export default class MakeTailor extends  LwgScene._SceneBase {
                 this.UI.btnCompleteAppear(null, 400);
             });
             this.UI.btnBackAppear(() => {
-                !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                !_Guide._complete.value && this._openScene(_SceneName.Guide, false, false, () => {
                     _Guide.MmakeTailorPulldownSwicth = true;
                     this._evNotify(_Guide.Event.MakeTailorPulldown);
                 })
@@ -417,13 +418,13 @@ export default class MakeTailor extends  LwgScene._SceneBase {
             this._evNotify(_MakeTailor.Event.scissorRemove, [() => {
                 _TaskClothes._ins().again(this._Owner);
             }]);
-              LwgClick._switch = false;
+            LwgClick._switch = false;
             LwgTimer._frameOnce(60, this, () => {
                 this.UI.operationAppear(() => {
                     this.UI.btnAgainVinish(null, 200);
                     this.UI.btnCompleteAppear();
                 });
-                  LwgClick._switch = true;
+                LwgClick._switch = true;
             })
         }
     }
@@ -506,7 +507,7 @@ export default class MakeTailor extends  LwgScene._SceneBase {
                     })
                     LwgTimer._frameOnce(280, this, () => {
                         _Tweeting._photo.take(this._Owner, 0);
-                        this._openScene('MakePattern', true, true);
+                        this._openScene(_SceneName.MakePattern, true, true);
                     })
                 }
             }

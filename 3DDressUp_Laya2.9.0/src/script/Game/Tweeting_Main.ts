@@ -3,6 +3,7 @@ import { LwgScene, LwgAni2D, LwgTimer, LwgTools, LwgClick } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _DIYClothes, _Guide, _PersonalInfo, _PreLoadCutIn, _Ranking, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
+import { _SceneName } from "./_SceneName";
 
 export default class Tweeting_Main extends LwgScene._SceneBase {
     lwgOnAwake(): void {
@@ -93,7 +94,7 @@ export default class Tweeting_Main extends LwgScene._SceneBase {
     BtnChoosePhotosClick(): void {
         this._btnUp(this._ImgVar('BtnChoosePhotos'), () => {
             ADManager.TAPoint(TaT.BtnClick, 'photo_choose');
-            this._openScene('Tweeting_ChoosePhotos', false);
+            this._openScene(_SceneName.Tweeting_ChoosePhotos, false);
         }, 'null')
     }
     lwgButton(): void {

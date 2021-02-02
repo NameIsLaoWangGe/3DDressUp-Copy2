@@ -4,6 +4,7 @@ import { _GameAni } from "./_GameAni";
 import { _CheckIn, _Guide, _PersonalInfo, _Ranking, _Start } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
+import { _SceneName } from "./_SceneName";
 
 export class RankingItem extends LwgData._Item {
     $data: _Ranking._mergePro;
@@ -25,7 +26,7 @@ export default class Ranking extends LwgScene._SceneBase {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'rankpage');
         _Ranking._Data._ins()._List = this._ListVar('List');
-        if (_Ranking._whereFrom === 'Tweeting') {
+        if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
             _Ranking._Data._ins()._addProValueForAll(_Ranking._Data._ins()._mergePro.fansNum, (): number => {
                 return LwgTools._Number.randomOneInt(100, 150);
             })
@@ -35,7 +36,7 @@ export default class Ranking extends LwgScene._SceneBase {
     }
 
     lwgOpenAni(): number {
-        if (_Ranking._whereFrom === 'Tweeting') {
+        if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
             _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('Background'));
         } else {
             _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
@@ -44,22 +45,22 @@ export default class Ranking extends LwgScene._SceneBase {
     }
 
     lwgOpenAniAfter(): void {
-        if (_Ranking._whereFrom === 'Tweeting') {
+        if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
             _GameEffects2D._fireworksCelebrate(() => {
-                !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                !_Guide._complete.value && this._openScene(_SceneName.Guide, false, false, () => {
                     this.BtnCloseClick();
                     const gP = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnClose').x, this._ImgVar('BtnClose').y));
                     this._evNotify(_Guide.Event.RankingCloseBtn, [gP.x, gP.y]);
                 }, this._Owner.zOrder + 1);
             });
-            _Ranking._whereFrom = 'Start';
+            _Ranking._whereFrom = _SceneName.Start;
         }
     }
     lwgOnStart(): void {
         if (_Ranking._Data._ins()._getProperty(_Ranking._Data._ins()._pitchName, _Ranking._Data._ins()._mergePro.rankNum) === 1) {
             _Ranking._Data._ins()._List.scrollTo(0);
         } else {
-            if (_Ranking._whereFrom === 'Tweeting') {
+            if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
                 _Ranking._Data._ins()._listScrollToLast();
                 _Ranking._Data._ins()._listTweenToPitchChoose(-1, 1500);
             } else {

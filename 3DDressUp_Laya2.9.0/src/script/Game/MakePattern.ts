@@ -1,10 +1,12 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { LwgScene, LwgAni2D, LwgAni3D, LwgData, LwgDialogue, LwgStorage, LwgTimer, LwgTools } from "../Lwg/Lwg";
+import RecordManager from "../../TJ/RecordManager";
+import { LwgScene, LwgAni2D, LwgAni3D, LwgData, LwgDialogue, LwgStorage, LwgTimer, LwgTools, LwgPlatform } from "../Lwg/Lwg";
 import { LwgOPPO } from "../Lwg/LwgOPPO";
 import { _3DDIYCloth, _3DScene } from "./_3D";
 import { _GameAni } from "./_GameAni";
-import { _DIYClothes, _Guide, _MakePattern, _Ranking, _Start, _Tweeting } from "./_GameData";
+import { _DIYClothes, _Guide, _MakePattern, _Ranking, _Share, _Start, _Tweeting } from "./_GameData";
 import { _Res } from "./_Res";
+import { _SceneName } from "./_SceneName";
 import { _UI } from "./_UI";
 
 class _Item extends LwgData._Item {
@@ -144,7 +146,7 @@ export default class MakePattern extends LwgScene._SceneBase {
 
     lwgOpenAniAfter(): void {
         LwgTimer._frameOnce(60, this, () => {
-            !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+            !_Guide._complete.value && this._openScene(_SceneName.Guide, false, false, () => {
                 this._evNotify(_Guide.Event.MakePatternChooseClassify);
             })
         })
@@ -220,6 +222,7 @@ export default class MakePattern extends LwgScene._SceneBase {
         }
 
         this.Tex.btn();
+
         this.UI.btnCompleteClick = () => {
             if (!_Guide._complete.value) {
                 if (_Guide.MakePatternState === _Guide.MakePatternStateType.BtnCom) {
@@ -228,51 +231,60 @@ export default class MakePattern extends LwgScene._SceneBase {
                     return;
                 }
             }
-            this.Tex.frameRestore();
-            this.Tex.dir = this.Tex.dirType.Front;
-            this.Tex.turnFace(() => {
-                // 这次绘制是微博照片
-                _3DScene._ins().cameraToSprite(this._Owner);
-                LwgTimer._frameOnce(5, this, () => {
-                    _Tweeting._photo.take(this._Owner, 1);
-                })
-                this.texStorage();
-                LwgAni2D.fadeOut(this._ImgVar('BtnL'), 1, 0, 200);
-                LwgAni2D.fadeOut(this._ImgVar('BtnR'), 1, 0, 200);
-                this.UI.operationVinish(() => {
-                    this.UI.btnBackVinish(null, 200);
-                    this.UI.btnBackVinish();
-                    this.UI.btnRollbackVinish();
-                    this.UI.btnAgainVinish(() => {
-                    })
-                    var close = () => {
-                        // 这次绘制是为了过长动画
-                        _3DScene._ins().cameraToSprite(this._Owner);
-                        _Start._whereFrom = 'MakePattern';
-                        this._openScene('Start', true, true);
-                    }
-                    // if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
-                    //     _3DScene._ins().photoBg();
-                    // }
-                    if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
-                        LwgOPPO._screenShootByRatio((data: any) => {
-                            LwgOPPO._picSave(data['tempFilePath'], _3DDIYCloth._ins().name);
-                            close();
-                        }, 0.28, null, 0.72, null, null, 0.1);
-                    } else {
-                        close();
-                    }
-                }, 200);
-            });
+            // 渠道选择
+            if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                RecordManager.stopAutoRecord();
+                this._openScene(_SceneName.Share, false);
+                _Share._whereFrom = _SceneName.MakePattern;
+                return;
+            } else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                this.backStart();
+            }
         }
         if (!_Guide._complete.value) return;
         this.UI.btnRollbackClick = () => {
             _3DScene._ins().cameraToSprite(this._Owner);
-            this._openScene('MakeTailor', true, true);
+            this._openScene(_SceneName.MakeTailor, true, true);
         }
         this.UI.btnAgainClick = () => {
             this.Tex.again();
         }
+    }
+    /**回到主界面需要的操作*/
+    backStart(): void {
+        this.Tex.frameRestore();
+        this.Tex.dir = this.Tex.dirType.Front;
+        this.Tex.turnFace(() => {
+            // 这次绘制的是微博照片
+            _3DScene._ins().cameraToSprite(this._Owner);
+            LwgTimer._frameOnce(5, this, () => {
+                _Tweeting._photo.take(this._Owner, 1);
+            })
+            this.texStorage();
+            LwgAni2D.fadeOut(this._ImgVar('BtnL'), 1, 0, 200);
+            LwgAni2D.fadeOut(this._ImgVar('BtnR'), 1, 0, 200);
+        });
+        this.UI.operationVinish(() => {
+            this.UI.btnBackVinish(null, 200);
+            this.UI.btnBackVinish();
+            this.UI.btnRollbackVinish();
+            this.UI.btnAgainVinish(() => {
+            })
+            var close = () => {
+                // 这次绘制是为了过场动画
+                _3DScene._ins().cameraToSprite(this._Owner);
+                _Start._whereFrom = _SceneName.MakePattern;
+                this._openScene(_SceneName.Start, true, true);
+            }
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
+                LwgOPPO._screenShootByRatio((data: any) => {
+                    LwgOPPO._picSave(data['tempFilePath'], _3DDIYCloth._ins().name);
+                    close();
+                }, 0.28, null, 0.72, null, null, 0.1);
+            } else {
+                close();
+            }
+        }, 200);
     }
 
     lwgEvent(): void {
@@ -285,6 +297,10 @@ export default class MakePattern extends LwgScene._SceneBase {
             if (!_Guide._complete.value) return;
             this.Tex.close();
             this.Tex.state = this.Tex.stateType.none;
+        })
+        this._evReg(_MakePattern.Event.byteDanceBackStart, () => {
+            if (!_Guide._complete.value) return;
+            this.backStart();
         })
     }
     /**截图*/
@@ -321,7 +337,7 @@ export default class MakePattern extends LwgScene._SceneBase {
         }
         LwgStorage._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texF}`).value = fArr;
         LwgStorage._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texR}`).value = rArr;
-        _Ranking._whereFrom = this._Owner.name;
+        _Ranking._whereFrom = _SceneName.Tweeting_GetFans;
         // } else {
         //     // 绘制到两张只有一半的sp上，节省本地存储的内存
         //     this._SpriteVar('Front').scaleY = this._SpriteVar('Reverse').scaleY = 1;

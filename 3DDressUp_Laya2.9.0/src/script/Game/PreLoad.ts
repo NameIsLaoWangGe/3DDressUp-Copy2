@@ -4,6 +4,7 @@ import { _3DScene } from "./_3D";
 import { _AllClothes } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
+import { _SceneName } from "./_SceneName";
 
 export default class PreLoad extends LwgPreLoad._PreLoadScene {
     lwgOnAwake(): void {
@@ -80,7 +81,7 @@ export default class PreLoad extends LwgPreLoad._PreLoadScene {
             }
         })
         _AllClothes._ins().changeClothStart();
-        _3DScene._ins().intoStart('preload');
+        _3DScene._ins().intoStart(_SceneName.PreLoad);
         return 2000;
     }
 
