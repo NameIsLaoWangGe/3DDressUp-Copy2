@@ -1,7 +1,7 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
 import { LwgScene, LwgAni2D, LwgClick, LwgTools, LwgPlatform, LwgTimer } from "../Lwg/Lwg";
 import { _3DScene } from "./_3D";
-import { _BackHint, _Guide } from "./_GameData";
+import { _BackHint, _Guide, _PreLoadCutIn } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
 import { _SceneName } from "./_SceneName";
@@ -39,6 +39,7 @@ export class _UI {
                 _BackHint._whereScene = this.Scene;
                 LwgScene._openScene(_SceneName.BackHint);
             } else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                _PreLoadCutIn._fromBack = true;
                 LwgTimer._frameOnce(10,this,()=>{
                     this.Scene[this.Scene.name]._openScene(_SceneName.Start, true, true);
                 })

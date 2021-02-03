@@ -6,7 +6,7 @@
     "searchKey":"View",
     "props":{"width":1280,"sceneColor":"#898989","height":720},
     "nodeParent":-1,
-    "maxID":121,
+    "maxID":122,
     "label":"View",
     "isOpen":true,
     "isDirectory":true,
@@ -90,13 +90,14 @@
                     "props":{"y":97,"x":97,"width":442,"var":"Photo","texture":"Game/UI/Common/fx_di.png","name":"Photo","height":291},
                     "nodeParent":21,
                     "label":"Photo",
-                    "isOpen":false,
+                    "isOpen":true,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":114,
                     "child":[
                         {
+                            "x":45,
                             "type":"Image",
                             "searchKey":"Image",
                             "props":{"y":0,"x":0,"skin":"Game/UI/Common/fx_di.png","renderType":"mask"},
@@ -108,21 +109,21 @@
                             "compId":118,
                             "child":[
                                 ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Image",
+                            "searchKey":"Image",
+                            "props":{"top":0,"skin":"Game/UI/Common/zz.png","right":0,"left":0,"bottom":0,"alpha":0.5},
+                            "nodeParent":114,
+                            "label":"Image",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":113,
+                            "child":[
+                                ]
                         }]
-                },
-                {
-                    "x":30,
-                    "type":"Image",
-                    "searchKey":"Image",
-                    "props":{"y":97,"x":97,"skin":"Game/UI/Common/zz.png","centerY":0,"centerX":0},
-                    "nodeParent":21,
-                    "label":"Image",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":113,
-                    "child":[
-                        ]
                 },
                 {
                     "x":30,
@@ -190,6 +191,20 @@
                     "isAniNode":true,
                     "hasChild":false,
                     "compId":22,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Sprite",
+                    "searchKey":"Sprite",
+                    "props":{"y":229,"x":283.5,"texture":"Game/UI/Share/lx.png"},
+                    "nodeParent":21,
+                    "label":"Sprite",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":121,
                     "child":[
                         ]
                 }]

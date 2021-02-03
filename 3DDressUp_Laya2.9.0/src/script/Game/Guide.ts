@@ -1,8 +1,8 @@
-import {  LwgScene, LwgAni2D, LwgEff2D, LwgTimer, LwgTools } from "../Lwg/Lwg";
+import { LwgScene, LwgAni2D, LwgEff2D, LwgTimer, LwgTools, LwgPlatform } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _Guide } from "./_GameData";
 /**裁剪界面的层级必须在最上面*/
-export default class Guide extends  LwgScene._SceneBase {
+export default class Guide extends LwgScene._SceneBase {
     lwgOpenAni(): number {
         return 200;
     }
@@ -378,10 +378,11 @@ export default class Guide extends  LwgScene._SceneBase {
             this.moveCircleNoBg(x, y, radius);
         })
 
-        this._evReg(_Guide.Event.MakeTailorBtnCom, () => {
+        this._evReg(_Guide.Event.MakeTailorBtnCom, (point: Laya.Point) => {
             this._AniVar('Click').stop();
-            this.boreholeCircle([[this.btnComX, this.btnComY, radius], [Laya.stage.width / 2, Laya.stage.height / 2, 350]], null, null, () => {
-                this.handMove(this.btnComX, this.btnComY, () => {
+           
+            this.boreholeCircle([[point.x, point.y, radius], [Laya.stage.width / 2, Laya.stage.height / 2, 350]], null, null, () => {
+                this.handMove(point.x, point.y, () => {
                     this._AniVar('Click').play();
                 });
             });

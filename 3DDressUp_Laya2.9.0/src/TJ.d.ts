@@ -534,7 +534,8 @@ declare namespace TJ.API.AdService {
         template: boolean;
         video: boolean;
         refresh: boolean;
-        extraData: any;
+        extraData: {};
+        scene: string;
         onNative: (item: NativeItem) => void;
         ToJson(): string;
     }
@@ -701,6 +702,7 @@ declare namespace TJ.API.TA {
         style: string;
         icon: string;
         score: number;
+        scene: string;
     }
     let log: boolean;
     function Event(param: Param): void;
@@ -778,8 +780,15 @@ declare namespace TJ.Develop.Yun {
     }
     function GetResult(www: Common.WWW): Promise<any>;
 }
+declare namespace TJ.Develop.Yun.Config.AdsScene {
+    function Get(): Promise<void>;
+    function IsPrevent(scene: string): boolean;
+}
 declare namespace TJ.Develop.Yun.Config {
     function GameCfg(): Promise<any>;
+    let shield: boolean;
+    let noAdTime: number;
+    let nativeAdCD: number;
 }
 declare namespace TJ.Develop.Yun.DouYin {
     let apiUrl: string;
@@ -803,7 +812,7 @@ declare namespace TJ.Develop.Yun.Location {
     let province: string;
     let city: string;
     function NowTime(): number;
-    let syncPromise: Promise<void>;
+    let syncPromiseWrap: Common.PromiseWrap<void>;
     function Sync(): Promise<void>;
     let shield: boolean;
     let noAdTime: number;
@@ -1288,7 +1297,7 @@ declare namespace TJ.Platform.AppRt.Extern.MZ {
 }
 declare namespace TJ.Platform.AppRt.Extern.OPPO.QG {
     function Exist(): boolean;
-    class CallbackResult {
+    interface CallbackResult {
         code: number;
         msg: string;
     }
@@ -1297,6 +1306,55 @@ declare namespace TJ.Platform.AppRt.Extern.OPPO.QG {
         fail: (res: CallbackResult) => void;
         complete: (res: CallbackResult) => void;
     }
+    interface LoginResult extends CallbackResult {
+        data: {
+            age: string;
+            avatar: string;
+            birthday: string;
+            isTourist: string;
+            nickName: string;
+            phoneNum: string;
+            token: string;
+            uid: string;
+            code: number;
+        };
+        code: number;
+        errCode: number;
+        errMsg: string;
+    }
+    class LoginParam extends CallbackParam {
+        success: (res: LoginResult) => void;
+    }
+    function Login(param: LoginParam): void;
+    function SetLoadingProgress(progress: number): void;
+    function LoadingComplete(param: CallbackParam): void;
+    interface LaunchOption {
+        query: {};
+        referrerInfo: {
+            package: string;
+            extraData: {};
+        };
+    }
+    function GetLaunchOptionsSync(): LaunchOption;
+    interface SystemInfo {
+        brand: string;
+        model: string;
+        pixelRatio: number;
+        screenWidth: number;
+        screenHeight: number;
+        windowHeight: number;
+        windowWidth: number;
+        language: string;
+        COREVersion: string;
+        platformVersionName: string;
+        system: string;
+        platformVersionCode: number;
+        statusBarHeight: number;
+    }
+    function GetSystemInfoSync(): SystemInfo;
+    function VibrateShort(parm: CallbackParam): void;
+    function VibrateLong(parm: CallbackParam): void;
+    function ReportMonitor(name?: string, value?: number): void;
 }
 declare namespace TJ.Platform.AppRt.Extern.OPPO.QG {
     class InitAdServiceParam extends CallbackParam {
@@ -1337,7 +1395,7 @@ declare namespace TJ.Platform.AppRt.Extern.OPPO.QG {
         Destroy(): void;
     }
     function CreateInsertAd(posId: string): InsertAd;
-    class RewardedVideoAdCloseResult extends CallbackResult {
+    interface RewardedVideoAdCloseResult extends CallbackResult {
         isEnded: boolean;
     }
     class RewardedVideoAd {
@@ -1431,47 +1489,6 @@ declare namespace TJ.Platform.AppRt.Extern.OPPO.QG {
         extraData: {};
     }
     function NavigateToMiniGame(param: NavigateToMiniGameParam): void;
-}
-declare namespace TJ.Platform.AppRt.Extern {
-    namespace OPPO {
-        namespace QG {
-            class LoginResultData {
-                age: string;
-                avatar: string;
-                birthday: string;
-                isTourist: string;
-                nickName: string;
-                phoneNum: string;
-                token: string;
-                uid: string;
-                code: number;
-            }
-            class LoginResult extends CallbackResult {
-                data: LoginResultData;
-                code: number;
-                errCode: number;
-                errMsg: string;
-            }
-            class LoginParam extends CallbackParam {
-                success: (res: LoginResult) => void;
-            }
-            function Login(param: LoginParam): void;
-            function SetLoadingProgress(progress: number): void;
-            function LoadingComplete(param: CallbackParam): void;
-            class ReferrerInfo {
-                package: string;
-                extraData: {};
-            }
-            class LaunchOption {
-                query: {};
-                referrerInfo: ReferrerInfo;
-            }
-            function GetLaunchOptionsSync(): LaunchOption;
-            function VibrateShort(parm: CallbackParam): void;
-            function VibrateLong(parm: CallbackParam): void;
-            function ReportMonitor(name?: string, value?: number): void;
-        }
-    }
 }
 declare namespace TJ.Platform.AppRt.Extern.QQ {
     function Exist(): boolean;
@@ -1712,27 +1729,7 @@ declare namespace TJ.Platform.AppRt.Extern.QTTGame {
 }
 declare namespace TJ.Platform.AppRt.Extern.TT {
     function Exist(): boolean;
-    class SystemInfo {
-        brand: string;
-        model: string;
-        pixelRatio: number;
-        screenWidth: number;
-        screenHeight: number;
-        windowWidth: number;
-        windowHeight: number;
-        language: string;
-        version: string;
-        appName: "Toutiao" | "Douyin";
-        system: string;
-        platform: string;
-        fontSizeSetting: number;
-        SDKVersion: string;
-        benchmarkLevel: number;
-        battery: number;
-        wifiSignal: number;
-    }
-    function GetSystemInfoSync(): SystemInfo;
-    class CallbackResult {
+    interface CallbackResult {
         errMsg: string;
     }
     class CallbackParam {
@@ -1740,7 +1737,7 @@ declare namespace TJ.Platform.AppRt.Extern.TT {
         fail: (res: CallbackResult) => void;
         complete: (res: CallbackResult) => void;
     }
-    class LoginResult extends CallbackResult {
+    interface LoginResult extends CallbackResult {
         code: string;
         anonymousCode: string;
         isLogin: boolean;
@@ -1759,7 +1756,7 @@ declare namespace TJ.Platform.AppRt.Extern.TT {
         country: string;
         language: string;
     }
-    class GetUserInfoResult extends CallbackResult {
+    interface GetUserInfoResult extends CallbackResult {
         errMsg: string;
         userInfo: UserInfo;
         rawData: string;
@@ -1780,14 +1777,14 @@ declare namespace TJ.Platform.AppRt.Extern.TT {
         videoId: string;
     }
     function NavigateToVideoView(param: NavigateToVideoViewParam): void;
-    class RecordClipResult extends CallbackResult {
+    interface RecordClipResult extends CallbackResult {
         index: number;
     }
     class RecordClipParam extends CallbackParam {
         timeRange: number[];
         success: (res: RecordClipResult) => void;
     }
-    class ClipVideoResult extends CallbackResult {
+    interface ClipVideoResult extends CallbackResult {
         videoPath: string;
     }
     class ClipVideoParam extends CallbackParam {
@@ -1809,7 +1806,7 @@ declare namespace TJ.Platform.AppRt.Extern.TT {
         ClipVideo(param: ClipVideoParam): void;
     }
     function GetGameRecorderManager(): GameRecorderManager;
-    class ShareAppMessageResult extends CallbackResult {
+    interface ShareAppMessageResult extends CallbackResult {
         videoId?: string;
     }
     class ShareAppMessageParamExtra {
@@ -1835,17 +1832,45 @@ declare namespace TJ.Platform.AppRt.Extern.TT {
         channel: "article" | "video" | "token";
     }) => ShareAppMessageParam): void;
     function ReportAnalytics(eventName: string, data: {}): void;
-    class ReferrerInfo {
-        appId: string;
-        extraData: {};
-    }
-    class LaunchOption {
+    interface LaunchOption {
         path: string;
         scene: string;
         query: {};
-        referrerInfo: ReferrerInfo;
+        referrerInfo: {
+            appId: string;
+            extraData: {};
+        };
     }
     function GetLaunchOptionsSync(): LaunchOption;
+    interface SystemInfo {
+        system: string;
+        platform: string;
+        brand: string;
+        model: string;
+        version: string;
+        appName: "Toutiao" | "Douyin" | "news_article_lite" | "live_stream" | "XiGua" | "PPX" | "douyin_lite" | "live_stream_lite" | "novel_fm";
+        SDKVersion: string;
+        screenWidth: number;
+        screenHeight: number;
+        windowWidth: number;
+        windowHeight: number;
+        pixelRatio: number;
+        safeArea: {
+            left: number;
+            right: number;
+            top: number;
+            bottom: number;
+            width: number;
+            height: number;
+        };
+        deviceScore: {
+            cpu: number;
+            gpu: number;
+            memory: number;
+            overall: number;
+        };
+    }
+    function GetSystemInfoSync(): SystemInfo;
     class OnNavigateToMiniGameResult {
         errCode: 0 | 1 | 2;
         errMsg: string;
@@ -1895,14 +1920,14 @@ declare namespace TJ.Platform.AppRt.Extern.TT {
     function SetMoreGamesInfo(param: ShowMoreGamesModalParam): void;
     function VibrateShort(parm: CallbackParam): void;
     function VibrateLong(parm: CallbackParam): void;
-    class CheckFollowAwemeStateResult extends CallbackResult {
+    interface CheckFollowAwemeStateResult extends CallbackResult {
         hasFollowed: boolean;
     }
     class CheckFollowAwemeStateParam extends CallbackParam {
         success: (res: CheckFollowAwemeStateResult) => void;
     }
     function CheckFollowAwemeState(param: CheckFollowAwemeStateParam): void;
-    class OpenAwemeUserProfileResult extends CallbackResult {
+    interface OpenAwemeUserProfileResult extends CallbackResult {
         hasFollowed: boolean;
     }
     class OpenAwemeUserProfileParam extends CallbackParam {
@@ -1917,6 +1942,33 @@ declare namespace TJ.Platform.AppRt.Extern.TT {
         z: number;
     }
     function OnAccelerometerChange(callback: (res: OnAccelerometerChangeResult) => void): void;
+    class CreatMoreGamesBannerParam {
+        style: MoreGamesBannerStyle;
+        appLaunchOptions: AppLaunchOptions[];
+    }
+    function CreatMoreGamesBanner(param: CreatMoreGamesBannerParam): MoreGameBnaner;
+    class MoreGamesBannerStyle {
+        left: number;
+        top: number;
+        width: number;
+        verticalAlign: "top" | "center" | "bottom";
+        horizontalAlign: "left" | "center" | "right";
+    }
+    class MoreGameBnaner {
+        private moreGamesBnaner;
+        constructor(obj: any);
+        Show(): any;
+        Hide(): any;
+        OnResize(callback: (res: any) => void): void;
+        OffResize(callback: (res: any) => void): void;
+        OnTap(callback: (res: any) => void): void;
+        OffTap(callback: (res: any) => void): void;
+        OnError(callback: (res: any) => void): void;
+        OffError(callback: (res: any) => void): void;
+        Destroy(): void;
+    }
+}
+declare namespace TJ.Platform.AppRt.Extern.TT {
     class BannerAdStyle {
         left: number;
         top: number;
@@ -1976,31 +2028,6 @@ declare namespace TJ.Platform.AppRt.Extern.TT {
         OffClose(callback?: (res: any) => void): void;
     }
     function CreateRewardedVideoAd(adUnitId: string): RewardedVideoAd;
-    class CreatMoreGamesBannerParam {
-        style: MoreGamesBannerStyle;
-        appLaunchOptions: AppLaunchOptions[];
-    }
-    function CreatMoreGamesBanner(param: CreatMoreGamesBannerParam): MoreGameBnaner;
-    class MoreGamesBannerStyle {
-        left: number;
-        top: number;
-        width: number;
-        verticalAlign: "top" | "center" | "bottom";
-        horizontalAlign: "left" | "center" | "right";
-    }
-    class MoreGameBnaner {
-        private moreGamesBnaner;
-        constructor(obj: any);
-        Show(): any;
-        Hide(): any;
-        OnResize(callback: (res: any) => void): void;
-        OffResize(callback: (res: any) => void): void;
-        OnTap(callback: (res: any) => void): void;
-        OffTap(callback: (res: any) => void): void;
-        OnError(callback: (res: any) => void): void;
-        OffError(callback: (res: any) => void): void;
-        Destroy(): void;
-    }
 }
 declare namespace TJ.Platform.AppRt.Extern.UC {
     function Exist(): boolean;
@@ -2080,17 +2107,69 @@ declare namespace TJ.Platform.AppRt.Extern.VIVO.QG {
         complete?: (res: any) => void;
     }
     function GetProfile(param: GetProfileParam): void;
-    class LoginResultData {
-        token: string;
-    }
-    class LoginResult {
-        data: LoginResultData;
+    interface LoginResult {
+        data: {
+            token: string;
+        };
     }
     class LoginParam {
         success: (res: LoginResult) => void;
         fail: (res: any) => void;
     }
     function Login(param: LoginParam): void;
+    interface RequestTask {
+        abort(): void;
+    }
+    class RequestParam {
+        url: string;
+        header: {};
+        method: string;
+        data: string;
+        dataType: "json" | "arraybuffer" | "text";
+        success: (res: {
+            data: {};
+            header: {};
+            statusCode: number;
+        }) => void;
+        fail: (error: {}, code: number) => void;
+        complete: (res: any) => void;
+    }
+    function Request(param: RequestParam): RequestTask;
+    class ShortcutButton {
+        private obj;
+        constructor(obj: any);
+        Resize(param: CreateShortcutButtonParam): void;
+        Show(): void;
+        Hide(): void;
+        Destroy(): void;
+        OnTap(callback: (res: {
+            msg: string;
+            code: number;
+        }) => void): void;
+        OffTap(): void;
+        OnError(callback: (res: {
+            msg: string;
+            code: number;
+        }) => void): void;
+        OffError(): void;
+    }
+    class ShortcutButtonStyle {
+        left: number;
+        top: number;
+        width: number;
+        height: number;
+        backgroundColor: string;
+        color: string;
+        fontSize: number;
+    }
+    class CreateShortcutButtonParam {
+        type: "text" | "image";
+        image: string;
+        style: ShortcutButtonStyle;
+    }
+    function CreateShortcutButton(param: CreateShortcutButtonParam): ShortcutButton;
+}
+declare namespace TJ.Platform.AppRt.Extern.VIVO.QG {
     class BannerAd {
         private bannerAd;
         constructor(obj: any);
@@ -2173,61 +2252,10 @@ declare namespace TJ.Platform.AppRt.Extern.VIVO.QG {
         OffError(): void;
     }
     function CreateNativeAd(posId: string): NativeAd;
-    interface RequestTask {
-        abort(): void;
-    }
-    class RequestParam {
-        url: string;
-        header: {};
-        method: string;
-        data: string;
-        dataType: "json" | "arraybuffer" | "text";
-        success: (res: {
-            data: {};
-            header: {};
-            statusCode: number;
-        }) => void;
-        fail: (error: {}, code: number) => void;
-        complete: (res: any) => void;
-    }
-    function Request(param: RequestParam): RequestTask;
-    class ShortcutButton {
-        private obj;
-        constructor(obj: any);
-        Resize(param: CreateShortcutButtonParam): void;
-        Show(): void;
-        Hide(): void;
-        Destroy(): void;
-        OnTap(callback: (res: {
-            msg: string;
-            code: number;
-        }) => void): void;
-        OffTap(): void;
-        OnError(callback: (res: {
-            msg: string;
-            code: number;
-        }) => void): void;
-        OffError(): void;
-    }
-    class ShortcutButtonStyle {
-        left: number;
-        top: number;
-        width: number;
-        height: number;
-        backgroundColor: string;
-        color: string;
-        fontSize: number;
-    }
-    class CreateShortcutButtonParam {
-        type: "text" | "image";
-        image: string;
-        style: ShortcutButtonStyle;
-    }
-    function CreateShortcutButton(param: CreateShortcutButtonParam): ShortcutButton;
 }
 declare namespace TJ.Platform.AppRt.Extern.WX {
     function Exist(): boolean;
-    class CallbackResult {
+    interface CallbackResult {
         errMsg: string;
     }
     class CallbackParam {
@@ -2235,17 +2263,6 @@ declare namespace TJ.Platform.AppRt.Extern.WX {
         fail: (res: CallbackResult) => void;
         complete: (res: CallbackResult) => void;
     }
-}
-declare namespace TJ.Platform.AppRt.Extern.WX {
-    class NavigateToMiniProgramParam extends CallbackParam {
-        appId: string;
-        path: string;
-        extraData: {};
-        envVersion: "develop" | "trial" | "release";
-    }
-    function NavigateToMiniProgram(param: NavigateToMiniProgramParam): void;
-}
-declare namespace TJ.Platform.AppRt.Extern.WX {
     class AuthorizeParam extends CallbackParam {
         scope: "scope.userInfo" | "scope.userLocation" | "scope.werun" | "scope.writePhotosAlbum";
     }
@@ -2286,7 +2303,7 @@ declare namespace TJ.Platform.AppRt.Extern.WX {
         OffTap(callback?: (res: any) => void): void;
         Destroy(): void;
     }
-    class LoginSuccessResult extends CallbackResult {
+    interface LoginSuccessResult extends CallbackResult {
         code: string;
     }
     class LoginParam extends CallbackParam {
@@ -2303,7 +2320,7 @@ declare namespace TJ.Platform.AppRt.Extern.WX {
         city: string;
         language: "en" | "zh_CN" | "zh_TW";
     }
-    class GetUserInfoSuccessResult extends CallbackResult {
+    interface GetUserInfoSuccessResult extends CallbackResult {
         userInfo: UserInfo;
         rawData: string;
         signature: string;
@@ -2321,19 +2338,82 @@ declare namespace TJ.Platform.AppRt.Extern.WX {
     function OffShow(callback: Function): void;
     function OnHide(callback: Function): void;
     function OffHide(callback: Function): void;
-    class ReferrerInfo {
-        appId: string;
-        extraData: {};
-    }
-    class LaunchOption {
+    interface LaunchOptions {
         scene: number;
         query: {};
         shareTicket: string;
-        referrerInfo: ReferrerInfo;
+        referrerInfo: {
+            appId: string;
+            extraData: {};
+        };
     }
-    function GetLaunchOptionsSync(): LaunchOption;
+    function GetLaunchOptionsSync(): LaunchOptions;
+    interface SystemInfo {
+        brand: string;
+        model: string;
+        pixelRatio: number;
+        screenWidth: number;
+        screenHeight: number;
+        windowWidth: number;
+        windowHeight: number;
+        statusBarHeight: number;
+        language: string;
+        version: string;
+        system: string;
+        platform: string;
+        fontSizeSetting: number;
+        SDKVersion: string;
+        benchmarkLevel: number;
+        albumAuthorized: boolean;
+        cameraAuthorized: boolean;
+        locationAuthorized: boolean;
+        microphoneAuthorized: boolean;
+        notificationAuthorized: boolean;
+        notificationAlertAuthorized: boolean;
+        notificationBadgeAuthorized: boolean;
+        notificationSoundAuthorized: boolean;
+        bluetoothEnabled: boolean;
+        locationEnabled: boolean;
+        wifiEnabled: boolean;
+        safeArea: {
+            left: number;
+            right: number;
+            top: number;
+            bottom: number;
+            width: number;
+            height: number;
+        };
+        locationReducedAccuracy: boolean;
+        theme: "dark" | "light";
+    }
+    function GetSystemInfoSync(): SystemInfo;
     function VibrateShort(parm: CallbackParam): void;
     function VibrateLong(parm: CallbackParam): void;
+    class ShareAppMessageParam {
+        title: string;
+        imageUrl: string;
+        query: string;
+        imageUrlId: string;
+    }
+    function ShareAppMessage(param: ShareAppMessageParam): void;
+    class OnShareAppMessageParam {
+        title: string;
+        imageUrl: string;
+        query: string;
+        imageUrlId: string;
+    }
+    function OnShareAppMessage(param: OnShareAppMessageParam): void;
+    class ShowShareMenuParam extends CallbackParam {
+        withShareTicket: boolean;
+        menus: string[];
+    }
+    function ShowShareMenu(param: ShowShareMenuParam): void;
+    class RequestSubscribeMessageParam extends CallbackParam {
+        tmplIds: string[];
+    }
+    function RequestSubscribeMessage(param: RequestSubscribeMessageParam): void;
+}
+declare namespace TJ.Platform.AppRt.Extern.WX {
     class BannerAdStyle {
         left: number;
         top: number;
@@ -2457,29 +2537,15 @@ declare namespace TJ.Platform.AppRt.Extern.WX {
         fixed: boolean;
     }
     function CreateCustomAd(param: CreateCustomAdParam): CustomAd;
-    class ShareAppMessageParam {
-        title: string;
-        imageUrl: string;
-        query: string;
-        imageUrlId: string;
+}
+declare namespace TJ.Platform.AppRt.Extern.WX {
+    class NavigateToMiniProgramParam extends CallbackParam {
+        appId: string;
+        path: string;
+        extraData: {};
+        envVersion: "develop" | "trial" | "release";
     }
-    function ShareAppMessage(param: ShareAppMessageParam): void;
-    class OnShareAppMessageParam {
-        title: string;
-        imageUrl: string;
-        query: string;
-        imageUrlId: string;
-    }
-    function OnShareAppMessage(param: OnShareAppMessageParam): void;
-    class ShowShareMenuParam extends CallbackParam {
-        withShareTicket: boolean;
-        menus: string[];
-    }
-    function ShowShareMenu(param: ShowShareMenuParam): void;
-    class RequestSubscribeMessageParam extends CallbackParam {
-        tmplIds: string[];
-    }
-    function RequestSubscribeMessage(param: RequestSubscribeMessageParam): void;
+    function NavigateToMiniProgram(param: NavigateToMiniProgramParam): void;
 }
 declare namespace TJ.Platform.AppRt.Extern.XIAOMI.QG {
     function Exist(): boolean;
@@ -2517,6 +2583,8 @@ declare namespace TJ.Platform.AppRt.Extern.XIAOMI.QG {
     }
     function CreateRewardedVideoAd(posId: string): RewardedVideoAd;
 }
+declare namespace TJ.Platform.AppRt.Develop._4399 {
+}
 declare namespace TJ.Platform.AppRt.Develop.HBS.Account {
     function Login(): Promise<Extern.HBS.GameLoginResult>;
     function GetUserInfo(): Promise<Extern.HBS.GameLoginResult>;
@@ -2535,7 +2603,17 @@ declare namespace TJ.Platform.AppRt.Develop.Kwai {
 }
 declare namespace TJ.Platform.AppRt.Develop.OPPO.Account {
     function Login(): Promise<Extern.OPPO.QG.LoginResult>;
-    function GetUserInfo(): Promise<Extern.OPPO.QG.LoginResultData>;
+    function GetUserInfo(): Promise<{
+        age: string;
+        avatar: string;
+        birthday: string;
+        isTourist: string;
+        nickName: string;
+        phoneNum: string;
+        token: string;
+        uid: string;
+        code: number;
+    }>;
 }
 declare namespace TJ.Platform.AppRt.Develop.OPPO.GameAd {
     function ShowBanner(): void;
@@ -2594,6 +2672,7 @@ declare namespace TJ.Platform.AppRt.Develop.TA {
     function FirstStartup(): void;
     function Event(id: string): void;
     function LaunchOptions(ops: {}): void;
+    function SystemInfo(si: {}): void;
     function PromoEvent(promoGuid: string, type: "Awake" | "Start" | "Load" | "Show" | "Hide" | "Click" | "Open", style: string, icon: string): void;
     function PromoEvents(list: {
         promo: string;
@@ -2615,6 +2694,7 @@ declare namespace TJ.Platform.AppRt.Develop.TA {
     function Event_Level_Finish(id: string): void;
     function Event_Level_Fail(id: string): void;
     function Event_Score(id: string, score: number): void;
+    function Event_Ads(id: string, type: string, scene: string): void;
 }
 declare namespace TJ.Platform.AppRt.Develop.TT.Account {
     function Login(force?: boolean): Promise<{
@@ -2662,6 +2742,8 @@ declare namespace TJ.Platform.AppRt.Develop.VIVO.Account {
         biggerAvatar: string;
         gender: number;
     }>;
+}
+declare namespace TJ.Platform.AppRt.Develop.VIVO {
 }
 declare namespace TJ.Platform.AppRt.Develop.WX.Account {
     function Login(): Promise<{
@@ -2718,29 +2800,15 @@ declare namespace TJ.Platform.AppRt.Develop.Yun.Player {
 }
 declare namespace TJ.Platform.AppRt.API.AdPoly {
     class IAdPoly extends Common.Component.Interface {
-        ADReady(param: TJ.API.AdService.Param, grade: Grade): boolean;
-        ShowAD(param: TJ.API.AdService.Param, grade: Grade): void;
-        RemoveAD(param: TJ.API.AdService.Param, grade: Grade): void;
+        ADReady(param: TJ.API.AdService.Param, type: Type): boolean;
+        ShowAD(param: TJ.API.AdService.Param, type: Type): void;
+        RemoveAD(param: TJ.API.AdService.Param, type: Type): void;
     }
-    enum Grade {
+    enum Type {
         banner = 0,
         normal = 1,
-        reward = 2
-    }
-}
-declare namespace TJ.Platform.AppRt.DevKit._4399 {
-}
-declare namespace TJ.Platform.AppRt.DevKit.HBS {
-    function GameLogin(): Promise<{
-        userInfo: any;
-    }>;
-}
-declare namespace TJ.Platform.AppRt.DevKit.OPPO {
-    namespace QG {
-        function Login(): Promise<{
-            token: string;
-            userInfo: Extern.OPPO.QG.LoginResultData;
-        }>;
+        reward = 2,
+        native = 3
     }
 }
 declare namespace TJ.Platform.AppRt.DevKit.OPPO.QG {
@@ -2785,25 +2853,6 @@ declare namespace TJ.Platform.AppRt.DevKit.TT {
         Hide(): void;
         Destroy(): void;
     }
-    function Login(): Promise<{
-        code: string;
-        userInfo: Extern.TT.UserInfo;
-    }>;
-}
-declare namespace TJ.Platform.AppRt.DevKit.VIVO {
-    namespace QG {
-        function Login(): Promise<{
-            token: string;
-        }>;
-    }
-}
-declare namespace TJ.Platform.AppRt.DevKit.VIVO {
-}
-declare namespace TJ.Platform.AppRt.DevKit.WX {
-    function Login(): Promise<{
-        code: string;
-        userInfo: Extern.WX.UserInfo;
-    }>;
 }
 declare namespace TJ.Platform.AppRt.SDK._4399 {
     class Manager extends Common.Component.Interface {

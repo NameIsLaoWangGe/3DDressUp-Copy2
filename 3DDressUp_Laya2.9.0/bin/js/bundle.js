@@ -1585,11 +1585,11 @@
                 ;
                 lwgOnDisable() { }
                 ;
-                onStageMouseDown(e) { ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageDown(e); }
+                onStageMouseDown(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageDown(e); }
                 ;
-                onStageMouseMove(e) { ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageMove(e); }
+                onStageMouseMove(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageMove(e); }
                 ;
-                onStageMouseUp(e) { ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageUp(e); }
+                onStageMouseUp(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageUp(e); }
                 ;
                 lwgOnStageDown(e) { }
                 ;
@@ -3490,7 +3490,7 @@
                     return value;
                 }
                 ;
-                _getPitchIndexArr() {
+                _getPitchIndexInArr() {
                     for (let index = 0; index < this._arr.length; index++) {
                         const element = this._arr[index];
                         if (element[this._property.name] === this._pitchName) {
@@ -3498,7 +3498,7 @@
                         }
                     }
                 }
-                _getPitchIndexByList() {
+                _getPitchIndexInListArr() {
                     if (this._List) {
                         for (let index = 0; index < this._List.array.length; index++) {
                             const element = this._List.array[index];
@@ -3509,18 +3509,18 @@
                     }
                 }
                 _listTweenToPitch(time, func) {
-                    const index = this._getPitchIndexByList();
+                    const index = this._getPitchIndexInListArr();
                     index && this._List.tweenTo(index, time, Laya.Handler.create(this, () => {
                         func && func();
                     }));
                 }
-                _listTweenToPitchChoose(diffIndex, time, func) {
-                    const index = this._getPitchIndexByList();
+                _listTweenToDiffIndexByPitch(diffIndex, time, func) {
+                    const index = this._getPitchIndexInListArr();
                     index && this._List.tweenTo(index + diffIndex, time, Laya.Handler.create(this, () => {
                         func && func();
                     }));
                 }
-                _listScrollToLast() {
+                _listScrollToFirstByLast() {
                     const index = this._List.array.length - 1;
                     index && this._List.scrollTo(index);
                 }
@@ -3569,7 +3569,7 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.name] == name) {
+                            if (element.name == name) {
                                 obj = element;
                                 break;
                             }
@@ -3593,7 +3593,7 @@
                     }
                     this._refreshAndStorage();
                 }
-                _setAllProPerty(pro, value) {
+                _setOneProForAll(pro, value) {
                     for (let index = 0; index < this._arr.length; index++) {
                         const element = this._arr[index];
                         element[pro] = value;
@@ -3601,7 +3601,7 @@
                     this._refreshAndStorage();
                 }
                 _setAllComplete() {
-                    this._setAllProPerty(this._property.complete, true);
+                    this._setOneProForAll(this._property.complete, true);
                     this._refreshAndStorage();
                 }
                 _setCompleteName(name) {
@@ -3627,7 +3627,7 @@
                     }
                 }
                 _setAllOtherComplete() {
-                    this._setAllProPerty(this._property.otherComplete, true);
+                    this._setOneProForAll(this._property.otherComplete, true);
                     this._refreshAndStorage();
                 }
                 _setAllOtherCompleteDelay(delay, eachFrontFunc, eachEndFunc, comFunc) {
@@ -5642,6 +5642,7 @@
             ClickAdmin._switch = true;
             ClickAdmin._absoluteSwitch = true;
             ClickAdmin._assign = [];
+            ClickAdmin._stageSwitch = true;
             function _checkAssign(name) {
                 let assign = false;
                 if (LwgClick._assign.length > 0) {
@@ -7916,148 +7917,169 @@
                     switch (PreLoadAdmin._loadOrder[PreLoadAdmin._loadOrderIndex]) {
                         case _pic2D:
                             Laya.loader.load(_pic2D[index], Laya.Handler.create(this, (any) => {
-                                EventAdmin._notify(_Event.progress);
                                 if (typeof _pic2D[index]['url'] === 'object') {
-                                    return;
-                                }
-                                if (any == null) {
-                                    console.log('XXXXXXXXXXX2D资源' + _pic2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    console.log(`${_pic2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
                                 }
                                 else {
-                                    console.log('2D图片' + _pic2D[index] + '加载完成！', '数组下标为：', index);
+                                    if (any == null) {
+                                        console.log('XXXXXXXXXXX2D资源' + _pic2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        console.log('2D图片' + _pic2D[index] + '加载完成！', '数组下标为：', index);
+                                    }
                                 }
+                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _scene2D:
                             Laya.loader.load(_scene2D[index], Laya.Handler.create(this, (any) => {
-                                EventAdmin._notify(_Event.progress);
                                 if (typeof _scene2D[index]['url'] === 'object') {
-                                    return;
-                                }
-                                if (any == null) {
-                                    console.log('XXXXXXXXXXX数据表' + _scene2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    console.log(`${_scene2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
                                 }
                                 else {
-                                    console.log('2D场景' + _scene2D[index] + '加载完成！', '数组下标为：', index);
+                                    if (any == null) {
+                                        console.log('XXXXXXXXXXX数据表' + _scene2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        console.log('2D场景' + _scene2D[index] + '加载完成！', '数组下标为：', index);
+                                    }
                                 }
+                                EventAdmin._notify(_Event.progress);
                             }), null, Laya.Loader.JSON);
                             break;
                         case _scene3D:
                             Laya.Scene3D.load(_scene3D[index]['url'], Laya.Handler.create(this, (Scene) => {
-                                EventAdmin._notify(_Event.progress);
                                 if (typeof _scene3D[index]['url'] === 'object') {
-                                    return;
-                                }
-                                if (Scene == null) {
-                                    console.log('XXXXXXXXXXX3D场景' + _scene3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    console.log(`${_scene3D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
                                 }
                                 else {
-                                    _scene3D[index]['Scene'] = Scene;
-                                    console.log('3D场景' + _scene3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    if (Scene == null) {
+                                        console.log('XXXXXXXXXXX3D场景' + _scene3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _scene3D[index]['Scene'] = Scene;
+                                        console.log('3D场景' + _scene3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
                                 }
+                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _prefab3D:
                             Laya.Sprite3D.load(_prefab3D[index]['url'], Laya.Handler.create(this, (Sp) => {
-                                EventAdmin._notify(_Event.progress);
                                 if (typeof _prefab3D[index]['url'] === 'object') {
-                                    return;
-                                }
-                                if (Sp == null) {
-                                    console.log('XXXXXXXXXXX3D预设体' + _prefab3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    console.log(`${_prefab3D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
                                 }
                                 else {
-                                    _prefab3D[index]['Prefab'] = Sp;
-                                    console.log('3D预制体' + _prefab3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    if (Sp == null) {
+                                        console.log('XXXXXXXXXXX3D预设体' + _prefab3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _prefab3D[index]['Prefab'] = Sp;
+                                        console.log('3D预制体' + _prefab3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
                                 }
+                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _mesh3D:
                             Laya.Mesh.load(_mesh3D[index]['url'], Laya.Handler.create(this, (any) => {
-                                EventAdmin._notify(_Event.progress);
                                 if (typeof _mesh3D[index]['url'] === 'object') {
-                                    return;
-                                }
-                                if (any == null) {
-                                    console.log('XXXXXXXXXXX3D网格' + _mesh3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    console.log(`${_mesh3D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
                                 }
                                 else {
-                                    console.log('3D网格' + _mesh3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    if (any == null) {
+                                        console.log('XXXXXXXXXXX3D网格' + _mesh3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        console.log('3D网格' + _mesh3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
                                 }
+                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _texture:
                             Laya.loader.load(_texture[index]['url'], Laya.Handler.create(this, (tex) => {
-                                EventAdmin._notify(_Event.progress);
                                 if (typeof _texture[index]['url'] === 'object') {
-                                    return;
-                                }
-                                if (tex == null) {
-                                    console.log('XXXXXXXXXXX2D纹理' + _texture[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    console.log(`${_texture[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
                                 }
                                 else {
-                                    _texture[index]['texture'] = tex;
-                                    console.log('纹理' + _texture[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    if (tex == null) {
+                                        console.log('XXXXXXXXXXX2D纹理' + _texture[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _texture[index]['texture'] = tex;
+                                        console.log('纹理' + _texture[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
                                 }
+                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _texture2D:
                             Laya.Texture2D.load(_texture2D[index]['url'], Laya.Handler.create(this, function (tex) {
-                                EventAdmin._notify(_Event.progress);
                                 if (typeof _texture2D[index]['url'] === 'object') {
-                                    return;
-                                }
-                                if (tex == null) {
-                                    console.log('XXXXXXXXXXX2D纹理' + _texture2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    console.log(`${_texture2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
                                 }
                                 else {
-                                    _texture2D[index]['texture2D'] = tex;
-                                    console.log('3D纹理' + _texture2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    if (tex == null) {
+                                        console.log('XXXXXXXXXXX2D纹理' + _texture2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _texture2D[index]['texture2D'] = tex;
+                                        console.log('3D纹理' + _texture2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
                                 }
+                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _effectsTex2D:
                             Laya.Texture2D.load(_effectsTex2D[index]['url'], Laya.Handler.create(this, function (tex) {
-                                EventAdmin._notify(_Event.progress);
                                 if (typeof _effectsTex2D[index]['url'] === 'object') {
-                                    return;
-                                }
-                                if (tex == null) {
-                                    console.log('XXXXXXXXXXX2D纹理' + _effectsTex2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    console.log(`${_effectsTex2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
                                 }
                                 else {
-                                    _effectsTex2D[index]['texture2D'] = tex;
-                                    console.log('3D纹理' + _effectsTex2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    if (tex == null) {
+                                        console.log('XXXXXXXXXXX2D纹理' + _effectsTex2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _effectsTex2D[index]['texture2D'] = tex;
+                                        console.log('3D纹理' + _effectsTex2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
                                 }
+                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _material:
                             Laya.Material.load(_material[index]['url'], Laya.Handler.create(this, (any) => {
-                                EventAdmin._notify(_Event.progress);
                                 if (typeof _material[index]['url'] === 'object') {
-                                    return;
-                                }
-                                if (any == null) {
-                                    console.log('XXXXXXXXXXX材质' + _material[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    console.log(`${_material[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
                                 }
                                 else {
-                                    console.log('材质' + _material[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    if (any == null) {
+                                        console.log('XXXXXXXXXXX材质' + _material[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _material[index]['texture2D'] = any;
+                                        console.log('材质' + _material[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
                                 }
+                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         case _json:
                             Laya.loader.load(_json[index]['url'], Laya.Handler.create(this, (data) => {
-                                EventAdmin._notify(_Event.progress);
                                 if (typeof _json[index]['url'] === 'object') {
-                                    return;
-                                }
-                                if (data == null) {
-                                    console.log('XXXXXXXXXXX数据表' + _json[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    console.log(`${_json[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
                                 }
                                 else {
-                                    _json[index]['dataArr'] = data["RECORDS"];
-                                    console.log('数据表' + _json[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    if (data == null) {
+                                        console.log('XXXXXXXXXXX数据表' + _json[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _json[index]['dataArr'] = data["RECORDS"];
+                                        console.log('数据表' + _json[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
                                 }
+                                EventAdmin._notify(_Event.progress);
                             }), null, Laya.Loader.JSON);
                             break;
                         case _skeleton:
@@ -8073,19 +8095,21 @@
                             break;
                         case _prefab2D:
                             Laya.loader.load(_prefab2D[index]['url'], Laya.Handler.create(this, (prefab) => {
-                                EventAdmin._notify(_Event.progress);
                                 if (typeof _prefab2D[index]['url'] === 'object') {
-                                    return;
-                                }
-                                if (prefab == null) {
-                                    console.log('XXXXXXXXXXX数据表' + _prefab2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    console.log(`${_prefab2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
                                 }
                                 else {
-                                    let _prefab = new Laya.Prefab();
-                                    _prefab.json = prefab;
-                                    _prefab2D[index]['prefab'] = _prefab;
-                                    console.log('2D预制体' + _prefab2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    if (prefab == null) {
+                                        console.log('XXXXXXXXXXX数据表' + _prefab2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        let _prefab = new Laya.Prefab();
+                                        _prefab.json = prefab;
+                                        _prefab2D[index]['prefab'] = _prefab;
+                                        console.log('2D预制体' + _prefab2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
                                 }
+                                EventAdmin._notify(_Event.progress);
                             }));
                             break;
                         default:
@@ -9099,7 +9123,6 @@
             return [obj[`${this._otherPro.color}1`], obj[`${this._otherPro.color}2`]];
         }
         getClothesArr() {
-            _DIYClothes._ins().ClothesArr = null;
             if (!this.ClothesArr) {
                 this.ClothesArr = [];
                 const dataArr = _DIYClothes._ins()._arr;
@@ -9223,6 +9246,13 @@
         }
         _MakePattern._PatternDiff = _PatternDiff;
     })(_MakePattern || (_MakePattern = {}));
+    var _DressingRoom;
+    (function (_DressingRoom) {
+        let Event;
+        (function (Event) {
+            Event["byteDanceBackStart"] = "_DressingRoom/byteDanceBackStart";
+        })(Event = _DressingRoom.Event || (_DressingRoom.Event = {}));
+    })(_DressingRoom || (_DressingRoom = {}));
     var _Tweeting;
     (function (_Tweeting) {
         _Tweeting._photo = {
@@ -9436,6 +9466,7 @@
             });
         }
         lwgAllComplete() {
+            console.log('加载完成！');
             switch (LwgScene._PreLoadCutIn.openName) {
                 case _SceneName.MakePattern:
                     _3DDIYCloth._ins().remake(_DIYClothes._ins()._pitchClassify, _DIYClothes._ins()._pitchName);
@@ -9453,6 +9484,7 @@
                     }));
                     break;
                 case _SceneName.MakeTailor:
+                    _DIYClothes._ins().ClothesArr = null;
                     _3DScene._ins().intoMakeTailor();
                     _DIYClothes._ins().getClothesArr();
                     break;
@@ -9968,10 +10000,10 @@
                 const y = 370;
                 this.moveCircleNoBg(x, y, radius);
             });
-            this._evReg(_Guide.Event.MakeTailorBtnCom, () => {
+            this._evReg(_Guide.Event.MakeTailorBtnCom, (point) => {
                 this._AniVar('Click').stop();
-                this.boreholeCircle([[this.btnComX, this.btnComY, radius], [Laya.stage.width / 2, Laya.stage.height / 2, 350]], null, null, () => {
-                    this.handMove(this.btnComX, this.btnComY, () => {
+                this.boreholeCircle([[point.x, point.y, radius], [Laya.stage.width / 2, Laya.stage.height / 2, 350]], null, null, () => {
+                    this.handMove(point.x, point.y, () => {
                         this._AniVar('Click').play();
                     });
                 });
@@ -10495,6 +10527,111 @@
         }
     }
 
+    class RecordManager {
+        constructor() {
+            this.GRV = null;
+            this.isRecordVideoing = false;
+            this.isVideoRecord = false;
+            this.videoRecordTimer = 0;
+            this.isHasVideoRecord = false;
+        }
+        static Init() {
+            RecordManager.grv = new TJ.Platform.AppRt.DevKit.TT.GameRecorderVideo();
+        }
+        static startAutoRecord() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            if (RecordManager.grv == null)
+                RecordManager.Init();
+            if (RecordManager.recording)
+                return;
+            RecordManager.autoRecording = true;
+            console.log("******************开始录屏");
+            RecordManager._start();
+            RecordManager.lastRecordTime = Date.now();
+        }
+        static stopAutoRecord() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            if (!RecordManager.autoRecording) {
+                console.log("RecordManager.autoRecording", RecordManager.autoRecording);
+                return false;
+            }
+            RecordManager.autoRecording = false;
+            RecordManager._end(false);
+            if (Date.now() - RecordManager.lastRecordTime > 6000) {
+                return true;
+            }
+            if (Date.now() - RecordManager.lastRecordTime < 3000) {
+                console.log("小于3秒");
+                return false;
+            }
+            return true;
+        }
+        static startRecord() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            if (RecordManager.autoRecording) {
+                this.stopAutoRecord();
+            }
+            RecordManager.recording = true;
+            RecordManager._start();
+            RecordManager.lastRecordTime = Date.now();
+        }
+        static stopRecord() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            console.log("time:" + (Date.now() - RecordManager.lastRecordTime));
+            if (Date.now() - RecordManager.lastRecordTime <= 3000) {
+                return false;
+            }
+            RecordManager.recording = false;
+            RecordManager._end(true);
+            return true;
+        }
+        static _start() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            console.log("******************180s  ？？？？？");
+            RecordManager.grv.Start(180);
+        }
+        static _end(share) {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            console.log("******************180结束 ？？？？？");
+            RecordManager.grv.Stop(share);
+        }
+        static _share(type, successedAc, completedAc = null, failAc = null) {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            console.log("******************吊起分享 ？？？？？", RecordManager.grv, RecordManager.grv.videoPath);
+            if (RecordManager.grv.videoPath) {
+                let p = new TJ.Platform.AppRt.Extern.TT.ShareAppMessageParam();
+                p.extra.videoTopics = ["女神修炼手册", "番茄小游戏", "抖音小游戏"];
+                p.channel = "video";
+                p.success = () => {
+                    LwgDialogue.createHint_Middle("分享成功!");
+                    successedAc();
+                };
+                p.fail = () => {
+                    if (type === 'noAward') {
+                        LwgDialogue.createHint_Middle("分享失败！");
+                    }
+                    else {
+                        LwgDialogue.createHint_Middle("分享成功后才能获取奖励！");
+                    }
+                    failAc();
+                };
+                RecordManager.grv.Share(p);
+            }
+            else {
+                LwgDialogue.createHint_Middle("暂无视频，玩一局游戏之后分享！");
+            }
+        }
+    }
+    RecordManager.recording = false;
+    RecordManager.autoRecording = false;
+
     class _UI {
         constructor(_Scene) {
             this.time = 100;
@@ -10528,6 +10665,7 @@
                     LwgScene._openScene(_SceneName.BackHint);
                 }
                 else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                    _PreLoadCutIn._fromBack = true;
                     LwgTimer._frameOnce(10, this, () => {
                         this.Scene[this.Scene.name]._openScene(_SceneName.Start, true, true);
                     });
@@ -10910,7 +11048,7 @@
                 }
                 if (!_Guide._complete.value && this.$data.name == 'diy_dress_002_final') {
                     _Guide.MmakeTailorBtnComSwicth = true;
-                    this._evNotify(_Guide.Event.MakeTailorBtnCom);
+                    this._evNotify(_Guide.Event.MakeTailorBtnCom, [this._SceneImg('BtnComplete')._lwg.gPoint]);
                 }
                 ;
             });
@@ -10971,6 +11109,7 @@
     }
     class MakeTailor extends LwgScene._SceneBase {
         lwgOnAwake() {
+            RecordManager.startAutoRecord();
             ADManager.TAPoint(TaT.PageShow, 'jiancaipage');
             this._ImgVar('BG1').skin = `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/MakeTailorBG1.png`;
             this._ImgVar('BG2').skin = `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/MakeTailorBG2.png`;
@@ -11002,6 +11141,11 @@
                 _TaskClothes._ins().changeClothes(this._Owner);
             });
         }
+        lwgAdaptive() {
+            if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                this._ImgVar('BtnComplete').y += 80;
+            }
+        }
         lwgButton() {
             this.UI.btnCompleteClick = () => {
                 if (!_Guide._complete.value) {
@@ -11028,7 +11172,14 @@
                         this['Pulldown']++;
                 }, () => {
                     if (_Guide.MmakeTailorPulldownSwicth && this['Pulldown'] && this['Pulldown'] > 2) {
-                        _DIYClothes._ins()._List.tweenTo(4, 200, Laya.Handler.create(this, () => {
+                        let index;
+                        if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                            index = 3;
+                        }
+                        else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                            index = 4;
+                        }
+                        _DIYClothes._ins()._List.tweenTo(index, 200, Laya.Handler.create(this, () => {
                             _Guide.MmakeTailorPulldownSwicth = false;
                             this._evNotify(_Guide.Event.MakeTailorChangeCloth);
                         }));
@@ -11330,111 +11481,6 @@
         }
     }
 
-    class RecordManager {
-        constructor() {
-            this.GRV = null;
-            this.isRecordVideoing = false;
-            this.isVideoRecord = false;
-            this.videoRecordTimer = 0;
-            this.isHasVideoRecord = false;
-        }
-        static Init() {
-            RecordManager.grv = new TJ.Platform.AppRt.DevKit.TT.GameRecorderVideo();
-        }
-        static startAutoRecord() {
-            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
-                return;
-            if (RecordManager.grv == null)
-                RecordManager.Init();
-            if (RecordManager.recording)
-                return;
-            RecordManager.autoRecording = true;
-            console.log("******************开始录屏");
-            RecordManager._start();
-            RecordManager.lastRecordTime = Date.now();
-        }
-        static stopAutoRecord() {
-            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
-                return;
-            if (!RecordManager.autoRecording) {
-                console.log("RecordManager.autoRecording", RecordManager.autoRecording);
-                return false;
-            }
-            RecordManager.autoRecording = false;
-            RecordManager._end(false);
-            if (Date.now() - RecordManager.lastRecordTime > 6000) {
-                return true;
-            }
-            if (Date.now() - RecordManager.lastRecordTime < 3000) {
-                console.log("小于3秒");
-                return false;
-            }
-            return true;
-        }
-        static startRecord() {
-            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
-                return;
-            if (RecordManager.autoRecording) {
-                this.stopAutoRecord();
-            }
-            RecordManager.recording = true;
-            RecordManager._start();
-            RecordManager.lastRecordTime = Date.now();
-        }
-        static stopRecord() {
-            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
-                return;
-            console.log("time:" + (Date.now() - RecordManager.lastRecordTime));
-            if (Date.now() - RecordManager.lastRecordTime <= 3000) {
-                return false;
-            }
-            RecordManager.recording = false;
-            RecordManager._end(true);
-            return true;
-        }
-        static _start() {
-            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
-                return;
-            console.log("******************180s  ？？？？？");
-            RecordManager.grv.Start(180);
-        }
-        static _end(share) {
-            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
-                return;
-            console.log("******************180结束 ？？？？？");
-            RecordManager.grv.Stop(share);
-        }
-        static _share(type, successedAc, completedAc = null, failAc = null) {
-            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
-                return;
-            console.log("******************吊起分享 ？？？？？", RecordManager.grv, RecordManager.grv.videoPath);
-            if (RecordManager.grv.videoPath) {
-                let p = new TJ.Platform.AppRt.Extern.TT.ShareAppMessageParam();
-                p.extra.videoTopics = ["女神修炼手册", "番茄小游戏", "抖音小游戏"];
-                p.channel = "video";
-                p.success = () => {
-                    LwgDialogue.createHint_Middle("分享成功!");
-                    successedAc();
-                };
-                p.fail = () => {
-                    if (type === 'noAward') {
-                        LwgDialogue.createHint_Middle("分享失败！");
-                    }
-                    else {
-                        LwgDialogue.createHint_Middle("分享成功后才能获取奖励！");
-                    }
-                    failAc();
-                };
-                RecordManager.grv.Share(p);
-            }
-            else {
-                LwgDialogue.createHint_Middle("暂无视频，玩一局游戏之后分享！");
-            }
-        }
-    }
-    RecordManager.recording = false;
-    RecordManager.autoRecording = false;
-
     var LwgOPPO;
     (function (LwgOPPO) {
         function _screenShootByRatio(func, startXRatio, startYRatio, endXRatio, endYRatio, fileType, quality) {
@@ -11630,7 +11676,7 @@
                                 this._LableChild('UnlockWay').text = `制作衣服`;
                                 this._LableChild('UnlockWay').fontSize = 25;
                                 this._LableChild('UnlockWayNum').visible = true;
-                                this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum} /${this.$data.conditionNum})`;
+                                this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum.value} /${this.$data.conditionNum})`;
                                 break;
                             default:
                                 break;
@@ -11972,6 +12018,10 @@
             });
         }
         lwgAdaptive() {
+            if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                this._ImgVar('BtnComplete').y += 80;
+                this._ImgVar('BtnTurnFace').y += 80;
+            }
             this._adaWidth([this._ImgVar('BtnR'), this._ImgVar('BtnL')]);
         }
         lwgOnStart() {
@@ -12042,12 +12092,14 @@
                     }
                 }
                 if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
-                    RecordManager.stopAutoRecord();
-                    this._openScene(_SceneName.Share, false);
-                    _Share._whereFrom = _SceneName.MakePattern;
-                    return;
+                    this.operationHidden(() => {
+                        RecordManager.stopAutoRecord();
+                        _Share._whereFrom = _SceneName.MakePattern;
+                        this._openScene(_SceneName.Share, false);
+                    });
                 }
                 else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                    this.operationHidden();
                     this.backStart();
                 }
             };
@@ -12061,18 +12113,22 @@
                 this.Tex.again();
             };
         }
-        backStart() {
+        operationHidden(func) {
             this.Tex.frameRestore();
             this.Tex.dir = this.Tex.dirType.Front;
             this.Tex.turnFace(() => {
-                _3DScene._ins().cameraToSprite(this._Owner);
-                LwgTimer._frameOnce(5, this, () => {
-                    _Tweeting._photo.take(this._Owner, 1);
-                });
-                this.texStorage();
                 LwgAni2D.fadeOut(this._ImgVar('BtnL'), 1, 0, 200);
-                LwgAni2D.fadeOut(this._ImgVar('BtnR'), 1, 0, 200);
+                LwgAni2D.fadeOut(this._ImgVar('BtnR'), 1, 0, 200, 0, () => {
+                    func && func();
+                });
             });
+        }
+        backStart() {
+            _3DScene._ins().cameraToSprite(this._Owner);
+            LwgTimer._frameOnce(5, this, () => {
+                _Tweeting._photo.take(this._Owner, 1);
+            });
+            this.texStorage();
             this.UI.operationVinish(() => {
                 this.UI.btnBackVinish(null, 200);
                 this.UI.btnBackVinish();
@@ -12108,8 +12164,6 @@
                 this.Tex.state = this.Tex.stateType.none;
             });
             this._evReg(_MakePattern.Event.byteDanceBackStart, () => {
-                if (!_Guide._complete.value)
-                    return;
                 this.backStart();
             });
         }
@@ -12147,7 +12201,7 @@
             LwgStorage._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texR}`).value = rArr;
             _Ranking._whereFrom = _SceneName.Tweeting_GetFans;
         }
-        onStageMouseDown(e) {
+        lwgOnStageDown(e) {
             this.Tex.touchP = new Laya.Point(e.stageX, e.stageY);
             if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
                 this['slideFY'] = e.stageY;
@@ -12170,7 +12224,7 @@
                 }
             }
         }
-        onStageMouseMove(e) {
+        lwgOnStageMove(e) {
             this.Tex.operation(e);
             if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
                 if (!_Guide._complete.value)
@@ -12193,7 +12247,7 @@
                 this['slideFY'] = null;
             }
         }
-        onStageMouseUp(e) {
+        lwgOnStageUp(e) {
             this['slideFY'] = null;
             if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
                 this._evNotify(_MakePattern.Event.close);
@@ -12316,6 +12370,7 @@
     }
     class DressingRoom extends LwgScene._SceneBase {
         lwgOnAwake() {
+            RecordManager.startAutoRecord();
             ADManager.TAPoint(TaT.PageShow, 'changepage');
             _3DScene._ins().openMirror(this._ImgVar('MirrorSurface'));
             const copyDIYArr = _AllClothes._ins().collectDIY();
@@ -12330,6 +12385,9 @@
             }
         }
         lwgAdaptive() {
+            if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                this._ImgVar('BtnComplete').y += 80;
+            }
             this._SpriteVar('Mirror').x = Laya.stage.width * 0.234;
         }
         lwgOnStart() {
@@ -12342,14 +12400,27 @@
                 this.UI.btnBackAppear(null, 200);
             });
             this.UI.btnCompleteClick = () => {
-                this.UI.operationVinish(() => {
-                    _3DScene._ins().closeMirror();
-                    _3DScene._ins().cameraToSprite(this._Owner);
-                    Laya.Resource.destroyUnusedResources();
-                    this._openScene(_SceneName.Start, true, true);
-                    this.UI.btnBackVinish();
-                }, 200);
+                _3DScene._ins().closeMirror();
+                _3DScene._ins().cameraToSprite(this._Owner);
+                if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                    LwgTimer._frameOnce(10, this, () => {
+                        RecordManager.stopAutoRecord();
+                        _Tweeting._photo.take(this._Owner, 3);
+                        _Share._whereFrom = _SceneName.DressingRoom;
+                        this._openScene(_SceneName.Share, false);
+                    });
+                }
+                else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                    this.backStart();
+                }
             };
+        }
+        backStart() {
+            this.UI.operationVinish(() => {
+                Laya.Resource.destroyUnusedResources();
+                this._openScene(_SceneName.Start, true, true);
+                this.UI.btnBackVinish();
+            }, 200);
         }
         switchClassify(_element) {
             let arr = [];
@@ -12386,6 +12457,11 @@
                     this.switchClassify(_element);
                 }, 'no');
             }
+        }
+        lwgEvent() {
+            this._evReg(_DressingRoom.Event.byteDanceBackStart, () => {
+                this.backStart();
+            });
         }
         lwgOnDisable() {
             ADManager.TAPoint(TaT.PageLeave, 'changepage');
@@ -12523,12 +12599,12 @@
             }
             else {
                 if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
-                    _Ranking._Data._ins()._listScrollToLast();
-                    _Ranking._Data._ins()._listTweenToPitchChoose(-1, 1500);
+                    _Ranking._Data._ins()._listScrollToFirstByLast();
+                    _Ranking._Data._ins()._listTweenToDiffIndexByPitch(-1, 1500);
                 }
                 else {
-                    _Ranking._Data._ins()._listScrollToLast();
-                    _Ranking._Data._ins()._listTweenToPitchChoose(-1, 600);
+                    _Ranking._Data._ins()._listScrollToFirstByLast();
+                    _Ranking._Data._ins()._listTweenToDiffIndexByPitch(-1, 600);
                 }
             }
         }
@@ -12602,10 +12678,18 @@
             this._ImgVar('Head').pos(this._Owner.width - (this._ImgVar('Head').width + 57), this._ImgVar('Head').y);
             this._ImgVar('Hot').pos(this._Owner.width - (this._ImgVar('Hot').width + 41), this._ImgVar('Hot').y);
             this._ImgVar('BtnChoosePhotos').size(this._Owner.width - this._ImgVar('BtnChoosePhotos').x - (this._Owner.width - this._ImgVar('Hot').x) - 30, this._ImgVar('BtnChoosePhotos').height);
-            this._ImgVar('PhotoAds').x = this._ImgVar('BtnChoosePhotos').width / 2 - 130 * 2 - 30;
-            this._ImgVar('Photo1').x = this._ImgVar('BtnChoosePhotos').width / 2 - 130 - 10;
-            this._ImgVar('Photo2').x = this._ImgVar('BtnChoosePhotos').width / 2 + 10;
-            this._ImgVar('Photo3').x = this._ImgVar('BtnChoosePhotos').width / 2 + 130 + 30;
+            if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                this._ImgVar('PhotoAds').destroy();
+                this._ImgVar('Photo1').centerX = -(20 + this._ImgVar('Photo1').width);
+                this._ImgVar('Photo2').centerX = 0;
+                this._ImgVar('Photo3').centerX = 20 + this._ImgVar('Photo3').width;
+            }
+            else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                this._ImgVar('PhotoAds').x = this._ImgVar('BtnChoosePhotos').width / 2 - 130 * 2 - 30;
+                this._ImgVar('Photo1').x = this._ImgVar('BtnChoosePhotos').width / 2 - 130 - 10;
+                this._ImgVar('Photo2').x = this._ImgVar('BtnChoosePhotos').width / 2 + 10;
+                this._ImgVar('Photo3').x = this._ImgVar('BtnChoosePhotos').width / 2 + 130 + 30;
+            }
             this._ImgVar('Body').size(this._Owner.width - this._ImgVar('BtnChoosePhotos').x - (this._Owner.width - this._ImgVar('Hot').x) - 50, this._ImgVar('Body').height);
             this._ImgVar('BtnChoosePhotos').scale(0, 0);
             this._ImgVar('BtnSet').size(0, 0);
@@ -13114,6 +13198,15 @@
     }
 
     class Share extends LwgScene._SceneBase {
+        lwgOnAwake() {
+            LwgClick._stageSwitch = false;
+            if (_Share._whereFrom === _SceneName.MakePattern) {
+                this._SpriteVar('Photo').texture = _Tweeting._photo.arr[0];
+            }
+            else if (_Share._whereFrom === _SceneName.DressingRoom) {
+                this._SpriteVar('Photo').texture = _Tweeting._photo.arr[3];
+            }
+        }
         lwgOpenAni() {
             this._ImgVar('BtnShare').visible = false;
             return _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('Background'), () => {
@@ -13126,6 +13219,7 @@
                 this._evNotify(_MakePattern.Event.byteDanceBackStart);
             }
             else if (_Share._whereFrom === _SceneName.DressingRoom) {
+                this._evNotify(_DressingRoom.Event.byteDanceBackStart);
             }
         }
         lwgButton() {
@@ -13139,7 +13233,7 @@
             });
             this._btnUp(this._ImgVar('BtnBoard'), () => {
                 func();
-            });
+            }, 'null');
             this._btnUp(this._ImgVar('BtnClose'), () => {
                 this._closeScene();
             });
@@ -13147,6 +13241,7 @@
         lwgCloseAni() {
             return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
                 this.closeFunc();
+                LwgClick._stageSwitch = true;
             });
         }
     }
@@ -13189,7 +13284,6 @@
     class LwgInit extends LwgAdmin._InitScene {
         lwgOnAwake() {
             LwgPlatform._Ues.value = LwgPlatform._Tpye.Bytedance;
-            Laya.Stat.show();
             Laya.MouseManager.multiTouchEnabled = false;
             LwgSceneAni._closeSwitch.value = true;
             LwgSceneAni._Use.value = {

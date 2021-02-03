@@ -1,5 +1,5 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { LwgScene, LwgAni2D, LwgTimer, LwgTools, LwgClick } from "../Lwg/Lwg";
+import { LwgScene, LwgAni2D, LwgTimer, LwgTools, LwgClick, LwgPlatform } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
 import { _DIYClothes, _Guide, _PersonalInfo, _PreLoadCutIn, _Ranking, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
@@ -58,10 +58,17 @@ export default class Tweeting_Main extends LwgScene._SceneBase {
         this._ImgVar('Head').pos(this._Owner.width - (this._ImgVar('Head').width + 57), this._ImgVar('Head').y);
         this._ImgVar('Hot').pos(this._Owner.width - (this._ImgVar('Hot').width + 41), this._ImgVar('Hot').y);
         this._ImgVar('BtnChoosePhotos').size(this._Owner.width - this._ImgVar('BtnChoosePhotos').x - (this._Owner.width - this._ImgVar('Hot').x) - 30, this._ImgVar('BtnChoosePhotos').height);
-        this._ImgVar('PhotoAds').x = this._ImgVar('BtnChoosePhotos').width / 2 - 130 * 2 - 30;
-        this._ImgVar('Photo1').x = this._ImgVar('BtnChoosePhotos').width / 2 - 130 - 10;
-        this._ImgVar('Photo2').x = this._ImgVar('BtnChoosePhotos').width / 2 + 10;
-        this._ImgVar('Photo3').x = this._ImgVar('BtnChoosePhotos').width / 2 + 130 + 30;
+        if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+            this._ImgVar('PhotoAds').destroy();
+            this._ImgVar('Photo1').centerX = -(20 + this._ImgVar('Photo1').width);
+            this._ImgVar('Photo2').centerX = 0;
+            this._ImgVar('Photo3').centerX = 20 + this._ImgVar('Photo3').width;
+        } else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+            this._ImgVar('PhotoAds').x = this._ImgVar('BtnChoosePhotos').width / 2 - 130 * 2 - 30;
+            this._ImgVar('Photo1').x = this._ImgVar('BtnChoosePhotos').width / 2 - 130 - 10;
+            this._ImgVar('Photo2').x = this._ImgVar('BtnChoosePhotos').width / 2 + 10;
+            this._ImgVar('Photo3').x = this._ImgVar('BtnChoosePhotos').width / 2 + 130 + 30;
+        }
         this._ImgVar('Body').size(this._Owner.width - this._ImgVar('BtnChoosePhotos').x - (this._Owner.width - this._ImgVar('Hot').x) - 50, this._ImgVar('Body').height);
         this._ImgVar('BtnChoosePhotos').scale(0, 0);
         this._ImgVar('BtnSet').size(0, 0);

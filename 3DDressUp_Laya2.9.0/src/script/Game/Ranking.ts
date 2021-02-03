@@ -61,11 +61,11 @@ export default class Ranking extends LwgScene._SceneBase {
             _Ranking._Data._ins()._List.scrollTo(0);
         } else {
             if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
-                _Ranking._Data._ins()._listScrollToLast();
-                _Ranking._Data._ins()._listTweenToPitchChoose(-1, 1500);
+                _Ranking._Data._ins()._listScrollToFirstByLast();
+                _Ranking._Data._ins()._listTweenToDiffIndexByPitch(-1, 1500);
             } else {
-                _Ranking._Data._ins()._listScrollToLast();
-                _Ranking._Data._ins()._listTweenToPitchChoose(-1, 600);
+                _Ranking._Data._ins()._listScrollToFirstByLast();
+                _Ranking._Data._ins()._listTweenToDiffIndexByPitch(-1, 600);
             }
         }
     }

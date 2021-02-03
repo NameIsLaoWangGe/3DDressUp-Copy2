@@ -3,21 +3,21 @@
         "../bin/**/*.*"
     ],
     "openDataZone": false,
-    "compressJson": true,
+    "compressJson": false,
     "compressJsonFilter": [
         "$basePath/**/*.{json,atlas}"
     ],
     "compressJsonNoteList": [
         ""
     ],
-    "compressImage": true,
+    "compressImage": false,
     "compressImageFilter": [
         "$basePath/**/*.{png,jpg}"
     ],
     "compressImageNoteList": [
         ""
     ],
-    "compressJs": true,
+    "compressJs": false,
     "compressJsFilter": [
         "$basePath/**/*.js",
         "!$basePath/libs/min/**/*.js"
@@ -65,7 +65,7 @@
     "useMinJsLibs": false,
     "es6toes5": false,
     "projectType": "ts",
-    "pubTime": 1611972539037,
+    "pubTime": 1612353828195,
     "oppoInfo": {
         "name": "女神修炼手册",
         "projName": "quickgame",
@@ -79,7 +79,7 @@
         "adbDebug": false,
         "apkUpdate": false,
         "useReleaseSign": true,
-        "subpack": true
+        "subpack": false
     },
     "oppoSign": {
         "generateSign": false,

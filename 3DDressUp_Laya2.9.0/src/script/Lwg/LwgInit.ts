@@ -21,7 +21,7 @@ import BackHint from "../Game/BackHint";
 export default class LwgInit extends LwgAdmin._InitScene {
     lwgOnAwake(): void {
         LwgPlatform._Ues.value = LwgPlatform._Tpye.Bytedance;
-        Laya.Stat.show();
+        // Laya.Stat.show();
         Laya.MouseManager.multiTouchEnabled = false;
         LwgSceneAni._closeSwitch.value = true;
         LwgSceneAni._Use.value = {

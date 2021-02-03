@@ -570,9 +570,9 @@ export module Lwg {
             lwgOnUpdate(): void { };
             /**离开时执行不要执行onDisable，只执行lwgDisable*/
             lwgOnDisable(): void { };
-            onStageMouseDown(e: Laya.Event): void { ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageDown(e) };
-            onStageMouseMove(e: Laya.Event): void { ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageMove(e) };
-            onStageMouseUp(e: Laya.Event): void { ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageUp(e) };
+            onStageMouseDown(e: Laya.Event): void { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageDown(e) };
+            onStageMouseMove(e: Laya.Event): void { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageMove(e) };
+            onStageMouseUp(e: Laya.Event): void { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageUp(e) };
             lwgOnStageDown(e: Laya.Event): void { };
             lwgOnStageMove(e: Laya.Event): void { };
             lwgOnStageUp(e: Laya.Event): void { };
@@ -2965,7 +2965,7 @@ export module Lwg {
             /**
              * 返回被选中的对象在数组中的位置
              * */
-            _getPitchIndexArr(): number {
+            _getPitchIndexInArr(): number {
                 for (let index = 0; index < this._arr.length; index++) {
                     const element = this._arr[index];
                     if (element[this._property.name] === this._pitchName) {
@@ -2977,7 +2977,7 @@ export module Lwg {
             /**
               * 返回被选中的对象在List.array中的位置，有时候List.array并不是_arr
               * */
-            _getPitchIndexByList(): number {
+            _getPitchIndexInListArr(): number {
                 if (this._List) {
                     for (let index = 0; index < this._List.array.length; index++) {
                         const element = this._List.array[index];
@@ -2994,7 +2994,7 @@ export module Lwg {
              * @param func 结束回调
              * */
             _listTweenToPitch(time: number, func?: Function): void {
-                const index = this._getPitchIndexByList();
+                const index = this._getPitchIndexInListArr();
                 index && this._List.tweenTo(index, time, Laya.Handler.create(this, () => {
                     func && func();
                 }));
@@ -3002,11 +3002,12 @@ export module Lwg {
 
             /**
              * 将选中的对象移动到第几位,本身index的差值
+             * @param diffIndex 和Pitch相差位置
              * @param time 所需时间
              * @param func 结束回调
              * */
-            _listTweenToPitchChoose(diffIndex: number, time: number, func?: Function): void {
-                const index = this._getPitchIndexByList();
+            _listTweenToDiffIndexByPitch(diffIndex: number, time: number, func?: Function): void {
+                const index = this._getPitchIndexInListArr();
                 index && this._List.tweenTo(index + diffIndex, time, Laya.Handler.create(this, () => {
                     func && func();
                 }));
@@ -3015,7 +3016,7 @@ export module Lwg {
             /**
              * 将list中的最后一个移动到第一位
              * */
-            _listScrollToLast(): void {
+            _listScrollToFirstByLast(): void {
                 const index = this._List.array.length - 1;
                 index && this._List.scrollTo(index);
             }
@@ -3082,7 +3083,7 @@ export module Lwg {
                 for (const key in this._arr) {
                     if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                         const element = this._arr[key];
-                        if (element[this._property.name] == name) {
+                        if (element.name == name) {
                             obj = element;
                             break;
                         }
@@ -3092,7 +3093,7 @@ export module Lwg {
             }
 
             /**
-             *设置当前品类中某个值唯一,这个值必须是boolean
+             * 设置当前品类中某个值唯一,这个值必须是boolean
              * @param {string} name 对象名字
              * @param {string} pro 属性值
              * @param {boolean} value 属性值是true或者flase
@@ -3115,7 +3116,7 @@ export module Lwg {
             }
 
             /**为所有对象设置一个属性值*/
-            _setAllProPerty(pro: string, value: any): void {
+            _setOneProForAll(pro: string, value: any): void {
                 for (let index = 0; index < this._arr.length; index++) {
                     const element = this._arr[index];
                     element[pro] = value;
@@ -3125,7 +3126,7 @@ export module Lwg {
 
             /**所有对象完成*/
             _setAllComplete(): void {
-                this._setAllProPerty(this._property.complete, true);
+                this._setOneProForAll(this._property.complete, true);
                 this._refreshAndStorage();
             }
             /**所有对象完成*/
@@ -3162,7 +3163,7 @@ export module Lwg {
             }
             /**所有附加奖励对象完成*/
             _setAllOtherComplete(): void {
-                this._setAllProPerty(this._property.otherComplete, true);
+                this._setOneProForAll(this._property.otherComplete, true);
                 this._refreshAndStorage();
             }
 
@@ -5805,6 +5806,8 @@ export module Lwg {
         export let _absoluteSwitch = true;
         /**记录当前可以点击的按钮，其他按钮都不可以点击，可用于新手引导,用过之后一定要记得变为[],长度变为0*/
         export let _assign: string[] = [];
+        /**lwgStage点击开关*/
+        export let _stageSwitch = true;
         /**
          * @export 通过一个按钮名称检测其是否没有被屏蔽，返回true是没有被屏蔽，false为屏蔽
          * @param {Laya.Sprite} target
@@ -9126,159 +9129,168 @@ export module Lwg {
                 switch (_loadOrder[_loadOrderIndex]) {
                     case _pic2D:
                         Laya.loader.load(_pic2D[index], Laya.Handler.create(this, (any) => {
-                            EventAdmin._notify(_Event.progress);
-                            // 如果是数组则不会赋值,只能从getRes中获取
                             if (typeof _pic2D[index]['url'] === 'object') {
-                                return;
-                            }
-                            if (any == null) {
-                                console.log('XXXXXXXXXXX2D资源' + _pic2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                console.log(`${_pic2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`)
                             } else {
-                                console.log('2D图片' + _pic2D[index] + '加载完成！', '数组下标为：', index);
+                                if (any == null) {
+                                    console.log('XXXXXXXXXXX2D资源' + _pic2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                } else {
+                                    console.log('2D图片' + _pic2D[index] + '加载完成！', '数组下标为：', index);
+                                }
                             }
+                            EventAdmin._notify(_Event.progress);
                         }));
                         break;
 
                     case _scene2D:
                         Laya.loader.load(_scene2D[index], Laya.Handler.create(this, (any) => {
-                            EventAdmin._notify(_Event.progress);
                             // 如果是数组则不会赋值,只能从getRes中获取
                             if (typeof _scene2D[index]['url'] === 'object') {
-                                return;
-                            }
-                            if (any == null) {
-                                console.log('XXXXXXXXXXX数据表' + _scene2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                console.log(`${_scene2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`)
                             } else {
-                                console.log('2D场景' + _scene2D[index] + '加载完成！', '数组下标为：', index);
+                                if (any == null) {
+                                    console.log('XXXXXXXXXXX数据表' + _scene2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                } else {
+                                    console.log('2D场景' + _scene2D[index] + '加载完成！', '数组下标为：', index);
+                                }
                             }
+                            EventAdmin._notify(_Event.progress);
                         }), null, Laya.Loader.JSON);
                         break;
 
                     case _scene3D:
                         Laya.Scene3D.load(_scene3D[index]['url'], Laya.Handler.create(this, (Scene: Laya.Scene3D) => {
-                            EventAdmin._notify(_Event.progress);
                             // 如果是数组则不会赋值,只能从getRes中获取
                             if (typeof _scene3D[index]['url'] === 'object') {
-                                return;
-                            }
-                            if (Scene == null) {
-                                console.log('XXXXXXXXXXX3D场景' + _scene3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                console.log(`${_scene3D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`)
                             } else {
-                                _scene3D[index]['Scene'] = Scene;
-                                console.log('3D场景' + _scene3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                if (Scene == null) {
+                                    console.log('XXXXXXXXXXX3D场景' + _scene3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                } else {
+                                    _scene3D[index]['Scene'] = Scene;
+                                    console.log('3D场景' + _scene3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                }
                             }
+                            EventAdmin._notify(_Event.progress);
                         }));
                         break;
 
                     case _prefab3D:
                         Laya.Sprite3D.load(_prefab3D[index]['url'], Laya.Handler.create(this, (Sp: Laya.Sprite3D) => {
-                            EventAdmin._notify(_Event.progress);
                             // 如果是数组则不会赋值,只能从getRes中获取
                             if (typeof _prefab3D[index]['url'] === 'object') {
-                                return;
-                            }
-                            if (Sp == null) {
-                                console.log('XXXXXXXXXXX3D预设体' + _prefab3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                console.log(`${_prefab3D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`)
                             } else {
-                                _prefab3D[index]['Prefab'] = Sp;
-                                console.log('3D预制体' + _prefab3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                if (Sp == null) {
+                                    console.log('XXXXXXXXXXX3D预设体' + _prefab3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                } else {
+                                    _prefab3D[index]['Prefab'] = Sp;
+                                    console.log('3D预制体' + _prefab3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                }
                             }
+                            EventAdmin._notify(_Event.progress);
                         }));
                         break;
 
                     case _mesh3D:
                         Laya.Mesh.load(_mesh3D[index]['url'], Laya.Handler.create(this, (any) => {
-                            EventAdmin._notify(_Event.progress);
                             // 如果是数组则不会赋值,只能从getRes中获取
                             if (typeof _mesh3D[index]['url'] === 'object') {
-                                return;
-                            }
-                            if (any == null) {
-                                console.log('XXXXXXXXXXX3D网格' + _mesh3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                console.log(`${_mesh3D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`)
                             } else {
-                                console.log('3D网格' + _mesh3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                if (any == null) {
+                                    console.log('XXXXXXXXXXX3D网格' + _mesh3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                } else {
+                                    console.log('3D网格' + _mesh3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                }
                             }
-
+                            EventAdmin._notify(_Event.progress);
                         }));
                         break;
 
                     case _texture:
                         Laya.loader.load(_texture[index]['url'], Laya.Handler.create(this, (tex: Laya.Texture) => {
-                            EventAdmin._notify(_Event.progress);
                             // 如果是数组则不会赋值,只能从getRes中获取
                             if (typeof _texture[index]['url'] === 'object') {
-                                return;
-                            }
-                            if (tex == null) {
-                                console.log('XXXXXXXXXXX2D纹理' + _texture[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                console.log(`${_texture[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`)
                             } else {
-                                _texture[index]['texture'] = tex;
-                                console.log('纹理' + _texture[index]['url'] + '加载完成！', '数组下标为：', index);
+                                if (tex == null) {
+                                    console.log('XXXXXXXXXXX2D纹理' + _texture[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                } else {
+                                    _texture[index]['texture'] = tex;
+                                    console.log('纹理' + _texture[index]['url'] + '加载完成！', '数组下标为：', index);
+                                }
                             }
+                            EventAdmin._notify(_Event.progress);
                         }));
                         break;
 
                     case _texture2D:
                         //加载纹理资源
                         Laya.Texture2D.load(_texture2D[index]['url'], Laya.Handler.create(this, function (tex: Laya.Texture2D): void {
-                            EventAdmin._notify(_Event.progress);
                             // 如果是数组则不会赋值,只能从getRes中获取
                             if (typeof _texture2D[index]['url'] === 'object') {
-                                return;
-                            }
-                            if (tex == null) {
-                                console.log('XXXXXXXXXXX2D纹理' + _texture2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                console.log(`${_texture2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`)
                             } else {
-                                _texture2D[index]['texture2D'] = tex;
-                                console.log('3D纹理' + _texture2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                if (tex == null) {
+                                    console.log('XXXXXXXXXXX2D纹理' + _texture2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                } else {
+                                    _texture2D[index]['texture2D'] = tex;
+                                    console.log('3D纹理' + _texture2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                }
                             }
+                            EventAdmin._notify(_Event.progress);
                         }));
                         break;
                     case _effectsTex2D:
                         //加载纹理资源
                         Laya.Texture2D.load(_effectsTex2D[index]['url'], Laya.Handler.create(this, function (tex: Laya.Texture2D): void {
-                            EventAdmin._notify(_Event.progress);
                             // 如果是数组则不会赋值,只能从getRes中获取
                             if (typeof _effectsTex2D[index]['url'] === 'object') {
-                                return;
-                            }
-                            if (tex == null) {
-                                console.log('XXXXXXXXXXX2D纹理' + _effectsTex2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                console.log(`${_effectsTex2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`)
                             } else {
-                                _effectsTex2D[index]['texture2D'] = tex;
-                                console.log('3D纹理' + _effectsTex2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                if (tex == null) {
+                                    console.log('XXXXXXXXXXX2D纹理' + _effectsTex2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                } else {
+                                    _effectsTex2D[index]['texture2D'] = tex;
+                                    console.log('3D纹理' + _effectsTex2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                }
                             }
+                            EventAdmin._notify(_Event.progress);
                         }));
                         break;
 
                     case _material:
                         Laya.Material.load(_material[index]['url'], Laya.Handler.create(this, (any: any) => {
-                            EventAdmin._notify(_Event.progress);
-                            // 如果是数组则不会赋值
+                            // 如果是数组则不会赋值,只能从getRes中获取
                             if (typeof _material[index]['url'] === 'object') {
-                                return;
-                            }
-                            if (any == null) {
-                                console.log('XXXXXXXXXXX材质' + _material[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                console.log(`${_material[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`)
                             } else {
-                                console.log('材质' + _material[index]['url'] + '加载完成！', '数组下标为：', index);
+                                if (any == null) {
+                                    console.log('XXXXXXXXXXX材质' + _material[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                } else {
+                                    _material[index]['texture2D'] = any;
+                                    console.log('材质' + _material[index]['url'] + '加载完成！', '数组下标为：', index);
+                                }
                             }
+                            EventAdmin._notify(_Event.progress);
                         }));
                         break;
 
                     case _json:
                         Laya.loader.load(_json[index]['url'], Laya.Handler.create(this, (data) => {
-                            EventAdmin._notify(_Event.progress);
                             // 如果是数组则不会赋值,只能从getRes中获取
                             if (typeof _json[index]['url'] === 'object') {
-                                return;
-                            }
-                            if (data == null) {
-                                console.log('XXXXXXXXXXX数据表' + _json[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                console.log(`${_json[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`)
                             } else {
-                                _json[index]['dataArr'] = data["RECORDS"];
-                                console.log('数据表' + _json[index]['url'] + '加载完成！', '数组下标为：', index);
+                                if (data == null) {
+                                    console.log('XXXXXXXXXXX数据表' + _json[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                } else {
+                                    _json[index]['dataArr'] = data["RECORDS"];
+                                    console.log('数据表' + _json[index]['url'] + '加载完成！', '数组下标为：', index);
+                                }
                             }
+                            EventAdmin._notify(_Event.progress);
                         }), null, Laya.Loader.JSON);
                         break;
 
@@ -9296,20 +9308,21 @@ export module Lwg {
 
                     case _prefab2D:
                         Laya.loader.load(_prefab2D[index]['url'], Laya.Handler.create(this, (prefab: Laya.Prefab) => {
-                            EventAdmin._notify(_Event.progress);
                             // 如果是数组则不会赋值,只能从getRes中获取
                             if (typeof _prefab2D[index]['url'] === 'object') {
-                                return;
-                            }
-                            if (prefab == null) {
-                                console.log('XXXXXXXXXXX数据表' + _prefab2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                console.log(`${_prefab2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`)
                             } else {
-                                let _prefab = new Laya.Prefab();
-                                _prefab.json = prefab;
-                                _prefab2D[index]['prefab'] = _prefab;
+                                if (prefab == null) {
+                                    console.log('XXXXXXXXXXX数据表' + _prefab2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                } else {
+                                    let _prefab = new Laya.Prefab();
+                                    _prefab.json = prefab;
+                                    _prefab2D[index]['prefab'] = _prefab;
 
-                                console.log('2D预制体' + _prefab2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    console.log('2D预制体' + _prefab2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                }
                             }
+                            EventAdmin._notify(_Event.progress);
                         }));
                         break;
 

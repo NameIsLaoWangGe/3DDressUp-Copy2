@@ -3,8 +3,6 @@ import { _3DScene, _3DDIYCloth } from "./_3D";
 import { _Res } from "./_Res";
 import { _SceneName } from "./_SceneName";
 
-
-
 export module _Ranking {
     export class _mergePro extends Lwg.DataAdmin._BaseProperty {
         constructor() { super() };
@@ -387,7 +385,6 @@ export class _DIYClothes extends LwgData._Table {
     ClothesArr: Array<Laya.Sprite>;
     /**当前选中的类别中所有的服装*/
     getClothesArr(): Array<any> {
-        _DIYClothes._ins().ClothesArr = null;
         if (!this.ClothesArr) {
             this.ClothesArr = [];
             const dataArr = _DIYClothes._ins()._arr;
@@ -511,17 +508,22 @@ export module _MakePattern {
         };
     }
 }
+export module _DressingRoom {
+    export enum Event {
+        byteDanceBackStart = '_DressingRoom/byteDanceBackStart',
+    }
+}
 export module _Tweeting {
     /**过程中的照相*/
     export let _photo = {
-        arr: [],
+        arr: [] as Laya.Texture[],
         take: (Scene: Laya.Scene, index: number) => {
-            _Tweeting._photo.arr[index] && (_Tweeting._photo.arr[index] as Laya.Texture).destroy();
-            _Tweeting._photo.arr[index] = Scene.drawToTexture(Laya.stage.width, Laya.stage.height, 0, 0);
+            _Tweeting._photo.arr[index] && _Tweeting._photo.arr[index].destroy();
+            _Tweeting._photo.arr[index] = Scene.drawToTexture(Laya.stage.width, Laya.stage.height, 0, 0) as Laya.Texture;
         },
         clear: () => {
             for (let index = 0; index < _Tweeting._photo.arr.length; index++) {
-                const element = _Tweeting._photo.arr[index] as Laya.Texture;
+                const element = _Tweeting._photo.arr[index]
                 element && element.destroy();
             }
             _Tweeting._photo.arr = [];
@@ -729,6 +731,7 @@ export module _CheckIn {
 }
 export module _Share {
     export let _whereFrom: string = 'MakePattern';
+    export let _DressingRoomSp: Laya.Sprite; 
 }
 
 

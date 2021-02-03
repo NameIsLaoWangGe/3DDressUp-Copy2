@@ -17,6 +17,7 @@ export default class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
         })
     }
     lwgAllComplete(): number {
+        console.log('加载完成！')
         switch (LwgScene._PreLoadCutIn.openName) {
             case _SceneName.MakePattern:
                 _3DDIYCloth._ins().remake(_DIYClothes._ins()._pitchClassify, _DIYClothes._ins()._pitchName);
@@ -35,6 +36,7 @@ export default class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
                 }));
                 break;
             case _SceneName.MakeTailor:
+                _DIYClothes._ins().ClothesArr = null;
                 _3DScene._ins().intoMakeTailor();
                 _DIYClothes._ins().getClothesArr();
                 break;

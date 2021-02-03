@@ -9,15 +9,5 @@
     "type": "game",
     "config": {
         "logLevel": "log"
-    },
-    "subpackages": [
-        {
-            "name": "Game",
-            "root": "Game/"
-        },
-        {
-            "name": "res",
-            "root": "res/"
-        }
-    ]
+    }
 }

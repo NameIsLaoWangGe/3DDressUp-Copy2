@@ -97,7 +97,7 @@ class _Item extends LwgData._Item {
                             this._LableChild('UnlockWay').text = `制作衣服`;
                             this._LableChild('UnlockWay').fontSize = 25;
                             this._LableChild('UnlockWayNum').visible = true;
-                            this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum} /${this.$data.conditionNum})`;
+                            this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum.value} /${this.$data.conditionNum})`;
                             break;
                         default:
                             break;
@@ -153,6 +153,10 @@ export default class MakePattern extends LwgScene._SceneBase {
     }
 
     lwgAdaptive(): void {
+        if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+            this._ImgVar('BtnComplete').y += 80;
+            this._ImgVar('BtnTurnFace').y += 80;
+        }
         this._adaWidth([this._ImgVar('BtnR'), this._ImgVar('BtnL')]);
     }
 
@@ -233,11 +237,13 @@ export default class MakePattern extends LwgScene._SceneBase {
             }
             // 渠道选择
             if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
-                RecordManager.stopAutoRecord();
-                this._openScene(_SceneName.Share, false);
-                _Share._whereFrom = _SceneName.MakePattern;
-                return;
+                this.operationHidden(() => {
+                    RecordManager.stopAutoRecord();
+                    _Share._whereFrom = _SceneName.MakePattern;
+                    this._openScene(_SceneName.Share, false);
+                });
             } else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                this.operationHidden();
                 this.backStart();
             }
         }
@@ -250,20 +256,26 @@ export default class MakePattern extends LwgScene._SceneBase {
             this.Tex.again();
         }
     }
-    /**回到主界面需要的操作*/
-    backStart(): void {
+
+    /**隐藏操作内容*/
+    operationHidden(func?: Function): void {
         this.Tex.frameRestore();
         this.Tex.dir = this.Tex.dirType.Front;
         this.Tex.turnFace(() => {
-            // 这次绘制的是微博照片
-            _3DScene._ins().cameraToSprite(this._Owner);
-            LwgTimer._frameOnce(5, this, () => {
-                _Tweeting._photo.take(this._Owner, 1);
-            })
-            this.texStorage();
             LwgAni2D.fadeOut(this._ImgVar('BtnL'), 1, 0, 200);
-            LwgAni2D.fadeOut(this._ImgVar('BtnR'), 1, 0, 200);
+            LwgAni2D.fadeOut(this._ImgVar('BtnR'), 1, 0, 200, 0, () => {
+                func && func();
+            });
         });
+    }
+    /**回到主界面需要的操作*/
+    backStart(): void {
+        // 这次绘制的是微博照片
+        _3DScene._ins().cameraToSprite(this._Owner);
+        LwgTimer._frameOnce(5, this, () => {
+            _Tweeting._photo.take(this._Owner, 1);
+        })
+        this.texStorage();
         this.UI.operationVinish(() => {
             this.UI.btnBackVinish(null, 200);
             this.UI.btnBackVinish();
@@ -299,7 +311,6 @@ export default class MakePattern extends LwgScene._SceneBase {
             this.Tex.state = this.Tex.stateType.none;
         })
         this._evReg(_MakePattern.Event.byteDanceBackStart, () => {
-            if (!_Guide._complete.value) return;
             this.backStart();
         })
     }
@@ -678,7 +689,7 @@ export default class MakePattern extends LwgScene._SceneBase {
         }
     }
 
-    onStageMouseDown(e: Laya.Event): void {
+    lwgOnStageDown(e: Laya.Event): void {
         this.Tex.touchP = new Laya.Point(e.stageX, e.stageY);
         if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
             this['slideFY'] = e.stageY;
@@ -700,7 +711,7 @@ export default class MakePattern extends LwgScene._SceneBase {
             }
         }
     }
-    onStageMouseMove(e: Laya.Event) {
+    lwgOnStageMove(e: Laya.Event) {
         this.Tex.operation(e);
         if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
             // 移动list
@@ -723,7 +734,7 @@ export default class MakePattern extends LwgScene._SceneBase {
             this['slideFY'] = null;
         }
     }
-    onStageMouseUp(e: Laya.Event) {
+    lwgOnStageUp(e: Laya.Event) {
         this['slideFY'] = null;
         // 在可以移动图片的位置进行移动
         if (e.stageX > Laya.stage.width - this.UI.Operation.width) {

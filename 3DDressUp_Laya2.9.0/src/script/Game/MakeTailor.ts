@@ -1,5 +1,6 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import { LwgScene, LwgAni2D, LwgAudio, LwgClick, LwgData, LwgDialogue, LwgEff2D, LwgEvent, LwgTimer, LwgTools } from "../Lwg/Lwg";
+import RecordManager from "../../TJ/RecordManager";
+import { LwgScene, LwgAni2D, LwgAudio, LwgClick, LwgData, LwgDialogue, LwgEff2D, LwgEvent, LwgTimer, LwgTools, LwgPlatform } from "../Lwg/Lwg";
 import { _DIYClothes, _Guide, _MakeTailor, _Tweeting } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
@@ -282,7 +283,7 @@ class _Item extends LwgData._Item {
             }
             if (!_Guide._complete.value && this.$data.name == 'diy_dress_002_final') {
                 _Guide.MmakeTailorBtnComSwicth = true;
-                this._evNotify(_Guide.Event.MakeTailorBtnCom);
+                this._evNotify(_Guide.Event.MakeTailorBtnCom, [this._SceneImg('BtnComplete')._lwg.gPoint]);
             };
         })
     }
@@ -340,6 +341,7 @@ class _Item extends LwgData._Item {
 
 export default class MakeTailor extends LwgScene._SceneBase {
     lwgOnAwake(): void {
+        RecordManager.startAutoRecord();
         ADManager.TAPoint(TaT.PageShow, 'jiancaipage');
 
         this._ImgVar('BG1').skin = `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/MakeTailorBG1.png`;
@@ -374,6 +376,11 @@ export default class MakeTailor extends LwgScene._SceneBase {
             _TaskClothes._ins().changeClothes(this._Owner);
         })
     }
+    lwgAdaptive():void{
+        if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+            this._ImgVar('BtnComplete').y += 80;
+        }
+    }
     lwgButton(): void {
         this.UI.btnCompleteClick = () => {
             if (!_Guide._complete.value) {
@@ -404,7 +411,13 @@ export default class MakeTailor extends LwgScene._SceneBase {
                 },
                 () => {
                     if (_Guide.MmakeTailorPulldownSwicth && this['Pulldown'] && this['Pulldown'] > 2) {
-                        _DIYClothes._ins()._List.tweenTo(4, 200, Laya.Handler.create(this, () => {
+                        let index: number;
+                        if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                            index = 3;
+                        } else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                            index = 4;
+                        }
+                        _DIYClothes._ins()._List.tweenTo(index, 200, Laya.Handler.create(this, () => {
                             _Guide.MmakeTailorPulldownSwicth = false;
                             this._evNotify(_Guide.Event.MakeTailorChangeCloth);
                         }));

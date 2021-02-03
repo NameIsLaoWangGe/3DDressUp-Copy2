@@ -1,12 +1,20 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
 import RecordManager from "../../TJ/RecordManager";
-import { LwgScene } from "../Lwg/Lwg";
+import { LwgClick, LwgScene } from "../Lwg/Lwg";
 import { _GameAni } from "./_GameAni";
-import { _MakePattern, _Share } from "./_GameData";
+import { _DressingRoom, _MakePattern, _Share, _Tweeting } from "./_GameData";
 import { _SceneName } from "./_SceneName";
 
 export default class Share extends LwgScene._SceneBase {
 
+    lwgOnAwake(): void {
+        LwgClick._stageSwitch = false;
+        if (_Share._whereFrom === _SceneName.MakePattern) {
+            this._SpriteVar('Photo').texture = _Tweeting._photo.arr[0];
+        } else if (_Share._whereFrom === _SceneName.DressingRoom) {
+            this._SpriteVar('Photo').texture = _Tweeting._photo.arr[3];
+        }
+    }
     lwgOpenAni(): number {
         this._ImgVar('BtnShare').visible = false;
         return _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('Background'), () => {
@@ -19,14 +27,13 @@ export default class Share extends LwgScene._SceneBase {
         if (_Share._whereFrom === _SceneName.MakePattern) {
             this._evNotify(_MakePattern.Event.byteDanceBackStart);
         } else if (_Share._whereFrom === _SceneName.DressingRoom) {
-
+            this._evNotify(_DressingRoom.Event.byteDanceBackStart);
         }
     }
 
     lwgButton(): void {
         var func = () => {
             RecordManager._share('noAward', () => {
-                // ADManager.TAPoint(TaT.BtnClick, 'share_share');
                 this.closeFunc();
             });
         }
@@ -36,7 +43,7 @@ export default class Share extends LwgScene._SceneBase {
 
         this._btnUp(this._ImgVar('BtnBoard'), () => {
             func();
-        })
+        }, 'null');
 
         this._btnUp(this._ImgVar('BtnClose'), () => {
             this._closeScene();
@@ -45,6 +52,7 @@ export default class Share extends LwgScene._SceneBase {
     lwgCloseAni(): number {
         return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
             this.closeFunc();
+            LwgClick._stageSwitch = true;
         });
     }
 }

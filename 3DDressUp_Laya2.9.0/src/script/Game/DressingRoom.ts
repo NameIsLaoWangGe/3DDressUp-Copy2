@@ -1,12 +1,13 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
-import lwg, { LwgScene, LwgData, LwgDialogue, LwgTimer, LwgTools } from "../Lwg/Lwg";
+import lwg, { LwgScene, LwgData, LwgDialogue, LwgTimer, LwgTools, LwgPlatform } from "../Lwg/Lwg";
 import { LwgOPPO } from "../Lwg/LwgOPPO";
-import { _AllClothes } from "./_GameData";
+import { _AllClothes, _DressingRoom, _Share, _Tweeting } from "./_GameData";
 import { _GameEffects3D } from "./_GameEffects3D";
 import { _Res } from "./_Res";
 import { _UI } from "./_UI";
 import { _3DScene } from "./_3D";
 import { _SceneName } from "./_SceneName";
+import RecordManager from "../../TJ/RecordManager";
 
 /**表格中的其他类型*/
 export type _otherPro = {
@@ -74,6 +75,7 @@ class _Item extends LwgData._Item {
 export default class DressingRoom extends LwgScene._SceneBase {
 
     lwgOnAwake(): void {
+        RecordManager.startAutoRecord();
         ADManager.TAPoint(TaT.PageShow, 'changepage');
         _3DScene._ins().openMirror(this._ImgVar('MirrorSurface'));
         const copyDIYArr = _AllClothes._ins().collectDIY();
@@ -88,6 +90,9 @@ export default class DressingRoom extends LwgScene._SceneBase {
     }
 
     lwgAdaptive(): void {
+        if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+            this._ImgVar('BtnComplete').y += 80;
+        }
         this._SpriteVar('Mirror').x = Laya.stage.width * 0.234;
     }
 
@@ -102,14 +107,27 @@ export default class DressingRoom extends LwgScene._SceneBase {
             this.UI.btnBackAppear(null, 200);
         })
         this.UI.btnCompleteClick = () => {
-            this.UI.operationVinish(() => {
-                _3DScene._ins().closeMirror();
-                _3DScene._ins().cameraToSprite(this._Owner);
-                Laya.Resource.destroyUnusedResources();
-                this._openScene(_SceneName.Start, true, true);
-                this.UI.btnBackVinish();
-            }, 200);
+            _3DScene._ins().closeMirror();
+            _3DScene._ins().cameraToSprite(this._Owner);
+            if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                LwgTimer._frameOnce(10, this, () => {
+                    RecordManager.stopAutoRecord();
+                    _Tweeting._photo.take(this._Owner, 3);
+                    _Share._whereFrom = _SceneName.DressingRoom;
+                    this._openScene(_SceneName.Share, false);
+                })
+            } else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                this.backStart();
+            }
         }
+    }
+
+    backStart(): void {
+        this.UI.operationVinish(() => {
+            Laya.Resource.destroyUnusedResources();
+            this._openScene(_SceneName.Start, true, true);
+            this.UI.btnBackVinish();
+        }, 200);
     }
 
     /**设置分类*/
@@ -149,6 +167,11 @@ export default class DressingRoom extends LwgScene._SceneBase {
                 this.switchClassify(_element);
             }, 'no');
         }
+    }
+    lwgEvent(): void {
+        this._evReg(_DressingRoom.Event.byteDanceBackStart, () => {
+            this.backStart();
+        })
     }
     lwgOnDisable(): void {
         ADManager.TAPoint(TaT.PageLeave, 'changepage');
