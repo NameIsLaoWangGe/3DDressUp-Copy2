@@ -19,15 +19,15 @@ class _Item extends LwgData._Item {
                 if (!this.$data.complete) {
                     switch (this.$data.unlockWay) {
                         case this.$unlockWayType.check:
-                            LwgDialogue.createHint_Middle('请前往签到页面获取');
+                            LwgDialogue._middleHint('请前往签到页面获取');
                             break;
                         case this.$unlockWayType.customs:
-                            LwgDialogue.createHint_Middle(`制作${this.$data.conditionNum}件衣服才能获取！`);
+                            LwgDialogue._middleHint(`制作${this.$data.conditionNum}件衣服才能获取！`);
                             break;
                         case this.$unlockWayType.ads:
                             ADManager.ShowReward(() => {
                                 if (_MakePattern._Pattern._ins()._checkCondition(this.$data.name)) {
-                                    LwgDialogue.createHint_Middle('恭喜获得新贴图！');
+                                    LwgDialogue._middleHint('恭喜获得新贴图！');
                                     _MakePattern._Pattern._ins()._setProperty(this.$data.name, _MakePattern._Pattern._ins()._property.complete, true);
                                 }
                             })

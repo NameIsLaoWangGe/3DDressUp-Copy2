@@ -2,7 +2,7 @@
     "x":0,
     "type":"Scene",
     "selectedBox":2,
-    "selecteID":6809,
+    "selecteID":778,
     "searchKey":"Scene",
     "referenceLines":[
         ],
@@ -305,7 +305,7 @@
                                     "x":60,
                                     "type":"Image",
                                     "searchKey":"Image,AdsSign",
-                                    "props":{"width":36,"visible":false,"skin":"Game/UI/Common/shipin.png","name":"AdsSign","centerY":0,"centerX":0},
+                                    "props":{"visible":false,"skin":"Game/UI/Common/shipin.png","scaleY":0.4,"scaleX":0.4,"name":"AdsSign","centerY":0,"centerX":0},
                                     "nodeParent":783,
                                     "label":"AdsSign",
                                     "isOpen":true,

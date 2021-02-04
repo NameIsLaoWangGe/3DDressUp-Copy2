@@ -1,4 +1,0 @@
-{
-  "code": "export default class PromoOpen extends Laya.Script {\r\n    constructor() {\r\n        super(...arguments);\r\n        this.target = null;\r\n    }\r\n    onClick() {\r\n        this.target.active = this.target.visible = true;\r\n    }\r\n}\r\n",
-  "references": []
-}

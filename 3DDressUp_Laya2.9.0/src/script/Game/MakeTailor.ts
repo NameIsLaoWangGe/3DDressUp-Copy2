@@ -134,8 +134,8 @@ class _Scissor extends LwgScene._ObjectBase {
         event: () => {
             this._evReg(_MakeTailor.Event.scissorAppear, () => {
                 let time = 800;
-                LwgAni2D.move_rotate(this._Owner, this._fRotation + 360, this._fPoint, time, 0, () => {
-                    this._Owner.rotation = this._fRotation;
+                LwgAni2D.move_rotate(this._Owner, this._Owner._lwg.fRotation + 360, this._Owner._lwg.fGPoint, time, 0, () => {
+                    this._Owner.rotation = this._Owner._lwg.fRotation;
                     this.Move.switch = true;
                     if (!_Guide._complete.value) this._evNotify(_Guide.Event.MakeTailorStartTailor, [this._Owner]);
                 })
@@ -165,7 +165,7 @@ class _Scissor extends LwgScene._ObjectBase {
             })
 
             this._evReg(_MakeTailor.Event.scissorAgain, () => {
-                LwgAni2D.move_rotate(this._Owner, this._fRotation, this._fPoint, 600, 100, () => {
+                LwgAni2D.move_rotate(this._Owner, this._Owner._lwg.fRotation, this._Owner._lwg.fGPoint, 600, 100, () => {
                     _TaskClothes._ins().again(this._Scene);
                 });
             })
@@ -260,22 +260,22 @@ class _Item extends LwgData._Item {
             else {
                 switch (this.$data.unlockWay) {
                     case this.$unlockWayType.check:
-                        LwgDialogue.createHint_Middle('请前往签到页面获取');
+                        LwgDialogue._middleHint('请前往签到页面获取');
                         break;
                     case this.$unlockWayType.customs:
-                        LwgDialogue.createHint_Middle(`制作${this.$data.conditionNum}件才能衣服获取哦！`);
+                        LwgDialogue._middleHint(`制作${this.$data.conditionNum}件才能衣服获取哦！`);
                         break;
                     case this.$unlockWayType.ads:
                         ADManager.ShowReward(() => {
                             if (_DIYClothes._ins()._checkCondition(this.$data.name)) {
-                                LwgDialogue.createHint_Middle('恭喜获得一件新服装！');
+                                LwgDialogue._middleHint('恭喜获得一件新服装！');
                                 _DIYClothes._ins()._setPitch(this.$data.name);
                                 this._evNotify(_MakeTailor.Event.changeClothes);
                             }
                         })
                         break;
                     case this.$unlockWayType.free:
-                        LwgDialogue.createHint_Middle(`免费获得`);
+                        LwgDialogue._middleHint(`免费获得`);
                         break;
                     default:
                         break;
@@ -376,7 +376,7 @@ export default class MakeTailor extends LwgScene._SceneBase {
             _TaskClothes._ins().changeClothes(this._Owner);
         })
     }
-    lwgAdaptive():void{
+    lwgAdaptive(): void {
         if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
             this._ImgVar('BtnComplete').y += 80;
         }

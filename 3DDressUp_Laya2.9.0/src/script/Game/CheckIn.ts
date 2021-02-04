@@ -18,11 +18,11 @@ class _Item extends LwgData._Item {
 
                     if (this.$data.rewardType.substr(0, 3) === 'diy') {
                         _DIYClothes._ins()._setCompleteByName(this.$data.rewardType);
-                        LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
+                        LwgDialogue._middleHint('恭喜获得新的裁剪服装');
                         _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                     } else if (this.$data.rewardType === 'cat') {
                         _MakePattern._Pattern._ins()._setCompleteByClassify(this.$data.rewardType);
-                        LwgDialogue.createHint_Middle('恭喜获得猫咪贴图一套');
+                        LwgDialogue._middleHint('恭喜获得猫咪贴图一套');
                         _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                     }
                     if (!_Guide._complete.value) {
@@ -31,7 +31,7 @@ class _Item extends LwgData._Item {
                     }
                 }
             } else {
-                LwgDialogue.createHint_Middle('日期不对哦！');
+                LwgDialogue._middleHint('日期不对哦！');
             }
         })
 
@@ -40,10 +40,10 @@ class _Item extends LwgData._Item {
                 _CheckIn._Data._ins()._setOtherCompleteName(this.$data.name);
                 if (this.$data.otherRewardType.substr(0, 3) === 'diy') {
                     _DIYClothes._ins()._setCompleteByName(this.$data.otherRewardType);
-                    LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
+                    LwgDialogue._middleHint('恭喜获得新的裁剪服装');
                 } else if (this.$data.otherRewardType === 'newYear') {
                     _MakePattern._Pattern._ins()._setCompleteByClassify(this.$data.otherRewardType);
-                    LwgDialogue.createHint_Middle('恭喜获得新年贴图一套');
+                    LwgDialogue._middleHint('恭喜获得新年贴图一套');
                 }
                 _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
             })
@@ -60,7 +60,7 @@ class _Item extends LwgData._Item {
                     }
                 }
             } else {
-                LwgDialogue.createHint_Middle('日期不对哦！');
+                LwgDialogue._middleHint('日期不对哦！');
             }
         }
         this._btnUp(this._ImgChild('AdsReward'), adsClick);
@@ -151,7 +151,7 @@ export default class CheckIn extends LwgScene._SceneBase {
         this._btnUp(this._ImgVar('BtnClose'), () => {
             if (!_Guide._complete.value && _Guide.CheckInCloseBtn) {
                 _Guide._complete.value = true;
-                LwgDialogue.createHint_Middle('开启你的女神之路吧!');
+                LwgDialogue._middleHint('开启你的女神之路吧!');
                 this._evNotify(_Guide.Event.closeGuide);
                 this._evNotify(_Guide.Event.StartOtherBtnClick);
             }
@@ -185,7 +185,7 @@ export default class CheckIn extends LwgScene._SceneBase {
                             }
                             gP2.x += 165;
                         }, null, () => {
-                            LwgDialogue.createHint_Middle('奖励已经全部获得，快去制作服装吧！');
+                            LwgDialogue._middleHint('奖励已经全部获得，快去制作服装吧！');
                         });
                         _DIYClothes._ins()._setCompleteByNameArr(['diy_dress_003_final', 'diy_dress_007_final', 'diy_top_004_final', 'diy_bottom_005_final', 'diy_dress_006_final', 'diy_bottom_006_final']);
                         _MakePattern._Pattern._ins()._setCompleteByClassify('cat');
@@ -193,7 +193,7 @@ export default class CheckIn extends LwgScene._SceneBase {
                     }
                 })
             } else {
-                LwgDialogue.createHint_Middle('奖励已经全部获得，无需在看广告o.o！')
+                LwgDialogue._middleHint('奖励已经全部获得，无需在看广告o.o！')
             }
         })
     }

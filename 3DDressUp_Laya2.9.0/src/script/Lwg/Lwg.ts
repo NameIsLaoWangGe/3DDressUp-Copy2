@@ -304,12 +304,10 @@ export module Lwg {
             // 如果关闭了场景消失动画，则不会执行任何动画
             if (!SceneAniAdmin._closeSwitch.value) {
                 closef();
-                return;
-            }
-            _SceneServe._closeZOderUP(LwgScene._SceneControl[closeName]);
-            //如果内部场景消失动画被重写了，则执行内部场景消失动画，而不执行通用动画
-            const script = _SceneControl[closeName][_SceneControl[closeName].name];
-            if (script) {
+            } else {
+                _SceneServe._closeZOderUP(LwgScene._SceneControl[closeName]);
+                //如果内部场景消失动画被重写了，则执行内部场景消失动画，而不执行通用动画
+                const script = _SceneControl[closeName][closeName];
                 if (script) {
                     LwgClick._switch = false;
                     let time0 = script.lwgCloseAni();
@@ -740,12 +738,12 @@ export module Lwg {
             get _Owner(): NodeAdmin._Sprite {
                 return this.owner as NodeAdmin._Sprite;
             }
-            /**初始位置*/
-            _fPoint: Laya.Point;
-            /**初始全局位置*/
-            _fGPoint: Laya.Point;
-            /**初始角度*/
-            _fRotation: number;
+            // /**初始位置*/
+            // _fPoint: Laya.Point;
+            // /**初始全局位置*/
+            // _fGPoint: Laya.Point;
+            // /**初始角度*/
+            // _fRotation: number;
             /**获取坐标*/
             get _point(): Laya.Point {
                 return new Laya.Point(this._Owner.x, this._Owner.y);
@@ -829,8 +827,10 @@ export module Lwg {
             }
             getChild(name: string, type: string): any {
                 if (!this[`${type}${name}`]) {
-                    if (this._Owner.getChildByName(name)) {
-                        return this[`${type}${name}`] = this._Owner.getChildByName(name);
+                    const child = this._Owner.getChildByName(name) as Laya.Sprite;
+                    if (child) {
+                        NodeAdmin._addProperty(child);
+                        return this[`${type}${name}`] = child;
                     } else {
                         // console.log('场景内不存在子节点：', name);
                         return null;
@@ -839,13 +839,13 @@ export module Lwg {
                     return this[`${type}${name}`];
                 }
             }
-            _ImgChild(name: string): Laya.Image {
+            _ImgChild(name: string): NodeAdmin._Image {
                 return this.getChild(name, '_ImgChild');
             }
             _BoxChild(name: string): Laya.Box {
                 return this.getChild(name, '_ImgBox');
             }
-            _SpriteChild(name: string): Laya.Sprite {
+            _SpriteChild(name: string): NodeAdmin._Sprite {
                 return this.getChild(name, '_SpriteChild');
             }
             _LableChild(name: string): Laya.Label {
@@ -868,11 +868,7 @@ export module Lwg {
                 // 组件变为的self属性
                 this._Owner[this._Owner.name] = this;
                 this.ownerSceneName = this._Scene.name;
-                /**初始位置*/
-                this._fPoint = new Laya.Point(this._Owner.x, this._Owner.y);
-                this._fGPoint = this._Parent.localToGlobal(new Laya.Point(this._Owner.x, this._Owner.y));
-                /**初始角度*/
-                this._fRotation = this._Owner.rotation;
+
                 this.lwgOnAwake();
                 this.lwgAdaptive();
             }
@@ -907,6 +903,12 @@ export module Lwg {
         export type _BaseProperty = {
             /**获取世界坐标*/
             gPoint: Laya.Point;
+            /**初始位置*/
+            fPoint: Laya.Point;
+            /**初始全局位置*/
+            fGPoint: Laya.Point;
+            /**初始角度*/
+            fRotation: number;
         }
         export class _Sprite extends Laya.Sprite {
             /**附加属性集合*/
@@ -949,14 +951,26 @@ export module Lwg {
                     _proType as _BaseProperty;
                     break;
             }
+            var getGPoint = (): Laya.Point => {
+                if (node.parent) {
+                    return (node.parent as Laya.Sprite).localToGlobal(new Laya.Point(node.x, node.y))
+                } else {
+                    return null;
+                }
+            }
+            /**初始位置*/
+            const _fPoint = new Laya.Point(node.x, node.y);
+            // 初始世界坐标
+            const _fGPoint = getGPoint();
+            /**初始角度*/
+            const _fRotation = node.rotation;
             _proType = {
                 get gPoint(): Laya.Point {
-                    if (node.parent) {
-                        return (node.parent as Laya.Sprite).localToGlobal(new Laya.Point(node.x, node.y))
-                    } else {
-                        return null;
-                    }
-                }
+                    return getGPoint();
+                },
+                fPoint: _fPoint,
+                fGPoint: _fGPoint,
+                fRotation: _fRotation,
             }
             node['_lwg'] = _proType;
         }
@@ -972,7 +986,7 @@ export module Lwg {
          * 动态创建，第一次创建比较卡，如果第一次绘制这张合图，可以不合图
          * @param describe 类型，也就是提示文字类型
          */
-        export function createHint_Middle(describe: string): void {
+        export function _middleHint(describe: string): void {
             const Hint_M = Laya.Pool.getItemByClass('Hint_M', Laya.Sprite);
             Hint_M.name = 'Hint_M';//标识符和名称一样
 
@@ -1570,7 +1584,6 @@ export module Lwg {
 
     /**
      * 时间管理
-     * 计时器的封装
     */
     export module TimerAdmin {
         /**总控制开关,默认为打开*/
@@ -1873,6 +1886,11 @@ export module Lwg {
                 Laya.timer.clear(arr[index][0], arr[index][1]);
             }
         }
+    }
+
+    /**节点的行为*/
+    export module ActionAdmin {
+
     }
 
     /**适配设置*/
@@ -2419,28 +2437,22 @@ export module Lwg {
             func(): void { }
         }
         export class _NumVariable extends admin {
-            get value(): number { return };
-            set value(val: number) { }
+            value: number;
         }
         export class _StrVariable extends admin {
-            get value(): string { return }
-            set value(val: string) { }
+            value: string;
         }
         export class _BoolVariable extends admin {
-            get value(): boolean { return }
-            set value(val: boolean) { }
+            value: boolean;
         }
         export class _ArrayVariable extends admin {
-            get value(): Array<any> { return }
-            set value(val: Array<any>) { }
+            value: Array<any>
         }
         export class _ArrayArrVariable extends admin {
-            get value(): Array<Array<any>> { return }
-            set value(val: Array<Array<any>>) { }
+            value: Array<Array<any>>;
         }
         export class _Object extends admin {
-            get value(): {} { return }
-            set value(val: {}) { }
+            value: {};
         }
         /**
         * @param name 名称
@@ -2782,7 +2794,7 @@ export module Lwg {
                 Laya.LocalStorage.setJSON(this._tableName, JSON.stringify(this[`_${this._tableName}arr`]));
             }
             /**上个版本的表格*/
-            _lastArr: Array<any> = [];
+            _lastArr: _BaseProperty[] = [];
             /**是否启用本地存储*/
             _localStorage: boolean = false;
             /**设置表格中的List,会有一些默认设置,页面关闭时最好清空*/
@@ -2872,7 +2884,7 @@ export module Lwg {
                     const elementLast = this._lastArr[index];
                     for (let index = 0; index < this._arr.length; index++) {
                         const element = this._arr[index];
-                        if (elementLast[this._property.name] === element[this._property.name]) {
+                        if (elementLast.name === element.name) {
                             for (let index = 0; index < proArr.length; index++) {
                                 const proName = proArr[index];
                                 element[proName] = elementLast[proName];
@@ -2893,14 +2905,14 @@ export module Lwg {
                         const _lastelement = this._lastArr[i];
                         for (let j = 0; j < this._arr.length; j++) {
                             const element = this._arr[j];
-                            if (_lastelement[this._property.complete]) {
-                                element[this._property.complete] = true;
+                            if (_lastelement.complete) {
+                                element.complete = true;
                             }
-                            if (_lastelement[this._property.getAward]) {
-                                element[this._property.getAward] = true;
+                            if (_lastelement.getAward) {
+                                element.getAward = true;
                             }
-                            if (_lastelement[this._property.degreeNum] > element[this._property.degreeNum]) {
-                                element[this._property.getAward] = _lastelement[this._property.degreeNum];
+                            if (_lastelement.degreeNum > element.degreeNum) {
+                                element.degreeNum = _lastelement.degreeNum;
                             }
                         }
                     }
@@ -2934,7 +2946,7 @@ export module Lwg {
                 for (const key in this._arr) {
                     if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                         const element = this._arr[key];
-                        if (element[this._property.name] == name) {
+                        if (element.name === name) {
                             value = element[pro];
                             break;
                         }
@@ -2944,7 +2956,7 @@ export module Lwg {
             };
 
             /**
-            *通过名称获取属性值
+            * 通过名称获取获得条件的条件值
             * @param {string} name 名称
             * @param {string} pro 属性值
             */
@@ -2953,8 +2965,8 @@ export module Lwg {
                 for (const key in this._arr) {
                     if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                         const element = this._arr[key];
-                        if (element[this._property.name] == name) {
-                            value = element[this._property.conditionNum];
+                        if (element.name === name) {
+                            value = element.conditionNum;
                             break;
                         }
                     }
@@ -2968,7 +2980,7 @@ export module Lwg {
             _getPitchIndexInArr(): number {
                 for (let index = 0; index < this._arr.length; index++) {
                     const element = this._arr[index];
-                    if (element[this._property.name] === this._pitchName) {
+                    if (element.name === this._pitchName) {
                         return index;
                     }
                 }
@@ -2981,7 +2993,7 @@ export module Lwg {
                 if (this._List) {
                     for (let index = 0; index < this._List.array.length; index++) {
                         const element = this._List.array[index];
-                        if (element[this._property.name] === this._pitchName) {
+                        if (element.name === this._pitchName) {
                             return index;
                         }
                     }
@@ -3031,7 +3043,7 @@ export module Lwg {
                 for (const key in this._arr) {
                     if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                         const element = this._arr[key];
-                        if (element[this._property.name] == name) {
+                        if (element.name == name) {
                             element[pro] = value;
                             this._refreshAndStorage();
                             break;
@@ -3051,8 +3063,8 @@ export module Lwg {
                 for (const key in this._arr) {
                     if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                         const element = this._arr[key];
-                        if (element[this._property.name] == name) {
-                            element[this._property.complete] = true;
+                        if (element.name == name) {
+                            element.complete = true;
                             this._refreshAndStorage();
                             return;
                         }
@@ -3069,8 +3081,8 @@ export module Lwg {
                     const element = this._arr[index];
                     for (let index = 0; index < nameArr.length; index++) {
                         const name = nameArr[index];
-                        if (element[this._property.name] === name) {
-                            element[this._property.complete] = true;
+                        if (element.name === name) {
+                            element.complete = true;
                         }
                     }
                 }
@@ -3105,7 +3117,7 @@ export module Lwg {
                 for (const key in objArr) {
                     if (Object.prototype.hasOwnProperty.call(objArr, key)) {
                         const element = objArr[key];
-                        if (element[this._property.name] == name) {
+                        if (element.name == name) {
                             element[pro] = value;
                         } else {
                             element[pro] = !value;
@@ -3151,8 +3163,8 @@ export module Lwg {
                 for (let index = 0; index < this._arr.length; index++) {
                     TimerAdmin._once(delay * index, this, () => {
                         const element = this._arr[index];
-                        eachFrontFunc && eachFrontFunc(element[this._property.complete]);
-                        element[this._property.complete] = true;
+                        eachFrontFunc && eachFrontFunc(element.complete);
+                        element.complete = true;
                         eachEndFunc && eachEndFunc();
                         if (index === this._arr.length - 1) {
                             comFunc && comFunc();
@@ -3311,7 +3323,7 @@ export module Lwg {
                 for (const key in this._arr) {
                     if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                         const element = this._arr[key];
-                        if (element[this._property.unlockWay] === _unlockWay) {
+                        if (element.unlockWay === _unlockWay) {
                             arr.push(element);
                         }
                     }
@@ -3438,7 +3450,7 @@ export module Lwg {
                 for (const key in arr) {
                     if (Object.prototype.hasOwnProperty.call(arr, key)) {
                         const element = arr[key];
-                        element[this._property.complete] = true;
+                        element.complete = true;
                     }
                 }
                 this._refreshAndStorage();
@@ -3486,8 +3498,8 @@ export module Lwg {
                 for (const key in this._arr) {
                     if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                         const element = this._arr[key];
-                        if (element[this._property.unlockWay] === _unlockWay) {
-                            this._checkCondition(element[this._property.name], num ? num : 1);
+                        if (element.unlockWay === _unlockWay) {
+                            this._checkCondition(element.name, num ? num : 1);
                         }
                     }
                 }
@@ -3500,7 +3512,7 @@ export module Lwg {
                 let bool: boolean = true;
                 for (let index = 0; index < this._arr.length; index++) {
                     const element = this._arr[index];
-                    if (!element[this._property.complete]) {
+                    if (!element.complete) {
                         bool = false;
                         return bool;
                     }
@@ -3593,11 +3605,11 @@ export module Lwg {
                 let _calssify: string;
                 for (let index = 0; index < this._arr.length; index++) {
                     const element = this._arr[index];
-                    if (element[this._property.name] == name) {
-                        element[this._property.pitch] = true;
+                    if (element.name == name) {
+                        element.pitch = true;
                         _calssify = element[this._property.classify]
                     } else {
-                        element[this._property.pitch] = false;
+                        element.pitch = false;
                     }
                 }
                 this._pitchClassify = _calssify;
@@ -3613,7 +3625,7 @@ export module Lwg {
                 for (const key in this._arr) {
                     if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                         const element = this._arr[key];
-                        if (element[this._property.name] === this._pitchName) {
+                        if (element.name === this._pitchName) {
                             return element;
                         }
                     }
@@ -3626,10 +3638,10 @@ export module Lwg {
              * */
             _addObject(obj: any): void {
                 // 必须拷贝
-                let _obj = ToolsAdmin._ObjArray.objCopy(obj);
+                let _obj = ToolsAdmin._ObjArray.objCopy(obj) as _BaseProperty;
                 for (let index = 0; index < this._arr.length; index++) {
                     const element = this._arr[index];
-                    if (element[this._property.name] === _obj[this._property.name]) {
+                    if (element.name === _obj.name) {
                         this._arr[index] == _obj;
                     }
                 }
@@ -3647,7 +3659,7 @@ export module Lwg {
                     // 将原来和当前数组中名称相同的对象冲掉，防止重名
                     for (let j = 0; j < this._arr.length; j++) {
                         const element = this._arr[j];
-                        if (obj && obj[this._property.name] === element[this._property.name]) {
+                        if (obj && obj.name === element.name) {
                             this._arr[j] = obj;
                             _objArr.splice(i, 1);
                             i--;

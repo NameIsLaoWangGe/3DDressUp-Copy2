@@ -120,7 +120,6 @@ P BD254C99 lq.png
 P 2047C221 menghuan.png
 P D3701C2B shipin.png
 P FDADA5A0 zi.png
-R 9204B7A1 排行榜.png
 D Game/UI/Clothes
 D Game/UI/Common
 P CE1C1C52 anniu.png
@@ -142,7 +141,7 @@ R D7DFF281 kuang.png
 R F360B741 kuang2.png
 P 4B7D562D kuang_bai.png
 P 6F289A65 kuang_fen.png
-P BBBC368C shipin.png
+P 8E5CE52C shipin.png
 P CD4C3CFC shouye.png
 P 543D5896 xuanzhong.png
 P E996F255 you.png
@@ -415,8 +414,8 @@ P FCBD56F6 x4.png
 P 9C7A824C x5.png
 P 112C87C0 x6.png
 D Game/UI/MakeTailor/diy_top_003_final
-P 0B9924BF diy_top_003_cut.png
-P D9E36895 q1.png
+P BA13CFBE diy_top_003_cut.png
+P 4F4F4811 q1.png
 P 4C431B93 s1.png
 P 43F59F26 s2.png
 P AABEB318 s3.png

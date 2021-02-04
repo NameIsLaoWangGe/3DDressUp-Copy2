@@ -12,7 +12,7 @@ export default class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
             this._LabelVar('Schedule').text = `${time}%`;
         }, () => {
             let obj = _CutInRes[LwgScene._PreLoadCutIn.openName];
-            obj =  _CutInRes[LwgScene._PreLoadCutIn.openName] ? obj : {};
+            obj = _CutInRes[LwgScene._PreLoadCutIn.openName] ? obj : {};
             LwgEvent._notify(LwgPreLoad._Event.importList, [obj]);
         })
     }
@@ -23,6 +23,7 @@ export default class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
                 _3DDIYCloth._ins().remake(_DIYClothes._ins()._pitchClassify, _DIYClothes._ins()._pitchName);
                 _3DScene._ins().intoMakePattern();
                 // 提前设置皮肤
+                console.log(_DIYClothes._ins().getPitchTexBasicUrl());
                 this._ImgVar('Front').loadImage(_DIYClothes._ins().getPitchTexBasicUrl(), Laya.Handler.create(this, () => {
                     var getTex = () => {
                         let ImgF = this._ImgVar('Front');

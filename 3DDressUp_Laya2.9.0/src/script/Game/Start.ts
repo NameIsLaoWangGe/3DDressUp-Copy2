@@ -26,6 +26,7 @@ export default class Start extends LwgScene._SceneBase {
     }
 
     lwgOpenAniAfter(): void {
+        LwgClick._absoluteSwitch = false;
         for (let index = 0; index < this._ImgVar('BtnParent').numChildren; index++) {
             const element = this._ImgVar('BtnParent').getChildAt(index) as Laya.Image;
             element.visible = true;
@@ -33,6 +34,7 @@ export default class Start extends LwgScene._SceneBase {
             LwgAni2D.bombs_Appear(element, 0, 1, 1.2, 0, 200, () => {
                 if (index === this._ImgVar('BtnParent').numChildren - 1) {
                     LwgTimer._once(500, this, () => {
+                        LwgClick._absoluteSwitch = true;
                         if (_Start._whereFrom === _SceneName.MakePattern) {
                             this._evNotify(_Start.Event.photo);
                             _Start._whereFrom = null;
@@ -43,7 +45,7 @@ export default class Start extends LwgScene._SceneBase {
                                     this._evNotify(_Guide.Event.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
                                 })
                             } else {
-                                !_CheckIn._todayCheckIn && this._openScene(_SceneName.CheckIn, false);
+                                !_CheckIn._todayCheckIn.value && this._openScene(_SceneName.CheckIn, false);
                             }
                         }
                     })

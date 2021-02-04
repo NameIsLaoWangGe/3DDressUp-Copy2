@@ -1376,11 +1376,10 @@
                 };
                 if (!SceneAniAdmin._closeSwitch.value) {
                     closef();
-                    return;
                 }
-                _SceneServe._closeZOderUP(LwgScene._SceneControl[closeName]);
-                const script = SceneAdmin._SceneControl[closeName][SceneAdmin._SceneControl[closeName].name];
-                if (script) {
+                else {
+                    _SceneServe._closeZOderUP(LwgScene._SceneControl[closeName]);
+                    const script = SceneAdmin._SceneControl[closeName][closeName];
                     if (script) {
                         LwgClick._switch = false;
                         let time0 = script.lwgCloseAni();
@@ -1869,9 +1868,6 @@
                     NodeAdmin._addProperty(this._Owner);
                     this._Owner[this._Owner.name] = this;
                     this.ownerSceneName = this._Scene.name;
-                    this._fPoint = new Laya.Point(this._Owner.x, this._Owner.y);
-                    this._fGPoint = this._Parent.localToGlobal(new Laya.Point(this._Owner.x, this._Owner.y));
-                    this._fRotation = this._Owner.rotation;
                     this.lwgOnAwake();
                     this.lwgAdaptive();
                 }
@@ -1925,15 +1921,24 @@
                         _proType;
                         break;
                 }
+                var getGPoint = () => {
+                    if (node.parent) {
+                        return node.parent.localToGlobal(new Laya.Point(node.x, node.y));
+                    }
+                    else {
+                        return null;
+                    }
+                };
+                const _fPoint = new Laya.Point(node.x, node.y);
+                const _fGPoint = getGPoint();
+                const _fRotation = node.rotation;
                 _proType = {
                     get gPoint() {
-                        if (node.parent) {
-                            return node.parent.localToGlobal(new Laya.Point(node.x, node.y));
-                        }
-                        else {
-                            return null;
-                        }
-                    }
+                        return getGPoint();
+                    },
+                    fPoint: _fPoint,
+                    fGPoint: _fGPoint,
+                    fRotation: _fRotation,
                 };
                 node['_lwg'] = _proType;
             }
@@ -3032,34 +3037,21 @@
                 func() { }
             }
             class _NumVariable extends admin {
-                get value() { return; }
-                ;
-                set value(val) { }
             }
             StorageAdmin._NumVariable = _NumVariable;
             class _StrVariable extends admin {
-                get value() { return; }
-                set value(val) { }
             }
             StorageAdmin._StrVariable = _StrVariable;
             class _BoolVariable extends admin {
-                get value() { return; }
-                set value(val) { }
             }
             StorageAdmin._BoolVariable = _BoolVariable;
             class _ArrayVariable extends admin {
-                get value() { return; }
-                set value(val) { }
             }
             StorageAdmin._ArrayVariable = _ArrayVariable;
             class _ArrayArrVariable extends admin {
-                get value() { return; }
-                set value(val) { }
             }
             StorageAdmin._ArrayArrVariable = _ArrayArrVariable;
             class _Object extends admin {
-                get value() { return; }
-                set value(val) { }
             }
             StorageAdmin._Object = _Object;
             function _num(name, _func, initial) {
@@ -3419,7 +3411,7 @@
                         const elementLast = this._lastArr[index];
                         for (let index = 0; index < this._arr.length; index++) {
                             const element = this._arr[index];
-                            if (elementLast[this._property.name] === element[this._property.name]) {
+                            if (elementLast.name === element.name) {
                                 for (let index = 0; index < proArr.length; index++) {
                                     const proName = proArr[index];
                                     element[proName] = elementLast[proName];
@@ -3436,14 +3428,14 @@
                             const _lastelement = this._lastArr[i];
                             for (let j = 0; j < this._arr.length; j++) {
                                 const element = this._arr[j];
-                                if (_lastelement[this._property.complete]) {
-                                    element[this._property.complete] = true;
+                                if (_lastelement.complete) {
+                                    element.complete = true;
                                 }
-                                if (_lastelement[this._property.getAward]) {
-                                    element[this._property.getAward] = true;
+                                if (_lastelement.getAward) {
+                                    element.getAward = true;
                                 }
-                                if (_lastelement[this._property.degreeNum] > element[this._property.degreeNum]) {
-                                    element[this._property.getAward] = _lastelement[this._property.degreeNum];
+                                if (_lastelement.degreeNum > element.degreeNum) {
+                                    element.degreeNum = _lastelement.degreeNum;
                                 }
                             }
                         }
@@ -3467,7 +3459,7 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.name] == name) {
+                            if (element.name === name) {
                                 value = element[pro];
                                 break;
                             }
@@ -3481,8 +3473,8 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.name] == name) {
-                                value = element[this._property.conditionNum];
+                            if (element.name === name) {
+                                value = element.conditionNum;
                                 break;
                             }
                         }
@@ -3493,7 +3485,7 @@
                 _getPitchIndexInArr() {
                     for (let index = 0; index < this._arr.length; index++) {
                         const element = this._arr[index];
-                        if (element[this._property.name] === this._pitchName) {
+                        if (element.name === this._pitchName) {
                             return index;
                         }
                     }
@@ -3502,7 +3494,7 @@
                     if (this._List) {
                         for (let index = 0; index < this._List.array.length; index++) {
                             const element = this._List.array[index];
-                            if (element[this._property.name] === this._pitchName) {
+                            if (element.name === this._pitchName) {
                                 return index;
                             }
                         }
@@ -3528,7 +3520,7 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.name] == name) {
+                            if (element.name == name) {
                                 element[pro] = value;
                                 this._refreshAndStorage();
                                 break;
@@ -3542,8 +3534,8 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.name] == name) {
-                                element[this._property.complete] = true;
+                            if (element.name == name) {
+                                element.complete = true;
                                 this._refreshAndStorage();
                                 return;
                             }
@@ -3556,8 +3548,8 @@
                         const element = this._arr[index];
                         for (let index = 0; index < nameArr.length; index++) {
                             const name = nameArr[index];
-                            if (element[this._property.name] === name) {
-                                element[this._property.complete] = true;
+                            if (element.name === name) {
+                                element.complete = true;
                             }
                         }
                     }
@@ -3583,7 +3575,7 @@
                     for (const key in objArr) {
                         if (Object.prototype.hasOwnProperty.call(objArr, key)) {
                             const element = objArr[key];
-                            if (element[this._property.name] == name) {
+                            if (element.name == name) {
                                 element[pro] = value;
                             }
                             else {
@@ -3616,8 +3608,8 @@
                     for (let index = 0; index < this._arr.length; index++) {
                         TimerAdmin._once(delay * index, this, () => {
                             const element = this._arr[index];
-                            eachFrontFunc && eachFrontFunc(element[this._property.complete]);
-                            element[this._property.complete] = true;
+                            eachFrontFunc && eachFrontFunc(element.complete);
+                            element.complete = true;
                             eachEndFunc && eachEndFunc();
                             if (index === this._arr.length - 1) {
                                 comFunc && comFunc();
@@ -3721,7 +3713,7 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.unlockWay] === _unlockWay) {
+                            if (element.unlockWay === _unlockWay) {
                                 arr.push(element);
                             }
                         }
@@ -3798,7 +3790,7 @@
                     for (const key in arr) {
                         if (Object.prototype.hasOwnProperty.call(arr, key)) {
                             const element = arr[key];
-                            element[this._property.complete] = true;
+                            element.complete = true;
                         }
                     }
                     this._refreshAndStorage();
@@ -3834,8 +3826,8 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.unlockWay] === _unlockWay) {
-                                this._checkCondition(element[this._property.name], num ? num : 1);
+                            if (element.unlockWay === _unlockWay) {
+                                this._checkCondition(element.name, num ? num : 1);
                             }
                         }
                     }
@@ -3845,7 +3837,7 @@
                     let bool = true;
                     for (let index = 0; index < this._arr.length; index++) {
                         const element = this._arr[index];
-                        if (!element[this._property.complete]) {
+                        if (!element.complete) {
                             bool = false;
                             return bool;
                         }
@@ -3943,12 +3935,12 @@
                     let _calssify;
                     for (let index = 0; index < this._arr.length; index++) {
                         const element = this._arr[index];
-                        if (element[this._property.name] == name) {
-                            element[this._property.pitch] = true;
+                        if (element.name == name) {
+                            element.pitch = true;
                             _calssify = element[this._property.classify];
                         }
                         else {
-                            element[this._property.pitch] = false;
+                            element.pitch = false;
                         }
                     }
                     this._pitchClassify = _calssify;
@@ -3959,7 +3951,7 @@
                     for (const key in this._arr) {
                         if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
                             const element = this._arr[key];
-                            if (element[this._property.name] === this._pitchName) {
+                            if (element.name === this._pitchName) {
                                 return element;
                             }
                         }
@@ -3969,7 +3961,7 @@
                     let _obj = ToolsAdmin._ObjArray.objCopy(obj);
                     for (let index = 0; index < this._arr.length; index++) {
                         const element = this._arr[index];
-                        if (element[this._property.name] === _obj[this._property.name]) {
+                        if (element.name === _obj.name) {
                             this._arr[index] == _obj;
                         }
                     }
@@ -3981,7 +3973,7 @@
                         const obj = _objArr[i];
                         for (let j = 0; j < this._arr.length; j++) {
                             const element = this._arr[j];
-                            if (obj && obj[this._property.name] === element[this._property.name]) {
+                            if (obj && obj.name === element.name) {
                                 this._arr[j] = obj;
                                 _objArr.splice(i, 1);
                                 i--;
@@ -9471,6 +9463,7 @@
                 case _SceneName.MakePattern:
                     _3DDIYCloth._ins().remake(_DIYClothes._ins()._pitchClassify, _DIYClothes._ins()._pitchName);
                     _3DScene._ins().intoMakePattern();
+                    console.log(_DIYClothes._ins().getPitchTexBasicUrl());
                     this._ImgVar('Front').loadImage(_DIYClothes._ins().getPitchTexBasicUrl(), Laya.Handler.create(this, () => {
                         var getTex = () => {
                             let ImgF = this._ImgVar('Front');
@@ -10898,8 +10891,8 @@
                 event: () => {
                     this._evReg(_MakeTailor.Event.scissorAppear, () => {
                         let time = 800;
-                        LwgAni2D.move_rotate(this._Owner, this._fRotation + 360, this._fPoint, time, 0, () => {
-                            this._Owner.rotation = this._fRotation;
+                        LwgAni2D.move_rotate(this._Owner, this._Owner._lwg.fRotation + 360, this._Owner._lwg.fGPoint, time, 0, () => {
+                            this._Owner.rotation = this._Owner._lwg.fRotation;
                             this.Move.switch = true;
                             if (!_Guide._complete.value)
                                 this._evNotify(_Guide.Event.MakeTailorStartTailor, [this._Owner]);
@@ -10929,7 +10922,7 @@
                         });
                     });
                     this._evReg(_MakeTailor.Event.scissorAgain, () => {
-                        LwgAni2D.move_rotate(this._Owner, this._fRotation, this._fPoint, 600, 100, () => {
+                        LwgAni2D.move_rotate(this._Owner, this._Owner._lwg.fRotation, this._Owner._lwg.fGPoint, 600, 100, () => {
                             _TaskClothes._ins().again(this._Scene);
                         });
                     });
@@ -11356,6 +11349,7 @@
             });
         }
         lwgOpenAniAfter() {
+            LwgClick._absoluteSwitch = false;
             for (let index = 0; index < this._ImgVar('BtnParent').numChildren; index++) {
                 const element = this._ImgVar('BtnParent').getChildAt(index);
                 element.visible = true;
@@ -11363,6 +11357,7 @@
                 LwgAni2D.bombs_Appear(element, 0, 1, 1.2, 0, 200, () => {
                     if (index === this._ImgVar('BtnParent').numChildren - 1) {
                         LwgTimer._once(500, this, () => {
+                            LwgClick._absoluteSwitch = true;
                             if (_Start._whereFrom === _SceneName.MakePattern) {
                                 this._evNotify(_Start.Event.photo);
                                 _Start._whereFrom = null;
@@ -11375,7 +11370,7 @@
                                     });
                                 }
                                 else {
-                                    !_CheckIn._todayCheckIn && this._openScene(_SceneName.CheckIn, false);
+                                    !_CheckIn._todayCheckIn.value && this._openScene(_SceneName.CheckIn, false);
                                 }
                             }
                         });
@@ -12623,9 +12618,7 @@
             this.BtnCloseClick();
         }
         lwgCloseAni() {
-            return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-                _Guide._complete.value && !_CheckIn._todayCheckIn && this._openScene('CheckIn', false);
-            });
+            return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
         }
         lwgOnDisable() {
             ADManager.TAPoint(TaT.PageLeave, 'rankpage');
@@ -12923,7 +12916,7 @@
             _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
                 _GameEffects2D._interfacePointJet();
                 !_Guide._complete.value && this._openScene(_SceneName.Guide, false, false, () => {
-                    this._evNotify(_Guide.Event.TweetingBtnDoubleFans, [this._ImgVar('BtnDouble')._lwg.gPoint.x, this._ImgVar('BtnDouble')._lwg.gPoint.y]);
+                    this._evNotify(_Guide.Event.TweetingBtnDoubleFans, [this._ImgVar('BtnOk')._lwg.gPoint.x, this._ImgVar('BtnOk')._lwg.gPoint.y]);
                 });
                 LwgTimer._loop(2000, this, () => {
                     LwgAni2D.bomb_LeftRight(this._ImgVar('BtnDouble'), 1.1, 250);
@@ -12942,21 +12935,15 @@
             this._btnUp(this._ImgVar('BtnOk'), () => {
                 closeBefore();
             });
-            var double = () => {
-                this.pitchObj['fansNum'] += this.fansNum;
-                LwgDialogue.createHint_Middle('太厉害了，涨粉翻倍了！');
-                closeBefore();
-            };
             this._btnUp(this._ImgVar('BtnDouble'), () => {
-                if (!_Guide._complete.value) {
-                    double();
-                }
-                else {
-                    ADManager.TAPoint(TaT.BtnClick, 'ADrank');
-                    ADManager.ShowReward(() => {
-                        double();
-                    });
-                }
+                if (!_Guide._complete.value)
+                    return;
+                ADManager.TAPoint(TaT.BtnClick, 'ADrank');
+                ADManager.ShowReward(() => {
+                    this.pitchObj['fansNum'] += this.fansNum;
+                    LwgDialogue.createHint_Middle('太厉害了，涨粉翻倍了！');
+                    closeBefore();
+                });
             });
         }
         lwgCloseAni() {

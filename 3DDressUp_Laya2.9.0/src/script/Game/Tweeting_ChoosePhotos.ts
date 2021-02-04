@@ -50,7 +50,7 @@ export default class Tweeting_ChoosePhotos extends LwgScene._SceneBase {
                 !_Guide._complete.value && this._evNotify(_Guide.Event.closeGuide);
                 this._closeScene();
             } else {
-                LwgDialogue.createHint_Middle('还未选择照片哦！');
+                LwgDialogue._middleHint('还未选择照片哦！');
             }
         })
     }

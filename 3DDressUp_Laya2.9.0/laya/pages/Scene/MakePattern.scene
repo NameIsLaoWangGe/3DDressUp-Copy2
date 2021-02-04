@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":2,
-    "selecteID":13,
+    "selectedBox":4432,
+    "selecteID":4435,
     "searchKey":"View",
     "referenceLines":[
         ],
@@ -441,7 +441,7 @@
                                     "x":60,
                                     "type":"Image",
                                     "searchKey":"Image,AdsSign",
-                                    "props":{"width":36,"visible":false,"skin":"Game/UI/Common/shipin.png","name":"AdsSign","centerY":0,"centerX":0},
+                                    "props":{"visible":false,"skin":"Game/UI/Common/shipin.png","scaleY":0.4,"scaleX":0.4,"name":"AdsSign","centerY":0,"centerX":0},
                                     "nodeParent":4436,
                                     "label":"AdsSign",
                                     "isDirectory":false,

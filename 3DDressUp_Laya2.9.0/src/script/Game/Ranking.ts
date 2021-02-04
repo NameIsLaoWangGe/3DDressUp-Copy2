@@ -84,9 +84,7 @@ export default class Ranking extends LwgScene._SceneBase {
         this.BtnCloseClick();
     }
     lwgCloseAni(): number {
-        return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-            _Guide._complete.value && !_CheckIn._todayCheckIn && this._openScene('CheckIn', false);
-        });
+        return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
     }
 
     lwgOnDisable(): void {

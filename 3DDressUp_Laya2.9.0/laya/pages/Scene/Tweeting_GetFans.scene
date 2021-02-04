@@ -140,13 +140,14 @@
                     "props":{"width":594,"visible":true,"scaleY":1,"scaleX":1,"name":"P402","height":260,"centerY":10,"centerX":6},
                     "nodeParent":257,
                     "label":"P402",
-                    "isOpen":false,
+                    "isOpen":true,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":494,
                     "child":[
                         {
+                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,bg",
                             "props":{"top":0,"skin":"Game/UI/Tweeting/GetFan/hutui.png","sizeGrid":"41,55,45,50","right":0,"name":"bg","left":0,"bottom":0,"anchorY":0.5,"anchorX":0.5},
@@ -162,6 +163,7 @@
                             "$HIDDEN":false
                         },
                         {
+                            "x":45,
                             "type":"Panel",
                             "searchKey":"Panel,scroll",
                             "props":{"width":568,"name":"scroll","height":236,"centerY":0,"centerX":0,"anchorY":0.5,"anchorX":0.5},
@@ -174,6 +176,7 @@
                             "compId":496,
                             "child":[
                                 {
+                                    "x":60,
                                     "type":"Box",
                                     "searchKey":"Box,layout",
                                     "props":{"y":0,"x":0,"width":1,"name":"layout","height":705},
@@ -186,6 +189,7 @@
                                     "compId":497,
                                     "child":[
                                         {
+                                            "x":75,
                                             "type":"Box",
                                             "searchKey":"Box,item",
                                             "props":{"y":105,"x":85,"width":180,"name":"item","height":225,"anchorY":0.5,"anchorX":0.5},
@@ -198,6 +202,7 @@
                                             "compId":498,
                                             "child":[
                                                 {
+                                                    "x":90,
                                                     "type":"Image",
                                                     "searchKey":"Image,icon",
                                                     "props":{"width":180,"skin":"TJ/Promo/image/jx8.png","name":"icon","height":180,"centerY":-22.5,"centerX":0,"anchorY":0.5,"anchorX":0.5},
@@ -213,6 +218,7 @@
                                                     "$HIDDEN":false
                                                 },
                                                 {
+                                                    "x":90,
                                                     "type":"Image",
                                                     "searchKey":"Image,nbg",
                                                     "props":{"x":0,"width":180,"skin":"comp/image.png","name":"nbg","height":45,"centerY":90},
@@ -227,6 +233,7 @@
                                                         ]
                                                 },
                                                 {
+                                                    "x":90,
                                                     "type":"Label",
                                                     "searchKey":"Label,name",
                                                     "props":{"x":85,"wordWrap":false,"width":170,"valign":"middle","text":"这里是游戏名称","name":"name","multiline":false,"mouseEnabled":false,"height":24,"fontSize":20,"editable":false,"color":"#ffffff","centerY":90,"centerX":0,"anchorY":0.5,"anchorX":0.5,"align":"center"},
@@ -241,6 +248,7 @@
                                                     "$HIDDEN":false
                                                 },
                                                 {
+                                                    "x":90,
                                                     "type":"Script",
                                                     "switchAble":true,
                                                     "source":"src/TJ/Promo/script/PromoItem.ts",
@@ -257,6 +265,7 @@
                                                         ]
                                                 },
                                                 {
+                                                    "x":90,
                                                     "type":"Script",
                                                     "switchAble":true,
                                                     "source":"src/TJ/Promo/script/ButtonScale.ts",
@@ -277,6 +286,7 @@
                                 }]
                         },
                         {
+                            "x":45,
                             "type":"Script",
                             "switchAble":true,
                             "source":"src/TJ/Promo/script/P402.ts",

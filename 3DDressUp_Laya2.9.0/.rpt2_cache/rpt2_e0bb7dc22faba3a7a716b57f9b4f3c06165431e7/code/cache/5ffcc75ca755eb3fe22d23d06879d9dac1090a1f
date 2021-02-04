@@ -1,6 +1,0 @@
-{
-  "code": "import { Effects2D, TimerAdmin } from \"./Lwg\";\r\nexport class _GameEffects {\r\n    static _pointJet(parent, caller) {\r\n        const diff = 100;\r\n        TimerAdmin._frameNumLoop(5, 15, this, () => {\r\n            for (let index = 0; index < 5; index++) {\r\n                Effects2D._Particle._downwardSpray(parent, new Laya.Point(Laya.stage.width * 1 / 4, -diff), [10, 30], [10, 30], [0, 90], [Effects2D._SkinUrl.矩形1], null);\r\n                Effects2D._Particle._downwardSpray(parent, new Laya.Point(Laya.stage.width * 3 / 4, -diff), [10, 30], [10, 30], [90, 180], [Effects2D._SkinUrl.矩形1], null);\r\n                Effects2D._Particle._downwardSpray(parent, new Laya.Point(-diff, Laya.stage.height / 4), [10, 30], [10, 30], [0, 90], [Effects2D._SkinUrl.矩形1], null);\r\n                Effects2D._Particle._downwardSpray(parent, new Laya.Point(Laya.stage.width + diff, Laya.stage.height / 4), [10, 30], [10, 30], [90, 180], [Effects2D._SkinUrl.矩形1], null);\r\n            }\r\n        });\r\n    }\r\n}\r\n",
-  "references": [
-    "D:/Game/project/3DDressUp/Copy/3DDressUp_Laya2.9.0/3DDressUp_Laya2.9.0/src/script/Lwg/Lwg.ts"
-  ]
-}

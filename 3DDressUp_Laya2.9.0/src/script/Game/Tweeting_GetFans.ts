@@ -19,7 +19,7 @@ export default class Tweeting_GetFans extends LwgScene._SceneBase {
         _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
             _GameEffects2D._interfacePointJet();
             !_Guide._complete.value && this._openScene(_SceneName.Guide, false, false, () => {
-                this._evNotify(_Guide.Event.TweetingBtnDoubleFans, [this._ImgVar('BtnDouble')._lwg.gPoint.x, this._ImgVar('BtnDouble')._lwg.gPoint.y]);
+                this._evNotify(_Guide.Event.TweetingBtnDoubleFans, [this._ImgVar('BtnOk')._lwg.gPoint.x, this._ImgVar('BtnOk')._lwg.gPoint.y]);
             });
             LwgTimer._loop(2000, this, () => {
                 LwgAni2D.bomb_LeftRight(this._ImgVar('BtnDouble'), 1.1, 250);
@@ -39,21 +39,15 @@ export default class Tweeting_GetFans extends LwgScene._SceneBase {
         this._btnUp(this._ImgVar('BtnOk'), () => {
             closeBefore();
         })
-        var double = () => {
-            this.pitchObj['fansNum'] += this.fansNum;
-            LwgDialogue.createHint_Middle('太厉害了，涨粉翻倍了！');
-            closeBefore();
-        }
         this._btnUp(this._ImgVar('BtnDouble'), () => {
             // 新手引导的时候直接给予奖励
-            if (!_Guide._complete.value) {
-                double();
-            } else {
-                ADManager.TAPoint(TaT.BtnClick, 'ADrank');
-                ADManager.ShowReward(() => {
-                    double();
-                })
-            }
+            if (!_Guide._complete.value) return;
+            ADManager.TAPoint(TaT.BtnClick, 'ADrank');
+            ADManager.ShowReward(() => {
+                this.pitchObj['fansNum'] += this.fansNum;
+                LwgDialogue._middleHint('太厉害了，涨粉翻倍了！');
+                closeBefore();
+            })
         })
     }
     lwgCloseAni(): number {
