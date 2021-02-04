@@ -54,11 +54,11 @@ export module Lwg {
                 if (bool) {
                     _switch = false;
                     TimerAdmin._switch = false;
-                    LwgClick._switch = true;
+                    LwgClick._aniSwitch = true;
                 } else {
                     _switch = true;
                     TimerAdmin._switch = true;
-                    LwgClick._switch = false;
+                    LwgClick._aniSwitch = false;
                 }
             }
         }
@@ -266,7 +266,7 @@ export module Lwg {
           * @param zOrder 指定层级
          */
         export function _openScene(openName: string, closeName?: string, func?: Function, zOrder?: number): void {
-            LwgClick._switch = false;
+            LwgClick._aniSwitch = false;
             Laya.Scene.load('Scene/' + openName + '.json', Laya.Handler.create(this, function (scene: Laya.Scene) {
                 // 如果该场景已经有了，则立即关闭，打开新的
                 const openScene = ToolsAdmin._Node.checkChildren(Laya.stage, openName) as Laya.Scene;
@@ -298,7 +298,7 @@ export module Lwg {
             /**传入的回调函数*/
             var closef = () => {
                 func && func();
-                LwgClick._switch = true;
+                LwgClick._aniSwitch = true;
                 _SceneControl[closeName].close();
             }
             // 如果关闭了场景消失动画，则不会执行任何动画
@@ -309,14 +309,14 @@ export module Lwg {
                 //如果内部场景消失动画被重写了，则执行内部场景消失动画，而不执行通用动画
                 const script = _SceneControl[closeName][closeName];
                 if (script) {
-                    LwgClick._switch = false;
+                    LwgClick._aniSwitch = false;
                     let time0 = script.lwgCloseAni();
                     if (time0 !== null) {
                         SceneAniAdmin._closeAniDelay = time0;
                         script.lwgBeforeCloseAni();
                         Laya.timer.once(time0, this, () => {
                             closef();
-                            LwgClick._switch = true;
+                            LwgClick._aniSwitch = true;
                         })
                     } else {
                         const delay = SceneAniAdmin._commonCloseAni(_SceneControl[closeName]);
@@ -338,6 +338,7 @@ export module Lwg {
                 if (!this[`_Scene${type}${name}`]) {
                     let Node = ToolsAdmin._Node.findChild2D(this.owner.scene, name);
                     if (Node) {
+                        NodeAdmin._addProperty(Node);
                         return this[`_Scene${type}${name}`] = Node;
                     } else {
                         console.log(`场景内不存在节点${name}`);
@@ -348,27 +349,27 @@ export module Lwg {
             }
 
             /**全局查找*/
-            _FindImg(name: string,): Laya.Image {
+            _FindImg(name: string,): NodeAdmin._Image {
                 return this.getFind(name, '_FindImg');
             }
             /**全局查找*/
-            _FindSp(name: string,): Laya.Image {
+            _FindSp(name: string,): NodeAdmin._Sprite {
                 return this.getFind(name, '_FindSp');
             }
             /**场景内查找*/
-            _FindBox(name: string,): Laya.Image {
+            _FindBox(name: string,): Laya.Box {
                 return this.getFind(name, '_FindBox');
             }
             /**场景内查找*/
-            _FindTap(name: string,): Laya.Image {
+            _FindTap(name: string,): Laya.Tab {
                 return this.getFind(name, '_FindTap');
             }
             /**场景内查找*/
-            _FindLabel(name: string,): Laya.Image {
+            _FindLabel(name: string,): Laya.Label {
                 return this.getFind(name, '_FindLabel');
             }
             /**场景内查找*/
-            _FindList(name: string,): Laya.Image {
+            _FindList(name: string,): Laya.List {
                 return this.getFind(name, '_FindList');
             }
 
@@ -419,7 +420,7 @@ export module Lwg {
             _btnDown(target: Laya.Node, down?: Function, effect?: string): void {
                 LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, (e: Laya.Event) => {
                     var func = () => {
-                        ClickAdmin._absoluteSwitch && LwgClick._switch && down && down(e);
+                        ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && down && down(e);
                     }
                     if (ClickAdmin._assign.length > 0) {
                         ClickAdmin._checkAssign(target.name) && func();
@@ -437,7 +438,7 @@ export module Lwg {
             _btnMove(target: Laya.Node, move: Function, effect?: string): void {
                 LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, (e: Laya.Event) => {
                     var func = () => {
-                        ClickAdmin._absoluteSwitch && LwgClick._switch && move && move(e);
+                        ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && move && move(e);
                     }
                     if (ClickAdmin._assign.length > 0) {
                         ClickAdmin._checkAssign(target.name) && func();
@@ -455,7 +456,7 @@ export module Lwg {
             _btnUp(target: Laya.Node, up: Function, effect?: string): void {
                 LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, (e: Laya.Event) => {
                     var func = () => {
-                        ClickAdmin._absoluteSwitch && LwgClick._switch && up && up(e);
+                        ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && up && up(e);
                     }
                     if (ClickAdmin._assign.length > 0) {
                         ClickAdmin._checkAssign(target.name) && func();
@@ -473,7 +474,7 @@ export module Lwg {
             _btnOut(target: Laya.Node, out: Function, effect?: string): void {
                 LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, null, (e: Laya.Event) => {
                     var func = () => {
-                        ClickAdmin._absoluteSwitch && LwgClick._switch && out && out(e);
+                        ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && out && out(e);
                     }
                     if (ClickAdmin._assign.length > 0) {
                         ClickAdmin._checkAssign(target.name) && func();
@@ -494,7 +495,7 @@ export module Lwg {
                 LwgClick._on(effect == null ? effect : LwgClick._Use.value, target, this,
                     (e: Laya.Event) => {
                         var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._switch && down && down(e);
+                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && down && down(e);
                         }
                         if (ClickAdmin._assign.length > 0) {
                             ClickAdmin._checkAssign(target.name) && func();
@@ -505,7 +506,7 @@ export module Lwg {
 
                     (e: Laya.Event) => {
                         var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._switch && move && move(e);
+                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && move && move(e);
                         }
                         if (ClickAdmin._assign.length > 0) {
                             ClickAdmin._checkAssign(target.name) && func();
@@ -516,7 +517,7 @@ export module Lwg {
 
                     (e: Laya.Event) => {
                         var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._switch && up && up(e);
+                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && up && up(e);
                         }
                         if (ClickAdmin._assign.length > 0) {
                             ClickAdmin._checkAssign(target.name) && func();
@@ -526,7 +527,7 @@ export module Lwg {
                     },
                     (e: Laya.Event) => {
                         var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._switch && out && out(e);
+                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && out && out(e);
                         }
                         if (ClickAdmin._assign.length > 0) {
                             ClickAdmin._checkAssign(target.name) && func();
@@ -568,9 +569,9 @@ export module Lwg {
             lwgOnUpdate(): void { };
             /**离开时执行不要执行onDisable，只执行lwgDisable*/
             lwgOnDisable(): void { };
-            onStageMouseDown(e: Laya.Event): void { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageDown(e) };
-            onStageMouseMove(e: Laya.Event): void { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageMove(e) };
-            onStageMouseUp(e: Laya.Event): void { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageUp(e) };
+            onStageMouseDown(e: Laya.Event): void { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._aniSwitch && this.lwgOnStageDown(e) };
+            onStageMouseMove(e: Laya.Event): void { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._aniSwitch && this.lwgOnStageMove(e) };
+            onStageMouseUp(e: Laya.Event): void { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._aniSwitch && this.lwgOnStageUp(e) };
             lwgOnStageDown(e: Laya.Event): void { };
             lwgOnStageMove(e: Laya.Event): void { };
             lwgOnStageUp(e: Laya.Event): void { };
@@ -683,7 +684,7 @@ export module Lwg {
                 let time = this.lwgOpenAni();
                 if (time !== null) {
                     Laya.timer.once(time, this, () => {
-                        LwgClick._switch = true;
+                        LwgClick._aniSwitch = true;
                         this.lwgOpenAniAfter();
                         this.lwgButton();
                         _SceneServe._close();
@@ -2006,7 +2007,7 @@ export module Lwg {
         export function _commonOpenAni(Scene: Laya.Scene): number {
             var afterAni = () => {
                 LwgScene._SceneServe._close();
-                LwgClick._switch = true;
+                LwgClick._aniSwitch = true;
                 if (Scene[Scene.name]) {
                     Scene[Scene.name].lwgOpenAniAfter();
                     Scene[Scene.name].lwgButton();
@@ -2454,13 +2455,14 @@ export module Lwg {
         export class _Object extends admin {
             value: {};
         }
+
         /**
         * @param name 名称
         * @param initial 初始值，如果有值了则无效,默认为0
         * */
         export function _num(name: string, _func?: Function, initial?: number): _NumVariable {
             if (!this[`_num${name}`]) {
-                this[`_num${name}`] = {
+                const obj: _NumVariable = {
                     get value(): number {
                         if (Laya.LocalStorage.getItem(name)) {
                             return Number(Laya.LocalStorage.getItem(name));
@@ -2481,6 +2483,7 @@ export module Lwg {
                         this['_func'] && this['_func']();
                     }
                 }
+                this[`_num${name}`] = obj;
             }
             if (_func) {
                 this[`_num${name}`]['_func'] = _func;
@@ -2511,7 +2514,7 @@ export module Lwg {
                         Laya.LocalStorage.removeItem(name);
                     },
                     func(): void {
-                        _func && _func();
+                        this['_func'] && this['_func']();
                     }
                 }
             }
@@ -5813,13 +5816,14 @@ export module Lwg {
     /**点击事件模块 */
     export module ClickAdmin {
         /**点击事件开关，主要是场景切换控制按钮的点击*/
-        export let _switch = true;
-        /**点击事件绝对开关，不到不得已不要用，优先级高于_switch*/
+        export let _aniSwitch = true;
+        /**点击事件绝对开关，不到不得已不要用，优先级高于_aniSwitch*/
         export let _absoluteSwitch = true;
-        /**记录当前可以点击的按钮，其他按钮都不可以点击，可用于新手引导,用过之后一定要记得变为[],长度变为0*/
+        /**记录当前可以点击的按钮，其他按钮，包括舞台都不可以点击，可用于新手引导,用过之后一定要记得变为[],长度变为0*/
         export let _assign: string[] = [];
-        /**lwgStage点击开关*/
+        /**单独控制lwgStage点击开关*/
         export let _stageSwitch = true;
+
         /**
          * @export 通过一个按钮名称检测其是否没有被屏蔽，返回true是没有被屏蔽，false为屏蔽
          * @param {Laya.Sprite} target
@@ -6229,7 +6233,7 @@ export module Lwg {
                 delayed = 0;
             }
             if (!click) {
-                LwgClick._switch = false
+                LwgClick._aniSwitch = false
             }
             Laya.Tween.to(node, { x: node.x - range }, time, null, Laya.Handler.create(this, function () {
                 // AudioAdmin._playSound(Enum.AudioName.commonShake, 1);
@@ -6240,7 +6244,7 @@ export module Lwg {
                             func();
                         }
                         if (!click) {
-                            LwgClick._switch = true
+                            LwgClick._aniSwitch = true
                         }
                     }))
                 }))
@@ -6336,14 +6340,14 @@ export module Lwg {
         export function fadeOut(node: Laya.Sprite, alpha1: number, alpha2: number, time: number, delayed?: number, func?: Function, stageClick?: boolean): void {
             node.alpha = alpha1;
             if (stageClick) {
-                LwgClick._switch = false
+                LwgClick._aniSwitch = false
             }
             Laya.Tween.to(node, { alpha: alpha2 }, time, null, Laya.Handler.create(this, function () {
                 if (func) {
                     func();
                 }
                 if (stageClick) {
-                    LwgClick._switch = true
+                    LwgClick._aniSwitch = true
                 }
             }), delayed ? delayed : 0)
         }

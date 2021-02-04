@@ -431,13 +431,13 @@ export default class MakeTailor extends LwgScene._SceneBase {
             this._evNotify(_MakeTailor.Event.scissorRemove, [() => {
                 _TaskClothes._ins().again(this._Owner);
             }]);
-            LwgClick._switch = false;
+            LwgClick._aniSwitch = false;
             LwgTimer._frameOnce(60, this, () => {
                 this.UI.operationAppear(() => {
                     this.UI.btnAgainVinish(null, 200);
                     this.UI.btnCompleteAppear();
                 });
-                LwgClick._switch = true;
+                LwgClick._aniSwitch = true;
             })
         }
     }

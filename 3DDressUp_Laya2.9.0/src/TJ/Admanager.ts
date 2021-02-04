@@ -1,4 +1,5 @@
-import { LwgScene, LwgAudio, LwgDialogue,  LwgPlatform, LwgSet } from "../script/Lwg/Lwg";
+import { _SceneName } from "../script/Game/_SceneName";
+import { LwgScene, LwgAudio, LwgDialogue, LwgPlatform, LwgSet } from "../script/Lwg/Lwg";
 export default class ADManager {
 
     public static ShowBanner() {
@@ -29,7 +30,7 @@ export default class ADManager {
     static CanShowCD: boolean = true;
     public static ShowReward(rewardAction: Function, CDTime: number = 500)//展示激励广告，一般是视频
     {
-        if ( LwgPlatform._Ues.value ==  LwgPlatform._Tpye.WebTest ||  LwgPlatform._Ues.value ==  LwgPlatform._Tpye.OPPOTest ||  LwgPlatform._Ues.value ==  LwgPlatform._Tpye.Research) {
+        if (LwgPlatform._Ues.value == LwgPlatform._Tpye.WebTest || LwgPlatform._Ues.value == LwgPlatform._Tpye.OPPOTest || LwgPlatform._Ues.value == LwgPlatform._Tpye.Research) {
             rewardAction();
             return;
         }
@@ -54,20 +55,20 @@ export default class ADManager {
                     LwgAudio._playMusic(LwgAudio._voiceUrl.bgm, 0, 1000);
                     //UIMgr.show("UISubSkinTry", 2);
                     // Dialog.createHint_Middle(Dialog.HintContent["观看完整广告才能获取奖励哦！"]);
-                    console.log('观看完整广告才能获取奖励哦！');
-                    LwgScene._openScene('AdsHint', null, () => {
-                        console.log(LwgScene._SceneControl['AdsHint']);
-                        // EventAdmin._notify('setCallBack', [rewardAction])
-                        LwgScene._SceneControl['AdsHint']['AdsHint'].setCallBack(rewardAction);
-                    });
-                    //TipPanel.ins.showString("观看完整广告才能获取奖励哦！");
+                    // console.log('观看完整广告才能获取奖励哦！');
+                    // LwgScene._openScene(_SceneName.AdsHint, null, () => {
+                    //     console.log(LwgScene._SceneControl[_SceneName.AdsHint]);
+                    //     // EventAdmin._notify('setCallBack', [rewardAction])
+                    //     LwgScene._SceneControl[_SceneName.AdsHint][_SceneName.AdsHint].setCallBack(rewardAction);
+                    // });
+                    LwgDialogue._middleHint("观看完整广告才能获取奖励哦！");
                 }
             });
             p.cbi.Add(TJ.Define.Event.NoAds, () => {
                 LwgAudio._playMusic(LwgAudio._voiceUrl.bgm, 0, 1000);
 
                 //UIMgr.show("UISubSkinTry", 1);
-                LwgDialogue.createHint_Middle("暂时没有广告，过会儿再试试吧！");
+                LwgDialogue._middleHint("暂时没有广告，过会儿再试试吧！");
                 //TipPanel.ins.showString("暂时没有广告，过会儿再试试吧！");
             });
 

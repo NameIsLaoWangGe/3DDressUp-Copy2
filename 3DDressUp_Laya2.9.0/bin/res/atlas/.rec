@@ -143,6 +143,7 @@ P 4B7D562D kuang_bai.png
 P 6F289A65 kuang_fen.png
 P 8E5CE52C shipin.png
 P CD4C3CFC shouye.png
+P EB35190A shuangbei.png
 P 543D5896 xuanzhong.png
 P E996F255 you.png
 P F9C91A64 zan.png
@@ -585,7 +586,6 @@ D Game/UI/Tweeting/GetFan
 R A9A6A38C choudai.png
 P 49475AC9 haode.png
 P AC0B5687 hutui.png
-P 47466FC5 shuangbei.png
 P 0422F21A zhangfen.png
 P 46094EAD zi.png
 D Game/UI/Tweeting/Head

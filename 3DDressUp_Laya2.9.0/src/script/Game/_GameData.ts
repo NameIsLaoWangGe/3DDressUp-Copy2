@@ -379,7 +379,7 @@ export class _DIYClothes extends LwgData._Table {
     /**获取裁剪碎片的颜色*/
     getColor(): Array<any> {
         let obj = this._getPitchObj();
-        return [obj[`${this._otherPro.color}1`], obj[`${this._otherPro.color}2`]]
+        return [obj[`${this._otherPro.color}1`], obj[`${this._otherPro.color}2`]];
     }
 
     ClothesArr: Array<Laya.Sprite>;

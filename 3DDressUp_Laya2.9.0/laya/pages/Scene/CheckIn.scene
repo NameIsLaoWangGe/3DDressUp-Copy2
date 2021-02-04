@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":21,
-    "selecteID":111,
+    "selectedBox":26,
+    "selecteID":112,
     "searchKey":"View",
     "props":{"width":1280,"sceneColor":"#898989","height":720},
     "nodeParent":-1,
-    "maxID":112,
+    "maxID":113,
     "label":"View",
     "isOpen":true,
     "isDirectory":true,
@@ -117,14 +117,13 @@
                     "props":{"width":830,"var":"List","spaceY":20,"rotation":0,"right":41,"repeatY":1,"repeatX":4,"name":"List","left":41,"height":494,"centerY":40},
                     "nodeParent":21,
                     "label":"List",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":11,
                     "child":[
                         {
-                            "x":45,
                             "type":"Box",
                             "searchKey":"Box",
                             "props":{"y":0,"x":0,"width":167,"renderType":"render","height":463},
@@ -137,7 +136,6 @@
                             "compId":12,
                             "child":[
                                 {
-                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,DayNum",
                                     "props":{"y":35,"width":86,"valign":"middle","text":"第一天","name":"DayNum","height":40,"fontSize":25,"color":"#a56c0a","centerX":0,"bold":true,"align":"center"},
@@ -151,7 +149,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"Image",
                                     "searchKey":"Image,Reward",
                                     "props":{"y":144,"x":105,"skin":"Game/UI/ChekIn/k_nei.png","sizeGrid":"37,22,34,18","name":"Reward","centerX":0,"anchorY":0.5,"anchorX":0.5},
@@ -164,7 +161,6 @@
                                     "compId":31,
                                     "child":[
                                         {
-                                            "x":75,
                                             "type":"Image",
                                             "searchKey":"Image,Icon",
                                             "props":{"skin":"Game/UI/Common/anniu_huang.png","name":"Icon","centerY":0,"centerX":0},
@@ -178,7 +174,6 @@
                                                 ]
                                         },
                                         {
-                                            "x":75,
                                             "type":"Label",
                                             "searchKey":"Label,Already",
                                             "props":{"width":98,"visible":false,"valign":"middle","text":"已领取","strokeColor":"#1f622c","stroke":2,"rotation":-10,"name":"Already","height":37,"fontSize":20,"color":"#ffffff","centerY":10,"centerX":-2,"bold":true,"bgColor":"#90bc58","align":"center"},
@@ -193,7 +188,6 @@
                                         }]
                                 },
                                 {
-                                    "x":60,
                                     "type":"Image",
                                     "searchKey":"Image,AdsReward",
                                     "props":{"y":325,"width":124,"skin":"Game/UI/ChekIn/k_nei.png","sizeGrid":"37,0,34,0","name":"AdsReward","height":123,"centerX":0,"anchorY":0.5,"anchorX":0.5},
@@ -206,7 +200,6 @@
                                     "compId":32,
                                     "child":[
                                         {
-                                            "x":75,
                                             "type":"Image",
                                             "searchKey":"Image,Icon",
                                             "props":{"skin":"Game/UI/Common/anniu_lan.png","name":"Icon","centerY":0,"centerX":0},
@@ -220,7 +213,6 @@
                                                 ]
                                         },
                                         {
-                                            "x":75,
                                             "type":"Label",
                                             "searchKey":"Label,Already",
                                             "props":{"y":0,"x":0,"width":98,"visible":false,"valign":"middle","text":"已领取","strokeColor":"#1f622c","stroke":2,"rotation":-10,"name":"Already","height":37,"fontSize":20,"color":"#ffffff","centerY":10,"centerX":-2,"bold":true,"bgColor":"#90bc58","align":"center"},
@@ -235,7 +227,6 @@
                                         }]
                                 },
                                 {
-                                    "x":60,
                                     "type":"Image",
                                     "searchKey":"Image,BtnAdsReward",
                                     "props":{"y":430,"x":83,"skin":"Game/UI/ChekIn/anniu_zi.png","name":"BtnAdsReward","centerX":0,"anchorY":0.5,"anchorX":0.5},
@@ -248,7 +239,6 @@
                                     "compId":46,
                                     "child":[
                                         {
-                                            "x":75,
                                             "type":"Image",
                                             "searchKey":"Image",
                                             "props":{"y":13,"x":20,"skin":"Game/UI/ChekIn/shipin.png"},
@@ -262,7 +252,6 @@
                                                 ]
                                         },
                                         {
-                                            "x":75,
                                             "type":"Image",
                                             "searchKey":"Image",
                                             "props":{"skin":"Game/UI/ChekIn/lq.png","centerY":-3,"centerX":17},
@@ -276,48 +265,6 @@
                                                 ]
                                         }]
                                 }]
-                        }]
-                },
-                {
-                    "x":30,
-                    "type":"Image",
-                    "searchKey":"Image,BtnImmediately,BtnImmediately",
-                    "props":{"y":107,"var":"BtnImmediately","skin":"Game/UI/ChekIn/anniu_cheng.png","sizeGrid":"23,36,30,25","right":89,"name":"BtnImmediately","anchorY":0.5,"anchorX":0.5},
-                    "nodeParent":21,
-                    "label":"BtnImmediately",
-                    "isOpen":true,
-                    "isDirectory":true,
-                    "isAniNode":true,
-                    "hasChild":true,
-                    "compId":26,
-                    "child":[
-                        {
-                            "x":45,
-                            "type":"Label",
-                            "searchKey":"Label,ImmediatelyNum,ImmediatelyNum",
-                            "props":{"width":44,"var":"ImmediatelyNum","valign":"middle","text":"0/4 ","strokeColor":"#c13e00","stroke":3,"name":"ImmediatelyNum","height":39,"fontSize":22,"color":"#ffffff","centerY":-3,"centerX":-46,"bold":true,"align":"center"},
-                            "nodeParent":26,
-                            "label":"ImmediatelyNum",
-                            "isDirectory":false,
-                            "isAniNode":true,
-                            "hasChild":false,
-                            "compId":27,
-                            "child":[
-                                ]
-                        },
-                        {
-                            "x":45,
-                            "type":"Sprite",
-                            "searchKey":"Sprite",
-                            "props":{"y":15,"x":61,"texture":"Game/UI/ChekIn/liji.png"},
-                            "nodeParent":26,
-                            "label":"Sprite",
-                            "isDirectory":false,
-                            "isAniNode":true,
-                            "hasChild":false,
-                            "compId":48,
-                            "child":[
-                                ]
                         }]
                 },
                 {
@@ -620,6 +567,62 @@
                                     "action":0
                                 }],
                             "$HIDDEN":false
+                        }]
+                },
+                {
+                    "x":30,
+                    "type":"Image",
+                    "searchKey":"Image,BtnImmediately,BtnImmediately",
+                    "props":{"y":110,"width":178,"var":"BtnImmediately","skin":"Game/UI/Common/shuangbei.png","sizeGrid":"23,36,30,25","right":76,"name":"BtnImmediately","height":91,"anchorY":0.5,"anchorX":0.5},
+                    "nodeParent":21,
+                    "label":"BtnImmediately",
+                    "isOpen":true,
+                    "isDirectory":true,
+                    "isAniNode":true,
+                    "hasChild":true,
+                    "compId":26,
+                    "child":[
+                        {
+                            "x":45,
+                            "type":"Sprite",
+                            "searchKey":"Sprite",
+                            "props":{"y":17.5,"x":20,"texture":"Game/UI/Common/shipin.png","scaleY":0.2,"scaleX":0.2},
+                            "nodeParent":26,
+                            "label":"Sprite",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":112,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label,ImmediatelyNum,ImmediatelyNum",
+                            "props":{"width":91,"var":"ImmediatelyNum","valign":"middle","text":"（0/4）","strokeColor":"#c13e00","stroke":3,"name":"ImmediatelyNum","height":39,"fontSize":22,"color":"#ffffff","centerY":15,"centerX":0,"bold":true,"align":"center"},
+                            "nodeParent":26,
+                            "label":"ImmediatelyNum",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":27,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Sprite",
+                            "searchKey":"Sprite",
+                            "props":{"y":16,"x":60,"texture":"Game/UI/ChekIn/liji.png"},
+                            "nodeParent":26,
+                            "label":"Sprite",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":48,
+                            "child":[
+                                ]
                         }]
                 },
                 {

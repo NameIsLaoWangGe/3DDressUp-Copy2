@@ -1829,8 +1829,10 @@
                 }
                 getChild(name, type) {
                     if (!this[`${type}${name}`]) {
-                        if (this._Owner.getChildByName(name)) {
-                            return this[`${type}${name}`] = this._Owner.getChildByName(name);
+                        const child = this._Owner.getChildByName(name);
+                        if (child) {
+                            NodeAdmin._addProperty(child);
+                            return this[`${type}${name}`] = child;
                         }
                         else {
                             return null;
@@ -1950,7 +1952,7 @@
             (function (Skin) {
                 Skin["blackBord"] = "Lwg/UI/ui_orthogon_black_0.7.png";
             })(Skin || (Skin = {}));
-            function createHint_Middle(describe) {
+            function _middleHint(describe) {
                 const Hint_M = Laya.Pool.getItemByClass('Hint_M', Laya.Sprite);
                 Hint_M.name = 'Hint_M';
                 Laya.stage.addChild(Hint_M);
@@ -1996,7 +1998,7 @@
                     });
                 });
             }
-            Dialogue.createHint_Middle = createHint_Middle;
+            Dialogue._middleHint = _middleHint;
             Dialogue._dialogContent = {
                 get Array() {
                     return Laya.loader.getRes("GameData/Dialogue/Dialogue.json")['RECORDS'] !== null ? Laya.loader.getRes("GameData/Dialogue/Dialogue.json")['RECORDS'] : [];
@@ -10167,16 +10169,12 @@
                 p.cbi.Add(TJ.Define.Event.Close, () => {
                     if (!getReward) {
                         LwgAudio._playMusic(LwgAudio._voiceUrl.bgm, 0, 1000);
-                        console.log('观看完整广告才能获取奖励哦！');
-                        LwgScene._openScene('AdsHint', null, () => {
-                            console.log(LwgScene._SceneControl['AdsHint']);
-                            LwgScene._SceneControl['AdsHint']['AdsHint'].setCallBack(rewardAction);
-                        });
+                        LwgDialogue._middleHint("观看完整广告才能获取奖励哦！");
                     }
                 });
                 p.cbi.Add(TJ.Define.Event.NoAds, () => {
                     LwgAudio._playMusic(LwgAudio._voiceUrl.bgm, 0, 1000);
-                    LwgDialogue.createHint_Middle("暂时没有广告，过会儿再试试吧！");
+                    LwgDialogue._middleHint("暂时没有广告，过会儿再试试吧！");
                 });
                 TJ.ADS.Api.ShowReward(p);
                 ADManager.CanShowCD = false;
@@ -10603,22 +10601,22 @@
                 p.extra.videoTopics = ["女神修炼手册", "番茄小游戏", "抖音小游戏"];
                 p.channel = "video";
                 p.success = () => {
-                    LwgDialogue.createHint_Middle("分享成功!");
+                    LwgDialogue._middleHint("分享成功!");
                     successedAc();
                 };
                 p.fail = () => {
                     if (type === 'noAward') {
-                        LwgDialogue.createHint_Middle("分享失败！");
+                        LwgDialogue._middleHint("分享失败！");
                     }
                     else {
-                        LwgDialogue.createHint_Middle("分享成功后才能获取奖励！");
+                        LwgDialogue._middleHint("分享成功后才能获取奖励！");
                     }
                     failAc();
                 };
                 RecordManager.grv.Share(p);
             }
             else {
-                LwgDialogue.createHint_Middle("暂无视频，玩一局游戏之后分享！");
+                LwgDialogue._middleHint("暂无视频，玩一局游戏之后分享！");
             }
         }
     }
@@ -11018,22 +11016,22 @@
                 else {
                     switch (this.$data.unlockWay) {
                         case this.$unlockWayType.check:
-                            LwgDialogue.createHint_Middle('请前往签到页面获取');
+                            LwgDialogue._middleHint('请前往签到页面获取');
                             break;
                         case this.$unlockWayType.customs:
-                            LwgDialogue.createHint_Middle(`制作${this.$data.conditionNum}件才能衣服获取哦！`);
+                            LwgDialogue._middleHint(`制作${this.$data.conditionNum}件才能衣服获取哦！`);
                             break;
                         case this.$unlockWayType.ads:
                             ADManager.ShowReward(() => {
                                 if (_DIYClothes._ins()._checkCondition(this.$data.name)) {
-                                    LwgDialogue.createHint_Middle('恭喜获得一件新服装！');
+                                    LwgDialogue._middleHint('恭喜获得一件新服装！');
                                     _DIYClothes._ins()._setPitch(this.$data.name);
                                     this._evNotify(_MakeTailor.Event.changeClothes);
                                 }
                             });
                             break;
                         case this.$unlockWayType.free:
-                            LwgDialogue.createHint_Middle(`免费获得`);
+                            LwgDialogue._middleHint(`免费获得`);
                             break;
                         default:
                             break;
@@ -11594,15 +11592,15 @@
                 if (!this.$data.complete) {
                     switch (this.$data.unlockWay) {
                         case this.$unlockWayType.check:
-                            LwgDialogue.createHint_Middle('请前往签到页面获取');
+                            LwgDialogue._middleHint('请前往签到页面获取');
                             break;
                         case this.$unlockWayType.customs:
-                            LwgDialogue.createHint_Middle(`制作${this.$data.conditionNum}件衣服才能获取！`);
+                            LwgDialogue._middleHint(`制作${this.$data.conditionNum}件衣服才能获取！`);
                             break;
                         case this.$unlockWayType.ads:
                             ADManager.ShowReward(() => {
                                 if (_MakePattern._Pattern._ins()._checkCondition(this.$data.name)) {
-                                    LwgDialogue.createHint_Middle('恭喜获得新贴图！');
+                                    LwgDialogue._middleHint('恭喜获得新贴图！');
                                     _MakePattern._Pattern._ins()._setProperty(this.$data.name, _MakePattern._Pattern._ins()._property.complete, true);
                                 }
                             });
@@ -12773,7 +12771,7 @@
                     this._closeScene();
                 }
                 else {
-                    LwgDialogue.createHint_Middle('还未选择照片哦！');
+                    LwgDialogue._middleHint('还未选择照片哦！');
                 }
             });
         }
@@ -12941,7 +12939,7 @@
                 ADManager.TAPoint(TaT.BtnClick, 'ADrank');
                 ADManager.ShowReward(() => {
                     this.pitchObj['fansNum'] += this.fansNum;
-                    LwgDialogue.createHint_Middle('太厉害了，涨粉翻倍了！');
+                    LwgDialogue._middleHint('太厉害了，涨粉翻倍了！');
                     closeBefore();
                 });
             });
@@ -12989,12 +12987,12 @@
                         _CheckIn._checkInNum.value++;
                         if (this.$data.rewardType.substr(0, 3) === 'diy') {
                             _DIYClothes._ins()._setCompleteByName(this.$data.rewardType);
-                            LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
+                            LwgDialogue._middleHint('恭喜获得新的裁剪服装');
                             _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                         }
                         else if (this.$data.rewardType === 'cat') {
                             _MakePattern._Pattern._ins()._setCompleteByClassify(this.$data.rewardType);
-                            LwgDialogue.createHint_Middle('恭喜获得猫咪贴图一套');
+                            LwgDialogue._middleHint('恭喜获得猫咪贴图一套');
                             _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                         }
                         if (!_Guide._complete.value) {
@@ -13004,7 +13002,7 @@
                     }
                 }
                 else {
-                    LwgDialogue.createHint_Middle('日期不对哦！');
+                    LwgDialogue._middleHint('日期不对哦！');
                 }
             });
             var func = (e) => {
@@ -13012,11 +13010,11 @@
                     _CheckIn._Data._ins()._setOtherCompleteName(this.$data.name);
                     if (this.$data.otherRewardType.substr(0, 3) === 'diy') {
                         _DIYClothes._ins()._setCompleteByName(this.$data.otherRewardType);
-                        LwgDialogue.createHint_Middle('恭喜获得新的裁剪服装');
+                        LwgDialogue._middleHint('恭喜获得新的裁剪服装');
                     }
                     else if (this.$data.otherRewardType === 'newYear') {
                         _MakePattern._Pattern._ins()._setCompleteByClassify(this.$data.otherRewardType);
-                        LwgDialogue.createHint_Middle('恭喜获得新年贴图一套');
+                        LwgDialogue._middleHint('恭喜获得新年贴图一套');
                     }
                     _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
                 });
@@ -13035,7 +13033,7 @@
                     }
                 }
                 else {
-                    LwgDialogue.createHint_Middle('日期不对哦！');
+                    LwgDialogue._middleHint('日期不对哦！');
                 }
             };
             this._btnUp(this._ImgChild('AdsReward'), adsClick);
@@ -13114,7 +13112,7 @@
             _CheckIn._Data._ins()._List = this._ListVar('List');
             _CheckIn._Data._ins()._listRenderScript = _Item$3;
             _CheckIn._Data._ins()._List.scrollBar.touchScrollEnable = false;
-            this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately.value} / 4`;
+            this._LabelVar('ImmediatelyNum').text = `(${_CheckIn._immediately.value} / 4)`;
             if (_CheckIn._immediately.value >= 4 || _CheckIn._checkInNum.value >= 4) {
                 this._ImgVar('BtnImmediately').visible = false;
                 this._LabelVar('Tip').text = `奖励已经全部领取！`;
@@ -13132,7 +13130,7 @@
             this._btnUp(this._ImgVar('BtnClose'), () => {
                 if (!_Guide._complete.value && _Guide.CheckInCloseBtn) {
                     _Guide._complete.value = true;
-                    LwgDialogue.createHint_Middle('开启你的女神之路吧!');
+                    LwgDialogue._middleHint('开启你的女神之路吧!');
                     this._evNotify(_Guide.Event.closeGuide);
                     this._evNotify(_Guide.Event.StartOtherBtnClick);
                 }
@@ -13147,7 +13145,7 @@
                 if (_CheckIn._immediately.value < 4) {
                     ADManager.ShowReward(() => {
                         _CheckIn._immediately.value++;
-                        this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately.value} / 4 `;
+                        this._LabelVar('ImmediatelyNum').text = `(${_CheckIn._immediately.value} / 4()`;
                         if (_CheckIn._immediately.value >= 4) {
                             this._ImgVar('BtnImmediately').visible = false;
                             const gP1 = this._ImgVar('GuideTab1')._lwg.gPoint;
@@ -13166,7 +13164,7 @@
                                 }
                                 gP2.x += 165;
                             }, null, () => {
-                                LwgDialogue.createHint_Middle('奖励已经全部获得，快去制作服装吧！');
+                                LwgDialogue._middleHint('奖励已经全部获得，快去制作服装吧！');
                             });
                             _DIYClothes._ins()._setCompleteByNameArr(['diy_dress_003_final', 'diy_dress_007_final', 'diy_top_004_final', 'diy_bottom_005_final', 'diy_dress_006_final', 'diy_bottom_006_final']);
                             _MakePattern._Pattern._ins()._setCompleteByClassify('cat');
@@ -13175,7 +13173,7 @@
                     });
                 }
                 else {
-                    LwgDialogue.createHint_Middle('奖励已经全部获得，无需在看广告o.o！');
+                    LwgDialogue._middleHint('奖励已经全部获得，无需在看广告o.o！');
                 }
             });
         }
@@ -13212,7 +13210,7 @@
         lwgButton() {
             var func = () => {
                 RecordManager._share('noAward', () => {
-                    this.closeFunc();
+                    this._closeScene();
                 });
             };
             this._btnUp(this._ImgVar('BtnShare'), () => {

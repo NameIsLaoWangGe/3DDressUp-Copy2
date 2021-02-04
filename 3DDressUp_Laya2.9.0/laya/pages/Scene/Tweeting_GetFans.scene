@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":2,
-    "selecteID":257,
+    "selectedBox":257,
+    "selecteID":262,
     "searchKey":"View",
     "referenceLines":[
         {
@@ -12,7 +12,7 @@
         }],
     "props":{"width":1280,"sceneColor":"#7b866c","height":720,"centerY":0},
     "nodeParent":-1,
-    "maxID":537,
+    "maxID":539,
     "label":"View",
     "isOpen":true,
     "isDirectory":true,
@@ -123,15 +123,43 @@
                     "x":30,
                     "type":"Image",
                     "searchKey":"Image,BtnDouble,BtnDouble",
-                    "props":{"y":486,"x":280,"width":196,"var":"BtnDouble","skin":"Game/UI/Tweeting/GetFan/shuangbei.png","name":"BtnDouble","height":77,"anchorY":0.5,"anchorX":0.5},
+                    "props":{"y":486,"x":280,"width":196,"var":"BtnDouble","skin":"Game/UI/Common/shuangbei.png","name":"BtnDouble","height":77,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":257,
                     "label":"BtnDouble",
-                    "isDirectory":false,
+                    "isOpen":true,
+                    "isDirectory":true,
                     "isAniNode":true,
-                    "hasChild":false,
+                    "hasChild":true,
                     "compId":262,
                     "child":[
-                        ]
+                        {
+                            "x":45,
+                            "type":"Image",
+                            "searchKey":"Image",
+                            "props":{"y":23,"x":19,"width":158,"skin":"Game/UI/Common/shipin.png","scaleY":0.22,"scaleX":0.22,"height":117},
+                            "nodeParent":262,
+                            "label":"Image",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":537,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label",
+                            "props":{"y":19,"x":57,"width":121,"valign":"middle","underlineColor":"#ffffff","text":"双倍涨粉","strokeColor":"#9f3229","stroke":3,"height":35,"fontSize":28,"color":"#ffffff","bold":true,"align":"center"},
+                            "nodeParent":262,
+                            "label":"Label",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":538,
+                            "child":[
+                                ]
+                        }]
                 },
                 {
                     "x":30,

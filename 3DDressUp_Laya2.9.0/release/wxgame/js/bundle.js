@@ -1,1 +1,14849 @@
-!function(){"use strict";class e extends Laya.Script{constructor(){super(...arguments),this.defaultNode=null,this.nativetNode=null,this.icon=null,this.title=null,this.desc=null,this.contant=null,this.close=null,this.WatchAD1=null,this.WatchAD2=null}onAwake(){this.defaultNode=this.owner.getChildByName("defaultNode"),this.nativetNode=this.owner.getChildByName("nativeNode"),this.icon=this.nativetNode.getChildByName("Icon"),this.title=this.nativetNode.getChildByName("Title"),this.desc=this.nativetNode.getChildByName("Des"),this.contant=this.nativetNode.getChildByName("Contant"),this.WatchAD2=this.owner.getChildByName("WatchAD2"),this.close=this.owner.getChildByName("Close"),this.WatchAD2?this.WatchAD2.on(Laya.Event.CLICK,this,this.Click):(this.WatchAD2=this.nativetNode.getChildByName("WatchAD2"),this.WatchAD2&&this.WatchAD2.on(Laya.Event.CLICK,this,this.Click)),this.WatchAD1=this.owner.getChildByName("WatchAD1"),this.WatchAD1?this.WatchAD1.on(Laya.Event.CLICK,this,this.Click):(this.WatchAD1=this.nativetNode.getChildByName("WatchAD1"),this.WatchAD1&&this.WatchAD1.on(Laya.Event.CLICK,this,this.Click)),this.nativetNode.on(Laya.Event.CLICK,this,this.Click),this.owner.visible=!1,this.close.on(Laya.Event.CLICK,this,()=>{this.owner.removeSelf()}),Laya.timer.once(100,this,()=>{this.Show()})}Show(){let e=new TJ.API.AdService.Param;this.nativeAd=TJ.API.AdService.LoadNative(e),console.log("展示原生广告 =》",this.nativeAd),null!=this.nativeAd&&(console.log("展示原生广告 =》",this.nativeAd.iconUrl),console.log("展示原生广告 =》",this.nativeAd.title)),null!=this.nativeAd?(this.owner.visible=!0,this.nativeAd&&(console.log("this.nativeAd = ",this.nativeAd),this.nativeAd.OnShow(),this.icon.skin=this.nativeAd.iconUrl,this.title.text=this.nativeAd.title,this.desc.text=this.nativeAd.desc,this.contant.skin=this.nativeAd.imgUrl)):this.owner.visible=!1}Click(){null!=this.nativeAd&&this.nativeAd.OnClick()}}class t extends Laya.Script{constructor(){super(...arguments),this.time=.1,this.ratio=1.04,this.startScaleX=1,this.startScaleY=1,this.scaled=!1}onAwake(){this.owner.on(Laya.Event.MOUSE_DOWN,null,()=>{this.ScaleBig()}),this.owner.on(Laya.Event.MOUSE_UP,null,()=>{this.ScaleSmall()}),this.owner.on(Laya.Event.MOUSE_OUT,null,()=>{this.ScaleSmall()})}ScaleBig(){this.scaled||(this.scaled=!0,Laya.Tween.to(this.owner,{scaleX:this.startScaleX*this.ratio,scaleY:this.startScaleY*this.ratio},1e3*this.time))}ScaleSmall(){this.scaled&&(this.scaled=!1,Laya.Tween.to(this.owner,{scaleX:this.startScaleX,scaleY:this.startScaleY},1e3*this.time))}}class a extends Laya.Script{constructor(){super(...arguments),this.isAwake=!1,this.isStart=!1,this.isEnable=!1,this.isDestroy=!1}OnAwake(){}OnStart(){}OnUpdate(){}OnEnable(){}OnDisable(){}OnDestroy(){}DoAwake(){this.active&&(this.isAwake||(this.isAwake=!0,this.OnAwake()))}DoStart(){this.active&&(this.isStart||(this.isStart=!0,this.OnStart()))}DoUpdate(){this.active&&this.isStart&&this.OnUpdate()}DoEnable(){this.active&&(this.isEnable||(this.isEnable=!0,this.OnEnable()))}DoDisable(){this.isEnable&&(this.isEnable=!1,this.OnDisable())}DoDestroy(){this.isDestroy||(this.isDestroy=!0,this.OnDestroy())}onAwake(){this.DoAwake()}onStart(){this.DoAwake(),this.DoStart()}onUpdate(){this.DoAwake(),this.DoEnable(),this.DoStart(),this.DoUpdate()}onEnable(){this.DoAwake(),this.DoEnable(),this.DoStart()}onDisable(){this.DoDisable()}onDestroy(){this.DoDestroy()}static SetActive(e,t){null!=e&&(e.active=t,e instanceof Laya.Box&&(e.visible=t))}static GetActive(e){return null!=e&&(!!e.active&&!(e instanceof Laya.Box&&!e.visible))}get active(){return a.GetActive(this.owner)}set active(e){a.SetActive(this.owner,e),e?this.DoEnable():this.DoDisable()}}class i extends a{constructor(){super(...arguments),this.bgImage=null,this.iconImage=null,this.nameText=null,this.infoText=null,this.flag1=null,this.flag2=null,this.flag3=null,this.nbg=null}OnAwake(){this.bgImage=this.owner.getChildByName("bg"),this.iconImage=this.owner.getChildByName("icon"),null!=this.iconImage&&(this.flag1=this.iconImage.getChildByName("flag1"),this.flag2=this.iconImage.getChildByName("flag2"),this.flag3=this.iconImage.getChildByName("flag3")),this.nameText=this.owner.getChildByName("name"),this.infoText=this.owner.getChildByName("info"),this.nbg=this.owner.getChildByName("nbg")}DoLoad(){null!=this.data&&(null!=this.iconImage&&(this.iconImage.skin=this.data.icon),null!=this.nameText&&(this.nameText.text=this.data.title),null!=this.nbg&&(this.nbg.skin="TJ/Promo/image/互推icon底色/"+this.data.titleBG+".png"),this.SetFlag())}SetFlag(){switch(null!=this.flag1&&(this.flag1.active=this.flag1.visible=!1),null!=this.flag2&&(this.flag2.active=this.flag2.visible=!1),null!=this.flag3&&(this.flag3.active=this.flag3.visible=!1),this.data.tag){case 1:null!=this.flag1&&(this.flag1.active=this.flag1.visible=!0);break;case 2:null!=this.flag2&&(this.flag2.active=this.flag2.visible=!0);break;case 3:null!=this.flag3&&(this.flag3.active=this.flag3.visible=!0)}}OnShow(){this.data.ReportShow()}OnClick(){this.data.Click(),null!=this.onClick_&&this.onClick_(this)}onClick(){this.OnClick()}}var n,s;!function(e){function Node2Comp(e){let t={};if(t.type=e.constructor.name,t.props={},null!=e.name&&(t.props.name=e.name),e instanceof Laya.Sprite&&function(e,t){isNaN(e.x)||(t.x=e.x);isNaN(e.y)||(t.y=e.y);isNaN(e.width)||(t.width=e.width);isNaN(e.height)||(t.height=e.height);null!=e.visible&&(t.visible=e.visible);null!=e.texture&&(t.texture=e.texture.url);null!=e.renderType&&(t.renderType=e.renderType)}(e,t.props),e instanceof Laya.Scene&&function(e,t){null!=e.autoDestroyAtClosed&&(t.autoDestroyAtClosed=e.autoDestroyAtClosed)}(e,t.props),e instanceof Laya.UIComponent&&function(e,t){isNaN(e.anchorX)||(t.anchorX=e.anchorX);isNaN(e.anchorY)||(t.anchorY=e.anchorY);isNaN(e.centerX)||(t.centerX=e.centerX);isNaN(e.centerY)||(t.centerY=e.centerY);isNaN(e.top)||(t.top=e.top);isNaN(e.bottom)||(t.bottom=e.bottom);isNaN(e.left)||(t.left=e.left);isNaN(e.right)||(t.right=e.right)}(e,t.props),e instanceof Laya.Text){if(e.parent instanceof Laya.Label&&e.parent.textField==e)return null;!function(e,t){null!=e.text&&(t.text=e.text);null!=e.runtime&&(t.runtime=e.runtime)}(e,t.props)}e instanceof Laya.Dialog&&function(e,t){null!=e.group&&(t.group=e.group);null!=e.dragArea&&(t.dragArea=e.dragArea);null!=e.isShowEffect&&(t.isShowEffect=e.isShowEffect);null!=e.isPopupCenter&&(t.isPopupCenter=e.isPopupCenter);null!=e.isModal&&(t.isModal=e.isModal)}(e,t.props),e instanceof Laya.Clip&&function(e,t){null!=e.skin&&(t.skin=e.skin);null!=e.group&&(t.group=e.group);null!=e.sizeGrid&&(t.sizeGrid=e.sizeGrid);null!=e.autoPlay&&(t.autoPlay=e.autoPlay);isNaN(e.index)||(t.index=e.index);isNaN(e.clipX)||(t.clipX=e.clipX);isNaN(e.clipY)||(t.clipY=e.clipY);isNaN(e.clipWidth)||(t.clipWidth=e.clipWidth);isNaN(e.clipHeight)||(t.clipHeight=e.clipHeight)}(e,t.props),e instanceof Laya.FontClip&&function(e,t){null!=e.value&&(t.value=e.value);null!=e.sheet&&(t.sheet=e.sheet);null!=e.align&&(t.align=e.align);null!=e.direction&&(t.direction=e.direction);isNaN(e.spaceX)||(t.spaceX=e.spaceX);isNaN(e.spaceY)||(t.spaceY=e.spaceY)}(e,t.props),e instanceof Laya.Image&&function(e,t){null!=e.skin&&(t.skin=e.skin);null!=e.group&&(t.group=e.group);null!=e.sizeGrid&&(t.sizeGrid=e.sizeGrid)}(e,t.props),e instanceof Laya.Button&&function(e,t){null!=e.skin&&(t.skin=e.skin);null!=e.label&&(t.label=e.label);null!=e.toggle&&(t.toggle=e.toggle);null!=e.sizeGrid&&(t.sizeGrid=e.sizeGrid);null!=e.selected&&(t.selected=e.selected);null!=e.strokeColors&&(t.strokeColors=e.strokeColors);null!=e.labelStrokeColor&&(t.labelStrokeColor=e.labelStrokeColor);null!=e.labelPadding&&(t.labelPadding=e.labelPadding);null!=e.labelFont&&(t.labelFont=e.labelFont);null!=e.labelColors&&(t.labelColors=e.labelColors);null!=e.labelBold&&(t.labelBold=e.labelBold);null!=e.labelAlign&&(t.labelAlign=e.labelAlign);isNaN(e.stateNum)||(t.stateNum=e.stateNum);isNaN(e.labelSize)||(t.labelSize=e.labelSize);isNaN(e.labelStroke)||(t.labelStroke=e.labelStroke)}(e,t.props),e instanceof Laya.ComboBox&&function(e,t){null!=e.skin&&(t.skin=e.skin);null!=e.sizeGrid&&(t.sizeGrid=e.sizeGrid);null!=e.selectedLabel&&(t.selectedLabel=e.selectedLabel);null!=e.scrollBarSkin&&(t.scrollBarSkin=e.scrollBarSkin);null!=e.labels&&(t.labels=e.labels);null!=e.labelFont&&(t.labelFont=e.labelFont);null!=e.labelBold&&(t.labelBold=e.labelBold);null!=e.labelColors&&(t.labelColors=e.labelColors);null!=e.labelPadding&&(t.labelPadding=e.labelPadding);null!=e.itemColors&&(t.itemColors=e.itemColors);isNaN(e.itemSize)||(t.itemSize=e.itemSize);isNaN(e.labelSize)||(t.labelSize=e.labelSize);isNaN(e.stateNum)||(t.stateNum=e.stateNum);isNaN(e.visibleNum)||(t.visibleNum=e.visibleNum);isNaN(e.selectedIndex)||(t.selectedIndex=e.selectedIndex)}(e,t.props),e instanceof Laya.Slider&&function(e,t){null!=e.skin&&(t.skin=e.skin);null!=e.sizeGrid&&(t.sizeGrid=e.sizeGrid);null!=e.showLabel&&(t.showLabel=e.showLabel);null!=e.allowClickBack&&(t.allowClickBack=e.allowClickBack);isNaN(e.value)||(t.value=e.value);isNaN(e.tick)||(t.tick=e.tick);isNaN(e.min)||(t.min=e.min);isNaN(e.max)||(t.max=e.max)}(e,t.props),e instanceof Laya.ScrollBar&&function(e,t){null!=e.skin&&(t.skin=e.skin);null!=e.hide&&(t.hide=e.hide);null!=e.autoHide&&(t.autoHide=e.autoHide);null!=e.sizeGrid&&(t.sizeGrid=e.sizeGrid);null!=e.showButtons&&(t.showButtons=e.showButtons);null!=e.mouseWheelEnable&&(t.mouseWheelEnable=e.mouseWheelEnable);null!=e.touchScrollEnable&&(t.touchScrollEnable=e.touchScrollEnable);isNaN(e.value)||(t.value=e.value);isNaN(e.min)||(t.min=e.min);isNaN(e.max)||(t.max=e.max);isNaN(e.rollRatio)||(t.rollRatio=e.rollRatio);isNaN(e.scrollSize)||(t.scrollSize=e.scrollSize);isNaN(e.elasticDistance)||(t.elasticDistance=e.elasticDistance);isNaN(e.elasticBackTime)||(t.elasticBackTime=e.elasticBackTime)}(e,t.props),e instanceof Laya.ProgressBar&&function(e,t){null!=e.skin&&(t.skin=e.skin);null!=e.sizeGrid&&(t.sizeGrid=e.sizeGrid);isNaN(e.value)||(t.value=e.value)}(e,t.props),e instanceof Laya.Label&&function(e,t){null!=e.text&&(t.text=e.text);null!=e.font&&(t.font=e.font);null!=e.color&&(t.color=e.color);null!=e.align&&(t.align=e.align);null!=e.valign&&(t.valign=e.valign);null!=e.wordWrap&&(t.wordWrap=e.wordWrap);null!=e.underline&&(t.underline=e.underline);null!=e.underlineColor&&(t.underlineColor=e.underlineColor);null!=e.padding&&(t.padding=e.padding);null!=e.overflow&&(t.overflow=e.overflow);null!=e.italic&&(t.italic=e.italic);null!=e.strokeColor&&(t.strokeColor=e.strokeColor);null!=e.borderColor&&(t.borderColor=e.borderColor);null!=e.bold&&(t.bold=e.bold);null!=e.bgColor&&(t.bgColor=e.bgColor);isNaN(e.leading)||(t.leading=e.leading);isNaN(e.fontSize)||(t.fontSize=e.fontSize);isNaN(e.stroke)||(t.stroke=e.stroke)}(e,t.props),e instanceof Laya.TextInput&&function(e,t){null!=e.text&&(t.text=e.text);null!=e.skin&&(t.skin=e.skin);null!=e.type&&(t.type=e.type);null!=e.sizeGrid&&(t.sizeGrid=e.sizeGrid);null!=e.restrict&&(t.restrict=e.restrict);null!=e.prompt&&(t.prompt=e.prompt);null!=e.promptColor&&(t.promptColor=e.promptColor);null!=e.multiline&&(t.multiline=e.multiline);null!=e.editable&&(t.editable=e.editable);isNaN(e.maxChars)||(t.maxChars=e.maxChars)}(e,t.props),e instanceof Laya.TextArea&&function(e,t){null!=e.vScrollBarSkin&&(t.vScrollBarSkin=e.vScrollBarSkin);null!=e.hScrollBarSkin&&(t.hScrollBarSkin=e.hScrollBarSkin)}(e,t.props),e instanceof Laya.ColorPicker&&function(e,t){null!=e.selectedColor&&(t.selectedColor=e.selectedColor);null!=e.inputColor&&(t.inputColor=e.inputColor);null!=e.inputBgColor&&(t.inputBgColor=e.inputBgColor);null!=e.borderColor&&(t.borderColor=e.borderColor);null!=e.bgColor&&(t.bgColor=e.bgColor)}(e,t.props),e instanceof Laya.Box&&function(e,t){null!=e.bgColor&&(t.bgColor=e.bgColor)}(e,t.props),e instanceof Laya.LayoutBox&&function(e,t){null!=e.align&&(t.align=e.align);isNaN(e.space)||(t.space=e.space)}(e,t.props),e instanceof Laya.Panel&&function(e,t){null!=e.elasticEnabled&&(t.elasticEnabled=e.elasticEnabled);null!=e.hScrollBarSkin&&(t.hScrollBarSkin=e.hScrollBarSkin);null!=e.vScrollBarSkin&&(t.vScrollBarSkin=e.vScrollBarSkin)}(e,t.props),e instanceof Laya.List&&function(e,t){isNaN(e.width)||(t.width=e.width);isNaN(e.height)||(t.height=e.height);isNaN(e.spaceX)||(t.spaceX=e.spaceX);isNaN(e.spaceY)||(t.spaceY=e.spaceY);isNaN(e.repeatX)||(t.repeatX=e.repeatX);isNaN(e.repeatY)||(t.repeatY=e.repeatY);isNaN(e.selectedIndex)||(t.selectedIndex=e.selectedIndex);null!=e.selectEnable&&(t.selectEnable=e.selectEnable);null!=e.elasticEnabled&&(t.elasticEnabled=e.elasticEnabled);null!=e.hScrollBarSkin&&(t.hScrollBarSkin=e.hScrollBarSkin);null!=e.vScrollBarSkin&&(t.vScrollBarSkin=e.vScrollBarSkin)}(e,t.props),e instanceof Laya.Tree&&function(e,t){isNaN(e.width)||(t.width=e.width);isNaN(e.height)||(t.height=e.height);isNaN(e.spaceLeft)||(t.spaceLeft=e.spaceLeft);isNaN(e.spaceBottom)||(t.spaceBottom=e.spaceBottom);isNaN(e.selectedIndex)||(t.selectedIndex=e.selectedIndex);null!=e.scrollBarSkin&&(t.scrollBarSkin=e.scrollBarSkin);null!=e.keepStatus&&(t.keepStatus=e.keepStatus)}(e,t.props),e instanceof Laya.ViewStack&&function(e,t){isNaN(e.selectedIndex)||(t.selectedIndex=e.selectedIndex)}(e,t.props),e instanceof Laya.UIGroup&&function(e,t){null!=e.skin&&(t.skin=e.skin);null!=e.labels&&(t.labels=e.labels);null!=e.labelStrokeColor&&(t.labelStrokeColor=e.labelStrokeColor);null!=e.labelPadding&&(t.labelPadding=e.labelPadding);null!=e.labelFont&&(t.labelFont=e.labelFont);null!=e.labelColors&&(t.labelColors=e.labelColors);null!=e.labelBold&&(t.labelBold=e.labelBold);null!=e.strokeColors&&(t.strokeColors=e.strokeColors);null!=e.direction&&(t.direction=e.direction);isNaN(e.space)||(t.space=e.space);isNaN(e.stateNum)||(t.stateNum=e.stateNum);isNaN(e.selectedIndex)||(t.selectedIndex=e.selectedIndex);isNaN(e.labelStroke)||(t.labelStroke=e.labelStroke);isNaN(e.labelSize)||(t.labelSize=e.labelSize)}(e,t.props),e instanceof Laya.Tab&&function(e,t){null!=e.labelAlign&&(t.labelAlign=e.labelAlign)}(e,t.props),t.child=[];for(let a=0;a<e.numChildren;a++){let i=Node2Comp(e.getChildAt(a));null!=i&&t.child.push(i)}return e instanceof Laya.Sprite&&function(e,t){null!=e.mask&&t.push(Node2Comp(e.mask))}(e,t.child),function(e,t){let a=e.getComponents(Laya.Script);if(null!=a)for(let e of a)t.push({type:"Script",props:{runtime:e.runtime}})}(e,t.child),t}e.Instantiate=function(e){let t=Node2Comp(e);return Laya.SceneUtils.createComp(t)}}(n||(n={}));class o extends a{constructor(){super(...arguments),this.scroll=null,this.layout=null,this.paddingTop=10,this.paddingBottom=10,this.move=null,this.show=null,this.hide=null,this.maxX=560,this.mouseDown=!1,this.lastStageX=0,this.lastStageY=0,this.targetX=0,this.showing=[]}async OnAwake(){this.shield=TJ.Develop.Yun.Location.shield,this.move=this.owner.getChildByName("move");let e=this.move.getChildByName("button");this.show=e.getChildByName("show"),this.hide=e.getChildByName("hide");let t=this.move.getChildByName("board");if(this.scroll=t.getChildByName("scroll"),this.layout=this.scroll.getChildByName("layout"),TJ.Develop.Yun.Promo.Data.ReportAwake(o.style),this.show.clickHandler=new Laya.Handler(null,()=>{this.Show()}),this.hide.clickHandler=new Laya.Handler(null,()=>{this.Hide()}),this.layoutS=this.layout.addComponent(r),this.show.parent.scaleX<0&&(this.maxX=-this.maxX),TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.ZJTD_AppRt)return;this.active=!1;let a=await TJ.Develop.Yun.Promo.List.Get();if(a.count>0&&null!=this.layoutS){if(this.shield)for(let e=0;e<Math.min(a.count,5);e++)this.layoutS.datas.push(a.Load());else for(let e=0;e<a.count;e++)this.layoutS.datas.push(a.Load());this.layoutS.Init(this.scroll.width,this.scroll.height,this.shield),this.active=!0,TJ.Develop.Yun.Promo.Data.ReportStart(o.style)}}OnStart(){this.shield||(this.scroll.on(Laya.Event.MOUSE_DOWN,null,e=>{this.mouseDown=!0,this.lastStageX=e.stageX,this.lastStageY=e.stageY}),this.scroll.on(Laya.Event.MOUSE_OUT,null,e=>{this.mouseDown=!1}),this.scroll.on(Laya.Event.MOUSE_UP,null,e=>{this.mouseDown=!1}),this.scroll.on(Laya.Event.MOUSE_MOVE,null,e=>{if(this.mouseDown){e.stageX,this.lastStageX;let t=e.stageY-this.lastStageY;this.lastStageX=e.stageX,this.lastStageY=e.stageY;let a=this.layoutS.node.y+t;this.layoutS.node.y=a}}))}Show(){if(TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.ZJTD_AppRt){let e=new TJ.API.Promo.Param;return e.extraData={TJ_App:TJ.API.AppInfo.AppGuid()},void TJ.API.Promo.Pop(e)}this.targetX=this.maxX,this.show.active=this.show.visible=!1,this.hide.active=this.hide.visible=!0,this.layout.y=0}Hide(){this.targetX=0,this.showing=[]}OnUpdate(){let e=Laya.timer.delta/1e3;if(this.move.centerX!=this.targetX){let t=this.targetX-this.move.centerX,a=3e3*e;t=t>0?Math.min(this.move.centerX+a,this.targetX):Math.max(this.move.centerX-a,this.targetX),this.move.centerX=t,0==this.move.centerX&&(this.show.active=this.show.visible=!0,this.hide.active=this.hide.visible=!1,this.shield&&window.setTimeout(async()=>{let e=await TJ.Develop.Yun.Promo.List.Get();if(null!=e&&e.count>0){this.layoutS.datas=[];for(let t=0;t<Math.min(e.count,5);t++)this.layoutS.datas.push(e.Load());this.layoutS.Redata()}},0))}else{if(this.shield)return;this.move.centerX==this.maxX&&(this.layout.y-=.8)}this.shield||this.layoutS.Repos(this.layout.y)}}o.style="P405";class r extends a{constructor(){super(...arguments),this.datas=[],this.items=[],this.prefab=null,this.line=0,this.column=0,this.spacingX=12,this.spacingY=12}get node(){return this.owner}OnAwake(){this.prefab=this.node.getChildAt(0),this.prefab.active=this.prefab.visible=!1}Init(e,t,a){for(;e>=this.prefab.width;)e=e-this.prefab.width-this.spacingX,this.column++;for(;t>=this.prefab.height;)t=t-this.prefab.height-this.spacingY,this.line++;if(a){let e=this.prefab.width,t=this.prefab.height,a=e+this.spacingX,s=t+this.spacingY;for(let o=0;o<this.line;o++)for(let r=0;r<this.column;r++)if(this.items.length<this.datas.length){let l=n.Instantiate(this.prefab).getComponent(i);this.node.addChild(l.owner),l.owner.active=l.owner.visible=!0,this.items.push(l),l.owner.x=r*a+e/2,l.owner.y=s*o+t/2,l.onAwake()}this.Redata()}else{this.line+=2;for(let e=0;e<this.line;e++)for(let e=0;e<this.column;e++){let e=n.Instantiate(this.prefab).getComponent(i);this.node.addChild(e.owner),e.owner.active=e.owner.visible=!0,this.items.push(e),e.onAwake()}}}Redata(){for(let e=0;e<this.items.length;e++){let t=this.items[e];t.data=this.datas[e],t.data.Load(),t.DoLoad()}}Repos(e){let t=this.items.length,a=this.datas.length;if(t<1)return;if(a<1)return;let i=this.prefab.width,n=this.prefab.height,s=i+this.spacingX,o=n+this.spacingY,r=-e/o;r=Math.floor(r);let l=Math.floor(r/this.line)*this.line,h=r<0?(this.line+r%this.line)%this.line:r%this.line,c=(e,t,r,l)=>{let h=t+r*this.column+l;if(e.posId!=h){e.posId=h,e.owner.x=s*l+i/2,e.owner.y=(t+r)*o+n/2;let c=h<0?(a+h%a)%a:h%a;e.dataId!=c&&(e.dataId=c,e.data=this.datas[c],e.data.Load(),e.DoLoad())}};for(let e=0;e<h;e++)for(let t=0;t<this.column;t++)c(this.items[e*this.column+t],l+this.line,e,t);for(let e=h;e<this.line;e++)for(let t=0;t<this.column;t++)c(this.items[e*this.column+t],l,e,t)}}class l extends a{constructor(){super(...arguments),this.promoItem=null,this.shake=!1,this.animTime=0,this.refrTime=0}async OnAwake(){if(this.promoItem=this.owner.getComponent(i),TJ.Develop.Yun.Promo.Data.ReportAwake(l.style),this.promoItem.style=l.style,this.active=!1,null==l.promoList){let e=await TJ.Develop.Yun.Promo.List.Get(l.style);null==l.promoList&&(l.promoList=e)}l.promoList.count>0&&(TJ.Develop.Yun.Promo.Data.ReportStart(l.style),this.active=!0)}OnEnable(){this.LoadAndShowIcon()}OnDisable(){null!=l.promoList&&l.promoList.Unload(this.promoItem.data)}OnUpdate(){let e=Laya.timer.delta/1e3;this.refrTime+=e,this.refrTime>5&&(this.refrTime-=5,this.LoadAndShowIcon()),this.shake&&(this.animTime+=e,this.animTime%=2.5,this.animTime<=.75?this.promoItem.owner.rotation=25*Math.sin(6*this.animTime*Math.PI)*(1-this.animTime/.75):this.promoItem.owner.rotation=0)}LoadIcon(){let e=l.promoList.Load();return null!=e&&(l.promoList.Unload(this.promoItem.data),this.promoItem.data=e,this.promoItem.onClick_=(()=>{this.LoadAndShowIcon()}),this.promoItem.DoLoad()),e}LoadAndShowIcon(){null!=this.LoadIcon()?this.promoItem.OnShow():null==this.promoItem.data&&this.owner.destroy()}}l.style="P201",l.promoList=null,function(e){let t,a,i,n,s,o,r,l,h,c,u,m,g,p,y,f,w,S,v,b,C,P,x,A,I;!function(e){e._Tpye={Bytedance:"Bytedance",WeChat:"WeChat",OPPO:"OPPO",OPPOTest:"OPPOTest",VIVO:"VIVO",General:"General",Web:"Web",WebTest:"WebTest",Research:"Research"},e._Ues={get value(){return this["_platform/name"]?this["_platform/name"]:null},set value(t){switch(this["_platform/name"]=t,t){case e._Tpye.WebTest:Laya.LocalStorage.clear(),o._num.value=5e3;break;case e._Tpye.Research:o._num.value=5e13}}}}(t=e.PlatformAdmin||(e.PlatformAdmin={})),function(e){e._switch=!0,e.pause={get value(){return e._switch},set value(t){t?(e._switch=!1,h._switch=!1,L._switch=!0):(e._switch=!0,h._switch=!0,L._switch=!1)}},e.level={get value(){return Laya.LocalStorage.getItem("_Game/Level")?Number(Laya.LocalStorage.getItem("_Game/Level")):1},set value(e){let t=e-this.level;t>0&&(this.maxLevel+=t),e>this.loopLevel&&-1!=this.loopLevel?Laya.LocalStorage.setItem("_Game/Level",1..toString()):Laya.LocalStorage.setItem("_Game/Level",e.toString())}},e.maxLevel={get value(){return Laya.LocalStorage.getItem("_Game/maxLevel")?Number(Laya.LocalStorage.getItem("_Game/maxLevel")):this.level},set value(e){Laya.LocalStorage.setItem("_Game/maxLevel",e.toString())}},e.loopLevel={get value(){return this["_Game/loopLevel"]?this["_Game/loopLevel"]:-1},set value(e){this["_Game/loopLevel"]=e}},e._createLevel=function(e,t,a){let i;Laya.loader.load("prefab/LevelNode.json",Laya.Handler.create(this,function(n){const s=new Laya.Prefab;s.json=n,i=Laya.Pool.getItemByCreateFun("prefab",s.create,s),e.addChild(i),i.pos(t,a),i.zOrder=0,i.getChildByName("level"),this.LevelNode=i}))}}(a=e.GameAdmin||(e.GameAdmin={})),function(e){e._SceneControl={},e._SceneScript={};class t{}t.PreLoad="PreLoad",t.PreLoadCutIn="PreLoadCutIn",t.Guide="Guide",t.Start="Start",t.Shop="Shop",t.Task="Task",t.Set="Set",t.Victory="Victory",t.Defeated="Defeated",t.CheckIn="CheckIn",t.LwgInit="LwgInit",t.SelectLevel="SelectLevel",t.Settle="Settle",t.Share="Share",t.Ranking="Ranking",e._BaseName=t,e._PreLoadCutIn={openName:null,closeName:null,func:null,zOrder:null},e._preLoadOpenScene=function(a,i,n,s){_openScene(t.PreLoadCutIn,i,n),e._PreLoadCutIn.openName=a,e._PreLoadCutIn.closeName=i,e._PreLoadCutIn.func=n,e._PreLoadCutIn.zOrder=s};class a{static _openZOderUp(){if(u._closeSwitch.value){let t=0;for(const a in e._SceneControl)if(Object.prototype.hasOwnProperty.call(e._SceneControl,a)){const i=e._SceneControl[a];i.parent&&(i.zOrder=0,t++)}if(this._openScene){this._openScene.zOrder=t;for(let e=0;e<this._closeSceneArr.length;e++){const a=this._closeSceneArr[e];a?a.zOrder=--t:(this._closeSceneArr.splice(e,1),e--)}}}}static _closeZOderUP(t){if(u._closeSwitch.value){let a=0;for(const t in e._SceneControl)if(Object.prototype.hasOwnProperty.call(e._SceneControl,t)){e._SceneControl[t].parent&&a++}t&&(t.zOrder=a,this._openScene&&(this._openScene.zOrder=--a))}}static _open(){this._openScene&&(this._openZOder?Laya.stage.addChildAt(this._openScene,this._openZOder):Laya.stage.addChild(this._openScene),e._SceneScript[this._openScene.name]?this._openScene.getComponent(e._SceneScript[this._openScene.name])||this._openScene.addComponent(e._SceneScript[this._openScene.name]):console.log(`${this._openScene.name}场景没有同名脚本！,需在LwgInit脚本中导入该脚本！`),this._openZOderUp(),this._openFunc())}static _close(){if(this._closeSceneArr.length>0)for(let e=0;e<this._closeSceneArr.length;e++){let t=this._closeSceneArr[e];t&&(_closeScene(t.name),this._closeSceneArr.splice(e,1),e--)}this._remake()}static _remake(){this._openScene=null,this._openZOder=1,this._openFunc=null,this._closeZOder=0}}function _openScene(t,i,n,s){L._switch=!1,Laya.Scene.load("Scene/"+t+".json",Laya.Handler.create(this,function(o){const r=P._Node.checkChildren(Laya.stage,t);r&&(r.close(),console.log(`场景${t}重复出现！前面的场景将会被关闭！`)),a._openScene=e._SceneControl[o.name=t]=o,i&&e._SceneControl[i]&&(a._closeSceneArr.push(e._SceneControl[i]),a._closeZOder=e._SceneControl[i].zOrder),a._openZOder=s||null,a._openFunc=n||(()=>{}),a._open()}))}function _closeScene(t,i){if(e._SceneControl[t]){var n=()=>{i&&i(),L._switch=!0,e._SceneControl[t].close()};if(u._closeSwitch.value){a._closeZOderUP(_._SceneControl[t]);const i=e._SceneControl[t][t];if(i){L._switch=!1;let a=i.lwgCloseAni();if(null!==a)u._closeAniDelay=a,i.lwgBeforeCloseAni(),Laya.timer.once(a,this,()=>{n(),L._switch=!0});else{const a=u._commonCloseAni(e._SceneControl[t]);Laya.timer.once(a,this,()=>{i.lwgBeforeCloseAni(),n()})}}}else n()}else console.log(`场景${t}关闭失败，可能不存在！`)}a._openScene=null,a._openZOder=1,a._openFunc=null,a._closeSceneArr=[],a._closeZOder=0,a._sceneNum=1,e._SceneServe=a,e._openScene=_openScene,e._closeScene=_closeScene;class i extends Laya.Script{constructor(){super(...arguments),this.ownerSceneName=""}getFind(e,t){if(this[`_Scene${t}${e}`])return this[`_Scene${t}${e}`];{let a=P._Node.findChild2D(this.owner.scene,e);if(a)return this[`_Scene${t}${e}`]=a;console.log(`场景内不存在节点${e}`)}}_FindImg(e){return this.getFind(e,"_FindImg")}_FindSp(e){return this.getFind(e,"_FindSp")}_FindBox(e){return this.getFind(e,"_FindBox")}_FindTap(e){return this.getFind(e,"_FindTap")}_FindLabel(e){return this.getFind(e,"_FindLabel")}_FindList(e){return this.getFind(e,"_FindList")}_storeNum(e,t,a){return m._num(`${this.owner.name}/${e}`,t,a)}_storeStr(e,t,a){return m._str(`${this.owner.name}/${e}`,t,a)}_storeBool(e,t,a){return m._bool(`${this.owner.name}/${e}`,t,a)}_storeArray(e,t,a){return m._array(`${this.owner.name}/${e}`,t,a)}lwgOnAwake(){}lwgAdaptive(){}lwgEvent(){}_evReg(e,t){r._register(e,this,t)}_evRegOne(e,t){r._registerOnce(e,this,t)}_evNotify(e,t){r._notify(e,t)}lwgOnEnable(){}lwgOnStart(){}lwgButton(){}_btnDown(e,t,a){L._on(null==a?L._Use.value:a,e,this,a=>{var i=()=>{w._absoluteSwitch&&L._switch&&t&&t(a)};w._assign.length>0?w._checkAssign(e.name)&&i():i()},null,null,null)}_btnMove(e,t,a){L._on(null==a?L._Use.value:a,e,this,null,a=>{var i=()=>{w._absoluteSwitch&&L._switch&&t&&t(a)};w._assign.length>0?w._checkAssign(e.name)&&i():i()},null,null)}_btnUp(e,t,a){L._on(null==a?L._Use.value:a,e,this,null,null,a=>{var i=()=>{w._absoluteSwitch&&L._switch&&t&&t(a)};w._assign.length>0?w._checkAssign(e.name)&&i():i()},null)}_btnOut(e,t,a){L._on(null==a?L._Use.value:a,e,this,null,null,null,a=>{var i=()=>{w._absoluteSwitch&&L._switch&&t&&t(a)};w._assign.length>0?w._checkAssign(e.name)&&i():i()})}_btnFour(e,t,a,i,n,s){L._on(null==s?s:L._Use.value,e,this,a=>{var i=()=>{w._absoluteSwitch&&L._switch&&t&&t(a)};w._assign.length>0?w._checkAssign(e.name)&&i():i()},t=>{var i=()=>{w._absoluteSwitch&&L._switch&&a&&a(t)};w._assign.length>0?w._checkAssign(e.name)&&i():i()},t=>{var a=()=>{w._absoluteSwitch&&L._switch&&i&&i(t)};w._assign.length>0?w._checkAssign(e.name)&&a():a()},t=>{var a=()=>{w._absoluteSwitch&&L._switch&&n&&n(t)};w._assign.length>0?w._checkAssign(e.name)&&a():a()})}_openScene(e,t,a,i,n){let s;null!=t&&1!=t||(s=this.ownerSceneName),a?_._preLoadOpenScene(e,s,i,n):_._openScene(e,s,i,n)}_closeScene(e,t){_._closeScene(e||this.ownerSceneName,t)}lwgOnUpdate(){}lwgOnDisable(){}onStageMouseDown(e){w._stageSwitch&&0===w._assign.length&&L._switch&&this.lwgOnStageDown(e)}onStageMouseMove(e){w._stageSwitch&&0===w._assign.length&&L._switch&&this.lwgOnStageMove(e)}onStageMouseUp(e){w._stageSwitch&&0===w._assign.length&&L._switch&&this.lwgOnStageUp(e)}lwgOnStageDown(e){}lwgOnStageMove(e){}lwgOnStageUp(e){}}e._ScriptBase=i;e._SceneBase=class extends i{constructor(){super()}get _Owner(){return this.owner}getVar(e,t){return this[`_Scene${t}${e}`]?this[`_Scene${t}${e}`]:this._Owner[e]?(n._addProperty(this._Owner[e]),this[`_Scene${t}${e}`]=this._Owner[e]):void console.log("场景内不存在var节点：",e)}_SpriteVar(e){return this.getVar(e,"_SpriteVar")}_AniVar(e){return this.getVar(e,"_AniVar")}_BtnVar(e){return this.getVar(e,"_BtnVar")}_BoxVar(e){return this.getVar(e,"_BoxVar")}_ImgVar(e){return this.getVar(e,"_ImgVar")}_LabelVar(e){return this.getVar(e,"_LabelVar")}_ListVar(e){return this.getVar(e,"_ListVar")}_TapVar(e){return this.getVar(e,"_TapVar")}_TextVar(e){return this.getVar(e,"_TextVar")}_TextInputVar(e){return this.getVar(e,"_TextInputVar")}_FontClipVar(e){return this.getVar(e,"_FontClipVar")}_FontBox(e){return this.getVar(e,"_FontBox")}_FontTextInput(e){return this.getVar(e,"_FontInput")}onAwake(){this._Owner.width=Laya.stage.width,this._Owner.height=Laya.stage.height,this._Owner.getChildByName("Background")&&(this._Owner.getChildByName("Background").width=Laya.stage.width,this._Owner.getChildByName("Background").height=Laya.stage.height),this._Owner.name?(this.ownerSceneName=this._Owner.name,this._Owner[this._Owner.name]=this):console.log("场景名称失效，脚本赋值失败"),this.moduleOnAwake(),this.lwgOnAwake(),this.lwgAdaptive()}moduleOnAwake(){}onEnable(){this.moduleEvent(),this.lwgEvent(),this.moduleOnEnable(),this.lwgOnEnable()}moduleOnEnable(){}moduleEvent(){}onStart(){this.moduleOnStart(),this.lwgOnStart(),this.btnAndOpenAni()}moduleOnStart(){}btnAndOpenAni(){let e=this.lwgOpenAni();null!==e?Laya.timer.once(e,this,()=>{L._switch=!0,this.lwgOpenAniAfter(),this.lwgButton(),a._close()}):u._commonOpenAni(this._Owner)}lwgOpenAni(){return null}lwgOpenAniAfter(){}_adaHeight(e){d._stageHeight(e)}_adaWidth(e){d._stageWidth(e)}_adaptiveCenter(e){d._center(e,Laya.stage)}onUpdate(){this.lwgOnUpdate()}lwgBeforeCloseAni(){}lwgCloseAni(){return null}onDisable(){Laya.Tween.clearAll(this),Laya.Tween.clearAll(this._Owner),Laya.timer.clearAll(this),Laya.timer.clearAll(this._Owner),r._offCaller(this),r._offCaller(this._Owner),this.lwgOnDisable()}};e._ObjectBase=class extends i{constructor(){super()}_ownerDestroy(){this._Owner.destroy(),this.clear()}get _Owner(){return this.owner}get _point(){return new Laya.Point(this._Owner.x,this._Owner.y)}get _Scene(){return this.owner.scene}get _Parent(){if(this._Owner.parent)return this.owner.parent}get _RigidBody(){return this._Owner._OwnerRigidBody||(this._Owner._OwnerRigidBody=this._Owner.getComponent(Laya.RigidBody)),this._Owner._OwnerRigidBody}get _BoxCollier(){return this._Owner._OwnerBoxCollier||(this._Owner._OwnerBoxCollier=this._Owner.getComponent(Laya.BoxCollider)),this._Owner._OwnerBoxCollier}get _CilrcleCollier(){return this._Owner._OwnerCilrcleCollier?this._Owner._OwnerCilrcleCollier:this._Owner._OwnerCilrcleCollier=this._Owner.getComponent(Laya.BoxCollider)}get _PolygonCollier(){return this._Owner._OwnerPolygonCollier?this._Owner._OwnerPolygonCollier:this._Owner._OwnerPolygonCollier=this._Owner.getComponent(Laya.BoxCollider)}getSceneVar(e,t){return this[`_Scene${t}${e}`]?this[`_Scene${t}${e}`]:this._Scene[e]?(n._addProperty(this._Scene[e]),this[`_Scene${t}${e}`]=this._Scene[e]):void console.log(`场景内不存在var节点${e}`)}_SceneSprite(e){return this.getSceneVar(e,"_SceneSprite")}_SceneAni(e){return this.getSceneVar(e,"_SceneAni")}_SceneImg(e){return this.getSceneVar(e,"_SceneImg")}_SceneLabel(e){return this.getSceneVar(e,"_SceneLabel")}_SceneList(e){return this.getSceneVar(e,"_SceneList")}_SceneTap(e){return this.getSceneVar(e,"_SceneTap")}_SceneText(e){return this.getSceneVar(e,"_SceneText")}_SceneFontClip(e){return this.getSceneVar(e,"_SceneFontClip")}_SceneBox(e){return this.getSceneVar(e,"_SceneBox")}getChild(e,t){return this[`${t}${e}`]?this[`${t}${e}`]:this._Owner.getChildByName(e)?this[`${t}${e}`]=this._Owner.getChildByName(e):null}_ImgChild(e){return this.getChild(e,"_ImgChild")}_BoxChild(e){return this.getChild(e,"_ImgBox")}_SpriteChild(e){return this.getChild(e,"_SpriteChild")}_LableChild(e){return this.getChild(e,"_LableChild")}_ListChild(e){return this.getChild(e,"_ListChild")}_TapChild(e){return this.getChild(e,"_TapChild")}_TapBox(e){return this.getChild(e,"_TapBox")}_TapFontClip(e){return this.getChild(e,"_TapFontClip")}onAwake(){n._addProperty(this._Owner),this._Owner[this._Owner.name]=this,this.ownerSceneName=this._Scene.name,this._fPoint=new Laya.Point(this._Owner.x,this._Owner.y),this._fGPoint=this._Parent.localToGlobal(new Laya.Point(this._Owner.x,this._Owner.y)),this._fRotation=this._Owner.rotation,this.lwgOnAwake(),this.lwgAdaptive()}onEnable(){this.lwgButton(),this.lwgEvent(),this.lwgOnEnable()}onStart(){this.lwgOnStart()}onUpdate(){this.lwgOnUpdate()}clear(){Laya.Tween.clearAll(this),Laya.Tween.clearAll(this._Owner),Laya.timer.clearAll(this),Laya.timer.clearAll(this._Owner),r._offCaller(this),r._offCaller(this._Owner)}onDisable(){this.clear(),this.lwgOnDisable()}}}(i=e.SceneAdmin||(e.SceneAdmin={})),function(e){e._Sprite=class extends Laya.Sprite{};e._Image=class extends Laya.Image{};e._Box=class extends Laya.Box{},e._addProperty=function(e,t){let a;a={get gPoint(){return e.parent?e.parent.localToGlobal(new Laya.Point(e.x,e.y)):null}},e._lwg=a}}(n=e.NodeAdmin||(e.NodeAdmin={})),function(e){let t,a,i,n;function getDialogContent_Random(e){let t=[],a=getUseWhere(e),i=Math.floor(Math.random()*a.length);for(const e in a[i])if(a[i].hasOwnProperty(e)){const n=a[i][e];"content"==e.substring(0,7)&&"-1"!==n&&t.push(n)}return t}function getUseWhere(t){let a=[];for(let i=0;i<e._dialogContent.Array.length;i++){const n=e._dialogContent.Array[i];n.useWhere==t&&a.push(n)}return a}!function(e){e.blackBord="Lwg/UI/ui_orthogon_black_0.7.png"}(t||(t={})),e.createHint_Middle=function(e){const a=Laya.Pool.getItemByClass("Hint_M",Laya.Sprite);a.name="Hint_M",Laya.stage.addChild(a),a.width=Laya.stage.width,a.height=100,a.pivotY=a.height/2,a.pivotX=Laya.stage.width/2,a.x=Laya.stage.width/2,a.y=Laya.stage.height/2,a.zOrder=100;const i=new Laya.Image;a.addChild(i),i.skin=t.blackBord,i.width=Laya.stage.width,i.pivotX=Laya.stage.width/2,i.height=100,i.pivotY=i.height/2,i.y=a.height/2,i.x=Laya.stage.width/2,i.alpha=.6;const n=new Laya.Label;a.addChild(n),n.width=Laya.stage.width,n.text=e,n.pivotX=Laya.stage.width/2,n.x=Laya.stage.width/2,n.height=100,n.pivotY=50,n.y=a.height/2,n.bold=!0,n.fontSize=35,n.color="#ffffff",n.align="center",n.valign="middle",n.alpha=0,v.scale_Alpha(a,0,1,0,1,1,1,200,0,e=>{v.fadeOut(n,0,1,150,0,e=>{v.fadeOut(n,1,0,200,800,e=>{v.scale_Alpha(a,1,1,1,1,0,0,200,0,e=>{a.removeSelf()})})})})},e._dialogContent={get Array(){return null!==Laya.loader.getRes("GameData/Dialogue/Dialogue.json").RECORDS?Laya.loader.getRes("GameData/Dialogue/Dialogue.json").RECORDS:[]}},e.getDialogContent=function(t,a){let i;for(let n=0;n<e._dialogContent.Array.length;n++){const s=e._dialogContent.Array[n];if(s.useWhere==t&&s.name==a){i=s;break}}const n=[];for(const e in i)if(i.hasOwnProperty(e)){const t=i[e];"content"!=e.substring(0,7)&&-1===t||n.push(t)}return n},e.getDialogContent_Random=getDialogContent_Random,e.getUseWhere=getUseWhere,function(e){e.scene1="scene1",e.scene2="scene2",e.scene3="scene3"}(a=e.UseWhere||(e.UseWhere={})),function(e){e.name="name",e.useWhere="useWhere",e.content="content",e.max="max"}(i=e.DialogProperty||(e.DialogProperty={})),function(e){e.voluntarily="voluntarily",e.manual="manual",e.clickContent="clickContent"}(n=e.PlayMode||(e.PlayMode={})),e.createVoluntarilyDialogue=function(t,a,i,n,s,o,r){null==n&&(n=0),Laya.timer.once(n,this,()=>{let n;Laya.loader.load("Prefab/Dialogue_Common.json",Laya.Handler.create(this,function(l){let h=new Laya.Prefab;h.json=l,n=Laya.Pool.getItemByCreateFun("Pre_Dialogue",h.create,h),o?o.addChild(n):Laya.stage.addChild(n),n.x=t,n.y=a;let c,_=n.getChildByName("Content");void 0!==r?_.text=r[0]:(c=getDialogContent_Random(i),_.text=c[0]),n.zOrder=100,null==s&&(s=1e3),v.scale_Alpha(n,0,0,0,1,1,1,150,1e3,()=>{for(let e=0;e<c.length;e++)Laya.timer.once(e*s,this,()=>{_.text=c[e],e==c.length-1&&Laya.timer.once(s,this,()=>{v.scale_Alpha(n,1,1,1,0,0,0,150,1e3,()=>{n.removeSelf()})})})}),e.DialogueNode=n}))})},e.createCommonDialog=function(e,t,a,i){let n;Laya.loader.load("Prefab/Dialogue_Common.json",Laya.Handler.create(this,function(s){let o=new Laya.Prefab;o.json=s,n=Laya.Pool.getItemByCreateFun("Dialogue_Common",o.create,o),e.addChild(n),n.pos(t,a),n.getChildByName("Dialogue_Common").text=i}))}}(s=e.Dialogue||(e.Dialogue={})),function(e){let t;function _createOne(a,i,n){const s=Laya.Pool.getItemByClass("addGold",Laya.Image);s.name="addGold";Math.floor(12*Math.random());return s.alpha=1,s.zOrder=60,s.width=a,s.height=i,s.pivotX=a/2,s.pivotY=i/2,s.skin=n||t[0],e.GoldNode&&(s.zOrder=e.GoldNode.zOrder+10),s}e._num={get value(){return Laya.LocalStorage.getItem("GoldNum")?Number(Laya.LocalStorage.getItem("GoldNum")):0},set value(e){Laya.LocalStorage.setItem("GoldNum",e.toString())}},e._createGoldNode=function(t,a,i){let n;i||(i=Laya.stage),e.GoldNode&&e.GoldNode.removeSelf(),Laya.loader.load("Prefab/LwgGold.json",Laya.Handler.create(this,function(s){let o=new Laya.Prefab;o.json=s,(n=Laya.Pool.getItemByCreateFun("gold",o.create,o)).getChildByName("Num").text=P._Format.formatNumber(e._num.value),i.addChild(n),n.pos(t,a),n.zOrder=100,e.GoldNode=n}))},e._add=function(t){e._num.value+=Number(t),e.GoldNode.getChildByName("Num").text=P._Format.formatNumber(e._num.value)},e._addDisPlay=function(t){let a=e.GoldNode.getChildByName("Num");a.value=(Number(a.value)+Number(t)).toString()},e._addNoDisPlay=function(t){e._num.value+=Number(t)},e._nodeAppear=function(t,a,i){e.GoldNode&&(t?v.scale_Alpha(e.GoldNode,0,1,1,1,1,1,t,0,t=>{e.GoldNode.visible=!0}):e.GoldNode.visible=!0,a&&(e.GoldNode.x=a),i&&(e.GoldNode.y=i))},e._nodeVinish=function(t){e.GoldNode&&(t?v.scale_Alpha(e.GoldNode,1,1,1,1,1,0,t,0,t=>{e.GoldNode.visible=!1}):e.GoldNode.visible=!1)},function(e){e[e["Frame/Effects/iconGold.png"]=0]="Frame/Effects/iconGold.png"}(t||(t={})),e._createOne=_createOne,e._getAni_Single=function(e,t,a,i,n,s,o,r,l){for(let h=0;h<t;h++)Laya.timer.once(30*h,this,()=>{let c=_createOne(a,i,n);e.addChild(c),v.move_Scale(c,1,s.x,s.y,o.x,o.y,1,350,0,null,()=>{C._playSound(C._voiceUrl.huodejinbi),h===t-1?Laya.timer.once(200,this,()=>{l&&l()}):r&&r(),c.removeSelf()})})},e._getAni_Heap=function(a,i,n,s,o,r,l,h,c){for(let _=0;_<i;_++){let d=_createOne(n||100,s||100,o||t[0]);(a=a||Laya.stage).addChild(d),r=r||new Laya.Point(Laya.stage.width/2,Laya.stage.height/2),l=l||new Laya.Point(e.GoldNode.x,e.GoldNode.y);let u=1==Math.floor(2*Math.random())?r.x+100*Math.random():r.x-100*Math.random(),m=1==Math.floor(2*Math.random())?r.y+100*Math.random():r.y-100*Math.random();v.move_Scale(d,.5,r.x,r.y,u,m,1,300,100*Math.random()+100,Laya.Ease.expoIn,()=>{v.move_Scale(d,1,d.x,d.y,l.x,l.y,1,400,200*Math.random()+100,Laya.Ease.cubicOut,()=>{C._playSound(C._voiceUrl.huodejinbi),_===i-1?Laya.timer.once(200,this,()=>{c&&c()}):h&&h(),d.removeSelf()})})}}}(o=e.GoldAdmin||(e.GoldAdmin={})),function(e){e.dispatcher=new Laya.EventDispatcher,e._register=function(t,a,i){a||console.error("事件的执行域必须存在!"),e.dispatcher.on(t.toString(),a,i)},e._registerOnce=function(t,a,i){a||console.error("事件的执行域必须存在!"),e.dispatcher.once(t.toString(),a,i)},e._notify=function(t,a){e.dispatcher.event(t.toString(),a)},e._off=function(t,a,i){e.dispatcher.off(t.toString(),a,i)},e._offAll=function(t){e.dispatcher.offAll(t.toString())},e._offCaller=function(t){e.dispatcher.offAllCaller(t)}}(r=e.EventAdmin||(e.EventAdmin={})),function(e){e._date={get year(){return(new Date).getFullYear()},get month(){return(new Date).getMonth()},get date(){return(new Date).getDate()},get day(){return(new Date).getDay()},get hours(){return(new Date).getHours()},get minutes(){return(new Date).getMinutes()},get seconds(){return(new Date).getSeconds()},get milliseconds(){return(new Date).getMilliseconds()},get toLocaleDateString(){return(new Date).toLocaleDateString()},get toLocaleTimeString(){return(new Date).toLocaleTimeString()}},e._init=function(){const t=new Date;e._loginInfo=m._arrayArr("DateAdmin/loginInfo"),e._loginInfo.value.push([t.getFullYear(),t.getMonth()+1,t.getDate(),t.getDay(),t.getHours(),t.getMinutes(),t.getSeconds()]);let a=[];if(e._loginInfo.value.length>0)for(let t=0;t<e._loginInfo.value.length;t++)a.push(e._loginInfo.value[t]);a.push([t.getFullYear(),t.getMonth()+1,t.getDate(),t.getDay(),t.getHours(),t.getMinutes(),t.getSeconds()]),e._loginInfo.value=a,e._loginCount=m._num("DateAdmin/_loginCount"),e._loginCount.value++,e._loginToday.num++},e._loginToday={get num(){return Laya.LocalStorage.getItem("DateAdmin/loginToday")?Number(Laya.LocalStorage.getItem("DateAdmin/loginToday")):0},set num(t){e._date.date==e._loginInfo.value[e._loginInfo.value.length-1][2]&&Laya.LocalStorage.setItem("DateAdmin/loginToday",t.toString())}},e._last={get date(){return e._loginInfo.value.length>1?e._loginInfo.value[e._loginInfo.value.length-2][2]:e._loginInfo.value[e._loginInfo.value.length-1][2]}},e._front={get date(){return e._loginInfo.value[e._loginInfo.value.length-1][2]}}}(l=e.DateAdmin||(e.DateAdmin={})),function(e){e._switch=!0,e._frameLoop=function(t,a,i,n,s,o){n&&e._switch&&i(),Laya.timer.frameLoop(t,a,()=>{e._switch&&i()},s,o)},e._frameRandomLoop=function(t,a,i,n,s,o,r){s&&e._switch&&n();var l=()=>{let s=P._Number.randomOneInt(t,a);Laya.timer.frameOnce(s,i,()=>{e._switch&&(n(),l())},o,r)};l()},e._frameNumLoop=function(t,a,i,n,s,o,r,l){o&&e._switch&&n();let h=0;var c=()=>{e._switch&&(++h>=a?(n(),s&&s(),Laya.timer.clear(i,c)):n())};Laya.timer.frameLoop(t,i,c,r,l)},e._numRandomLoop=function(t,a,i,n,s,o,r,l,h){r&&e._switch&&s();let c=0;var _=()=>{let r=P._Number.randomOneInt(t,a);Laya.timer.frameOnce(r,n,()=>{e._switch&&(++c>=i?(s(),o()):(s(),_()))},l,h)};_()},e._frameNumRandomLoop=function(t,a,i,n,s,o,r,l,h){r&&e._switch&&s();let c=0;var _=()=>{let r=P._Number.randomOneInt(t,a);Laya.timer.frameOnce(r,n,()=>{e._switch&&(++c>=i?(s(),o&&o()):(s(),_()))},l,h)};_()},e._frameOnce=function(e,t,a,i,n,s){i&&i(),Laya.timer.frameOnce(e,t,()=>{a()},n,s)},e._frameNumOnce=function(e,t,a,i,n,s,o){for(let r=0;r<t;r++)n&&n(),Laya.timer.frameOnce(e,a,()=>{i()},s,o)},e._loop=function(t,a,i,n,s,o){n&&e._switch&&i(),Laya.timer.loop(t,a,()=>{e._switch&&i()},s,o)},e._randomLoop=function(t,a,i,n,s,o,r){s&&e._switch&&n();var l=()=>{let s=P._Number.randomOneInt(t,a);Laya.timer.once(s,i,()=>{e._switch&&(n(),l())},o,r)};l()},e._numLoop=function(t,a,i,n,s,o,r,l){o&&n();let h=0;var c=()=>{e._switch&&(++h>a?(n(),s&&s(),Laya.timer.clear(i,c)):n())};Laya.timer.loop(t,i,c,r,l)},e._once=function(e,t,a,i,n,s){i&&i(),Laya.timer.once(e,t,()=>{a()},n,s)},e._clearAll=function(e){for(let t=0;t<e.length;t++)Laya.timer.clearAll(e[t])},e._clear=function(e){for(let t=0;t<e.length;t++)Laya.timer.clear(e[t][0],e[t][1])}}(h=e.TimerAdmin||(e.TimerAdmin={})),function(e){e._Use={get value(){return this["Adaptive/value"]?this["Adaptive/value"]:null},set value(e){this["Adaptive/value"]=e}},e._stageWidth=function(t){for(let a=0;a<t.length;a++){const i=t[a];0==i.pivotX&&i.width?i.x=i.x/e._Use.value[0]*Laya.stage.width+i.width/2:i.x=i.x/e._Use.value[0]*Laya.stage.width}},e._stageHeight=function(t){for(let a=0;a<t.length;a++){const i=t[a];0==i.pivotY&&i.height?i.y=i.y/e._Use.value[1]*i.scaleX*Laya.stage.height+i.height/2:i.y=i.y/e._Use.value[1]*i.scaleX*Laya.stage.height}},e._center=function(e,t){for(let a=0;a<e.length;a++){const i=e[a];i.width>0?i.x=t.width/2-(i.width/2-i.pivotX)*i.scaleX:i.x=t.width/2,i.height>0?i.y=t.height/2-(i.height/2-i.pivotY)*i.scaleY:i.y=t.height/2}}}(c=e.AdaptiveAdmin||(e.AdaptiveAdmin={})),function(e){let t,a,i;e._openSwitch={get value(){return!!this.openSwitch&&this.openSwitch},set value(t){t&&(e._closeSwitch.value=!1),this.openSwitch=t}},e._closeSwitch={get value(){return!!this.closeSwitch&&this.closeSwitch},set value(t){t&&(e._openSwitch.value=!1),this.closeSwitch=t}},e._Use={get value(){return this["SceneAnimation/name"]?this["SceneAnimation/name"]:null},set value(e){this["SceneAnimation/name"]=e}},e._closeAniDelay=0,e._closeAniTime=0,e._commonOpenAni=function(t){var a=()=>{_._SceneServe._close(),L._switch=!0,t[t.name]&&(t[t.name].lwgOpenAniAfter(),t[t.name].lwgButton())};if(!e._openSwitch.value)return _._SceneServe._close(),Laya.timer.once(e._closeAniDelay+e._closeAniTime,this,()=>{a()}),0;let i=0;return i=e._Use.value.class._paly(e._Use.value.type,t),Laya.timer.once(i,this,()=>{a()}),i},e._commonCloseAni=function(t){return e._Use.value.class._paly(e._Use.value.type,t)},function(t){let a=700,i=150;t.Close=class{static _paly(t,n){return function(e){e.Background&&v.fadeOut(e,1,0,75),v.fadeOut(e,1,0,150,50)}(n),e._closeAniDelay=i,e._closeAniTime=a,a+i}};t.Open=class{static _paly(e,t){return function(e){e.Background&&v.fadeOut(e,0,1,200,300),v.fadeOut(e,0,1,400,0)}(t),a+i}}}(t=e._fadeOut||(e._fadeOut={})),function(t){let a=10,i=700,n=150;function _moveClose(e,t,a,n){v.scale(e,1,1,a,n,i,0,()=>{t.disposeBitmap(),t.destroy(),e.destroy()})}function _moveOpen(e,t,a,n){v.scale(e,a,n,1,1,i,0,()=>{t.disposeBitmap(),t.destroy(),e.destroy()})}function _moveRule(e,t,a,i){i?"x"===a?_moveOpen(e,t,0,1):_moveOpen(e,t,1,0):"x"===a?_moveClose(e,t,0,1):_moveClose(e,t,1,0)}function _createNoMaskSp(e,t,a,i,n,s,o){const r=new Laya.Sprite;return Laya.stage.addChild(r),r.name="shutters",r.zOrder=1e3,r.pos(e,t),r.size(a,i),P._Node.changePivot(r,a/2,i/2),r.texture=n,_moveRule(r,n,s,o),r}function _createMaskSp(e,t,a){const i=new Laya.Sprite;Laya.stage.addChild(i);const n=Laya.stage.width,s=Laya.stage.height;i.size(n,s),i.pos(0,0),i.zOrder=1e3,i.name="shutters";const o=e.drawToTexture(n,s,0,0);return i.texture=o,_moveRule(i,o,t,a),i}function _createMask(e){const t=new Laya.Image;return t.skin="Lwg/UI/ui_orthogon_cycn.png",t.sizeGrid="12,12,12,12",e.mask=t,t.anchorX=t.anchorY=.5,t}function _crosswise(e,t){for(let i=0;i<a;i++){const n=e.width/a,s=Laya.stage.height;_createNoMaskSp(n*i,0,n,s,e.drawToTexture(n,s,-n*i,0),"x",t)}}function _vertical(e,t){for(let t=0;t<a;t++){const i=e.width,n=Laya.stage.height/a;_createNoMaskSp(0,n*t,i,n,e.drawToTexture(i,n,0,-n*t),"y",!1)}}function _croAndVer(e,t){const i=a-2;for(let t=0;t<i;t++){const a=e.width/i,n=Laya.stage.height;_createNoMaskSp(a*t,0,a,n,e.drawToTexture(a,n,-a*t,0),"x",!1)}for(let a=0;a<i;a++){const n=e.width,s=Laya.stage.height/i;_createNoMaskSp(0,s*a,n,s,e.drawToTexture(n,s,0,-s*a),"y",t)}}function _rSideling(e,t){for(let i=0;i<a;i++){let n=1e3;const s=_createMaskSp(e,"x",t),o=_createMask(s);o.size(Math.round(Laya.stage.width/a),Math.round(Laya.stage.height+n)),o.pos(Math.round(Laya.stage.width/a*i),Math.round(-n/2)),P._Node.changePivot(o,Math.round(o.width/2),Math.round(o.height/2)),P._Node.changePivot(s,Math.round(i*s.width/a+s.width/a/2),Math.round(s.height/2)),o.rotation=-10}}function _lSideling(e,t){for(let i=0;i<a;i++){const n=_createMaskSp(e,"x",t),s=_createMask(n);s.size(Math.round(Laya.stage.width/a),Math.round(Laya.stage.height+1e3)),s.pos(Math.round(Laya.stage.width/a*i),-500),P._Node.changePivot(s,Math.round(s.width/2),Math.round(s.height/2)),P._Node.changePivot(n,Math.round(i*n.width/a+n.width/a/2),Math.round(n.height/2)),s.rotation=10}}function _sidelingIntersection(e,t){for(let i=0;i<a;i++){let n=1e3;const s=_createMaskSp(e,"x",t),o=_createMask(s);o.width=Math.round(Laya.stage.width/a),o.height=Math.round(Laya.stage.height+n),o.pos(Math.round(Laya.stage.width/a*i),Math.round(-n/2)),P._Node.changePivot(o,Math.round(o.width/2),Math.round(o.height/2)),P._Node.changePivot(s,Math.round(i*s.width/a+s.width/a/2),Math.round(s.height/2)),o.rotation=-15;const r=_createMaskSp(e,"x",t),l=_createMask(r);l.width=Laya.stage.width/a,l.height=Laya.stage.height+n,l.pos(Laya.stage.width/a*i,-n/2),P._Node.changePivot(l,l.width/2,l.height/2),P._Node.changePivot(r,i*r.width/a+r.width/a/2,r.height/2),l.rotation=15}}t._crosswise=_crosswise,t._vertical=_vertical,t._croAndVer=_croAndVer,t._rSideling=_rSideling,t._lSideling=_lSideling,t._sidelingIntersection=_sidelingIntersection,t._randomCroAndVer=function(e,t){switch(P._Array.randomGetOne([0,1,2])){case 0:_crosswise(e,t);break;case 1:_vertical(e);break;case 2:_croAndVer(e,t);break;default:_crosswise(e,t)}},t._random=function(e,t){switch(P._Array.randomGetOne([0,1,2,3,4,5])){case 0:_crosswise(e,t);break;case 1:_vertical(e);break;case 2:_croAndVer(e,t);break;case 3:_sidelingIntersection(e,t);break;case 4:_lSideling(e,t);break;case 5:_rSideling(e,t);break;default:_crosswise(e,t)}};class s{static _paly(a,s){return h._once(n,this,()=>{t[`_${a}`](s,!1),s.visible=!1}),e._closeAniDelay=n,e._closeAniTime=i,i+n}}s._type={crosswise:"crosswise",vertical:"vertical",croAndVer:"croAndVer",rSideling:"rSideling",sidelingIntersection:"sidelingIntersection",randomCroAndVer:"randomCroAndVer",random:"random"},t.Close=s;class o{static _paly(e,a){return h._once(n,this,()=>{t[`_${e}`](a,!0),a.visible=!1,h._once(i,this,()=>{a.visible=!0})}),i+n}}o._type={crosswise:"crosswise",vertical:"vertical",croAndVer:"croAndVer",_sidelingIntersection:"_sidelingIntersection",randomCroAndVer:"randomCroAndVer",random:"random"},t.Open=o}(a=e._shutters||(e._shutters={})),i=e._stickIn||(e._stickIn={})}(u=e.SceneAniAdmin||(e.SceneAniAdmin={})),function(e){class t{removeSelf(){}func(){}}e._NumVariable=class extends t{};e._StrVariable=class extends t{};e._BoolVariable=class extends t{};e._ArrayVariable=class extends t{};e._ArrayArrVariable=class extends t{};e._Object=class extends t{},e._num=function(e,t,a){return this[`_num${e}`]||(this[`_num${e}`]={get value(){return Laya.LocalStorage.getItem(e)?Number(Laya.LocalStorage.getItem(e)):(a=a||0,Laya.LocalStorage.setItem(e,a.toString()),a)},set value(t){Laya.LocalStorage.setItem(e,t.toString()),this.func()},removeSelf(){Laya.LocalStorage.removeItem(e)},func(){this._func&&this._func()}}),t&&(this[`_num${e}`]._func=t),this[`_num${e}`]},e._str=function(e,t,a){return this[`_str${e}`]||(this[`_str${e}`]={get value(){return Laya.LocalStorage.getItem(e)?Laya.LocalStorage.getItem(e):(a=a||null,Laya.LocalStorage.setItem(e,a.toString()),a)},set value(t){Laya.LocalStorage.setItem(e,t.toString()),this.func()},removeSelf(){Laya.LocalStorage.removeItem(e)},func(){t&&t()}}),t&&(this[`_str${e}`]._func=t),this[`_str${e}`]},e._bool=function(e,t,a){return this[`_bool${e}`]||(this[`_bool${e}`]={get value(){return Laya.LocalStorage.getItem(e)?"false"!==Laya.LocalStorage.getItem(e)&&("true"===Laya.LocalStorage.getItem(e)||void 0):(a?Laya.LocalStorage.setItem(e,"true"):Laya.LocalStorage.setItem(e,"false"),this.func(),a)},set value(t){t=t?"true":"false",Laya.LocalStorage.setItem(e,t.toString())},removeSelf(){Laya.LocalStorage.removeItem(e)},func(){t&&t()}}),t&&(this[`_bool${e}`]._func=t),this[`_bool${e}`]},e._array=function(e,t,a){return this[`_array${e}`]||(this[`_array${e}`]={get value(){try{let t=Laya.LocalStorage.getJSON(e);return t?JSON.parse(t):(a=a||[],Laya.LocalStorage.setJSON(e,JSON.stringify(a)),this.func(),a)}catch(e){return[]}},set value(t){Laya.LocalStorage.setJSON(e,JSON.stringify(t))},removeSelf(){Laya.LocalStorage.removeItem(e)},func(){t&&t()}}),t&&(this[`_array${e}`]._func=t),this[`_array${e}`]},e._obj=function(e,t,a){return this[`_obj${e}`]||(this[`_obj${e}`]={get value(){try{let t=Laya.LocalStorage.getJSON(e);return t?JSON.parse(t):(a=a||{},Laya.LocalStorage.setJSON(e,JSON.stringify(a)),this.func(),a)}catch(e){return{}}},set value(t){Laya.LocalStorage.setJSON(e,JSON.stringify(t))},removeSelf(){Laya.LocalStorage.removeItem(e)},func(){t&&t()}}),t&&(this[`_obj${e}`]._func=t),this[`_obj${e}`]},e._arrayArr=function(e,t,a){return this[`_arrayArr${e}`]||(this[`_arrayArr${e}`]={get value(){try{let t=Laya.LocalStorage.getJSON(e);return t?JSON.parse(t):(a=a||[],Laya.LocalStorage.setItem(e,a.toString()),a)}catch(e){return[]}},set value(t){Laya.LocalStorage.setJSON(e,JSON.stringify(t)),this.func()},removeSelf(){Laya.LocalStorage.removeItem(e)},func(){t&&t()}}),t&&(this[`_arrayArr${e}`]._func=t),this[`_arrayArr${e}`]}}(m=e.StorageAdmin||(e.StorageAdmin={})),function(e){class t{constructor(){this.name="name",this.serial="serial",this.sort="sort",this.chName="chName",this.classify="classify",this.unlockWay="unlockWay",this.otherUnlockWay="otherUnlockWay",this.conditionNum="conditionNum",this.otherConditionNum="otherConditionNum",this.degreeNum="degreeNum",this.otherDegreeNum="otherDegreeNum",this.rewardType="otherGetAward",this.otherRewardType="otherRewardType",this.complete="complete",this.otherComplete="otherComplete",this.getAward="getAward",this.otherGetAward="otherGetAward",this.pitch="pitch"}}e._BaseProperty=t,e._unlockWayType={ads:"ads",gold:"gold",diamond:"diamond",customs:"customs",check:"check",free:"free"};e._Item=class extends i._ObjectBase{constructor(){super(...arguments),this.$data=null,this.$unlockWayType=e._unlockWayType}get $dataIndex(){return this["item/dataIndex"]}set $dataIndex(e){this["item/dataIndex"]=e}get $dataArrName(){return this["item/dataArrName"]}set $dataArrName(e){this["item/dataArrName"]=e}$render(){}lwglistRender(e,t){this.$data=e,this.$dataIndex=t,this.$data&&this.$render()}$button(){}$awake(){}lwgOnAwake(){this.$awake(),this.$button()}};e._Table=class{constructor(a,i,n,s,o){this._unlockWay=e._unlockWayType,this._tableName="name",this._lastArr=[],this._localStorage=!1,this._property=new t,a&&(this._tableName=a,n?(this._localStorage=n,this._arr=function(e,t,a){try{Laya.LocalStorage.getJSON(t)}catch(a){return Laya.LocalStorage.setJSON(t,JSON.stringify(e)),e}let i;if(Laya.LocalStorage.getJSON(t)){i=JSON.parse(Laya.LocalStorage.getJSON(t));let n=P._ObjArray.diffProByTwo(e,i,a);console.log(`${t}新添加对象`,n),P._Array.addToarray(i,n)}else i=e;return Laya.LocalStorage.setJSON(t,JSON.stringify(i)),i}(i,a,this._property.name),s&&(o?this._compareLastInforByPro(s,o):this._compareLastDefaultPro(s))):this._arr=i)}get _arr(){return this[`_${this._tableName}arr`]}set _arr(e){this[`_${this._tableName}arr`]=e,Laya.LocalStorage.setJSON(this._tableName,JSON.stringify(this[`_${this._tableName}arr`]))}get _List(){return this[`${this._tableName}_List`]}set _List(e){this[`${this._tableName}_List`]=e,e.array=this._arr,e.selectEnable=!1,e.vScrollBarSkin="",e.renderHandler=new Laya.Handler(this,(e,t)=>{if(this._listRenderScript){let a=e.getComponent(this._listRenderScript);a||(a=e.addComponent(this._listRenderScript)),a.lwglistRender(this._listArray[t],t)}}),e.selectHandler=new Laya.Handler(this,e=>{this._listSelect&&this._listSelect(e)})}get _listArray(){return this._List.array}set _listArray(e){this._List.array=e,this._List.scrollTo(0),this._refreshAndStorage()}_refreshAndStorage(){this._localStorage&&Laya.LocalStorage.setJSON(this._tableName,JSON.stringify(this._arr)),this._List&&this._List.refresh()}_compareLastInforByPro(e,t){this._lastArr=this._getlastVersion(e);for(let e=0;e<this._lastArr.length;e++){const a=this._lastArr[e];for(let e=0;e<this._arr.length;e++){const i=this._arr[e];if(a[this._property.name]===i[this._property.name])for(let e=0;e<t.length;e++){const n=t[e];i[n]=a[n]}}}this._refreshAndStorage()}_compareLastDefaultPro(e){if(this._lastArr=this._getlastVersion(e),this._lastArr.length>0)for(let e=0;e<this._lastArr.length;e++){const t=this._lastArr[e];for(let e=0;e<this._arr.length;e++){const a=this._arr[e];t[this._property.complete]&&(a[this._property.complete]=!0),t[this._property.getAward]&&(a[this._property.getAward]=!0),t[this._property.degreeNum]>a[this._property.degreeNum]&&(a[this._property.getAward]=t[this._property.degreeNum])}}this._refreshAndStorage()}_getlastVersion(e){let t=[];try{Laya.LocalStorage.getJSON(e)&&(t=JSON.parse(Laya.LocalStorage.getJSON(e)))}catch(t){console.log(e+"前版本不存在！")}return t}_getProperty(e,t){let a;for(const i in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,i)){const n=this._arr[i];if(n[this._property.name]==e){a=n[t];break}}return a}_geConditionNumByName(e,t){let a;for(const t in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,t)){const i=this._arr[t];if(i[this._property.name]==e){a=i[this._property.conditionNum];break}}return a}_getPitchIndexInArr(){for(let e=0;e<this._arr.length;e++)if(this._arr[e][this._property.name]===this._pitchName)return e}_getPitchIndexInListArr(){if(this._List)for(let e=0;e<this._List.array.length;e++)if(this._List.array[e][this._property.name]===this._pitchName)return e}_listTweenToPitch(e,t){const a=this._getPitchIndexInListArr();a&&this._List.tweenTo(a,e,Laya.Handler.create(this,()=>{t&&t()}))}_listTweenToDiffIndexByPitch(e,t,a){const i=this._getPitchIndexInListArr();i&&this._List.tweenTo(i+e,t,Laya.Handler.create(this,()=>{a&&a()}))}_listScrollToFirstByLast(){const e=this._List.array.length-1;e&&this._List.scrollTo(e)}_setProperty(e,t,a){for(const i in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,i)){const n=this._arr[i];if(n[this._property.name]==e){n[t]=a,this._refreshAndStorage();break}}return a}_setCompleteByName(e){for(const t in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,t)){const a=this._arr[t];if(a[this._property.name]==e)return a[this._property.complete]=!0,void this._refreshAndStorage()}}_setCompleteByNameArr(e){for(let t=0;t<this._arr.length;t++){const a=this._arr[t];for(let t=0;t<e.length;t++){const i=e[t];a[this._property.name]===i&&(a[this._property.complete]=!0)}}this._refreshAndStorage()}_getObjByName(e){let t=null;for(const a in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,a)){const i=this._arr[a];if(i.name==e){t=i;break}}return t}_setProSoleByClassify(e,t,a){const i=this._getObjByName(e),n=this._getArrByClassify(i[this._property.classify]);for(const i in n)if(Object.prototype.hasOwnProperty.call(n,i)){const s=n[i];s[this._property.name]==e?s[t]=a:s[t]=!a}this._refreshAndStorage()}_setOneProForAll(e,t){for(let a=0;a<this._arr.length;a++)this._arr[a][e]=t;this._refreshAndStorage()}_setAllComplete(){this._setOneProForAll(this._property.complete,!0),this._refreshAndStorage()}_setCompleteName(e){this._setProperty(e,this._property.complete,!0),this._refreshAndStorage()}_setOtherCompleteName(e){this._setProperty(e,this._property.otherComplete,!0),this._refreshAndStorage()}_setAllCompleteDelay(e,t,a,i){for(let n=0;n<this._arr.length;n++)h._once(e*n,this,()=>{const e=this._arr[n];t&&t(e[this._property.complete]),e[this._property.complete]=!0,a&&a(),n===this._arr.length-1&&i&&i(),this._refreshAndStorage()})}_setAllOtherComplete(){this._setOneProForAll(this._property.otherComplete,!0),this._refreshAndStorage()}_setAllOtherCompleteDelay(e,t,a,i){for(let n=0;n<this._arr.length;n++)h._once(e*n,this,()=>{const e=this._arr[n];t&&t(e[this._property.otherComplete]),e[this._property.otherComplete]=!0,a&&a(),n===this._arr.length-1&&i&&i(),this._refreshAndStorage()})}_addProValueForAll(e,t){for(let a=0;a<this._arr.length;a++)this._arr[a][e]+=t();this._refreshAndStorage()}_setPitchProperty(e,t){return this._getPitchObj()[e]=t,this._refreshAndStorage(),t}_getPitchProperty(e){return this._getPitchObj()[e]}_randomOneObjByPro(e,t){let a=[];for(const i in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,i)){const n=this._arr[i];t?n[e]&&n[e]==t&&a.push(n):n[e]&&a.push(n)}return 0==a.length?null:P._Array.randomGetOne(a)}_randomOneObj(){const e=P._Number.randomOneBySection(0,this._arr.length-1,!0);return this._arr[e]}_randomCountObj(e){const t=P._Number.randomCountBySection(0,this._arr.length-1,e,!0),a=[];for(let e=0;e<this._arr.length;e++)for(let i=0;i<t.length;i++)e===t[i]&&a.push(this._arr[e]);return a}_getArrByClassify(e){let t=[];for(const a in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,a)){const i=this._arr[a];i[this._property.classify]==e&&t.push(i)}return t}_getArrByUnlockWay(e){let t=[];for(const a in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,a)){const i=this._arr[a];i[this._property.unlockWay]===e&&t.push(i)}return t}_getArrByPitchClassify(){let e=[];for(const t in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,t)){const a=this._arr[t];a[this._property.classify]==this._pitchClassify&&e.push(a)}return e}_getArrByProperty(e,t){let a=[];for(const i in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,i)){const n=this._arr[i];n[e]&&n[e]==t&&a.push(n)}return a}_getPitchClassfiyName(){return this._getObjByName(this._pitchName)[this._property.classify]}_getArrByNoProperty(e,t){let a=[];for(const i in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,i)){const n=this._arr[i];n[e]&&n[e]!==t&&a.push(n)}return a}_setArrByPropertyName(e,t){let a=[];for(const t in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,t)){const i=this._arr[t];i[e]&&(i[e],a.push(i))}return this._refreshAndStorage(),a}_setPropertyByClassify(e,t,a){const i=this._getArrByClassify(e);for(const e in i)Object.prototype.hasOwnProperty.call(i,e)&&(i[e][t]=a);return this._refreshAndStorage(),i}_setCompleteByClassify(e){let t=this._getArrByClassify(e);for(const e in t)Object.prototype.hasOwnProperty.call(t,e)&&(t[e][this._property.complete]=!0);return this._refreshAndStorage(),t}_checkCondition(e,t,a){let i=null;t=null==t?1:t;let n=this._getProperty(e,this._property.degreeNum),s=this._getProperty(e,this._property.conditionNum);return this._getProperty(e,this._property.complete)?i=-1:s<=n+t?(this._setProperty(e,this._property.degreeNum,s),this._setProperty(e,this._property.complete,!0),i=!0):(this._setProperty(e,this._property.degreeNum,n+t),i=!1),a&&a(),i}_checkConditionUnlockWay(e,t){for(const a in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,a)){const i=this._arr[a];i[this._property.unlockWay]===e&&this._checkCondition(i[this._property.name],t||1)}return[]}_checkAllCompelet(){let e=!0;for(let t=0;t<this._arr.length;t++)if(!this._arr[t][this._property.complete])return e=!1;return e}get _pitchClassify(){return this[`${this._tableName}/pitchClassify`]?this[`${this._tableName}/pitchClassify`]:this._localStorage?Laya.LocalStorage.getItem(`${this._tableName}/pitchClassify`)?Laya.LocalStorage.getItem(`${this._tableName}/pitchClassify`):null:this[`${this._tableName}/pitchClassify`]=null}set _pitchClassify(e){this._lastPitchClassify=this[`${this._tableName}/pitchClassify`]?this[`${this._tableName}/pitchClassify`]:null,this[`${this._tableName}/pitchClassify`]=e,this._localStorage&&Laya.LocalStorage.setItem(`${this._tableName}/pitchClassify`,e.toString()),this._refreshAndStorage()}get _pitchName(){return this[`${this._tableName}/_pitchName`]?this[`${this._tableName}/_pitchName`]:this._localStorage?Laya.LocalStorage.getItem(`${this._tableName}/_pitchName`)?Laya.LocalStorage.getItem(`${this._tableName}/_pitchName`):null:this[`${this._tableName}/_pitchName`]=null}set _pitchName(e){this._lastPitchName=this[`${this._tableName}/_pitchName`],this[`${this._tableName}/_pitchName`]=e,this._localStorage&&Laya.LocalStorage.setItem(`${this._tableName}/_pitchName`,e.toString()),this._refreshAndStorage()}get _lastPitchClassify(){return this[`${this._tableName}/_lastPitchClassify`]?this[`${this._tableName}/_lastPitchClassify`]:this._localStorage?Laya.LocalStorage.getItem(`${this._tableName}/_lastPitchClassify`)?Laya.LocalStorage.getItem(`${this._tableName}/_lastPitchClassify`):null:this[`${this._tableName}/_lastPitchClassify`]=null}set _lastPitchClassify(e){this[`${this._tableName}/_lastPitchClassify`]=e,this._localStorage&&e&&Laya.LocalStorage.setItem(`${this._tableName}/_lastPitchClassify`,e.toString())}get _lastPitchName(){return this[`${this._tableName}/_lastPitchName`]?this[`${this._tableName}/_lastPitchName`]:this._localStorage?Laya.LocalStorage.getItem(`${this._tableName}/_lastPitchName`)?Laya.LocalStorage.getItem(`${this._tableName}/_lastPitchName`):null:this[`${this._tableName}/_lastPitchName`]=null}set _lastPitchName(e){this[`${this._tableName}/_lastPitchName`]=e,this._localStorage&&e&&Laya.LocalStorage.setItem(`${this._tableName}/_lastPitchName`,e.toString())}_setPitch(e){let t;for(let a=0;a<this._arr.length;a++){const i=this._arr[a];i[this._property.name]==e?(i[this._property.pitch]=!0,t=i[this._property.classify]):i[this._property.pitch]=!1}this._pitchClassify=t,this._pitchName=e,this._refreshAndStorage()}_getPitchObj(){for(const e in this._arr)if(Object.prototype.hasOwnProperty.call(this._arr,e)){const t=this._arr[e];if(t[this._property.name]===this._pitchName)return t}}_addObject(e){let t=P._ObjArray.objCopy(e);for(let e=0;e<this._arr.length;e++)this._arr[e][this._property.name]===t[this._property.name]&&this._arr[e];this._refreshAndStorage()}_addObjectArr(e){const t=P._ObjArray.arrCopy(e);for(let e=0;e<t.length;e++){const a=t[e];for(let i=0;i<this._arr.length;i++){const n=this._arr[i];a&&a[this._property.name]===n[this._property.name]&&(this._arr[i]=a,t.splice(e,1),e--)}}for(let e=0;e<t.length;e++){const a=t[e];this._arr.push(a)}this._refreshAndStorage()}_deleteObjByName(e){for(let t=0;t<this._arr.length;t++)this._arr[t].name===e&&(this._arr.splice(t,1),t--);this._refreshAndStorage()}_sortByProperty(e,t,a){if(P._ObjArray.sortByProperty(this._arr,e),null==a||a){for(let e=this._arr.length-1;e>=0;e--)this._arr[e][t]=this._arr.length-e;this._arr.reverse()}else for(let e=0;e<this._arr.length;e++)this._arr[e][t]=e+1;this._refreshAndStorage()}}}(g=e.DataAdmin||(e.DataAdmin={})),function(e){e.RGBToHexString=function(e,t,a){return"#"+("00000"+(e<<16|t<<8|a).toString(16)).slice(-6)},e.HexStringToRGB=function(e){let t,a,i;return[t=(255<<16&e)>>16,a=(65280&e)>>8,i=255&e]},e._colour=function(e,t,a){let i=new Laya.ColorFilter;return e.blendMode="null",t?i.color(t[0],t[1],t[2],t[3]):i.color(P._Number.randomOneBySection(255,100,!0),P._Number.randomOneBySection(255,100,!0),P._Number.randomOneBySection(255,100,!0),1),e.filters=[i],a&&Laya.timer.once(a,this,()=>{for(let t=0;t<e.filters.length;t++)if(e.filters[t]==i){e.filters=[];break}}),i},e._changeOnce=function(e,t,a,i){if(!e)return;let n=new Laya.ColorFilter;n.color(0,0,0,0);let s=t[0]/a,o=t[1]/a,r=t[2]/a,l=0;t[3]&&(l=t[3]/a);let c={add:!0},_=0,d=0,u=0,m=0;h._frameLoop(1,c,()=>{_<t[0]&&c.add?(d+=o,u+=r,0!==l&&(m+=l),(_+=s)>=t[0]&&(c.add=!1)):(d-=o,u-=r,0!==l&&(m-=l),(_-=s)<=0&&(i&&i(),Laya.timer.clearAll(c))),n.color(_,d,u,m),e.filters=[n]})},e._changeConstant=function(e,t,a,i){let n,s=[];e.filters?(n=e.filters[0],s=[e.filters[0]._alpha[0],e.filters[0]._alpha[1],e.filters[0]._alpha[2],e.filters[0]._alpha[3]?e.filters[0]._alpha[3]:1]):((n=new Laya.ColorFilter).color(t[0],t[1],t[2],t[3]?t[3]:1),s=[t[0],t[1],t[2],t[3]?t[3]:1],e.filters=[n]);let o=[P._Number.randomCountBySection(t[0],a[0])[0],P._Number.randomCountBySection(t[1],a[1])[0],P._Number.randomCountBySection(t[2],a[2])[0],P._Number.randomCountBySection(t[3]?t[3]:1,a[3]?a[3]:1)[0]],r=(o[0]-s[0])/i,l=(o[1]-s[1])/i,c=(o[2]-s[2])/i,_=0;o[3]&&(_=(o[3]-s[3])/i),e.changeCaller&&Laya.timer.clearAll(e.changeCaller);let d={};e.changeCaller=d;let u=0;h._frameLoop(1,d,()=>{++u<=i?(s[0]+=r,s[1]+=l,s[2]+=c):Laya.timer.clearAll(d),n.color(s[0],s[1],s[2],s[3]),e.filters=[n]})}}(p=e.ColorAdmin||(e.ColorAdmin={})),function(e){let t;e._tex2D={"爱心2":{url:"Lwg/Effects/3D/aixin2.png",texture2D:null,name:"爱心2"},"星星8":{url:"Lwg/Effects/3D/star8.png",texture2D:null,name:"星星8"},"星星5":{url:"Lwg/Effects/3D/star5.png",texture2D:null,name:"星星5"},"圆形发光":{url:"Lwg/Effects/3D/yuanfaguang.png",texture2D:null,name:"圆形发光"}},function(t){class a{constructor(e,t,a,i,n,s,o){this.time=0,this.appear=!0,this.move=!1,this.vinish=!1,this.frame={interval:1,func:null},this.end=!1,this.stateType={appear:"appear",move:"move",vinish:"vinish",end:"end"},this._positionByARY_FA=0,this._positionARXY_FR=0,this._positionByTimeRecord=0,this.frame.interval=n||1,this.frame.func=s||null,this.endFunc=o||null,this.time=e||0,this.appear=t||!0,this.move=a||!1,this.vinish=i||!1,h._frameLoop(1,this,()=>{this.time++,!this.box||this.box.parent?(this.time%this.frame.interval==0&&this.frame.func&&this.frame.func(),this.appear&&this.appearFunc&&this.appearFunc(),this.move&&this.moveFunc&&this.moveFunc(),this.vinish&&this.vinishFunc&&this.vinishFunc(),this.end&&this.endFunc&&this.endFunc(),this.everyFrameFunc&&this.everyFrameFunc(),this.clear()):this.clear()})}get box(){return this._box||console.log("粒子没有初始化！"),this._box}set box(e){this._box=e}stateSwitch(e){"a"!=e&&"appear"!=e||(this.appear=!0,this.move=!1,this.vinish=!1,this.end=!1),"m"==e||"move"==e?(this.appear=!1,this.move=!0):"v"==e||"vinish"==e?(this.move=!1,this.vinish=!0):"e"!=e&&"end"!=e||(this.vinish=!1,this.end=!0)}clear(){this.end&&(this.mat.destroy(),this.box.meshFilter.destroy(),this.box.destroy(),Laya.timer.clearAll(this))}_boxInit(t,a,i,n,s,o){const r=i?P._Number.randomOneBySection(i[0][0],i[1][0]):P._Number.randomOneBySection(.06,.08),l=i?P._Number.randomOneBySection(i[0][1],i[1][1]):P._Number.randomOneBySection(.06,.08),h=i?P._Number.randomOneBySection(i[0][2],i[1][2]):P._Number.randomOneBySection(.06,.08);this.box=t.addChild(new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(r,l,h))),this.box.transform.position=a?new Laya.Vector3(a[0],a[1],a[2]):new Laya.Vector3(0,0,0),this.fPosition=new Laya.Vector3(this.box.transform.position.x,this.box.transform.position.y,this.box.transform.position.z),this.box.transform.localRotationEulerX=n?P._Number.randomOneBySection(n[0][0],n[1][0]):P._Number.randomOneBySection(0,360),this.box.transform.localRotationEulerX=n?P._Number.randomOneBySection(n[0][1],n[1][1]):P._Number.randomOneBySection(0,360),this.box.transform.localRotationEulerX=n?P._Number.randomOneBySection(n[0][2],n[1][2]):P._Number.randomOneBySection(0,360),this.fEuler=new Laya.Vector3(this.box.transform.localRotationEulerX,this.box.transform.localRotationEulerY,this.box.transform.localRotationEulerZ);const c=this.box.meshRenderer.material=new Laya.BlinnPhongMaterial;c.albedoTexture=s?P._Array.randomGetOne(s):e._tex2D.圆形发光.texture2D,c.renderMode=2;const _=o?P._Number.randomOneBySection(o[0][0],o[1][0]):P._Number.randomOneBySection(10,25),d=o?P._Number.randomOneBySection(o[0][1],o[1][1]):P._Number.randomOneBySection(5,15),u=o?P._Number.randomOneBySection(o[0][2],o[1][2]):P._Number.randomOneBySection(5,10),m=o?P._Number.randomOneBySection(o[0][3],o[1][3]):P._Number.randomOneBySection(1,1);c.albedoColor=new Laya.Vector4(_,d,u,m),this.mat=c}get fPosition(){return this._fPosition}set fPosition(e){this._fPosition=e}get fEuler(){return this._fEuler}set fEuler(e){this._fEuler=e}get mat(){return this.box.meshRenderer.material}set mat(e){this.box.meshRenderer.material=e}_positionByARY(e,t,a,i,n){const s=P._Point.getRoundPosOld(this._positionByARY_FA+=e,t,new Laya.Point(this.fPosition.x,this.fPosition.z));this.box.transform.position=new Laya.Vector3(s.x,this.box.transform.position.y+=a,s.y),this.box.transform.position.y-this.fPosition.y>i&&n&&n()}_positionARXY_R(e,t,a,i){this._positionARXY_FR+=t;const n=P._Point.getRoundPosOld(e,this._positionARXY_FR,new Laya.Point(0,0));this.box.transform.position=new Laya.Vector3(this.fPosition.x+n.x,this.fPosition.y+n.y,this.fPosition.z),this._positionARXY_FR>=a&&i&&i()}_fadeAway(e,t=0,a){this.mat.albedoColorA-=e,this.mat.albedoColorA<=t&&(this.mat.albedoColorA=t,a&&a())}_fadeIn(e,t=1,a){this.mat.albedoColorA+=e,this.mat.albedoColorA>=t&&(this.mat.albedoColorA=t,a&&a())}_positionByTime(e,t,a){this._positionByTimeRecord++,this.box.transform.position=new Laya.Vector3(this.box.transform.position.x+=e[0],this.box.transform.position.y+=e[1],this.box.transform.position.z+=e[2]),t&&this._positionByTimeRecord>t&&a&&a()}_scaleX(e,t,a){this.box.transform.localScaleX+=e,t&&(e>=0?this.box.transform.localScaleX>=t&&(this.box.transform.localScaleX=t,a&&a()):this.box.transform.localScaleX<=t&&(this.box.transform.localScaleX=t,a&&a()))}_scaleY(e,t,a){this.box.transform.localScaleY+=e,t&&(e>=0?this.box.transform.localScaleY>=t&&(this.box.transform.localScaleY=t,a&&a()):this.box.transform.localScaleY<=t&&(this.box.transform.localScaleY=t,a&&a()))}_scaleZ(e,t,a){this.box.transform.localScaleZ+=e,t&&(e>=0?this.box.transform.localScaleZ>=t&&(this.box.transform.localScaleZ=t,a&&a()):this.box.transform.localScaleZ<=t&&(this.box.transform.localScaleZ=t,a&&a()))}_rotateX(e,t,a){this.box.transform.localRotationEulerX+=e,t&&(e>=0?this.box.transform.localRotationEulerX>=t&&(this.box.transform.localRotationEulerX=t,a&&a()):this.box.transform.localRotationEulerX<=t&&(this.box.transform.localRotationEulerX=t,a&&a()))}_rotateY(e,t,a){this.box.transform.localRotationEulerY+=e,t&&(e>=0?this.box.transform.localRotationEulerY>=t&&(this.box.transform.localRotationEulerY=t,a&&a()):this.box.transform.localRotationEulerY<=t&&(this.box.transform.localRotationEulerY=t,a&&a()))}_rotateZ(e,t,a){this.box.transform.localRotationEulerZ+=e,t&&(e>=0?this.box.transform.localRotationEulerZ>=t&&(this.box.transform.localRotationEulerZ=t,a&&a()):this.box.transform.localRotationEulerZ<=t&&(this.box.transform.localRotationEulerZ=t,a&&a()))}_randomScopeByPosition(e){e=e||[[.1,.1,.1],[.3,.3,.3]],P._3D.randomScopeByPosition(this.box,e)}_excludeZ(){this.box.transform.localScaleZ=0}_rotateTheZero(){this.box.transform.localRotationEulerZ=0,this.box.transform.localRotationEulerX=0,this.box.transform.localRotationEulerY=0}_scaleTheZero(){this.box.transform.localRotationEulerZ=0,this.box.transform.localRotationEulerX=0,this.box.transform.localRotationEulerY=0}}t._Caller=a,t._spiral=function(e,t,i,n,s,o,r,l,h,c){const _=new a;_._boxInit(e,t,i,n,s,o),_._excludeZ(),_._rotateTheZero();const d=P._Number.randomNumerical(r,[1.5,1.5]),u=P._Number.randomNumerical(l,[.02,.02]),m=P._Number.randomNumerical(h,[6,6]),g=P._Number.randomNumerical(c,[.5,.5]);return _.mat.albedoColorA=0,_.stateSwitch("m"),_.moveFunc=(()=>{_._fadeIn(.2),_._positionByARY(m,g,u,d,()=>{_.stateSwitch("v")})}),_.vinishFunc=(()=>{_._fadeAway(.15,0,()=>{_.stateSwitch("e")}),_._positionByTime([0,.002,0])}),_},t._explode=function(e,t,i,n,s,o,r,l){const h=new a;h._boxInit(e,t,i,n,s,o),h._excludeZ(),h._rotateTheZero();const c=P._Number.randomNumerical(r,[.3,.6]),_=P._Number.randomNumerical(l,[.008,.012]),d=P._Number.randomNumerical([0,360]);h.mat.albedoColorA=0,h.stateSwitch("m"),h.moveFunc=(()=>{h._fadeIn(.15),h._positionARXY_R(d,_,c,()=>{h.stateSwitch("v")})}),h.vinishFunc=(()=>{h._fadeAway(.15,0,()=>{h.stateSwitch("e")})})},t._fade=function(e,t,i,n,s,o,r,l,h){const c=new a;c._boxInit(e,t,i||[[.04,.04,0],[.04,.04,0]],r,l,h),c._excludeZ();const _=n||20,d=s||.02,u=o||.02;return c._rotateTheZero(),c.stateSwitch("m"),c.moveFunc=(()=>{c.time>_&&c.stateSwitch("v")}),c.vinishFunc=(()=>{c._scaleX(u),c._fadeAway(d,0,()=>{c.stateSwitch("e")})}),c.everyFrameFunc=(()=>{c.box.transform.localScaleY=c.box.transform.localScaleX}),c},t._starsShine=function(t,i,n,s,o,r,l,h,c){const _=new a;_._boxInit(t,i,null,null,h||[e._tex2D.星星5.texture2D],c||[[15,15,15,1],[30,30,30,1]]),_._excludeZ(),_._rotateTheZero(),_._scaleTheZero(),_._randomScopeByPosition(n),_.mat.albedoColorA=0;const d=P._Number.randomNumerical(o,[1,2]),u=P._Number.randomNumerical(s,[.01,.05]),m=P._Number.randomNumerical(r,[2,6],!0),g=P._Number.randomNumerical(l,[.01,.05]);return _.appearFunc=(()=>{_._fadeIn(g,1,()=>{_.stateSwitch("m")}),_._scaleX(u,1),_._rotateZ(m)}),_.moveFunc=(()=>{_._scaleX(u,d,()=>{_.stateSwitch("v")}),_._rotateZ(m)}),_.vinishFunc=(()=>{_._fadeAway(g,0,()=>{_.stateSwitch("e")}),_._scaleX(-u),_._rotateZ(-m)}),_.everyFrameFunc=(()=>{_.box.transform.localScaleY=_.box.transform.localScaleX}),_}}(t=e._Particle||(e._Particle={}))}(y=e.Eff3DAdmin||(e.Eff3DAdmin={})),function(e){let t,a,i,n,s;!function(e){e["爱心1"]="Lwg/Effects/aixin1.png",e["爱心2"]="Lwg/Effects/aixin2.png",e["爱心3"]="Lwg/Effects/aixin3.png",e["花1"]="Lwg/Effects/hua1.png",e["花2"]="Lwg/Effects/hua2.png",e["花3"]="Lwg/Effects/hua3.png",e["花4"]="Lwg/Effects/hua4.png",e["星星1"]="Lwg/Effects/star1.png",e["星星2"]="Lwg/Effects/star2.png",e["星星3"]="Lwg/Effects/star3.png",e["星星4"]="Lwg/Effects/star4.png",e["星星5"]="Lwg/Effects/star5.png",e["星星6"]="Lwg/Effects/star6.png",e["星星7"]="Lwg/Effects/star7.png",e["星星8"]="Lwg/Effects/star8.png",e["菱形1"]="Lwg/Effects/rhombus1.png",e["菱形2"]="Lwg/Effects/rhombus1.png",e["菱形3"]="Lwg/Effects/rhombus1.png",e["矩形1"]="Lwg/Effects/rectangle1.png",e["矩形2"]="Lwg/Effects/rectangle2.png",e["矩形3"]="Lwg/Effects/rectangle3.png",e["雪花1"]="Lwg/Effects/xuehua1.png",e["叶子1"]="Lwg/Effects/yezi1.png",e["圆形发光1"]="Lwg/Effects/yuanfaguang.png",e["圆形1"]="Lwg/Effects/yuan1.png",e["方形光圈1"]="Lwg/Effects/ui_square_guang1.png",e["方形圆角光圈1"]="Lwg/Effects/ui_square_guang2.png",e["圆形小光环"]="Lwg/Effects/xiaoguanghuan.png",e["光圈2"]="Lwg/Effects/guangquan2.png",e["三角形1"]="Lwg/Effects/triangle1.png",e["三角形2"]="Lwg/Effects/triangle2.png"}(t=e._SkinUrl||(e._SkinUrl={})),function(e){class a extends Laya.Image{constructor(e,a,i,n,s,o,r){if(super(),!e.parent)return;e.addChild(this),a?this.pos(a[0],a[1]):this.pos(0,0),this.width=i?i[0]:100,this.height=i?i[1]:100,this.pivotX=this.width/2,this.pivotY=this.height/2,this.rotation=n?P._Number.randomOneBySection(n[0],n[1]):P._Number.randomOneBySection(360),this.skin=s?P._Array.randomGetOne(s):t.花3,this.zOrder=r||0,this.alpha=0;let l=[];l[0]=o?P._Number.randomOneBySection(o[0][0],o[1][0]):P._Number.randomOneBySection(180,255),l[1]=o?P._Number.randomOneBySection(o[0][1],o[1][1]):P._Number.randomOneBySection(10,180),l[2]=o?P._Number.randomOneBySection(o[0][2],o[1][2]):P._Number.randomOneBySection(10,180),l[3]=o?P._Number.randomOneBySection(o[0][3],o[1][3]):P._Number.randomOneBySection(1,1),p._colour(this,l)}}e._ApertureImage=a,e._continuous=function(e,t,i,n,s,o,r,l,c,_,d){const u=new a(e,t,i,s,o,r,l);let m=_?P._Number.randomOneBySection(_[0],_[1]):.025,g=d?P._Number.randomOneBySection(d[0],d[1]):5e-4;n?u.scale(n[0],n[1]):u.scale(0,0);const p=c?P._Number.randomOneBySection(c[0],c[1]):2;let y={alpha:!0,scale:!1,vanish:!1};u.moveCaller=y;let f=0;h._frameLoop(1,y,()=>{y.alpha&&(u.alpha+=.05,f=0,u.alpha>=1&&(y.alpha=!1,y.scale=!0)),y.scale&&(f+=g,u.scaleX>=p&&(y.scale=!1,y.vanish=!0)),y.vanish&&(u.alpha-=.015,u.alpha<=0&&(u.removeSelf(),Laya.timer.clearAll(y))),u.scaleX=u.scaleY+=m+f})},e._continuousByDs=function(e,t,i,n,s,o,r,l,c,_,d){const u=new a(e,t,i,s,o,r,l);let m=_?P._Number.randomOneBySection(_[0],_[1]):.025,g=d?P._Number.randomOneBySection(d[0],d[1]):5e-4;n?u.scale(n[0],n[1]):u.scale(0,0);const p=c?P._Number.randomOneBySection(c[0],c[1]):2;let y={alpha:!0,scale:!1,vanish:!1};u.moveCaller=y;let f=0;h._frameLoop(1,y,()=>{y.alpha&&(u.alpha+=.05,f=0,u.alpha>=1&&(y.alpha=!1,y.scale=!0)),y.scale&&(f+=g,u.scaleX>p&&(y.scale=!1,y.vanish=!0)),y.vanish&&(f-=g)<=0&&(f=0,u.alpha-=.015,u.alpha<=0&&(u.removeSelf(),Laya.timer.clearAll(y))),u.scaleX=u.scaleY+=m+f})}}(a=e._Aperture||(e._Aperture={})),function(e){class a extends Laya.Image{constructor(e,a,i,n,s,o,r,l,h){super(),e.addChild(this);let c=i?P._Number.randomOneBySection(i[0]):P._Number.randomOneBySection(200),_=i?P._Number.randomOneBySection(i[1]):P._Number.randomOneBySection(50);c=0==P._Number.randomOneHalf()?c:-c,_=0==P._Number.randomOneHalf()?_:-_,this.x=a?a.x+c:c,this.y=a?a.y+_:_,this.width=n?P._Number.randomOneBySection(n[0],n[1]):P._Number.randomOneBySection(20,50),this.height=s?P._Number.randomOneBySection(s[0],s[1]):this.width,this.pivotX=this.width/2,this.pivotY=this.height/2,this.skin=r?P._Array.randomGetOne(r):t.圆形1,this.rotation=o?P._Number.randomOneBySection(o[0],o[1]):0,this.alpha=0,this.zOrder=h||1e3;let d=[];d[0]=l?P._Number.randomOneBySection(l[0][0],l[1][0]):P._Number.randomOneBySection(180,255),d[1]=l?P._Number.randomOneBySection(l[0][1],l[1][1]):P._Number.randomOneBySection(10,180),d[2]=l?P._Number.randomOneBySection(l[0][2],l[1][2]):P._Number.randomOneBySection(10,180),d[3]=l?P._Number.randomOneBySection(l[0][3],l[1][3]):P._Number.randomOneBySection(1,1),p._colour(this,d)}}function rotatingWay(e,t,a,i){let n=t?P._Number.randomOneBySection(t[0],t[1]):P._Number.randomOneBySection(0,1);n=0==P._Number.randomOneHalf()?n:-n;const s=a?P._Number.randomOneBySection(a[0],a[1]):P._Number.randomOneBySection(0,.25),o=P._Number.randomOneHalf();let r=i?P._Number.randomOneBySection(i[0],i[1]):P._Number.randomOneBySection(1,10);r=1===P._Number.randomOneHalf()?r:-r;const l=P._Number.randomOneHalf(),h=P._Number.randomOneHalf();return()=>{e.rotation+=n,1===h?1===l?e.skewX+=r:e.skewY+=r:1===o?e.moveCaller.scaleSub?(e.scaleX-=s,e.scaleX<=0&&(e.moveCaller.scaleSub=!1)):(e.scaleX+=s,e.scaleX>=1&&(e.moveCaller.scaleSub=!0)):e.moveCaller.scaleSub?(e.scaleY-=s,e.scaleY<=0&&(e.moveCaller.scaleSub=!1)):(e.scaleY+=s,e.scaleY>=1&&(e.moveCaller.scaleSub=!0))}}e._ParticleImgBase=a,e._snow=function(e,t,i,n,s,o,r,l,c,_,d,u,m){let g=new a(e,t,i,n,s,o,r,l,c),p=d?P._Number.randomOneBySection(d[0],d[1]):P._Number.randomOneBySection(0,1);p=0==P._Number.randomOneHalf()?p:-p;let y=u?P._Number.randomOneBySection(u[0],u[1]):P._Number.randomOneBySection(1,2.5),f=m?P._Number.randomOneBySection(m[0],m[1]):0,w={alpha:!0,move:!1,vinish:!1};g.moveCaller=w;let S=0,v=_?P._Number.randomOneBySection(_[0],_[1]):P._Number.randomOneBySection(100,300);return h._frameLoop(1,w,()=>{g.x+=f,g.rotation+=p,g.alpha<1&&w.alpha&&(g.alpha+=.05,S=g.y++,g.alpha>=1&&(w.alpha=!1,w.move=!0)),S<v&&w.move&&(S=g.y+=y)>=v&&(w.move=!1,w.vinish=!0),w.vinish&&(g.alpha-=.03,g.y+=y,(g.alpha<=0||y<=0)&&(g.removeSelf(),Laya.timer.clearAll(w)))}),g},e._downwardSpray=function(e,t,i,n,s,o,r,l,c,_,d,u,m,g,p){const y=new a(e,t,[0,0],i,n,null,o,r,p),f=s?P._Number.randomOneBySection(s[0],s[1]):P._Number.randomOneBySection(0,90),w=P._Point.angleByPoint(f),S=l?P._Number.randomOneBySection(l[0],l[1]):P._Number.randomOneBySection(200,800);let v=c?P._Number.randomOneBySection(c[0],c[1]):P._Number.randomOneBySection(10,30),L=d?P._Number.randomOneBySection(d[0],d[1]):P._Number.randomOneBySection(.3,1.5);const b=_?P._Number.randomOneBySection(_[0],_[1]):P._Number.randomOneBySection(1,5);let C=0;const x={appear:!0,move:!1,dropFp:null,drop:!1,vinish:!1,scaleSub:!0,scaleAdd:!1,rotateFunc:null};return x.rotateFunc=rotatingWay(y,u,m,g),y.moveCaller=x,h._frameLoop(1,x,()=>{if(x.rotateFunc(),x.appear&&(y.alpha+=.5,y.alpha>=1&&(x.appear=!1,x.move=!0),y.x+=w.x*v,y.y+=w.y*v),x.move){const e=v+(C-=L);y.x+=w.x*e,y.y+=w.y*e,e<=1&&(v=1,x.dropFp=new Laya.Point(y.x,y.y),x.move=!1,x.drop=!0)}x.drop&&(y.x+=w.x*v,y.y+=w.y*v,x.dropFp.distance(y.x,y.y)>S&&(x.drop=!1,x.vinish=!0)),x.vinish&&(y.alpha-=.05,y.alpha<=.3&&(y.removeSelf(),Laya.timer.clearAll(x))),y.y+=b}),y},e._fallingRotate=function(e,t,i,n,s,o,r,l,c,_,d,u,m){const g=new a(e,t,i,n,s,null,o,r,m),p=c?P._Number.randomOneBySection(c[0],c[1]):P._Number.randomOneBySection(1,2.5);let y=0;const f=l?P._Number.randomOneBySection(l[0],l[1]):P._Number.randomOneBySection(100,300),w={appear:!0,move:!1,vinish:!1,scaleSub:!0,scaleAdd:!1,rotateFunc:null};return w.rotateFunc=rotatingWay(g,u,_,d),g.moveCaller=w,h._frameLoop(1,w,()=>{w.rotateFunc(),w.appear&&(g.alpha+=.05,g.y+=p/2,g.alpha>=1&&(w.appear=!1,w.move=!0)),w.move&&(g.y+=p,(y+=p)>=f&&(w.move=!1,w.vinish=!0)),w.vinish&&(g.alpha-=.01,g.y+=p,g.alpha<=0&&(g.removeSelf(),Laya.timer.clearAll(w)))}),g},e._fallingVertical=function(e,t,i,n,s,o,r,l,c,_,d,u){let m=new a(e,t,i,n,s,o,r,l,c),g=d?P._Number.randomOneBySection(d[0],d[1]):P._Number.randomOneBySection(4,8),p=u?P._Number.randomOneBySection(u[0],u[1]):P._Number.randomOneBySection(.25,.45),y=0,f={alpha:!0,move:!1,vinish:!1};m.moveCaller=f;let w=_?P._Number.randomOneBySection(_[0],_[1]):P._Number.randomOneBySection(100,300),S=m.y;return h._frameLoop(1,f,()=>{m.alpha<1&&f.alpha&&(m.alpha+=.04,m.alpha>=1&&(f.alpha=!1,f.move=!0)),f.alpha||(y+=p,m.y+=g+y),!f.alpha&&f.move&&m.y-S>=w&&(f.move=!1,f.vinish=!0),f.vinish&&(m.alpha-=.03,m.alpha<=0&&(Laya.timer.clearAll(f),m.removeSelf()))}),m},e._fallingVertical_Reverse=function(e,t,i,n,s,o,r,l,c,_,d,u){let m=new a(e,t,i,n,s,o,r,l,c),g=d?P._Number.randomOneBySection(d[0],d[1]):P._Number.randomOneBySection(4,8),p=u?P._Number.randomOneBySection(u[0],u[1]):P._Number.randomOneBySection(.25,.45),y=0,f={alpha:!0,move:!1,vinish:!1};m.moveCaller=f;let w=_?P._Number.randomOneBySection(_[0],_[1]):P._Number.randomOneBySection(100,300),S=m.y;return h._frameLoop(1,f,()=>{m.alpha<1&&f.alpha&&(m.alpha+=.04,m.alpha>=1&&(f.alpha=!1,f.move=!0)),f.alpha||(y+=p,m.y+=g+y),!f.alpha&&f.move&&m.y-S<=w&&(f.move=!1,f.vinish=!0),f.vinish&&(m.alpha-=.03,m.alpha<=0&&(Laya.timer.clearAll(f),m.removeSelf()))}),m},e._slowlyUp=function(e,t,i,n,s,o,r,l,c,_,d,u){let m=new a(e,t,i,n,s,o,r,l,c),g=d?P._Number.randomOneBySection(d[0],d[1]):P._Number.randomOneBySection(1.5,2),p=u?P._Number.randomOneBySection(u[0],u[1]):P._Number.randomOneBySection(.001,.005),y=0,f={alpha:!0,move:!1,vinish:!1};m.moveCaller=f;let w=m.y,S=0,v=_?P._Number.randomOneBySection(_[0],_[1]):P._Number.randomOneBySection(-250,-600);return h._frameLoop(1,f,()=>{m.alpha<1&&f.alpha&&(m.alpha+=.03,m.alpha>=1&&(f.alpha=!1,f.move=!0)),S>v&&f.move||(f.move=!1,f.vinish=!0),f.vinish&&(m.alpha-=.02,m.scaleX-=.005,m.scaleY-=.005,m.alpha<=0&&(m.removeSelf(),Laya.timer.clearAll(f))),y+=p,m.y-=g+y,S=w-m.y}),m},e._sprayRound=function(e,t,i,n,s,o,r,l,c,_,d,u){let m=new a(e,t,[0,0],i,n,s,o,r,u),g=t||new Laya.Point(0,0),p=0;const y=c?P._Number.randomOneBySection(c[0],c[1]):P._Number.randomOneBySection(30,50),f=l?P._Number.randomOneBySection(l[0],l[1]):P._Number.randomOneBySection(100,200),w=f/y,S=_?P._Number.randomOneBySection(_[0],_[1]):P._Number.randomOneBySection(0,360);let v=d?P._Number.randomOneBySection(d[0],d[1]):P._Number.randomOneBySection(0,20);v=0==P._Number.randomOneHalf()?v:-v;const L=1/P._Number.randomOneInt(60);let b={alpha:!0,move:!1,vinish:!1};return m.moveCaller=b,h._frameLoop(1,b,()=>{if(m.rotation+=v,m.alpha<1&&b.alpha)m.alpha+=.5,m.alpha>=1&&(b.alpha=!1,b.move=!0);else if(b.vinish){m.alpha-=L,m.alpha<=0&&(m.removeSelf(),Laya.timer.clearAll(b)),p+=w/2;let e=P._Point.getRoundPosOld(S,p,g);m.pos(e.x,e.y)}else{p+=w;let e=P._Point.getRoundPosOld(S,p,g);m.pos(e.x,e.y),p>f&&(b.move=!1,b.vinish=!0)}}),m},e._spray=function(e,t,i,n,s,o,r,l,c,_,d,u,m){let g=new a(e,t,[0,0],i,n,s,o,r,m),p=t||new Laya.Point(0,0),y=d?P._Number.randomOneBySection(d[0],d[1]):P._Number.randomOneBySection(3,10),f=u?P._Number.randomOneBySection(u[0],u[1]):P._Number.randomOneBySection(.25,.45),w=0,S={alpha:!0,move:!1,vinish:!1};g.moveCaller=S;let v=0,L=l?P._Number.randomOneBySection(l[0],l[1]):P._Number.randomOneBySection(100,200),b=c?P._Number.randomOneBySection(c[0],c[1]):P._Number.randomOneBySection(0,360),C=_?P._Number.randomOneBySection(_[0],_[1]):P._Number.randomOneBySection(0,20);return C=0==P._Number.randomOneHalf()?C:-C,h._frameLoop(1,S,()=>{if(g.rotation+=C,g.alpha<1&&S.alpha)g.alpha+=.5,g.alpha>=1&&(S.alpha=!1,S.move=!0);else{v<L&&S.move||(S.move=!1,S.vinish=!0),S.vinish&&(g.alpha-=.05,g.alpha<=.3&&(g.removeSelf(),Laya.timer.clearAll(S))),v+=y+(w+=f);let e=P._Point.getRoundPosOld(b,v,p);g.pos(e.x,e.y)}}),g},e._outsideBox=function(e,t,i,n,s,o,r,l,c,_,d,u,m,g){let p=new a(e,t,[0,0],n,s,o,r,l,c),y=0;i=i||[100,100],_=_||60,"x"==(0==P._Number.randomOneHalf()?"x":"y")?(0==P._Number.randomOneHalf()?(p.x+=i[0],y=0==P._Number.randomOneHalf()?P._Number.randomOneBySection(0,90-_):P._Number.randomOneBySection(0,-90+_)):(p.x-=i[0],y=P._Number.randomOneBySection(90+_,270-_)),p.y+=P._Number.randomOneBySection(-i[1],i[1])):(0==P._Number.randomOneHalf()?(p.y-=i[1],y=P._Number.randomOneBySection(180+_,360-_)):(p.y+=i[1],y=P._Number.randomOneBySection(0+_,180-_)),p.x+=P._Number.randomOneBySection(-i[0],i[0]));let f=P._Point.angleByPoint(y),w=d?P._Number.randomOneBySection(d[0],d[1]):P._Number.randomOneBySection(20,50),S=m?P._Number.randomOneBySection(m[0],m[1]):P._Number.randomOneBySection(.5,1),v=g?P._Number.randomOneBySection(g[0],g[1]):P._Number.randomOneBySection(.25,.45),L=0,b=u?P._Number.randomOneBySection(u[0],u[1]):P._Number.randomOneBySection(0,20),C=new Laya.Point(p.x,p.y),x={alpha:!0,move:!1,vinish:!1};return p.moveCaller=x,h._frameLoop(1,x,()=>{p.rotation+=b,x.alpha?(p.alpha+=.5,p.alpha>=1&&(x.alpha=!1,x.move=!0)):x.move?C.distance(p.x,p.y)>=w&&(x.move=!1,x.vinish=!0):x.vinish&&(p.alpha-=.05,p.alpha<=.3&&(p.removeSelf(),Laya.timer.clearAll(x))),x.alpha||(L+=v,p.x+=f.x*(S+L),p.y+=f.y*(S+L))}),p},e._moveToTargetToMove=function(e,t,i,n,s,o,r,l,c,_,d,u,m,g){let p=new a(e,t,[0,0],i,n,s,r,l,c),y=t||new Laya.Point(0,0),f=m?P._Number.randomOneBySection(m[0],m[1]):P._Number.randomOneBySection(5,6),w=g?P._Number.randomOneBySection(g[0],g[1]):P._Number.randomOneBySection(.25,.45),S=0,v={alpha:!0,move1:!1,stop:!1,move2:!1,vinish:!1};p.moveCaller=v;let L=0,b=_?P._Number.randomOneBySection(_[0],_[1]):P._Number.randomOneBySection(100,200),C=d?P._Number.randomOneBySection(d[0],d[1]):P._Number.randomOneBySection(100,200),x=o?P._Number.randomOneBySection(o[0],o[1]):P._Number.randomOneBySection(0,360);return p.rotation=x-90,u?P._Number.randomOneBySection(u[0],u[1]):P._Number.randomOneBySection(0,20),h._frameLoop(1,v,()=>{v.alpha?(L+=f+(S+=w),p.alpha+=.5,p.alpha>=1&&(v.alpha=!1,v.move1=!0)):v.move1?(L+=f+(S+=w))>=b&&(v.move1=!1,v.stop=!0):v.stop?(L+=.1,(S-=.3)<=0&&(v.stop=!1,v.move2=!0)):v.move2?(L+=f+(S+=w/2))>=b+C&&(v.move2=!1,v.vinish=!0):v.vinish&&(L+=.5,p.alpha-=.05,p.alpha<=0&&(p.removeSelf(),Laya.timer.clearAll(v)));let e=P._Point.getRoundPosOld(x,L,y);p.pos(e.x,e.y)}),p},e._AnnularInhalation=function(e,a,i,n,s,o,r,l,c,_){let d=new Laya.Image;e.addChild(d),s=s||[25,50],d.width=P._Number.randomCountBySection(s[0],s[1])[0],d.height=o?P._Number.randomCountBySection(o[0],o[1])[0]:d.width,d.pivotX=d.width/2,d.pivotY=d.height/2,d.skin=r?P._Array.randomGetOut(r)[0]:t[P._Number.randomCountBySection(0,12)[0]];let u=P._Number.randomCountBySection(i[0],i[1])[0];d.alpha=0;let m=l?P._Number.randomCountBySection(l[0],l[1])[0]:P._Number.randomCountBySection(5,10)[0],g=n?P._Number.randomCountBySection(n[0],n[1])[0]:P._Number.randomCountBySection(0,360)[0],p={},y=0;return c=c||.35,h._frameLoop(1,p,()=>{d.alpha<1?(d.alpha+=.05,u-=m/2+(y+=c/5)):u-=m+(y+=c);let e=P._Point.getRoundPosOld(g,u,a);d.pos(e.x,e.y),(e.distance(a.x,a.y)<=20||e.distance(a.x,a.y)>=1e3)&&(d.removeSelf(),Laya.timer.clearAll(p))}),d}}(i=e._Particle||(e._Particle={})),function(e){class a extends Laya.Image{constructor(e,a,i,n,s,o,r,l){if(super(),!e.parent)return;e.addChild(this),this.skin=n?P._Array.randomGetOne(n):t.星星1,this.width=o?P._Number.randomOneBySection(o[0],o[1]):80,this.height=r?P._Number.randomOneBySection(r[0],r[1]):this.width,this.pivotX=this.width/2,this.pivotY=this.height/2;let h=i?P._Point.randomPointByCenter(a,i[0],i[1],1):P._Point.randomPointByCenter(a,100,100,1);this.pos(h[0].x,h[0].y);let c=[];c[0]=s?P._Number.randomOneBySection(s[0][0],s[1][0]):P._Number.randomOneBySection(10,255),c[1]=s?P._Number.randomOneBySection(s[0][1],s[1][1]):P._Number.randomOneBySection(200,255),c[2]=s?P._Number.randomOneBySection(s[0][2],s[1][2]):P._Number.randomOneBySection(10,255),c[3]=s?P._Number.randomOneBySection(s[0][3],s[1][3]):P._Number.randomOneBySection(1,1),p._colour(this,c),this.alpha=0,this.zOrder=l||1e3}}e._GlitterImage=a,e._blinkStar=function(e,t,i,n,s,o,r,l,h,c,_){let d=new a(e,t,i,n,s,o,r,_);d.scaleX=0,d.scaleY=0;let u=l?P._Number.randomOneBySection(l[0],l[1]):P._Number.randomOneBySection(.8,1.2),m=h?P._Number.randomOneBySection(h[0],h[1]):P._Number.randomOneBySection(.01,.02),g=c?P._Number.randomOneInt(c[0],c[1]):P._Number.randomOneInt(0,5);g=0==P._Number.randomOneHalf()?-g:g;let p={appear:!0,scale:!1,vanish:!1};return d.moveCaller=p,Laya.timer.frameLoop(1,p,()=>{p.appear?(d.alpha+=.1,d.rotation+=g,d.scaleX=d.scaleY+=m,d.alpha>=1&&(p.appear=!1,p.scale=!0)):p.scale?(d.rotation+=g,d.scaleX=d.scaleY+=m,d.scaleX>u&&(p.scale=!1,p.vanish=!0)):p.vanish&&(d.rotation-=g,d.alpha-=.015,d.scaleX-=.01,d.scaleY-=.01,d.scaleX<=0&&(d.removeSelf(),Laya.timer.clearAll(p)))}),d},e._simpleInfinite=function(e,a,i,n,s,o,r,l){let h=new Laya.Image;e.addChild(h),h.width=n,h.height=s,h.pos(a,i),h.skin=r||t.方形光圈1,h.alpha=0,h.zOrder=o||0;let c=!0,_={};return Laya.timer.frameLoop(1,_,()=>{c?(h.alpha+=l?2*l:.02,h.alpha>=1&&(c=!1,_.end=!0)):(h.alpha-=l||.01,h.alpha<=0&&(_.end?(Laya.timer.clearAll(_),h.removeSelf()):c=!0))}),h}}(n=e._Glitter||(e._Glitter={})),function(e){class a extends Laya.Image{constructor(e,a,i,n,s,o){super(),e.addChild(this),this.skin=a?P._Array.randomGetOne(a):t.圆形发光1,this.width=n?P._Number.randomOneBySection(n[0],n[1]):80,this.height=s?P._Number.randomOneBySection(s[0],s[1]):this.width,this.pivotX=this.width/2,this.pivotY=this.height/2;let r=[];r[0]=i?P._Number.randomOneBySection(i[0][0],i[1][0]):P._Number.randomOneBySection(0,255),r[1]=i?P._Number.randomOneBySection(i[0][1],i[1][1]):P._Number.randomOneBySection(0,255),r[2]=i?P._Number.randomOneBySection(i[0][2],i[1][2]):P._Number.randomOneBySection(0,255),r[3]=i?P._Number.randomOneBySection(i[0][3],i[1][3]):P._Number.randomOneBySection(0,255),p._colour(this,r),this.zOrder=o||0,this.alpha=0,this.scaleX=0,this.scaleY=0}}e._circulationImage=a,e._corner=function(e,t,i,n,s,o,r,l,c){if(t.length<=1)return;let _=new a(e,i,n,s,o,r);new a(e,i,n,s,o,r).filters=_.filters,_.pos(t[0][0],t[0][1]),_.alpha=1;let d={num:0,alpha:!0,move:!1};_.moveCaller=d;let u=0;_.scale(1,1),h._frameLoop(1,d,()=>{let t=new a(e,i,n,s,o,r);t.filters=_.filters,t.x=_.x,t.y=_.y,t.rotation=_.rotation,t.alpha=1,t.zOrder=-1,t.scaleX=_.scaleX,t.scaleY=_.scaleY,v.fadeOut(t,1,0,200,0,()=>{t.removeSelf()}),null==_.parent&&Laya.timer.clearAll(d),d.num++,i&&(d.num>i.length?d.num=0:_.skin=i[d.num])});var m=()=>{let e=[t[u][0],t[u][1]],a=new Laya.Point(_.x,_.y).distance(e[0],e[1]);l&&(_.rotation=P._Point.pointByAngleOld(_.x-e[0],_.y-e[1])+180);let i=100*c+a/5;u==t.length+1&&(e=[t[0][0],t[0][1]]),v.move(_,e[0],e[1],i,()=>{++u==t.length&&(u=0),m()})};return m(),_}}(s=e._circulation||(e._circulation={}))}(f=e.Eff2DAdmin||(e.Eff2DAdmin={})),function(e){function _effectSwitch(n){let s;switch(n){case e._Type.no:s=new t;break;case e._Type.largen:s=new a;break;case e._Type.reduce:s=new i;break;default:s=new t}return s}e._switch=!0,e._absoluteSwitch=!0,e._assign=[],e._stageSwitch=!0,e._checkAssign=function(e){let t=!1;if(L._assign.length>0)for(let a=0;a<L._assign.length;a++)L._assign[a]===e&&(t=!0);return t},e._Type={no:"no",largen:"largen",reduce:"reduce"},e._Use={get value(){return this["Click/name"]?this["Click/name"]:null},set value(e){this["Click/name"]=e}},e._effectSwitch=_effectSwitch,e._on=function(e,t,a,i,n,s,o){const r=_effectSwitch(e);t.on(Laya.Event.MOUSE_DOWN,a,i),t.on(Laya.Event.MOUSE_MOVE,a,n),t.on(Laya.Event.MOUSE_UP,a,s),t.on(Laya.Event.MOUSE_OUT,a,o),t.on(Laya.Event.MOUSE_DOWN,a,r.down),t.on(Laya.Event.MOUSE_MOVE,a,r.move),t.on(Laya.Event.MOUSE_UP,a,r.up),t.on(Laya.Event.MOUSE_OUT,a,r.out)},e._off=function(e,t,a,i,n,s,o){const r=_effectSwitch(e);t._off(Laya.Event.MOUSE_DOWN,a,i),t._off(Laya.Event.MOUSE_MOVE,a,n),t._off(Laya.Event.MOUSE_UP,a,s),t._off(Laya.Event.MOUSE_OUT,a,o),t._off(Laya.Event.MOUSE_DOWN,a,r.down),t._off(Laya.Event.MOUSE_MOVE,a,r.move),t._off(Laya.Event.MOUSE_UP,a,r.up),t._off(Laya.Event.MOUSE_OUT,a,r.out)};class t{down(){}move(){}up(){}out(){}}e._NoEffect=t;class a{down(e){e.currentTarget.scale(1.1,1.1),C._playSound(L._audioUrl)}move(){}up(e){e.currentTarget.scale(1,1)}out(e){e.currentTarget.scale(1,1)}}e._Largen=a;class i{down(e){e.currentTarget.scale(.9,.9),C._playSound(L._audioUrl)}move(){}up(e){e.currentTarget.scale(1,1)}out(e){e.currentTarget.scale(1,1)}}e._Reduce=i}(w=e.ClickAdmin||(e.ClickAdmin={})),function(e){function moveTo(t,a,i,n,s,o,r=0,l=!0,h,c){let _=t.transform.position.clone();if(0==i||null==i)return t.transform.position=a.clone(),void(o&&o.apply(n));(c<=0||null==c)&&(c=e.frameRate);let d=function(){t.transform&&(t.transform.position=_),h&&h()};Laya.timer.once(r,t,function(){Laya.timer.frameLoop(c,t,d)});let u=Laya.Tween.to(_,{x:a.x,y:a.y,z:a.z},i,s,Laya.Handler.create(t,function(){t.transform&&(t.transform.position=a.clone(),Laya.timer.clear(t,d)),o&&o.apply(n)}),r,l);e.tweenMap[t.id]||(e.tweenMap[t.id]=[]),e.tweenMap[t.id].push(u)}function rotateTo(t,a,i,n,s,o,r,l,h,c){let _=t.transform.localRotationEuler.clone();if(0==i||null==i)return t.transform.localRotationEuler=a.clone(),void(o&&o.apply(n));(c<=0||null==c)&&(c=e.frameRate);let d=function(){t.transform&&(t.transform.localRotationEuler=_),h&&h()};Laya.timer.once(r,t,function(){Laya.timer.frameLoop(c,t,d)});let u=Laya.Tween.to(_,{x:a.x,y:a.y,z:a.z},i,s,Laya.Handler.create(t,function(){t.transform&&(t.transform.localRotationEuler=a.clone(),Laya.timer.clear(t,d)),o&&o.apply(n)}),r,l);e.tweenMap[t.id]||(e.tweenMap[t.id]=[]),e.tweenMap[t.id].push(u)}e.tweenMap={},e.frameRate=1,e.moveTo=moveTo,e.rotateTo=rotateTo,e.scaleTo=function(t,a,i,n,s,o,r,l,h,c){let _=t.transform.localScale.clone();if(0==i||null==i)return t.transform.localScale=a.clone(),void(o&&o.apply(n));(c<=0||null==c)&&(c=e.frameRate);let d=function(){t.transform.localScale=_.clone(),h&&h()};Laya.timer.once(r,this,function(){Laya.timer.frameLoop(c,t,d)});let u=Laya.Tween.to(_,{x:a.x,y:a.y,z:a.z},i,s,Laya.Handler.create(t,function(){t.transform.localScale=a.clone(),Laya.timer.clear(t,d),o&&o.apply(n)}),r,l);e.tweenMap[t.id]||(e.tweenMap[t.id]=[]),e.tweenMap[t.id].push(u)},e.ClearTween=function(t){let a=e.tweenMap[t.id];if(a&&a.length)for(;a.length>0;)a.pop().clear();Laya.timer.clearAll(t)},e.rock=function(e,t,a,i,n,s,o){s||(s=0);let r=new Laya.Vector3(e.transform.localRotationEulerX+t.x,e.transform.localRotationEulerY+t.y,e.transform.localRotationEulerZ+t.z);rotateTo(e,r,a/2,i,o,()=>{let s=new Laya.Vector3(e.transform.localRotationEulerX-2*t.x,e.transform.localRotationEulerY-2*t.y,e.transform.localRotationEulerZ-2*t.z);rotateTo(e,s,a,i,o,()=>{let s=new Laya.Vector3(e.transform.localRotationEulerX+t.x,e.transform.localRotationEulerY+t.y,e.transform.localRotationEulerZ+t.z);rotateTo(e,s,a/2,i,o,()=>{n&&n()})})},s)},e.moveRotateTo=function(e,t,a,i,n,s,o,r,l,h){moveTo(e,t.transform.position,a,i,n,null,o,r,l,h),rotateTo(e,t.transform.localRotationEuler,a,i,n,s,o,r,null,h)}}(S=e.Ani3DAdmin||(e.Ani3DAdmin={})),function(e){function bombs_Appear(e,t,a,i,n,s,o,r){e.scale(0,0),e.alpha=t,Laya.Tween.to(e,{scaleX:i,scaleY:i,alpha:1,rotation:n},s,Laya.Ease.cubicInOut,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:a,scaleY:a,rotation:0},s/2,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:a+(i-a)/3,scaleY:a+(i-a)/3,rotation:0},s/3,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:a,scaleY:a,rotation:0},s/4,null,Laya.Handler.create(this,function(){o&&o()}),0)}),0)}),0)}),r||0)}function bombs_Vanish(e,t,a,i,n,s,o){Laya.Tween.to(e,{scaleX:t,scaleY:t,alpha:a,rotation:i},n,Laya.Ease.cubicOut,Laya.Handler.create(this,function(){s&&s()}),o||0)}e._clearAll=function(e){for(let t=0;t<e.length;t++)Laya.Tween.clearAll(e[t])},e.circulation_scale=function(e,t,a,i,n){Laya.Tween.to(e,{scaleX:1+t,scaleY:1+t},a,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:1-t,scaleY:1-t},a/2,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:1,scaleY:1},a/2,null,Laya.Handler.create(this,function(){n&&n()}),0)}),0)}),i||0)},e.leftRight_Shake=function(e,t,a,i,n,s){i||(i=0),s||(L._switch=!1),Laya.Tween.to(e,{x:e.x-t},a,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{x:e.x+2*t},a,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{x:e.x-t},a,null,Laya.Handler.create(this,function(){n&&n(),s||(L._switch=!0)}))}))}),i)},e.rotate=function(e,t,a,i,n){Laya.Tween.to(e,{rotation:t},a,null,Laya.Handler.create(e,function(){n&&n()}),i||0)},e.upDown_Overturn=function(e,t,a){Laya.Tween.to(e,{scaleY:0},t,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleY:1},t,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleY:0},t,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleY:1},t,null,Laya.Handler.create(this,function(){null===a&&void 0===a||a()}),0)}),0)}),0)}),0)},e.leftRight_Overturn=function(e,t,a){Laya.Tween.to(e,{scaleX:0},t,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:1},t,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:0},t,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:1},t,null,Laya.Handler.create(this,function(){}),0),null!==a&&a()}),0)}),0)}),0)},e.upDwon_Shake=function(e,t,a,i,n){Laya.Tween.to(e,{y:e.y+t},a,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{y:e.y-2*t},a,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{y:e.y+t},a,null,Laya.Handler.create(this,function(){null!==n&&n()}))}))}),i)},e.fadeOut=function(e,t,a,i,n,s,o){e.alpha=t,o&&(L._switch=!1),Laya.Tween.to(e,{alpha:a},i,null,Laya.Handler.create(this,function(){s&&s(),o&&(L._switch=!0)}),n||0)},e.fadeOut_KickBack=function(e,t,a,i,n,s){e.alpha=t,Laya.Tween.to(e,{alpha:a},i,null,Laya.Handler.create(this,function(){null!==s&&s()}),n)},e.move_FadeOut=function(e,t,a,i,n,s,o,r){e.alpha=0,e.x=t,e.y=a,Laya.Tween.to(e,{alpha:1,x:i,y:n},s,null,Laya.Handler.create(this,function(){null!==r&&r()}),o)},e.move_Fade_Out=function(e,t,a,i,n,s,o,r){e.alpha=1,e.x=t,e.y=a,Laya.Tween.to(e,{alpha:0,x:i,y:n},s,null,Laya.Handler.create(this,function(){null!==r&&r()}),o)},e.move_FadeOut_Scale_01=function(e,t,a,i,n,s,o,r){e.alpha=0,e.targetX=0,e.targetY=0,e.x=t,e.y=a,Laya.Tween.to(e,{alpha:1,x:i,y:n,scaleX:1,scaleY:1},s,null,Laya.Handler.create(this,function(){null!==r&&r()}),o)},e.move_Scale=function(e,t,a,i,n,s,o,r,l,h,c){e.scaleX=t,e.scaleY=t,e.x=a,e.y=i,Laya.Tween.to(e,{x:n,y:s,scaleX:o,scaleY:o},r,h?null:h,Laya.Handler.create(this,function(){c&&c()}),l||0)},e.move_rotate=function(e,t,a,i,n,s){Laya.Tween.to(e,{rotation:t,x:a.x,y:a.y},i,null,Laya.Handler.create(e,()=>{s&&s()}),n||0)},e.rotate_Scale=function(e,t,a,i,n,s,o,r,l,h){e.scaleX=a,e.scaleY=i,e.rotation=t,Laya.Tween.to(e,{rotation:n,scaleX:s,scaleY:o},r,null,Laya.Handler.create(this,()=>{h&&h(),e.rotation=0}),l||0)},e.drop_Simple=function(e,t,a,i,n,s,o){e.y=t,Laya.Tween.to(e,{y:a,rotation:i},n,Laya.Ease.circOut,Laya.Handler.create(this,function(){null!==o&&o()}),s)},e.drop_KickBack=function(e,t,a,i,n,s,o,r){e.alpha=t,e.y=a,o||(o=0),Laya.Tween.to(e,{alpha:1,y:i+n},s,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{y:i-n/2},s/2,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{y:i},s/4,null,Laya.Handler.create(this,function(){r&&r()}),0)}),0)}),o)},e.drop_Excursion=function(e,t,a,i,n,s,o){Laya.Tween.to(e,{x:e.x+a,y:e.y+1*t/6},n,Laya.Ease.expoIn,Laya.Handler.create(this,function(){Laya.Tween.to(e,{x:e.x+a+50,y:t,rotation:i},n,null,Laya.Handler.create(this,function(){null!==o&&o()}),0)}),s)},e.goUp_Simple=function(e,t,a,i,n,s,o){e.y=t,e.rotation=a,Laya.Tween.to(e,{y:i,rotation:0},n,Laya.Ease.cubicOut,Laya.Handler.create(this,function(){null!==o&&o()}),s)},e.cardRotateX_TowFace=function(e,t,a,i,n){Laya.Tween.to(e,{scaleX:0},t,null,Laya.Handler.create(this,function(){P._Node.childrenVisible2D(e,!1),a&&a(),Laya.Tween.to(e,{scaleX:1},.9*t,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:0},.8*t,null,Laya.Handler.create(this,function(){P._Node.childrenVisible2D(e,!0),Laya.Tween.to(e,{scaleX:1},.7*t,null,Laya.Handler.create(this,function(){n&&n()}),0)}),0)}),0)}),i)},e.cardRotateX_OneFace=function(e,t,a,i,n){Laya.Tween.to(e,{scaleX:0},a,null,Laya.Handler.create(this,function(){null!==t&&t(),Laya.Tween.to(e,{scaleX:1},a,null,Laya.Handler.create(this,function(){null!==n&&n()}),0)}),i)},e.cardRotateY_TowFace=function(e,t,a,i,n){Laya.Tween.to(e,{scaleY:0},t,null,Laya.Handler.create(this,function(){P._Node.childrenVisible2D(e,!1),a&&a(),Laya.Tween.to(e,{scaleY:1},t,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleY:0},t,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleY:1},1*t/2,null,Laya.Handler.create(this,function(){P._Node.childrenVisible2D(e,!0),n&&n()}),0)}),0)}),0)}),i)},e.cardRotateY_OneFace=function(e,t,a,i,n){Laya.Tween.to(e,{scaleY:0},a,null,Laya.Handler.create(this,function(){t&&t(),Laya.Tween.to(e,{scaleY:1},a,null,Laya.Handler.create(this,function(){n&&n()}),0)}),i||0)},e.move_changeRotate=function(e,t,a,i,n,s,o){let r=t*i+e.x*(1-i),l=a*i+e.y*(1-i);Laya.Tween.to(e,{x:r,y:l,rotation:45},s,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{x:t,y:a,rotation:0},s,null,Laya.Handler.create(this,function(){null!==o&&o()}),0)}),0)},e.bomb_LeftRight=function(e,t,a,i,n){Laya.Tween.to(e,{scaleX:t},a,Laya.Ease.cubicInOut,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:.85},.5*a,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:.9*t},.55*a,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:.95},.6*a,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:1},.65*a,null,Laya.Handler.create(this,function(){i&&i()}),0)}),0)}),0)}),0)}),n)},e.bombs_Appear=bombs_Appear,e.bombs_AppearAllChild=function(e,t,a,i,n,s,o,r,l){let h=0;o||(o=100);for(let l=0;l<e.numChildren;l++){let c=e.getChildAt(l);c.alpha=0,Laya.timer.once(h,this,()=>{c.alpha=1,e.numChildren,bombs_Appear(c,t,a,i,n,s,r)}),h+=o}},e.bombs_VanishAllChild=function(e,t,a,i,n,s,o){let r=0;s||(s=100);for(let l=0;l<e.numChildren;l++)e.getChildAt(l),Laya.timer.once(r,this,()=>{e.numChildren,bombs_Vanish(e,t,a,i,n,o)}),r+=s},e.bombs_Vanish=bombs_Vanish,e.swell_shrink=function(e,t,a,i,n,s){n||(n=0),Laya.Tween.to(e,{scaleX:a,scaleY:a,alpha:1},i,Laya.Ease.cubicInOut,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:t,scaleY:t,rotation:0},i,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:t+.5*(a-t),scaleY:t+.5*(a-t),rotation:0},.5*i,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:t,scaleY:t,rotation:0},i,null,Laya.Handler.create(this,function(){s&&s()}),0)}),0)}),0)}),n)},e.move=function(e,t,a,i,n,s,o){Laya.Tween.to(e,{x:t,y:a},i,o||null,Laya.Handler.create(this,function(){n&&n()}),s||0)},e.move_Deform_X=function(e,t,a,i,n,s,o,r,l){e.alpha=0,e.x=t,e.rotation=a,Laya.Tween.to(e,{x:i,scaleX:1+n,scaleY:1+s,rotation:a/3,alpha:1},o,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:1,scaleY:1,rotation:0},o,null,Laya.Handler.create(this,function(){null!==l&&l()}),0)}),r)},e.move_Deform_Y=function(e,t,a,i,n,s,o,r,l){e.alpha=0,t&&(e.y=t),e.rotation=a,Laya.Tween.to(e,{y:i,scaleX:1+n,scaleY:1+s,rotation:a/3,alpha:1},o,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{scaleX:1,scaleY:1,rotation:0},o,null,Laya.Handler.create(this,function(){null!==l&&l()}),0)}),r)},e.blink_FadeOut_v=function(e,t,a,i,n,s){e.alpha=t,Laya.Tween.to(e,{alpha:a},i,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{alpha:t},i,null,Laya.Handler.create(this,function(){null!==s&&s()}),0)}),n)},e.blink_FadeOut=function(e,t,a,i,n,s){e.alpha=t,n||(n=0),Laya.Tween.to(e,{alpha:t},i,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{alpha:a},i,null,Laya.Handler.create(this,function(){s&&s()}),0)}),n)},e.shookHead_Simple=function(e,t,a,i,n){let s=e.rotation;Laya.Tween.to(e,{rotation:s+t},a,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{rotation:s-2*t},a,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{rotation:s+t},a,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{rotation:s},a,null,Laya.Handler.create(this,function(){n&&n()}),0)}),0)}),0)}),i||0)},e.HintAni_01=function(e,t,a,i,n,s,o){e.alpha=0,Laya.Tween.to(e,{alpha:1,y:e.y-t},a,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{y:e.y-15},i,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{alpha:0,y:e.y+t+n},s,null,Laya.Handler.create(this,function(){null!==o&&o()}),0)}),0)}),0)},e.scale_Alpha=function(e,t,a,i,n,s,o,r,l,h,c){l||(l=0),c||(c=null),e.alpha=t,e.scaleX=a,e.scaleY=i,Laya.Tween.to(e,{scaleX:n,scaleY:s,alpha:o},r,c,Laya.Handler.create(this,function(){h&&h()}),l)},e.scale=function(e,t,a,i,n,s,o,r,l){e.scaleX=t,e.scaleY=a,Laya.Tween.to(e,{scaleX:i,scaleY:n},s,l||null,Laya.Handler.create(this,function(){r&&r()}),o||0)},e.rotate_Magnify_KickBack=function(e,t,a,i,n,s,o,r){e.alpha=0,e.scaleX=0,e.scaleY=0,Laya.Tween.to(e,{alpha:1,rotation:360+t,scaleX:1+a,scaleY:1+a},i,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{rotation:360-t/2,scaleX:1+a/2,scaleY:1+a/2},n,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{rotation:360+t/3,scaleX:1+a/5,scaleY:1+a/5},n,null,Laya.Handler.create(this,function(){Laya.Tween.to(e,{rotation:360,scaleX:1,scaleY:1},n,null,Laya.Handler.create(this,function(){e.rotation=0,null!==r&&r()}),0)}),o)}),0)}),s)}}(v=e.Ani2DAdmin||(e.Ani2DAdmin={})),function(e){e._sound={get switch(){return"0"!=Laya.LocalStorage.getItem("Setting/sound")},set switch(e){let t;t=e?1:0,Laya.LocalStorage.setItem("Setting/sound",t.toString())}},e._bgMusic={get switch(){return"0"!=Laya.LocalStorage.getItem("Setting/bgMusic")},set switch(e){let t;e?(t=1,Laya.LocalStorage.setItem("Setting/bgMusic",t.toString()),C._playMusic()):(t=0,Laya.LocalStorage.setItem("Setting/bgMusic",t.toString()),C._stopMusic())}},e._shake={get switch(){return"0"!=Laya.LocalStorage.getItem("Setting/shake")},set switch(e){let t;t=e?1:0,Laya.LocalStorage.setItem("Setting/shake",t.toString())}},e._createBtnSet=function(t,a,i,n,s,o,r){let l=new Laya.Image;return l.width=i||100,l.height=i||100,l.skin=s||"Frame/UI/icon_set.png",o?o.addChild(l):Laya.stage.addChild(l),l.pivotX=l.width/2,l.pivotY=l.height/2,l.x=t,l.y=a,l.zOrder=r||100,L._on(L._Type.largen,l,null,null,function(e){e.stopPropagation(),_._openScene(_._BaseName.Set)},null),e._BtnSet=l,e._BtnSet.name="BtnSetNode",l},e.btnSetAppear=function(t,a,i){e._BtnSet&&(t?v.scale_Alpha(e._BtnSet,0,1,1,1,1,1,t,0,t=>{e._BtnSet.visible=!0}):e._BtnSet.visible=!0,a&&(e._BtnSet.x=a),i&&(e._BtnSet.y=i))},e.btnSetVinish=function(t){e._BtnSet&&(t?v.scale_Alpha(e._BtnSet,1,1,1,1,1,0,t,0,t=>{e._BtnSet.visible=!1}):e._BtnSet.visible=!1)}}(b=e.SetAdmin||(e.SetAdmin={})),function(e){let t;!function(e){e.bgm="Lwg/Voice/bgm.mp3",e.btn="https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Voice/btn.wav",e.victory="https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Voice/guoguan.wav",e.defeated="https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Voice/wancheng.wav",e.huodejinbi="https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Voice/huodejinbi.wav"}(t=e._voiceUrl||(e._voiceUrl={})),e._playSound=function(e,a,i){e||(e=t.btn),a||(a=1),b._sound.switch&&Laya.SoundManager.playSound(e,a,Laya.Handler.create(this,function(){i&&i()}))},e._playDefeatedSound=function(e,a,i,n){b._sound.switch&&(Laya.SoundManager.soundVolume=n||1,Laya.SoundManager.playSound(e||t.defeated,a||1,Laya.Handler.create(this,function(){i&&i(),Laya.SoundManager.soundVolume=1})))},e._playVictorySound=function(e,a,i,n){b._sound.switch&&(Laya.SoundManager.soundVolume=n||1,Laya.SoundManager.playSound(e||t.victory,a||1,Laya.Handler.create(this,function(){i&&i(),Laya.SoundManager.soundVolume=1})))},e._playMusic=function(e,a,i){b._bgMusic.switch&&Laya.SoundManager.playMusic(e||t.bgm,a||0,Laya.Handler.create(this,function(){}),i||0)},e._stopMusic=function(){Laya.SoundManager.stopMusic()}}(C=e.AudioAdmin||(e.AudioAdmin={})),function(e){let t,a,i,s,o,r,l,c,_;e.color_RGBtoHexString=function(e,t,a){return"#"+("00000"+(e<<16|t<<8|a).toString(16)).slice(-6)},function(e){e.formatNumber=function(e,t=0){let a;return a=e>=1e27?(e/1e27).toFixed(t)+"ae":e>=1e24?(e/1e24).toFixed(t)+"ad":e>=1e21?(e/1e21).toFixed(t)+"ac":e>=1e18?(e/1e18).toFixed(t)+"ab":e>=1e15?(e/1e15).toFixed(t)+"aa":e>=1e12?(e/1e12).toFixed(t)+"t":e>=1e9?(e/1e9).toFixed(t)+"b":e>=1e6?(e/1e6).toFixed(t)+"m":e>=1e3?(e/1e3).toFixed(t)+"k":Math.round(e).toString()},e.strAddNum=function(e,t){return(Number(e)+t).toString()},e.NumAddStr=function(e,t){return Number(t)+e}}(t=e._Format||(e._Format={})),function(t){t.tieByParent=function(e){const t=e.parent;e.x>t.width-e.width/2&&(e.x=t.width-e.width/2),e.x<e.width/2&&(e.x=e.width/2),e.y>t.height-e.height/2&&(e.y=t.height-e.height/2),e.y<e.height/2&&(e.y=e.height/2)},t.tieByStage=function(e,t){const a=e.parent,i=a.localToGlobal(new Laya.Point(e.x,e.y));t?i.x>Laya.stage.width-e.width/2&&(i.x=Laya.stage.width-e.width/2):i.x>Laya.stage.width&&(i.x=Laya.stage.width),t?i.x<e.width/2&&(i.x=e.width/2):i.x<0&&(i.x=0),t?i.y>Laya.stage.height-e.height/2&&(i.y=Laya.stage.height-e.height/2):i.y>Laya.stage.height&&(i.y=Laya.stage.height),t?i.y<e.height/2&&(i.y=e.height/2):i.y<0&&(i.y=0);const n=a.globalToLocal(i);e.pos(n.x,n.y)},t.simpleCopyImg=function(e){let t=new Laya.Image;return t.skin=e.skin,t.width=e.width,t.height=e.height,t.pivotX=e.pivotX,t.pivotY=e.pivotY,t.scaleX=e.scaleX,t.scaleY=e.scaleY,t.skewX=e.skewX,t.skewY=e.skewY,t.rotation=e.rotation,t.x=e.x,t.y=e.y,t},t.leaveStage=function(e,t){let a=e.parent.localToGlobal(new Laya.Point(e.x,e.y));return a.x>Laya.stage.width+10||a.x<-10?(t&&t(),!0):a.y>Laya.stage.height+10||a.y<-10?(t&&t(),!0):void 0},t.getNodeGP=function(e){if(e.parent)return e.parent.localToGlobal(new Laya.Point(e.x,e.y))},t.checkTwoDistance=function(e,t,a,i){if(!e||!t)return;let n=e.parent,s=t.parent;if(!e.parent||!t.parent)return;let o=n.localToGlobal(new Laya.Point(e.x,e.y)),r=s.localToGlobal(new Laya.Point(t.x,t.y));return o.distance(r.x,r.y)<=a&&i&&i(),o.distance(r.x,r.y)},t.childZOrderByY=function(e,t,a){let i=[];if(0==e.numChildren)return i;for(let t=0;t<e.numChildren;t++){const a=e.getChildAt(t);i.push(a)}if(c.sortByProperty(i,"y"),t)for(let e=0;e<i.length;e++)i[e].zOrder=e;if(a){let e=[];for(let t=i.length-1;t>=0;t--){const a=i[t];console.log(a),a.zOrder=i.length-t,e.push(a)}return e}return i},t.changePivot=function(e,t,a,i){let n=e.pivotX,s=e.pivotY;i&&(t=Math.round(t),a=Math.round(a)),e.width&&(e.pivot(t,a),e.x+=e.pivotX-n,e.y+=e.pivotY-s)},t.changePivotCenter=function(e,t){let a,i,n=e.pivotX,s=e.pivotY;t&&(a=Math.round(e.width/2),i=Math.round(e.height/2)),e.width&&(e.pivot(e.width/2,e.height/2),e.x+=e.pivotX-n,e.y+=e.pivotY-s)},t.getChildArrByProperty=function(e,t,a){let i=[];for(let n=0;n<e.numChildren;n++){const s=e.getChildAt(n);s[t]==a&&i.push(s)}return i},t.randomChildren=function(t,a){let i=[],n=[];for(let e=0;e<t.numChildren;e++)n.push(e);let s=e._Array.randomGetOut(n,a);for(let e=0;e<s.length;e++)i.push(t.getChildAt(s[e]));return i},t.destroyAllChildren=function(e){for(let t=0;t<e.numChildren;t++)e.getChildAt(t).destroy(),t--},t.destroyOneChildren=function(e,t){for(let a=0;a<e.numChildren;a++){const i=e.getChildAt(a);i.name==t&&(i.destroy(),a--)}},t.removeAllChildren=function(e){e.numChildren>0&&e.removeChildren(0,e.numChildren-1)},t.removeOneChildren=function(e,t){for(let a=0;a<e.numChildren;a++){const i=e.getChildAt(a);i.name==t&&(i.removeSelf(),a--)}},t.checkChildren=function(e,t){for(let a=0;a<e.numChildren;a++){const i=e.getChildAt(a);if(i.name==t)return i}},t.showExcludedChild2D=function(e,t,a){for(let i=0;i<e.numChildren;i++){let n=e.getChildAt(i);for(let e=0;e<t.length;e++)n.name==t[e]?n.visible=!(!a&&null!=a):n.visible=!a&&null!=a}},t.showExcludedChild3D=function(e,t,a){for(let i=0;i<e.numChildren;i++){let n=e.getChildAt(i);for(let e=0;e<t.length;e++)n.name==t[e]?n.active=!(!a&&null!=a):n.active=!a&&null!=a}},t.createPrefab=function(e,t,a,i,s,o){const r=Laya.Pool.getItemByCreateFun(o||e.json.props.name,e.create,e);return t&&t.addChild(r),a&&r.pos(a[0],a[1]),i&&r.addComponent(i),n._addProperty(r),s&&(r.zOrder=s),r},t.childrenVisible2D=function(e,t){for(let a=0;a<e.numChildren;a++){const i=e.getChildAt(a);i.visible=!!t}},t.childrenVisible3D=function(e,t){for(let a=0;a<e.numChildren;a++){const i=e.getChildAt(a);i.active=!!t}},t.findChild3D=function findChild3D(e,t){var a;if(null!=(a=e.getChildByName(t)))return a;for(var i=null,n=0;n<e.numChildren;n++)if(null!=(i=findChild3D(e.getChildAt(n),t)))return i;return null},t.findChild2D=function findChild2D(e,t){var a;if(null!=(a=e.getChildByName(t)))return a;for(var i=null,n=0;n<e.numChildren;n++)if(null!=(i=findChild2D(e.getChildAt(n),t)))return i;return null},t.findChildByName2D=function(e,t){return[]}}(a=e._Node||(e._Node={})),function(t){t.randomOneHalf=function(){let e;return e=Math.floor(2*Math.random())},t.randomNumerical=function(t,a,i){let n=t?e._Number.randomOneBySection(t[0],t[1]):e._Number.randomOneBySection(a[0],a[1]);return i&&(n=0===e._Number.randomOneHalf()?n:-n),n},t.randomOneInt=function(e,t){return t?Math.round(Math.random()*(t-e))+e:Math.round(Math.random()*e)},t.randomCountBySection=function(e,t,a,i){let n=[];if(a||(a=1),t){for(;a>n.length;){let a;a=i||null==i?Math.round(Math.random()*(t-e))+e:Math.random()*(t-e)+e,n.push(a),_.unique01(n)}return n}for(;a>n.length;){let t;t=i||null==i?Math.round(Math.random()*e):Math.random()*e,n.push(t),_.unique01(n)}return n},t.randomOneBySection=function(e,t,a){let i;if(e>t&&(i=e,e=t,t=i),t){let i;return i=a?Math.round(Math.random()*(t-e))+e:Math.random()*(t-e)+e}{let t;return t=a?Math.round(Math.random()*e):Math.random()*e}}}(i=e._Number||(e._Number={})),function(t){function angleByRadian(e){return Math.PI/180*e}t.getOtherLocal=function(e,t){let a=e.parent.localToGlobal(new Laya.Point(e.x,e.y));return t.globalToLocal(a)},t.angleByRadian=angleByRadian,t.pointByAngleOld=function(e,t){let a=90-Math.atan2(e,t)*(180/Math.PI);return a<=0&&(a=270+(90+a)),a-90},t.pointByAngleNew=function(e,t){let a=Math.atan2(t,e)*(180/Math.PI);return a<=0&&(a=360+a),a},t.angleByPoint=function(e){const t=(90-e)/(180/Math.PI),a=new Laya.Point(Math.sin(t),Math.cos(t));return a.normalize(),a},t.angleByPointNew=function(e){const t=angleByRadian(e),a=new Laya.Point(Math.cos(t),Math.sin(t));return a.normalize(),a},t.dotRotatePoint=function(e,t,a,i,n){let s=e+(a-e)*Math.cos(n*Math.PI/180)-(i-t)*Math.sin(n*Math.PI/180),o=t+(a-e)*Math.sin(n*Math.PI/180)+(i-t)*Math.cos(n*Math.PI/180);return new Laya.Point(s,o)},t.angleAndLenByPoint=function(e,t){const a=new Laya.Point;return a.x=t*Math.cos(e*Math.PI/180),a.y=t*Math.sin(e*Math.PI/180),a},t.getRoundPosOld=function(e,t,a){const i=angleByRadian(e),n=a.x+Math.sin(i)*t,s=a.y-Math.cos(i)*t;return new Laya.Point(n,s)},t.getRoundPosNew=function(e,t,a){const i=angleByRadian(e),n=a.x+Math.cos(i)*t,s=a.y+Math.sin(i)*t;return new Laya.Point(n,s)},t.randomPointByCenter=function(t,a,i,n){n||(n=1);let s=[];for(let o=0;o<n;o++){let n=e._Number.randomCountBySection(0,a,1,!1),o=e._Number.randomCountBySection(0,i,1,!1),r=0==e._Number.randomOneHalf()?n[0]:-n[0],l=0==e._Number.randomOneHalf()?o[0]:-o[0],h=new Laya.Point(t.x+r,t.y+l);s.push(h)}return s},t.getPArrBetweenTwoP=function(e,t,a){let i=[],n=t.x-e.x,s=t.y-e.y;for(let t=0;t<a;t++)i.push(new Laya.Point(e.x+n/a*t,e.y+s/a*t));return i.length>=1&&i.unshift(),i.length>=1&&i.pop(),i},t.reverseVector=function(e,t,a){let i;return i=new Laya.Point(e.x-t.x,e.y-t.y),a&&i.normalize(),i}}(s=e._Point||(e._Point={})),function(t){function twoSubV3(e,t,a){let i=new Laya.Vector3;if(Laya.Vector3.subtract(e,t,i),a){let e=new Laya.Vector3;return Laya.Vector3.normalize(i,e),e}return i}t.randomScopeByPosition=function(t,a){let i=e._Number.randomOneBySection(a[0][0],a[1][0]),n=e._Number.randomOneBySection(a[0][1],a[1][1]),s=e._Number.randomOneBySection(a[0][2],a[1][2]);i=0==e._Number.randomOneHalf()?i:-i,n=0==e._Number.randomOneHalf()?n:-n,s=0==e._Number.randomOneHalf()?s:-s,t.transform.position=new Laya.Vector3(t.transform.position.x+i,t.transform.position.y+n,t.transform.position.z+s)},t.getMeshSize=function(e){if(e.meshRenderer){let t,a=e.meshRenderer.bounds.getExtent();return t=new Laya.Vector3(2*a.x,2*a.y,2*a.z)}},t.getSkinMeshSize=function(e){if(e.skinnedMeshRenderer){let t,a=e.skinnedMeshRenderer.bounds.getExtent();return t=new Laya.Vector3(2*a.x,2*a.y,2*a.z)}},t.twoNodeDistance=function(e,t){let a=e.transform.position,i=t.transform.position,n=new Laya.Vector3;return Laya.Vector3.subtract(a,i,n),Laya.Vector3.scalarLength(n)},t.twoPositionDistance=function(e,t){let a=twoSubV3(e,t);return Laya.Vector3.scalarLength(a)},t.twoSubV3=twoSubV3,t.maximumDistanceLimi=function(e,t,a){let i=new Laya.Vector3,n=t.transform.position;if(Laya.Vector3.subtract(n,e,i),Laya.Vector3.scalarLength(i)>=a){let n=new Laya.Vector3;Laya.Vector3.normalize(i,n);let s=e.x+n.x*a,o=e.y+n.y*a,r=e.z+n.z*a,l=new Laya.Vector3(s,o,r);return t.transform.position=l,l}},t.posToScreen=function(e,t){let a=new Laya.Vector4;t.viewport.project(e,t.projectionViewMatrix,a);let i=new Laya.Vector2;return i.x=a.x/Laya.stage.clientScaleX,i.y=a.y/Laya.stage.clientScaleY,i},t.reverseVector=function(e,t,a){let i=new Laya.Vector3(e.x-t.x,e.y-t.y,e.z-t.z);if(a){let e=new Laya.Vector3;return Laya.Vector3.normalize(i,e),e}return i},t.rayScanning=function(e,t,a,i){let n=new Laya.Ray(new Laya.Vector3(0,0,0),new Laya.Vector3(0,0,0)),s=new Array;const o=new Laya.Vector2(Laya.stage.clientScaleX*a.x,Laya.stage.clientScaleY*a.y);if(e.viewportPointToRay(o,n),t.physicsSimulation.rayCastAll(n,s),i){let e;for(let t=0;t<s.length;t++)s[t].collider.owner.name==i&&(e=s[t]);return e}return s},t.rayScanningFirst=function(e,t,a){let i=new Laya.Ray(new Laya.Vector3(0,0,0),new Laya.Vector3(0,0,0)),n=new Laya.HitResult;const s=new Laya.Vector2(Laya.stage.clientScaleX*a.x,Laya.stage.clientScaleY*a.y);return e.viewportPointToRay(s,i),t.physicsSimulation.rayCast(i,n),n},t.animatorPlay=function(e,t,a,i){let n=e.getComponent(Laya.Animator);if(n)return i||(i=0),n.play(t,i,a),n;console.log(e.name,"没有动画组件")}}(o=e._3D||(e._3D={})),function(e){e.sk_indexControl=function(e,t){e.play(t,!0),e.player.currentTime=15e3/e.player.cacheFrameRate}}(r=e._Skeleton||(e._Skeleton={})),function(e){e.drawPieMask=function(e,t,a){e.cacheAs="bitmap";let i=new Laya.Sprite;return i.blendMode="destination-out",e.addChild(i),i.graphics.drawPie(e.width/2,e.height/2,e.width/2+10,t,a,"#000000")},e.screenshot=function(e,t){return e.drawToCanvas(e.width,e.height,e.x,e.y).toBase64("image/png",t||1)},e._texArr=[],e.cameraToSprite=function(t,a){const i=t.clone();t.scene.addChild(i),i.transform.position=t.transform.position,i.transform.localRotationEuler=t.transform.localRotationEuler,i.renderTarget=new Laya.RenderTexture(a.width,a.height),i.renderingOrder=-1,i.clearFlag=Laya.CameraClearFlags.Sky;const n=new Laya.Texture(i.renderTarget,Laya.Texture.DEF_UV);a.graphics.drawTexture(n,a.x,a.y,a.width,a.height),e._texArr.push(n),e._texArr.length>3&&(e._texArr[0].destroy(),e._texArr.shift()),h._frameOnce(5,this,()=>{i.destroy()})},e.drawToTex=function(e,t){return e.drawToTexture(e.width,e.height,e.x,e.y)},e.reverseCircleMask=function(e,t,i){null!=i&&1!=i||a.destroyAllChildren(e);let n=e.getChildByName("reverseRoundMask");n||((n=new Laya.Sprite).name="reverseRoundMask",n.blendMode="destination-out",e.addChild(n)),e.cacheAs="bitmap";for(let e=0;e<t.length;e++)n.graphics.drawCircle(t[e][0],t[e][1],t[e][2],"#000000");return n.pos(0,0),n},e.reverseRoundrectMask=function(e,t,i){null!=i&&1!=i||a.removeAllChildren(e);let n=e.getChildByName("reverseRoundrectMask");n||((n=new Laya.Sprite).name="reverseRoundrectMask",n.blendMode="destination-out",e.addChild(n)),"bitmap"!==e.cacheAs&&(e.cacheAs="bitmap");for(let e=0;e<t.length;e++){const a=t[e];a[0]=Math.round(a[0]),a[1]=Math.round(a[1]),a[2]=Math.round(a[2]),a[3]=Math.round(a[3]),a[4]=Math.round(a[4]),n.graphics.drawPath(a[0],a[1],[["moveTo",a[4],0],["lineTo",a[2]-a[4],0],["arcTo",a[2],0,a[2],a[4],a[4]],["lineTo",a[2],a[3]-a[4]],["arcTo",a[2],a[3],a[2]-a[4],a[3],a[4]],["lineTo",a[3]-a[4],a[3]],["arcTo",0,a[3],0,a[3]-a[4],a[4]],["lineTo",0,a[4]],["arcTo",0,0,a[4],0,a[4]],["closePath"]],{fillStyle:"#000000"}),n.pivotX=a[2]/2,n.pivotY=a[3]/2,n.pos(0,0)}}}(l=e._Draw||(e._Draw={})),function(e){function objCopy(e){var t={};for(const a in e)if(e.hasOwnProperty(a)){const i=e[a];if("object"==typeof i)if(Array.isArray(i)){let e=_.copy(i);t[a]=e}else objCopy(i);else t[a]=i}return t}e.sortByProperty=function(e,t){return e.sort(function(e,a){var i=e[t],n=a[t];return isNaN(Number(i))||isNaN(Number(n))||(i=Number(i),n=Number(n)),i<n?-1:i>n?1:0}),e},e.diffProByTwo=function(t,a,i){for(var n=[],s=0;s<t.length;s++){for(var o=t[s],r=o[i],l=!1,h=0;h<a.length;h++)if(a[h][i]==r){l=!0;break}if(!l){let t=e.objCopy(o);n.push(t)}}return n},e.identicalPropertyObjArr=function(e,t,a){for(var i=[],n=0;n<e.length;n++){for(var s=e[n],o=s[a],r=!1,l=0;l<t.length;l++)if(t[l][a]==o){r=!0;break}r&&i.push(s)}return i},e.objArrUnique=function(e,t){for(var a=0,i=e.length;a<i;a++){var n=a+1;for(i=e.length;n<i;n++)e[a][t]===e[n][t]&&(e.splice(n,1),n--,i--)}return e},e.getArrByValue=function(e,t){let a=[];for(let i=0;i<e.length;i++)e[i][t]&&a.push(e[i][t]);return a},e.arrCopy=function(e){var t=e instanceof Array?[]:{};for(var a in e)t[a]="object"==typeof e[a]?objCopy(e[a]):e[a];return t},e.modifyProValue=function(e,t,a){for(const i in e)if(Object.prototype.hasOwnProperty.call(e,i)){const n=e[i];n[t]&&(n[t]=a)}return e},e.objCopy=objCopy}(c=e._ObjArray||(e._ObjArray={})),function(e){function copy(e){for(var t=[],a=0;a<e.length;a++)t.push(e[a]);return t}e.addToarray=function(e,t){for(let a=0;a<t.length;a++){const i=t[a];e.push(i)}return e},e.inverted=function(e){let t=[];for(let a=e.length-1;a>=0;a--){const i=e[a];t.push(i)}return e=t},e.randomGetOut=function(t,a){a||(a=1);let i=e.copy(t),n=[];if(a>i.length)return"数组长度小于取出的数！";for(let e=0;e<a;e++){let e=Math.round(Math.random()*(i.length-1)),t=i[e];i.splice(e,1),n.push(t)}return n},e.randomGetOne=function(e){let t=copy(e);return t[Math.round(Math.random()*(t.length-1))]},e.copy=copy,e.unique01=function(e){for(var t=0,a=e.length;t<a;t++){var i=t+1;for(a=e.length;i<a;i++)e[t]===e[i]&&(e.splice(i,1),i--,a--)}return e},e.unique02=function(e){for(var t=[(e=e.sort())[0]],a=1,i=e.length;a<i;a++)e[a]!==e[a-1]&&t.push(e[a]);return t},e.unique03=function(e){return Array.from(new Set(e))},e.oneExcludeOtherOne=function(t,a){let i=e.copy(t),n=e.copy(a);for(let e=0;e<i.length;e++)for(let t=0;t<n.length;t++)i[e]==n[t]&&(i.splice(e,1),e--);return i},e.moreExclude=function(e,t){let a=[];for(let t=0;t<e.length;t++)for(let i=0;i<e[t].length;i++)a.push(e[t][i]);let i=copy(a),n=copy(i),s=[];for(let e=0;e<n.length;e++)s.push({name:n[e],num:0});for(let e=0;e<a.length;e++)for(let t=0;t<s.length;t++)a[e]==s[t].name&&s[t].num++;let o=[],r=[];for(let t=0;t<s.length;t++)s[t],s[t].num==e.length?o.push(s[t].name):r.push(s[t].name);return t?r:o}}(_=e._Array||(e._Array={}))}(P=e.ToolsAdmin||(e.ToolsAdmin={})),function(e){let t,a,n=[],s=[],o=[],l=[],h=[],c=[],d=[],u=[],m=[],g=[],p=[],f=[];e._sumProgress=0,e._loadOrder=[],e._loadOrderIndex=0,e._loadType=i._BaseName.PreLoad,function(e){e.scene3D="scene3D",e.prefab3D="prefab3D",e.mesh3D="mesh3D",e.material="material",e.texture="texture",e.texture2D="texture2D",e.pic2D="pic2D",e.scene2D="scene2D",e.prefab2D="prefab2D",e.json="json",e.skeleton="skeleton",e.effectTex2D="effectTex2D"}(t=e._ListName||(e._ListName={})),e._currentProgress={get value(){return this.len?this.len:0},set value(t){if(this.len=t,this.len>=e._sumProgress){if(0==e._sumProgress)return;console.log("当前进度条进度为:",e._currentProgress.value/e._sumProgress),console.log('所有资源加载完成！此时所有资源可通过例如 Laya.loader.getRes("url")获取'),r._notify(e._Event.complete)}else{let t=0;for(let a=0;a<=e._loadOrderIndex;a++)t+=e._loadOrder[a].length;this.len==t&&e._loadOrderIndex++,r._notify(e._Event.stepLoding)}}},function(e){e.importList="_PreLoad_importList",e.complete="_PreLoad_complete",e.stepLoding="_PreLoad_startLoding",e.progress="_PreLoad_progress"}(a=e._Event||(e._Event={})),e._remakeLode=function(){n=[],s=[],o=[],l=[],c=[],d=[],u=[],m=[],g=[],p=[],e._loadOrder=[],f=[],e._sumProgress=0,e._loadOrderIndex=0,e._currentProgress.value=0};e._PreLoadScene=class extends i._SceneBase{moduleOnAwake(){e._remakeLode()}lwgStartLoding(t){r._notify(e._Event.importList,t)}moduleEvent(){r._registerOnce(a.importList,this,a=>{a[t.effectTex2D]=y._tex2D;for(const e in a)if(Object.prototype.hasOwnProperty.call(a,e))for(const i in a[e])if(Object.prototype.hasOwnProperty.call(a[e],i)){const r=a[e][i];switch(e){case t.json:g.push(r);break;case t.material:l.push(r);break;case t.mesh3D:o.push(r);break;case t.pic2D:d.push(r);break;case t.prefab2D:m.push(r);break;case t.prefab3D:s.push(r);break;case t.scene2D:u.push(r);break;case t.scene3D:n.push(r);break;case t.texture2D:c.push(r);break;case t.skeleton:p.push(r);break;case t.texture:h.push(r);break;case t.effectTex2D:f.push(r)}}e._loadOrder=[d,u,m,s,g,h,c,o,l,p,n,f];for(let t=0;t<e._loadOrder.length;t++)e._sumProgress+=e._loadOrder[t].length,e._loadOrder[t].length<=0&&(e._loadOrder.splice(t,1),t--);let i=this.lwgOpenAni();Laya.timer.once(i||0,this,()=>{r._notify(e._Event.stepLoding)})}),r._register(a.stepLoding,this,()=>{this.startLodingRule()}),r._registerOnce(a.complete,this,()=>{Laya.timer.once(this.lwgAllComplete(),this,()=>{_._SceneControl[e._loadType]=this._Owner,e._loadType!==_._BaseName.PreLoad?_._PreLoadCutIn.openName&&this._openScene(_._PreLoadCutIn.openName):(C._playMusic(),this._openScene(_._BaseName.Start,!0,!1,()=>{e._loadType=_._BaseName.PreLoadCutIn}))})}),r._register(a.progress,this,()=>{e._currentProgress.value++,e._currentProgress.value<e._sumProgress&&(console.log("当前进度条进度为:",e._currentProgress.value/e._sumProgress),this.lwgStepComplete())})}moduleOnEnable(){e._loadOrderIndex=0}startLodingRule(){if(e._loadOrder.length<=0)return console.log("没有加载项"),void r._notify(e._Event.complete);let t=0;for(let a=0;a<e._loadOrderIndex;a++)t+=e._loadOrder[a].length;let i=e._currentProgress.value-t;switch(e._loadOrder[e._loadOrderIndex]){case d:Laya.loader.load(d[i],Laya.Handler.create(this,e=>{"object"==typeof d[i].url?console.log(`${d[i]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`):null==e?console.log("XXXXXXXXXXX2D资源"+d[i]+"加载失败！不会停止加载进程！","数组下标为：",i,"XXXXXXXXXXX"):console.log("2D图片"+d[i]+"加载完成！","数组下标为：",i),r._notify(a.progress)}));break;case u:Laya.loader.load(u[i],Laya.Handler.create(this,e=>{"object"==typeof u[i].url?console.log(`${u[i]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`):null==e?console.log("XXXXXXXXXXX数据表"+u[i]+"加载失败！不会停止加载进程！","数组下标为：",i,"XXXXXXXXXXX"):console.log("2D场景"+u[i]+"加载完成！","数组下标为：",i),r._notify(a.progress)}),null,Laya.Loader.JSON);break;case n:Laya.Scene3D.load(n[i].url,Laya.Handler.create(this,e=>{"object"==typeof n[i].url?console.log(`${n[i]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`):null==e?console.log("XXXXXXXXXXX3D场景"+n[i].url+"加载失败！不会停止加载进程！","数组下标为：",i,"XXXXXXXXXXX"):(n[i].Scene=e,console.log("3D场景"+n[i].url+"加载完成！","数组下标为：",i)),r._notify(a.progress)}));break;case s:Laya.Sprite3D.load(s[i].url,Laya.Handler.create(this,e=>{"object"==typeof s[i].url?console.log(`${s[i]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`):null==e?console.log("XXXXXXXXXXX3D预设体"+s[i].url+"加载失败！不会停止加载进程！","数组下标为：",i,"XXXXXXXXXXX"):(s[i].Prefab=e,console.log("3D预制体"+s[i].url+"加载完成！","数组下标为：",i)),r._notify(a.progress)}));break;case o:Laya.Mesh.load(o[i].url,Laya.Handler.create(this,e=>{"object"==typeof o[i].url?console.log(`${o[i]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`):null==e?console.log("XXXXXXXXXXX3D网格"+o[i].url+"加载失败！不会停止加载进程！","数组下标为：",i,"XXXXXXXXXXX"):console.log("3D网格"+o[i].url+"加载完成！","数组下标为：",i),r._notify(a.progress)}));break;case h:Laya.loader.load(h[i].url,Laya.Handler.create(this,e=>{"object"==typeof h[i].url?console.log(`${h[i]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`):null==e?console.log("XXXXXXXXXXX2D纹理"+h[i].url+"加载失败！不会停止加载进程！","数组下标为：",i,"XXXXXXXXXXX"):(h[i].texture=e,console.log("纹理"+h[i].url+"加载完成！","数组下标为：",i)),r._notify(a.progress)}));break;case c:Laya.Texture2D.load(c[i].url,Laya.Handler.create(this,function(e){"object"==typeof c[i].url?console.log(`${c[i]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`):null==e?console.log("XXXXXXXXXXX2D纹理"+c[i].url+"加载失败！不会停止加载进程！","数组下标为：",i,"XXXXXXXXXXX"):(c[i].texture2D=e,console.log("3D纹理"+c[i].url+"加载完成！","数组下标为：",i)),r._notify(a.progress)}));break;case f:Laya.Texture2D.load(f[i].url,Laya.Handler.create(this,function(e){"object"==typeof f[i].url?console.log(`${f[i]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`):null==e?console.log("XXXXXXXXXXX2D纹理"+f[i].url+"加载失败！不会停止加载进程！","数组下标为：",i,"XXXXXXXXXXX"):(f[i].texture2D=e,console.log("3D纹理"+f[i].url+"加载完成！","数组下标为：",i)),r._notify(a.progress)}));break;case l:Laya.Material.load(l[i].url,Laya.Handler.create(this,e=>{"object"==typeof l[i].url?console.log(`${l[i]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`):null==e?console.log("XXXXXXXXXXX材质"+l[i].url+"加载失败！不会停止加载进程！","数组下标为：",i,"XXXXXXXXXXX"):(l[i].texture2D=e,console.log("材质"+l[i].url+"加载完成！","数组下标为：",i)),r._notify(a.progress)}));break;case g:Laya.loader.load(g[i].url,Laya.Handler.create(this,e=>{"object"==typeof g[i].url?console.log(`${g[i]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`):null==e?console.log("XXXXXXXXXXX数据表"+g[i].url+"加载失败！不会停止加载进程！","数组下标为：",i,"XXXXXXXXXXX"):(g[i].dataArr=e.RECORDS,console.log("数据表"+g[i].url+"加载完成！","数组下标为：",i)),r._notify(a.progress)}),null,Laya.Loader.JSON);break;case p:p[i].templet.on(Laya.Event.ERROR,this,()=>{console.log("XXXXXXXXXXX骨骼动画"+p[i]+"加载失败！不会停止加载进程！","数组下标为：",i,"XXXXXXXXXXX"),r._notify(a.progress)}),p[i].templet.on(Laya.Event.COMPLETE,this,()=>{console.log("骨骼动画",p[i].templet.url,"加载完成！","数组下标为：",i),r._notify(a.progress)}),p[i].templet.loadAni(p[i].url);break;case m:Laya.loader.load(m[i].url,Laya.Handler.create(this,e=>{if("object"==typeof m[i].url)console.log(`${m[i]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);else if(null==e)console.log("XXXXXXXXXXX数据表"+m[i].url+"加载失败！不会停止加载进程！","数组下标为：",i,"XXXXXXXXXXX");else{let t=new Laya.Prefab;t.json=e,m[i].prefab=t,console.log("2D预制体"+m[i].url+"加载完成！","数组下标为：",i)}r._notify(a.progress)}))}}lwgStepComplete(){}lwgAllComplete(){return 0}}}(x=e.PreLoadAdmin||(e.PreLoadAdmin={})),function(e){e._InitScene=class extends i._SceneBase{lwgOpenAni(){return 100}moduleOnStart(){l._init()}}}(A=e.InitAdmin||(e.InitAdmin={})),function(e){let t=15;e._execution={get value(){return this["Execution/executionNum"]?this["Execution/executionNum"]:Laya.LocalStorage.getItem("Execution/executionNum")?Number(Laya.LocalStorage.getItem("Execution/executionNum")):t},set value(e){console.log(e),this["Execution/executionNum"]=e,Laya.LocalStorage.setItem("Execution/executionNum",e.toString())}},e._addExDate={get value(){return this["Execution/addExDate"]?this["Execution/addExDate"]:Laya.LocalStorage.getItem("Execution/addExDate")?Number(Laya.LocalStorage.getItem("Execution/addExDate")):(new Date).getDay()},set value(e){this["Execution/addExDate"]=e,Laya.LocalStorage.setItem("Execution/addExDate",e.toString())}},e._addExHours={get value(){return this["Execution/addExHours"]?this["Execution/addExHours"]:Laya.LocalStorage.getItem("Execution/addExHours")?Number(Laya.LocalStorage.getItem("Execution/addExHours")):(new Date).getHours()},set value(e){this["Execution/addExHours"]=e,Laya.LocalStorage.setItem("Execution/addExHours",e.toString())}},e._addMinutes={get value(){return this["Execution/addMinutes"]?this["Execution/addMinutes"]:Laya.LocalStorage.getItem("Execution/addMinutes")?Number(Laya.LocalStorage.getItem("Execution/addMinutes")):(new Date).getMinutes()},set value(e){this["Execution/addMinutes"]=e,Laya.LocalStorage.setItem("Execution/addMinutes",e.toString())}},e._createExecutionNode=function(t){let a;Laya.loader.load("prefab/ExecutionNum.json",Laya.Handler.create(this,function(i){let n=new Laya.Prefab;n.json=i,a=Laya.Pool.getItemByCreateFun("prefab",n.create,n),t.addChild(a),a.getChildByName("Num").value=e._execution.value.toString(),a.pos(297,90),a.zOrder=50,e._ExecutionNode=a,e._ExecutionNode.name="_ExecutionNode"}))},e._addExecution=function(t,a,i){let n;Laya.loader.load("prefab/execution.json",Laya.Handler.create(this,function(t){let a=new Laya.Prefab;a.json=t,n=Laya.Pool.getItemByCreateFun("prefab",a.create,a),Laya.stage.addChild(n),n.x=Laya.stage.width/2,n.y=Laya.stage.height/2,n.zOrder=50,e._ExecutionNode&&v.move(n,e._ExecutionNode.x,e._ExecutionNode.y,800,()=>{v.fadeOut(n,1,0,200,0,()=>{v.upDwon_Shake(e._ExecutionNode,10,80,0,null),i&&i()})},100)}))},e.createConsumeEx=function(t){let a=Laya.Pool.getItemByClass("label",Laya.Label);a.name="label",Laya.stage.addChild(a),a.text=`${t}`,a.fontSize=40,a.bold=!0,a.color="#59245c",a.x=e._ExecutionNode.x+100,a.y=e._ExecutionNode.y-a.height/2+4,a.zOrder=100,v.fadeOut(a,0,1,200,150,()=>{v.leftRight_Shake(e._ExecutionNode,15,60,0,null),v.fadeOut(a,1,0,600,400,()=>{})})};e.ExecutionNode=class extends i._ObjectBase{constructor(){super(...arguments),this.timeSwitch=!0,this.time=0,this.countNum=59}lwgOnAwake(){this.Num=this._Owner.getChildByName("Num"),this.CountDown=this._Owner.getChildByName("CountDown"),this.CountDown_Board=this._Owner.getChildByName("CountDown_Board"),this.countNum=59,this.CountDown.text="00:"+this.countNum,this.CountDown_Board.text=this.CountDown.text;let a=new Date;a.getDate()!==e._addExDate.value?e._execution.value=t:a.getHours()==e._addExHours.value?(console.log(a.getMinutes(),e._addMinutes.value),e._execution.value+=a.getMinutes()-e._addMinutes.value,e._execution.value>t&&(e._execution.value=t)):e._execution.value=t,this.Num.value=e._execution.value.toString(),e._addExDate.value=a.getDate(),e._addExHours.value=a.getHours(),e._addMinutes.value=a.getMinutes()}countDownAddEx(){if(this.time++,this.time%60==0){if(this.countNum--,this.countNum<0){this.countNum=59,e._execution.value+=1,this.Num.value=e._execution.value.toString();let t=new Date;e._addExHours.value=t.getHours(),e._addMinutes.value=t.getMinutes()}this.countNum>=10&&this.countNum<=59?(this.CountDown.text="00:"+this.countNum,this.CountDown_Board.text=this.CountDown.text):this.countNum>=0&&this.countNum<10&&(this.CountDown.text="00:0"+this.countNum,this.CountDown_Board.text=this.CountDown.text)}}lwgOnStart(){h._frameLoop(1,this,()=>{Number(this.Num.value)>=t?this.timeSwitch&&(e._execution.value=t,this.Num.value=e._execution.value.toString(),this.CountDown.text="00:00",this.CountDown_Board.text=this.CountDown.text,this.countNum=60,this.timeSwitch=!1):(this.timeSwitch=!0,this.countDownAddEx())})}}}(I=e.ExecutionAdmin||(e.ExecutionAdmin={}))}(s||(s={}));var h=s;let c=s.PlatformAdmin,_=(s.GameAdmin,s.SceneAdmin),d=s.AdaptiveAdmin,u=s.SceneAniAdmin,m=(s.NodeAdmin,s.Dialogue),g=s.EventAdmin,p=s.TimerAdmin,y=s.DataAdmin,f=s.StorageAdmin,w=s.DateAdmin,S=s.SetAdmin,v=s.AudioAdmin,L=s.ClickAdmin,b=s.ColorAdmin,C=s.Eff2DAdmin,P=s.Eff3DAdmin,x=s.Ani2DAdmin,A=s.Ani3DAdmin,I=(s.ExecutionAdmin,s.GoldAdmin,s.ToolsAdmin),T=s.PreLoadAdmin,B=s.InitAdmin;class N{}N._list={scene3D:{MakeClothes:{url:"https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/_Lwg3D/_Scene/LayaScene_3DDressUp/Conventional/3DDressUp.ls",Scene:null}},pic2D:{Effects:"res/atlas/lwg/Effects.png"},prefab2D:{NativeRoot:{url:"Prefab/NativeRoot.json",prefab:new Laya.Prefab},BtnAgain:{url:"Prefab/BtnAGainTow.json",prefab:new Laya.Prefab},BtnBack:{url:"Prefab/BtnBack3.json",prefab:new Laya.Prefab},BtnRollback:{url:"Prefab/BtnRollback.json",prefab:new Laya.Prefab},diy_bottom_002_final:{url:"Prefab/diy_bottom_002_final.json",prefab:new Laya.Prefab},diy_bottom_003_final:{url:"Prefab/diy_bottom_003_final.json",prefab:new Laya.Prefab},diy_bottom_004_final:{url:"Prefab/diy_bottom_004_final.json",prefab:new Laya.Prefab},diy_bottom_005_final:{url:"Prefab/diy_bottom_005_final.json",prefab:new Laya.Prefab},diy_bottom_006_final:{url:"Prefab/diy_bottom_006_final.json",prefab:new Laya.Prefab},diy_dress_001_final:{url:"Prefab/diy_dress_001_final.json",prefab:new Laya.Prefab},diy_dress_002_final:{url:"Prefab/diy_dress_002_final.json",prefab:new Laya.Prefab},diy_dress_003_final:{url:"Prefab/diy_dress_003_final.json",prefab:new Laya.Prefab},diy_dress_004_final:{url:"Prefab/diy_dress_004_final.json",prefab:new Laya.Prefab},diy_dress_005_final:{url:"Prefab/diy_dress_005_final.json",prefab:new Laya.Prefab},diy_dress_006_final:{url:"Prefab/diy_dress_006_final.json",prefab:new Laya.Prefab},diy_dress_007_final:{url:"Prefab/diy_dress_007_final.json",prefab:new Laya.Prefab},diy_dress_008_final:{url:"Prefab/diy_dress_008_final.json",prefab:new Laya.Prefab},diy_top_003_final:{url:"Prefab/diy_top_003_final.json",prefab:new Laya.Prefab},diy_top_004_final:{url:"Prefab/diy_top_004_final.json",prefab:new Laya.Prefab},diy_top_005_final:{url:"Prefab/diy_top_005_final.json",prefab:new Laya.Prefab},diy_top_006_final:{url:"Prefab/diy_top_006_final.json",prefab:new Laya.Prefab},diy_top_007_final:{url:"Prefab/diy_top_007_final.json",prefab:new Laya.Prefab},diy_top_008_final:{url:"Prefab/diy_top_008_final.json",prefab:new Laya.Prefab}},texture:{},texture2D:{bgStart:{url:"https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgStart.jpg",texture2D:null}},scene2D:{Start:"Scene/Start.json",Guide:"Scene/Guide.json",PreLoadStep:"Scene/PreLoadCutIn.json",MakePattern:"Scene/MakePattern.json",MakeTailor:"Scene/MakeTailor.json"},json:{GeneralClothes:{url:"_LwgData/_DressingRoom/GeneralClothes.json",dataArr:new Array},DIYClothes:{url:"_LwgData/_MakeTailor/DIYClothes.json",dataArr:new Array},DIYClothesDiff:{url:"_LwgData/_MakeTailor/DIYClothesDiff.json",dataArr:new Array},MakePattern:{url:"_LwgData/_MakePattern/MakePattern.json",dataArr:new Array},Ranking:{url:"_LwgData/_Ranking/Ranking.json",dataArr:new Array},CheckIn:{url:"_LwgData/_CheckIn/CheckIn.json",dataArr:new Array}}};class k{}k.Start={texture2D:{bgStart:{url:"https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgStart.jpg",texture2D:null}}},k.MakePattern={texture2D:{bgMakePattern:{url:"https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgMakePattern.jpg",texture2D:null},bgPhoto:{url:"https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgPhoto.png",texture2D:null}}},k.DressingRoom={texture2D:{bgDressingRoom:{url:"https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgDressingRoom.jpg",texture2D:null}}};class O extends _._BaseName{}O.MakeTailor="MakeTailor",O.MakePattern="MakePattern",O.DressingRoom="DressingRoom",O.Tweeting_ChoosePhotos="Tweeting_ChoosePhotos",O.Tweeting_Dynamic="Tweeting_Dynamic",O.Tweeting_GetFans="Tweeting_GetFans",O.Tweeting_Main="Tweeting_Main",O.AdsHint="AdsHint",O.BackHint="BackHint",O.PersonalInfo="PersonalInfo";class D{constructor(){this.aniName={Stand:"Stand",Pose1:"Pose1",Pose2:"Pose2",DispalyCloth:"DispalyCloth",Walk:"Walk"}}static _ins(){return this.ins||(this.ins=new D,this.ins._Owner=N._list.scene3D.MakeClothes.Scene,Laya.stage.addChild(this.ins._Owner),this.ins._Role=this.ins._Owner.getChildByName("Role"),this.ins._RoleFPos=new Laya.Vector3(this.ins._Role.transform.position.x,this.ins._Role.transform.position.y,this.ins._Role.transform.position.z),this.ins._Root=this.ins._Role.getChildByName("Root"),this.ins._DIY=this.ins._Root.getChildByName("DIY"),this.ins._General=this.ins._Root.getChildByName("General"),this.ins._DBottoms=this.ins._DIY.getChildByName("Bottoms"),this.ins._DTop=this.ins._DIY.getChildByName("Top"),this.ins._DDress=this.ins._DIY.getChildByName("Dress"),this.ins._GBottoms=this.ins._General.getChildByName("Bottoms"),this.ins._GTop=this.ins._General.getChildByName("Top"),this.ins._GDress=this.ins._General.getChildByName("Dress"),this.ins._RoleAni=this.ins._Role.getComponent(Laya.Animator),this.ins._MainCamara=this.ins._Owner.getChildByName("Main Camera"),this.ins._MirrorCamera=this.ins._Owner.getChildByName("MirrorCamera"),this.ins._Mirror=this.ins._Owner.getChildByName("Mirror"),this.ins._Bg1=this.ins._Owner.getChildByName("Bg1"),this.ins._bg1Mat=this.ins._Bg1.meshRenderer.material,this.ins._Bg2=this.ins._Owner.getChildByName("Bg2"),this.ins._BtnDress=this.ins._Owner.getChildByName("BtnDress"),this.ins._BtnTop=this.ins._Owner.getChildByName("BtnTop"),this.ins._BtnBottoms=this.ins._Owner.getChildByName("BtnBottoms"),this.ins._BtnDressingRoom=this.ins._Owner.getChildByName("BtnDressingRoom"),this.ins._DIYHanger=this.ins._Owner.getChildByName("DIYHanger"),this.ins.fillLight_Right1=this.ins._Owner.getChildByName("fillLight_Right1"),this.ins.fillLight_Right2=this.ins._Owner.getChildByName("fillLight_Right2"),this.ins.fillLight_Left1=this.ins._Owner.getChildByName("fillLight_Left1"),this.ins.fillLight_Left2=this.ins._Owner.getChildByName("fillLight_Left2"),this.ins.fillLight_Back1=this.ins._Owner.getChildByName("fillLight_Back1"),this.ins.fillLight_Bottom1=this.ins._Owner.getChildByName("fillLight_Bottom1"),this.ins.fillLight_Bottom2=this.ins._Owner.getChildByName("fillLight_Bottom2"),this.ins.fillLight_Left1.intensity=.15,this.ins.fillLight_Right1.intensity=.15,this.ins.fillLight_Bottom2.active=!1,this.ins.fillLight_Left2.intensity=.4,this.ins.fillLight_Right2.intensity=.4),this.ins}playDispalyAni(){this._RoleAni.play(this.aniName.Stand),this._RoleAni.play(this.aniName.DispalyCloth),Laya.timer.clearAll(this._Role),p._once(3200,this._Role,()=>{this._RoleAni.crossFade(this.aniName.Stand,.3)})}playPoss1Ani(){this._RoleAni.crossFade(this.aniName.Pose1,.3),Laya.timer.clearAll(this._Role),p._once(3200,this._Role,()=>{this._RoleAni.crossFade(this.aniName.Stand,.3)})}playPoss2Ani(){this._RoleAni.crossFade(this.aniName.Pose2,.3),Laya.timer.clearAll(this._Role),p._once(3200,this._Role,()=>{this._RoleAni.crossFade(this.aniName.Stand,.3)})}playStandAni(){Laya.timer.clearAll(this),Laya.timer.clearAll(this._Role),this._RoleAni.crossFade(this.aniName.Stand,.3)}playRandomPose(){p._frameLoop(500,this,()=>{0==I._Number.randomOneHalf()?D._ins().playPoss1Ani():D._ins().playPoss2Ani()},!0)}get btnDressPos(){return I._3D.posToScreen(this._BtnDress.transform.position,this._MainCamara)}get btnTopPos(){return I._3D.posToScreen(this._BtnTop.transform.position,this._MainCamara)}get btnBottomsPos(){return I._3D.posToScreen(this._BtnBottoms.transform.position,this._MainCamara)}get btnDressingRoomPos(){return I._3D.posToScreen(this._BtnDressingRoom.transform.position,this._MainCamara)}cameraToSprite(e){D._ins().mirrorSurface=!1;const t=new Laya.Sprite;return t.zOrder=-1,e.addChild(t).size(Laya.stage.width,Laya.stage.height),I._Draw.cameraToSprite(this._MainCamara,t),t}openStartAni(e){e(),this.playRandomPose(),this._DIYHanger.active=!1,this._Role.active=!0,this._MirrorCamera.active=!1}intoStart(e){this.playStandAni(),this._Owner.active=!0,this._DIYHanger.active=!1,this.fillLight_Left1.active=!1,this.fillLight_Right1.active=!1,this._MirrorCamera.active=!1,e===O.PreLoad?this._bg1Mat.albedoTexture=N._list.texture2D.bgStart.texture2D:this._bg1Mat.albedoTexture=k.Start.texture2D.bgStart.texture2D}intogeDressingRoom(){D._ins().playStandAni(),this._MirrorCamera.active=!0,this._bg1Mat.albedoTexture=k.DressingRoom.texture2D.bgDressingRoom.texture2D}get mirrorSurface(){return this._mirrorSurface}set mirrorSurface(e){this._mirrorSurface=e}openMirror(e){this.mirrorSurface=!0,p._clearAll([this._Mirror]),p._frameLoop(1,this._Mirror,()=>{this.mirrorSurface&&(this._MirrorCamera.renderTarget=new Laya.RenderTexture(e.width,e.height),this._MirrorCamera.renderingOrder=-1,this._MirrorCamera.clearFlag=Laya.CameraClearFlags.Sky,this.mirrortex&&this.mirrortex.destroy(),this.mirrortex=new Laya.Texture(this._MirrorCamera.renderTarget,Laya.Texture.DEF_UV),e.graphics.drawTexture(this.mirrortex))})}closeMirror(){this.mirrorSurface=!1}intoMakePattern(){this._Owner.active=!0,this.fillLight_Left1.active=!0,this.fillLight_Right1.active=!0,this._bg1Mat.albedoTexture=k.MakePattern.texture2D.bgMakePattern.texture2D}intoMakeTailor(){D._ins()._Owner.active=!1}photoBg(){this._bg1Mat.albedoTexture=k.MakePattern.texture2D.bgPhoto.texture2D}displayDress(){this._GBottoms.active=this._GTop.active=this._DBottoms.active=this._DTop.active=!1}displayTopAndBotton(){this._GDress.active=this._DDress.active=!1}}class V{constructor(){}static _ins(){return this.ins||(this.ins=new V),this.ins}remake(e,t){this.name=t,D._ins()._DIYHanger.active=!0,D._ins()._Role.active=!1;const a=D._ins()._DIYHanger.getChildByName(e);I._Node.showExcludedChild3D(D._ins()._DIYHanger,[a.name]),this.Present=a.getChildByName(t),I._Node.showExcludedChild3D(a,[this.Present.name]),this.Present.transform.localRotationEulerY=180,this.Front=this.Present.getChildByName(`${this.Present.name}_0`),this.frontMat=this.Front.meshRenderer.material,this.Reverse=this.Present.getChildByName(`${this.Present.name}_1`),this.reverseMat=this.Reverse.meshRenderer.material,this.ModelTap=this.Present.getChildByName("ModelTap"),this.ModelTap.transform.position=new Laya.Vector3(this.Present.transform.position.x,this.ModelTap.transform.position.y,this.Present.transform.position.z),this.hanger=this.Present.getChildByName("hanger"),this.hanger.active=!0;let i=this.Front.meshRenderer.bounds.getCenter(),n=this.Front.meshRenderer.bounds.getExtent(),s=new Laya.Vector3(i.x,i.y+n.y,i.z),o=new Laya.Vector3(i.x,i.y-n.y,i.z),r=I._3D.posToScreen(s,D._ins()._MainCamara),l=I._3D.posToScreen(o,D._ins()._MainCamara);this.texHeight=l.y-r.y}addTexture2D(e){this.frontMat.albedoTexture&&this.frontMat.albedoTexture.destroy(),this.frontMat.albedoTexture=e[0],this.reverseMat.albedoTexture&&this.reverseMat.albedoTexture.destroy(),this.reverseMat.albedoTexture=e[1]}rotate(e){1==e?this.Present.transform.localRotationEulerY++:this.Present.transform.localRotationEulerY--}}var R,M,X,E,U,H,F,Y,G,$,J,j,z,W;!function(e){class t extends h.DataAdmin._BaseProperty{constructor(){super(),this.rankNum="rankNum",this.fansNum="fansNum",this.iconSkin="iconSkin"}}e._mergePro=t,e._whereFrom=O.Start;class a extends y._Table{constructor(){super(...arguments),this._classify={other:"other",self:"self"}}static _ins(){if(!this.ins){if(this.ins=new a("RankingData",N._list.json.Ranking.dataArr,!0),this.ins._mergePro=new t,!this.ins._arr[0].iconSkin)for(let e=0;e<this.ins._arr.length;e++){const t=this.ins._arr[e];t.iconSkin=`Game/UI/Ranking/IconSkin/avatar_${t[this.ins._property.serial]}.png`}this.ins._pitchName="玩家",this.ins._sortByProperty(this.ins._mergePro.fansNum,this.ins._mergePro.rankNum)}return this.ins}}e._Data=a}(R||(R={})),function(e){let t;!function(e){e.closeGuide="GuidecloseGuide",e.vanishGuide="GuidevanishGuide",e.StartBtnDress="GuideStartBtnDress",e.MakeTailorPulldown="GuideMakeTailorPulldown",e.MakeTailorChangeCloth="GuideMakeTailorChangeCloth",e.MakeTailorBtnCom="GuideMakeTailorBtnCom",e.MakeTailorStartTailor="GuideMakeTailorStartTailor",e.MakeTailorNewTailor="GuideMakeTailorNewTailor",e.MakeTailorCloseTailor="GuideMakeTailorCloseTailor",e.MakeTailorOpenTailor="GuideMakeTailorOpenTailor",e.MakePatternChooseClassify="GuideMakePatternChooseClassify",e.MakePatternPattern1="GuideMakePatternPattern1",e.MakePatternFrame1="GuideMakePatternFrame1",e.MakePatternTurnFace="GuideMakePatternTurnFace",e.MakePatternFrame2="GuideMakePatternFrame2",e.MakePatternPattern2="GuideMakePatternPattern2",e.MakePatternBtnCom="GuideMakePatternBtnCom",e.TweetingBtnChoosePhoto="GuideTweetingBtnChoosePhoto",e.TweetingChoosePhoto="GuideTweetingChoosePhoto",e.TweetingBtnSend="GuideTweetingBtnSend",e.TweetingBtnDoubleFans="GuideTweetingBtnDoubleFans",e.RankingCloseBtn="GuideRankingCloseBtn",e.PersonalInfoBtn="GuidePersonalInfoBtn",e.PersonalInfoWriteName="GuidePersonalInfoWriteName",e.PersonalInfoCloseBtn="GuidePersonalInfoCloseBtn",e.DelayBtnCheckIn="StartDelayBtnCheckIn",e.BtnCheckIn="GuideBtnCheckIn",e.CheckInGetReward="GuideCheckInGetReward",e.CheckInCloseBtn="GuideCheckInBtnClose",e.StartOtherBtnClick="GuideStartOtherBtnClick"}(t=e.Event||(e.Event={})),e._complete={get value(){return f._bool("_Guide_complete").value},set value(e){f._bool("_Guide_complete").value=e}},e.MmakeTailorPulldownSwicth=!1,e.MmakeTailorBtnComSwicth=!1,e.MakePatternState="ChooseClassify",e.MakePatternStateType={ChooseClassify:"ChooseClassify",Pattern1:"Pattern1",Frame1:"Frame1",TurnFace:"TurnFace",Frame2:"Frame2",Pattern2:"Pattern2",BtnCom:"BtnCom",closeGuide:"closeGuide"},e.CheckInCloseBtn=!1}(M||(M={})),function(e){e._name={get value(){return f._str("playerName",null,"You").value},set value(e){f._str("playerName").value=e}}}(X||(X={})),E||(E={}),function(e){e._fromBack=!1}(U||(U={})),function(e){let t;!function(e){e.photo="Startphoto",e.updateRanking="StartupdateRanking",e.BtnPersonalInfo="StartBtnPersonalInfo"}(t=e.Event||(e.Event={}))}(H||(H={}));class Z extends y._Table{constructor(){super(...arguments),this._classify={DIY:"DIY",General:"General"},this._part={Dress:"Dress",Top:"Top",Bottoms:"Bottoms",FaceMask:"FaceMask",Accessories:"Accessories",Shoes:"Shoes",Hair:"Hair"},this._otherPro={putOn:"putOn",part:"part"}}static _ins(){return this.ins||(this.ins=new Z("ClothesGeneral",N._list.json.GeneralClothes.dataArr,!0),c._Ues.value===c._Tpye.Bytedance&&this.ins._deleteObjByName("ads")),this.ins}getDIYTexBasicUrl(e){return`https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/DIYTexbasic/${e.substr(0,e.length-5)}basic.png`}getGeneralIcon(e){return`https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Icon/General/${e}.png`}collectDIY(){let e=q._ins()._getArrByNoProperty(q._ins()._otherPro.icon,"");const t=I._ObjArray.arrCopy(e);return I._ObjArray.modifyProValue(t,this._property.classify,"DIY"),this._addObjectArr(t),t}changeAfterMaking(){this.collectDIY(),this.accurateChange(q._ins()._getPitchProperty("part"),q._ins()._pitchName)}changeClass(e,t,a,i){const n=D._ins()._Root.getChildByName(e);for(let a=0;a<n.numChildren;a++){const s=n.getChildAt(a);s.active=!1;for(let a=0;a<t.length;a++){const n=t[a];if(n[this._otherPro.part]===s.name){s.active=!0;for(let t=0;t<s.numChildren;t++){const a=s.getChildAt(t);if(a.name===n[this._property.name]){a.active=!0;const t=i?40:15;if("DIY"===e){const e=this.getDIYTexBasicUrl(a.name),i=new Laya.Sprite;i.visible=!1,Laya.stage.addChild(i),i.zOrder=1e3,i.size(512,512),i.scale(1,-1),i.pos(0,512);const n=new Laya.Image;n.skin=e,i.addChild(n),n.size(512,512),n.pos(0,0);const s=f._array(`${a.name}/${q._ins()._otherPro.texF}`).value;for(let e=0;e<s.length;e++){const t=s[e],a=new Laya.Image;i.addChild(a),a.skin=`Pattern/${t.name}.png`,a.x=t.x,a.y=t.y,a.anchorX=t.anchorX,a.anchorY=t.anchorY,a.width=t.width,a.height=t.height,a.height=t.height,a.rotation=t.rotation,a.zOrder=t.zOrder}const o=a.getChildByName(`${a.name}_0`).skinnedMeshRenderer.material;p._frameOnce(t,this,()=>{o.albedoTexture&&o.albedoTexture.destroy(),o.albedoTexture=i.drawToTexture(i.width,i.height,i.x,i.y+i.height),i.removeSelf()});const r=new Laya.Sprite;r.visible=!1,Laya.stage.addChild(r),r.zOrder=1e3,r.size(512,512),r.scale(1,-1);const l=new Laya.Image;l.skin=e,r.addChild(l),l.size(512,512),r.pos(512,0);const h=f._array(`${a.name}/${q._ins()._otherPro.texR}`).value;for(let e=0;e<h.length;e++){const t=h[e],a=new Laya.Image;r.addChild(a),a.skin=`Pattern/${t.name}.png`,a.x=t.x,a.y=t.y,a.anchorX=t.anchorX,a.anchorY=t.anchorY,a.width=t.width,a.height=t.height,a.height=t.height,a.rotation=t.rotation,a.zOrder=t.zOrder}const c=a.getChildByName(`${a.name}_1`).skinnedMeshRenderer.material;p._frameOnce(t,this,()=>{c.albedoTexture&&c.albedoTexture.destroy(),c.albedoTexture=r.drawToTexture(r.width,r.height,r.x,r.y+r.height),r.removeSelf()})}}else a.active=!1}}}}a&&D._ins().playDispalyAni()}changeClothStart(){this.collectDIY();const e=this._getArrByProperty(this._otherPro.putOn,!0);this.changeClass(this._classify.DIY,e,!1,!0),this.changeClass(this._classify.General,e,!1,!0),this.startSpecialSet()}changeCloth(){const e=this._getArrByProperty(this._otherPro.putOn,!0);this.changeClass(this._classify.DIY,e,!0),this.changeClass(this._classify.General,e,!0)}startSpecialSet(){f._bool("DressState").value?D._ins()._GBottoms.active=D._ins()._GTop.active=D._ins()._DBottoms.active=D._ins()._DTop.active=!1:D._ins()._GDress.active=D._ins()._DDress.active=!1}specialSet(e){e===this._part.Dress?f._bool("DressState").value=!0:e!==this._part.Top&&e!==this._part.Bottoms||(f._bool("DressState").value=!1),f._bool("DressState").value?D._ins().displayDress():D._ins().displayTopAndBotton()}accurateChange(e,t){const a=Z._ins()._getArrByProperty("part",e);for(let e=0;e<a.length;e++){const i=a[e];t===i.name?i.putOn=!0:i.putOn=!1}q._ins()._setProperty(q._ins()._pitchName,"putOn",!0),Z._ins().changeCloth(),Z._ins().specialSet(e),Z._ins()._refreshAndStorage()}}class q extends y._Table{constructor(){super(...arguments),this._classify={Dress:"Dress",Top:"Top",Bottoms:"Bottoms",ads:"ads"},this._otherPro={color:"color",icon:"icon",diffX:"diffX",diffY:"diffY",texR:"texR",texF:"texF"}}static _ins(){return this.ins||(this.ins=new q("DIYClothes",N._list.json.DIYClothes.dataArr,!0),c._Ues.value===c._Tpye.Bytedance&&this.ins._deleteObjByName("ads")),this.ins}getPitchTexBasicUrl(){return`https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/DIYTexbasic/${this._pitchName.substr(0,this._pitchName.length-5)}basic.png`}getDIYCutIcon(e){return`https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Icon/DIY/${e.substr(0,e.length-5)}cut.png`}getColor(){let e=this._getPitchObj();return[e[`${this._otherPro.color}1`],e[`${this._otherPro.color}2`]]}getClothesArr(){if(!this.ClothesArr){this.ClothesArr=[];const e=q._ins()._arr;for(let t=0;t<e.length;t++)if("ads"!==`${e[t].name}`){let a=this.createClothes(`${e[t].name}`);this.ClothesArr.push(a)}}return this.ClothesArr}createClothes(e,t){const a=I._Node.createPrefab(N._list.prefab2D[e].prefab),i=new Laya.Sprite;return i.width=Laya.stage.width,i.height=Laya.stage.height,i.pivotX=i.width/2,i.pivotY=i.height/2,i.x=Laya.stage.width/2,i.y=Laya.stage.height/2,i.addChild(a),i.name=e,t&&(t.addChild(i),i.zOrder=20),i}}!function(e){let t;!function(e){e.scissorTrigger="_MakeTailor_scissorTrigger",e.completeEffcet="_MakeTailor_completeAni",e.changeClothes="_MakeTailor_changeClothes",e.scissorAppear="_MakeTailor_scissorAppear",e.scissorPlay="_MakeTailor_scissorPlay",e.scissorStop="_MakeTailor_scissorStop",e.scissorRotation="_MakeTailor_scissorRotation",e.scissorAgain="_MakeTailor_scissorSitu",e.scissorRemove="_MakeTailor_scissorRemove"}(t=e.Event||(e.Event={}))}(F||(F={})),function(e){let t;!function(e){e.close="_MakePattern/close",e.createImg="_MakePattern/createImg",e.byteDanceBackStart="_MakePattern/byteDanceBackStart"}(t=e.Event||(e.Event={}));class a extends y._Table{constructor(){super(...arguments),this._classify={newYear:"newYear",basic:"basic",cat:"cat",pink:"pink",expression:"expression"}}static _ins(){return this.ins||(this.ins=new a("_Pattern",N._list.json.MakePattern.dataArr,!0),this.ins._pitchClassify=this.ins._classify.newYear,c._Ues.value===c._Tpye.Bytedance&&this.ins._deleteObjByName("ads"),this.ins.newYearArr=this.ins._getArrByClassify(this.ins._classify.newYear),this.ins.newYearArr.push({},{}),this.ins.basicArr=this.ins._getArrByClassify(this.ins._classify.basic),this.ins.basicArr.push({},{}),this.ins.catArr=this.ins._getArrByClassify(this.ins._classify.cat),this.ins.catArr.push({},{}),this.ins.pinkArr=this.ins._getArrByClassify(this.ins._classify.pink),this.ins.pinkArr.push({},{}),this.ins.expressionArr=this.ins._getArrByClassify(this.ins._classify.expression),this.ins.expressionArr.push({},{})),this.ins}}e._Pattern=a;class i extends y._Table{constructor(){super(...arguments),this._otherPro={fDiffX:"fDiffX",fDiffY:"fDiffY",rDiffX:"rDiffX",rDiffY:"rDiffY"}}static _ins(){return this.ins||(this.ins=new i("_DIYClothesDiff",N._list.json.DIYClothesDiff.dataArr,!1)),this.ins}get fDiffX(){return i._ins()._getProperty(V._ins().name,"fDiffX")}get fDiffY(){return i._ins()._getProperty(V._ins().name,"fDiffY")}get rDiffX(){return i._ins()._getProperty(V._ins().name,"rDiffX")}get rDiffY(){return i._ins()._getProperty(V._ins().name,"rDiffY")}}e._PatternDiff=i}(Y||(Y={})),function(e){let t;!function(e){e.byteDanceBackStart="_DressingRoom/byteDanceBackStart"}(t=e.Event||(e.Event={}))}(G||(G={})),function(e){e._photo={arr:[],take:(t,a)=>{e._photo.arr[a]&&e._photo.arr[a].destroy(),e._photo.arr[a]=t.drawToTexture(Laya.stage.width,Laya.stage.height,0,0)},clear:()=>{for(let t=0;t<e._photo.arr.length;t++){const a=e._photo.arr[t];a&&a.destroy()}e._photo.arr=[],Laya.Resource.destroyUnusedResources()}},e._attentionNum={get value(){return f._num("_MakePattern/attention",null,180).value},set value(e){f._num("_MakePattern/attention").value=e}},e._completeNum={get value(){return f._num("_MakePattern/completeNum").value},set value(e){f._num("_MakePattern/completeNum").value=e}},e._forwardedNum={get value(){return f._num("Tweeting/forwarded",null,I._Number.randomOneBySection(75,125,!0)).value},set value(e){f._num("Tweeting/forwarded").value=e}},e._commentNum={get value(){return f._num("Tweeting/Comment",null,I._Number.randomOneBySection(100,150,!0)).value},set value(e){f._num("Tweeting/Comment").value=e}},e._likeNum={get value(){return f._num("Tweeting/like",null,I._Number.randomOneBySection(200,250,!0)).value},set value(e){f._num("Tweeting/like").value=e}},e._brief={getThree:()=>I._Array.randomGetOut(e._brief.all,3),getOne:()=>I._Array.randomGetOut(e._brief.all),all:["世界很烦，但我要很可爱","生活就是见招拆招","忠于自己，热爱生活","我很有个性，但我不想签名","T^T\t","你最怕什么","宁缺毋滥","围脖红人","剪裁大师","剪裁王"]},e._mainBody={getOne:()=>(e._mainBody.present=I._Array.randomGetOne(e._mainBody.all),e._mainBody.present),present:null,all:["不管几岁，反正少女心万岁≧▽≦","此处可爱贩卖机  24小时正常营业\t","欢迎光临我的手工小店，我会制作更多大家喜欢的衣服哦","现在一定有个很可爱的人，在看我的这句话","辛辛苦苦做了好久，结果很满意，好喜欢哦","大家觉得我这套衣服怎么样","闲来无事，做了一套衣服，感觉还不错","我觉得吧，这次发挥的一般，下次会更好，敬请期待","浮游于这个世界所产生的热能 也比不过喜欢你的热忱\t","时间会把对你最好的人留在最后，毕竟喜欢是一阵风，而爱是细水长流","人生难免遇上些许不如意，翻过这一页就会发现生活处处有美好","也许，只有制作衣服的时候，才会让自己的心静下来","讲道理，我觉得我的手艺还不错，我是不是可以考虑开一家店了？","技术还不太行，需要多多磨炼，再努力做几件衣服吧~","今天心情好，早早地起来做衣服了，我是可爱的小裁缝~啦啦啦~","给妈妈做了件衣服，妈妈说好喜欢~","还有什么可以比做自己喜欢的事更加让人开心的呢~","一些些自己的小设计，就可以让一件衣服焕发生机","也许只是一瞬间的灵感，我将会付之于行动来实现它","对于剪裁和搭配的热情，我不会输给任何人的~","加油，我会成为最好的设计师的，我会爆火！~","坚持不懈，认真对待自己的，努力成为最好的设计师！~","感谢大家的支持，我会努力的"]},e._reply={getTow:()=>I._Array.randomGetOut(e._reply.all,2),all:["加油，坚持，我看好你哦","好好看，我也想要","那么请问在哪里可以买到呢","有一说一，真的还可以","感觉，你做的越来越好了","我也想和你一样拥有如此灵巧的双手","真的好看，加油","我的天，这也太美了吧","OMG，买他买他！~","沙发~~","点赞这条回复，你会好运连连","求翻牌，你这也太美了吧","太适合仙女了吧","我也想学学，能教教我吗","感觉你能火，坚持，加油","感觉没有什么可以难倒你","我想和你一样心灵手巧","我的天，这是真的太好看了"," U1S1，是真漂亮~","我觉得你还可以更优秀~","不是我杠精，你这个真的，真可以，没的杠","好看是真好看，难也是真的难","感觉我学不会，咋办，好美","仙女穿起来也太好看了吧","花痴脸~这也太美了","坚持，我看好你哦，感觉你能火","天哪，这也太美了吧"]},e._photoIndex=0}($||($={})),function(e){class t extends y._Table{constructor(){super(...arguments),this._otherPro={checkAddition:"checkAddition",otherRewardType:"otherRewardType",otherRewardNum:"otherRewardNum",otherCompelet:"otherCompelet"}}static _ins(){return this.ins||(this.ins=new t("CheckIn",N._list.json.CheckIn.dataArr,!0)),this.ins}}e._Data=t,e._immediately={get value(){return f._num("_CheckIn/immediately").value},set value(e){f._num("_CheckIn/immediately").value=e}},e._checkInNum={get value(){return f._num("_CheckIn/checkInNum").value},set value(e){f._num("_CheckIn/checkInNum").value=e}},e._lastCheckDate={get value(){return f._num("_CheckIn/lastCheckDate").value},set value(e){f._num("_CheckIn/lastCheckDate").value=e}},e._todayCheckIn={get value(){return e._lastCheckDate.value==w._date.date}}}(J||(J={})),function(e){e._whereFrom="MakePattern"}(j||(j={}));class K extends T._PreLoadScene{lwgOpenAniAfter(){let e=0;p._frameNumLoop(1,30,this,()=>{e++,this._LabelVar("Schedule").text=`${e}%`},()=>{let e=k[_._PreLoadCutIn.openName];e=k[_._PreLoadCutIn.openName]?e:{},g._notify(T._Event.importList,[e])})}lwgAllComplete(){switch(console.log("加载完成！"),_._PreLoadCutIn.openName){case O.MakePattern:V._ins().remake(q._ins()._pitchClassify,q._ins()._pitchName),D._ins().intoMakePattern(),console.log(q._ins().getPitchTexBasicUrl()),this._ImgVar("Front").loadImage(q._ins().getPitchTexBasicUrl(),Laya.Handler.create(this,()=>{V._ins().addTexture2D((()=>{let e=this._ImgVar("Front");const t=this._ImgVar("Front").drawToTexture(e.width,e.height,e.x,e.y+e.height);return[t,t]})())}));break;case O.MakeTailor:q._ins().ClothesArr=null,D._ins().intoMakeTailor(),q._ins().getClothesArr();break;case O.Start:_._PreLoadCutIn.closeName!==O.MakePattern||U._fromBack?D._ins().intoStart():this.iconPhoto();break;case O.DressingRoom:D._ins().intogeDressingRoom()}return p._frameOnce(30,this,()=>{this._LabelVar("Schedule").text="100%"}),1e3}iconPhoto(){if(TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.OPPO_AppRt)D._ins().intoStart(),q._ins()._setPitchProperty(q._ins()._otherPro.icon,"have"),Z._ins().changeAfterMaking();else{D._ins().photoBg(),V._ins().hanger.active=!1,V._ins().Present.transform.localRotationEulerY=180;const e=new Laya.Sprite;this._Owner.addChild(e).size(126,146),I._Draw.cameraToSprite(D._ins()._MainCamara,e),p._frameOnce(5,this,()=>{const t=I._Draw.screenshot(e,.5);q._ins()._setPitchProperty(q._ins()._otherPro.icon,t),Z._ins().changeAfterMaking(),D._ins().intoStart()})}}lwgOnDisable(){U._fromBack=!1}}class Q{constructor(){this.pkgInfo=[{name:"Game",root:"Game/"},{name:"res",root:"res/"}]}init(){console.log("SubPkg  init"),console.log("SubPkg  oppoGame"),this.pkgFlag=0,this.loadPkg_OPPO()}loadPkg_wx(){if(this.pkgFlag==this.pkgInfo.length)console.log("showLoading");else{let e=this.pkgInfo[this.pkgFlag],t=e.name,a=e.root;Laya.Browser.window.wx.loadSubpackage({name:t,success:e=>{Laya.MiniAdpter.subNativeFiles[t]=a,Laya.MiniAdpter.nativefiles.push(a),this.pkgFlag++,this.loadPkg_wx()},fail:e=>{console.error(`load ${t} err: `,e)}})}}loadPkg_sq(){if(this.pkgFlag==this.pkgInfo.length)console.log("GameInit");else{let e=this.pkgInfo[this.pkgFlag],t=e.name;e.root;Laya.Browser.window.qq.loadSubpackage({name:t,success:e=>{this.pkgFlag++,this.loadPkg_sq()},fail:e=>{console.error(`load ${t} err: `,e)}})}}loadPkg_VIVO(){if(this.pkgFlag==this.pkgInfo.length)console.log("GameInit");else{let e=this.pkgInfo[this.pkgFlag],t=e.name;e.root;Laya.Browser.window.qg.loadSubpackage({name:t,success:e=>{this.pkgFlag++,this.loadPkg_VIVO()},fail:e=>{console.error(`load ${t} err: `,e)}})}}loadPkg_OPPO(){if(console.log("loadPkg_OPPOsssssssss"),this.pkgFlag==this.pkgInfo.length)_._openScene("PreLoad"),console.log("GameInit");else{let e=this.pkgInfo[this.pkgFlag],t=e.name;e.root,Laya.Browser.window.qg.loadSubpackage({name:t,success:e=>{this.pkgFlag++,this.loadPkg_OPPO()},fail:e=>{console.log("123123  "+JSON.stringify(e)),console.log(`load ${t} err: `+JSON.stringify(e))}})}}}class ee{static _dialogOpenPopup(e,t,a){e.scene.zOrder=Laya.stage.numChildren-1;return e.scale(.5,.5),x.bombs_Appear(e,0,1,1.2,0,300,()=>{a&&a()}),t&&(t.alpha=0,x.fadeOut(t,0,1,200,200)),300}static _dialogOpenFadeOut(e,t,a){return t&&x.fadeOut(t,0,1,300,0,()=>{a&&a()}),x.fadeOut(e,0,1,250,0,()=>{!t&&a&&a()}),300}static _dialogCloseFadeOut(e,t,a){return x.fadeOut(e,1,0,180,150,()=>{a&&a()}),t&&x.fadeOut(t,1,0,180),330}static _charactersEffect(e,t,a){for(let i=0;i<t.length;i++){const n=t.charAt(i);p._frameOnce(10*i,this,()=>{e.text+=n,i==t.length-1&&a&&a()})}}static _scaleHint(e){p._loop(1e3,this,()=>{x.swell_shrink(e,1,1.05,300)})}static _fadeHint(e){x.fadeOut(e,0,.6,1500,0,()=>{x.fadeOut(e,.6,0,800,0,()=>{p._frameOnce(30,this,()=>{this._fadeHint(e)})})})}}class te extends _._SceneBase{constructor(){super(...arguments),this.btnComX=Laya.stage.width-250,this.btnComY=70,this.bgType={present:"present",vanish:"vanish",appear:"appear"},this._stepTailor=0,this.posArr=[[Laya.stage.width/2+110,140],[Laya.stage.width/2-110,Laya.stage.height/2-220],[Laya.stage.width/2+100,Laya.stage.height/2-200],[Laya.stage.width/2+200,Laya.stage.height-150]],this.nameArr=["Line01","Line02","Line03","Line04"],this.presentName=null}lwgOpenAni(){return 200}lwgOnAwake(){this._ImgVar("Hand").scale(0,0),this._ImgVar("Slide").scale(0,0)}clickEffcet(){C._Aperture._continuous(this._Owner,[this._ImgVar("Hand").x,this._ImgVar("Hand").y+28],[6,6],null,null,[C._SkinUrl.圆形小光环],null,this._ImgVar("Hand").zOrder-1,[1.2,1.2],[.6,.6],[.01,.01])}boreholeCircle(e,t,a,i){for(let t=0;t<e.length;t++){const a=10;let n=15;const s=e[t],o=(e[t][2]-n)/a;p._frameNumLoop(1,a,this,()=>{n+=o,s[2]=n,I._Draw.reverseCircleMask(this._ImgVar("Background"),e,!0)},()=>{i&&i()},!0)}t&&this._ImgVar("Hand").pos(t,a-30)}boreholeRoundrect(e,t,a,i){t&&this._ImgVar("Hand").pos(t,a);for(let t=0;t<e.length;t++){let a=0,n=0,s=0;const o=e[t],r=20,l=(o[2]-a)/r,h=(o[3]-n)/r,c=(o[4]-s)/r;p._frameNumLoop(1,r,this,()=>{a+=l,n+=h,s+=c,o[2]=a,o[3]=n,o[4]=s,I._Draw.reverseRoundrectMask(this._ImgVar("Background"),e,!0)},()=>{i&&i()},!0)}t&&this._ImgVar("Hand").pos(t,a)}handAppear(e,t){x.scale(this._ImgVar("Hand"),0,0,1,1,200,e||0,()=>{t&&t()}),this._ImgVar("HandPic").rotation=-17}bgAppear(e,t){I._Node.destroyAllChildren(this._ImgVar("Background"));this._ImgVar("HandPic").rotation=-17,x.fadeOut(this._ImgVar("Background"),0,1,300,e||0,()=>{t&&t()})}handVanish(e,t){this._ImgVar("HandPic").rotation=-17,x.scale(this._ImgVar("Hand"),1,1,0,0,300,e||0,()=>{t&&t()})}bgVanish(e,t){x.fadeOut(this._ImgVar("Background"),1,0,300,e||0,()=>{t&&t()})}handMove(e,t,a,i){this.handClear();const n=t-30,s=new Laya.Point(this._ImgVar("Hand").x,this._ImgVar("Hand").y).distance(e,n);switch(x.move(this._ImgVar("Hand"),e,n,s,()=>{a&&a()}),this._ImgVar("Hand").scale(1,1),x.move(this._ImgVar("HandPic"),75,56,s),i){case this.bgType.vanish:this.bgVanish();break;case this.bgType.appear:this.bgAppear()}}handClear(){this.lineStop(),p._clearAll([this._ImgVar("Hand")]),x._clearAll([this._ImgVar("Hand")]),this._AniVar("Frame").stop(),this._AniVar("Click").stop(),this._AniVar("ClickOne").stop(),this._ImgVar("Hand").visible=!0,this._ImgVar("HandPic").scale(1,1),this._ImgVar("HandPic").rotation=-17,this._ImgVar("Hand").pos(this._ImgVar("HandPic")._lwg.gPoint.x-75,this._ImgVar("HandPic")._lwg.gPoint.y-56),this._ImgVar("HandPic").pos(75,56)}slideUpAppear(e,t,a,i,n,s){this.bgAppear(s||0,()=>{this.boreholeRoundrect([[e,t,a,i,n]],null,null,()=>{this._ImgVar("Hand").scale(0,0),this._ImgVar("Slide").scale(1,1),this._ImgVar("Slide").pos(e,t),this._AniVar("SlideUp").play()})})}noMoveRoundrect(e,t,a,i,n,s,o,r){this.bgAppear(s||0,()=>{this.boreholeRoundrect([[e,t,a,i,n]],o||e,r||t-30,()=>{this.handAppear(null,()=>{this._AniVar("Click").play()})})})}moveRoundrectNoBg(e,t,a,i,n){this.boreholeRoundrect([[e,t,a,i,n]],null,null,()=>{this.handMove(e,t,()=>{this._AniVar("Click").play()})})}noMoveCircle(e,t,a){this.bgAppear(0,()=>{this.boreholeCircle([[e,t,a]],e,t,()=>{this.handAppear(200,()=>{this._AniVar("Click").play()})})})}moveCircleBg(e,t,a){this.bgAppear(0,()=>{this.boreholeCircle([[e,t,a]],null,null,()=>{this.handMove(e,t,()=>{this._AniVar("Click").play()})})})}moveCircleNoBg(e,t,a){this.boreholeCircle([[e,t,a]],null,null,()=>{this.handMove(e,t,()=>{this._AniVar("Click").play()})})}getGuideScissorTime(e,t){return I._Node.getNodeGP(this._Scissor).distance(e,t)}scissorTailor(e){if(!this._Scissor||this._closeLine)return;this._ImgVar("Hand").pos(this._Scissor.x,this._Scissor.y);const t=Number(this.presentName.substr(4)),a=this.posArr[t-1];var i=()=>{this._AniVar("Click").play(0,!1),x.move(this._ImgVar("Hand"),a[0],a[1],this.getGuideScissorTime(a[0],a[1]),()=>{this._AniVar(this.presentName).play(0,!1)},1500)};e?i():p._loop(6e3,this._ImgVar("Hand"),()=>{this.handAppear(0,()=>{i()})},!0)}startScissorTailor(e){e&&(this._Scissor=e),this.presentName="Line01",this._ImgVar("Hand").scale(1,1),x.move(this._ImgVar("Hand"),this._Scissor.x,this._Scissor.y,this.getGuideScissorTime(this._ImgVar("Hand").x,this._ImgVar("Hand").y),()=>{this.scissorTailor(!0),p._once(5e3,this._ImgVar("Hand"),()=>{this.scissorTailor()})})}lineStop(){this._AniVar("Line01").stop(),this._AniVar("Line02").stop(),this._AniVar("Line03").stop(),this._AniVar("Line04").stop()}newScissorTailor(e){if(this.handClear(),this.nameArr.length>1){for(let t=0;t<this.nameArr.length;t++){if(e===this.nameArr[t]){this.nameArr.splice(t,1);break}}this.presentName=this.nameArr[0],this.scissorTailor()}else this.presentName=null,this._ImgVar("Hand").visible=!1,this._Owner.close()}pattenAni(e,t,a,i){this.handMove(e,t,()=>{p._loop(3100,this._ImgVar("Hand"),()=>{this._ImgVar("Hand").scale(1,1),p._once(200,this._ImgVar("Hand"),()=>{this._AniVar("ClickOne").play(0,!1)}),x.move(this._ImgVar("Hand"),a,i,700,()=>{this.handVanish(300,()=>{this._ImgVar("Hand").pos(e,t-30)})},1e3)},!0)})}lwgEvent(){this._AniVar("Click").on(Laya.Event.LABEL,this,e=>{"effect"===e&&this.clickEffcet()}),this._AniVar("ClickOne").on(Laya.Event.LABEL,this,e=>{"effect"===e&&this.clickEffcet()}),this._AniVar("Frame").on(Laya.Event.LABEL,this,e=>{"effect"===e&&this.clickEffcet()});for(let e=0;e<4;e++){this._AniVar(`Line0${e+1}`).on(Laya.Event.LABEL,this,e=>{"com"===e&&(this._ImgVar("Hand").pos(this._Scissor.x,this._Scissor.y),this._ImgVar("Hand").scale(0,0),this._ImgVar("HandPic").scale(1,1))})}this._evReg(M.Event.StartBtnDress,(e,t)=>{this.noMoveCircle(e,t,80)}),this._evReg(M.Event.MakeTailorPulldown,()=>{const e=Laya.stage.width-95,t=Laya.stage.height/2;this.slideUpAppear(e,t,165,450,20)}),this._evReg(M.Event.MakeTailorChangeCloth,()=>{this._ImgVar("Hand").pos(this._ImgVar("SlideHand")._lwg.gPoint.x,this._ImgVar("SlideHand")._lwg.gPoint.y),this._ImgVar("Hand").scale(1,1),this._ImgVar("Slide").scale(0,0);const e=Laya.stage.width-95;this.moveCircleNoBg(e,370,80)}),this._evReg(M.Event.MakeTailorBtnCom,e=>{this._AniVar("Click").stop(),this.boreholeCircle([[e.x,e.y,80],[Laya.stage.width/2,Laya.stage.height/2,350]],null,null,()=>{this.handMove(e.x,e.y,()=>{this._AniVar("Click").play()})})}),this._evReg(M.Event.MakeTailorStartTailor,e=>{this.bgVanish(),this.handClear(),this.startScissorTailor(e)}),this._evReg(M.Event.MakeTailorNewTailor,e=>{this.newScissorTailor(e)}),this._evReg(M.Event.MakeTailorCloseTailor,()=>{this.presentName&&(this._closeLine=!0,this.handClear(),this._ImgVar("Hand").scale(0,0))}),this._evReg(M.Event.MakeTailorOpenTailor,()=>{this.presentName&&(this._closeLine=!1,this.handClear(),this.scissorTailor())}),this._evReg(M.Event.MakePatternChooseClassify,()=>{M.MakePatternState=M.MakePatternStateType.ChooseClassify;const e=Laya.stage.width-53;this.noMoveCircle(e,270,60)}),this._evReg(M.Event.MakePatternPattern1,()=>{M.MakePatternState=M.MakePatternStateType.Pattern1;const e=Laya.stage.width-152;this.pattenAni(e,310,Laya.stage.width/2,310),this.bgVanish()});var e=()=>{const e=this._Wireframe.getChildByName("WConversion"),t=this._Wireframe.localToGlobal(new Laya.Point(e.x,e.y));this.handMove(t.x,t.y,()=>{this._AniVar("Frame").play()})};this._AniVar("Frame").on(Laya.Event.LABEL,this,t=>{"com"===t&&this._Wireframe&&e()}),this._evReg(M.Event.MakePatternFrame1,t=>{M.MakePatternState=M.MakePatternStateType.Frame1,t&&(this._Wireframe=t),e()}),this._evReg(M.Event.MakePatternTurnFace,(e,t)=>{M.MakePatternState=M.MakePatternStateType.TurnFace,this.handClear(),this.moveCircleBg(e,t,80)}),this._evReg(M.Event.MakePatternPattern2,()=>{M.MakePatternState=M.MakePatternStateType.Pattern2;const e=Laya.stage.width-152;this.pattenAni(e,420,Laya.stage.width/2,420),this.bgVanish()}),this._evReg(M.Event.MakePatternFrame2,t=>{M.MakePatternState=M.MakePatternStateType.Frame2,t&&(this._Wireframe=t),e()}),this._evReg(M.Event.MakePatternBtnCom,(e,t)=>{M.MakePatternState=M.MakePatternStateType.BtnCom,this.handClear(),this.moveCircleBg(e,t,80)}),this._evReg(M.Event.TweetingBtnChoosePhoto,(e,t,a,i)=>{this.noMoveRoundrect(e,t,Laya.stage.width-320-260,290,20,500,a,i)}),this._evReg(M.Event.TweetingChoosePhoto,(e,t)=>{this.noMoveRoundrect(e,t,260,260,20)}),this._evReg(M.Event.TweetingBtnSend,(e,t)=>{this.moveRoundrectNoBg(e,t,220,120,20)}),this._evReg(M.Event.TweetingBtnDoubleFans,(e,t)=>{this.noMoveRoundrect(e,t,230,120,20)}),this._evReg(M.Event.RankingCloseBtn,(e,t)=>{this.noMoveCircle(e,t,80)}),this._evReg(M.Event.PersonalInfoBtn,(e,t)=>{this.noMoveCircle(e,t,80)}),this._evReg(M.Event.PersonalInfoWriteName,(e,t)=>{this.noMoveCircle(e,t,80)}),this._evReg(M.Event.PersonalInfoCloseBtn,(e,t)=>{this.noMoveCircle(e,t,80)}),this._evReg(M.Event.BtnCheckIn,(e,t)=>{this.noMoveCircle(e,t,80)}),this._evReg(M.Event.CheckInGetReward,(e,t)=>{this.noMoveCircle(e,t,80)}),this._evReg(M.Event.CheckInCloseBtn,(e,t)=>{this.moveCircleBg(e,t,80)}),this._evReg(M.Event.vanishGuide,()=>{this._AniVar("Click").stop(),this.handVanish(),this.bgVanish()}),this._evReg(M.Event.closeGuide,()=>{this._closeScene()})}lwgCloseAni(){return ee._dialogCloseFadeOut(this._ImgVar("Hand"),this._ImgVar("Background"))}lwgOnDisable(){this._ImgVar("Background").destroy()}}class ae{static ShowBanner(){let e=new TJ.ADS.Param;e.place=TJ.ADS.Place.BOTTOM|TJ.ADS.Place.CENTER,TJ.ADS.Api.ShowBanner(e)}static CloseBanner(){let e=new TJ.ADS.Param;e.place=TJ.ADS.Place.BOTTOM|TJ.ADS.Place.CENTER,TJ.ADS.Api.RemoveBanner(e)}static ShowNormal(){TJ.API.AdService.ShowNormal(new TJ.API.AdService.Param)}static showNormal2(){TJ.API.AdService.ShowNormal(new TJ.API.AdService.Param)}static ShowReward(e,t=500){if(c._Ues.value!=c._Tpye.WebTest&&c._Ues.value!=c._Tpye.OPPOTest&&c._Ues.value!=c._Tpye.Research){if(ae.CanShowCD){v._stopMusic(),console.log("?????");let a=new TJ.ADS.Param;a.extraAd=!0;let i=!1;a.cbi.Add(TJ.Define.Event.Reward,()=>{i=!0,v._playMusic(v._voiceUrl.bgm,0,1e3),null!=e&&e()}),a.cbi.Add(TJ.Define.Event.Close,()=>{i||(v._playMusic(v._voiceUrl.bgm,0,1e3),console.log("观看完整广告才能获取奖励哦！"),_._openScene("AdsHint",null,()=>{console.log(_._SceneControl.AdsHint),_._SceneControl.AdsHint.AdsHint.setCallBack(e)}))}),a.cbi.Add(TJ.Define.Event.NoAds,()=>{v._playMusic(v._voiceUrl.bgm,0,1e3),m.createHint_Middle("暂时没有广告，过会儿再试试吧！")}),TJ.ADS.Api.ShowReward(a),ae.CanShowCD=!1,setTimeout(()=>{ae.CanShowCD=!0},t)}}else e()}static Event(e,t){console.log("Param:>"+e+"Value:>"+t);let a=new TJ.GSA.Param;a.id=null==t?e:e+t,console.log(a.id),TJ.GSA.Api.Event(a)}static initShare(){TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.WX_AppRt&&(this.wx.onShareAppMessage(()=>({title:this.shareContent,imageUrl:this.shareImgUrl,query:""})),this.wx.showShareMenu({withShareTicket:!0,success:null,fail:null,complete:null}))}static lureShare(){TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.WX_AppRt&&this.wx.shareAppMessage({title:this.shareContent,imageUrl:this.shareImgUrl,query:""})}static VibrateShort(){S._shake.switch&&TJ.API.Vibrate.Short()}static Vibratelong(){S._shake.switch&&TJ.API.Vibrate.Long()}static TAPoint(e,t){let a=new TJ.API.TA.Param;switch(a.id=t,e){case z.BtnShow:TJ.API.TA.Event_Button_Show(a);break;case z.BtnClick:TJ.API.TA.Event_Button_Click(a);break;case z.PageShow:TJ.API.TA.Event_Page_Show(a);break;case z.PageEnter:TJ.API.TA.Event_Page_Enter(a);break;case z.PageLeave:TJ.API.TA.Event_Page_Leave(a);break;case z.LevelStart:TJ.API.TA.Event_Level_Start(a),console.log("本关开始打点");break;case z.LevelFail:TJ.API.TA.Event_Level_Fail(a),console.log("本关失败打点");break;case z.LevelFinish:TJ.API.TA.Event_Level_Finish(a),console.log("本关胜利打点")}}}ae.CanShowCD=!0,ae.wx=Laya.Browser.window.wx,ae.shareImgUrl="http://image.tomatojoy.cn/6847506204006681a5d5fa0cd91ce408",ae.shareContent="涂鸦小画手",function(e){e[e.BtnShow=0]="BtnShow",e[e.BtnClick=1]="BtnClick",e[e.PageShow=2]="PageShow",e[e.PageEnter=3]="PageEnter",e[e.PageLeave=4]="PageLeave",e[e.LevelStart=5]="LevelStart",e[e.LevelFinish=6]="LevelFinish",e[e.LevelFail=7]="LevelFail"}(z||(z={}));class ie{static _interfacePointJet(){p._frameNumLoop(5,15,this,()=>{for(let e=0;e<5;e++)C._Particle._downwardSpray(Laya.stage,new Laya.Point(1*Laya.stage.width/4,-100),[10,30],[10,30],[0,90],[C._SkinUrl.矩形1],null),C._Particle._downwardSpray(Laya.stage,new Laya.Point(3*Laya.stage.width/4,-100),[10,30],[10,30],[90,180],[C._SkinUrl.矩形1],null),C._Particle._downwardSpray(Laya.stage,new Laya.Point(-100,Laya.stage.height/4),[10,30],[10,30],[0,90],[C._SkinUrl.矩形1],null),C._Particle._downwardSpray(Laya.stage,new Laya.Point(Laya.stage.width+100,Laya.stage.height/4),[10,30],[10,30],[90,180],[C._SkinUrl.矩形1],null)})}static _completeCross(){for(let e=0;e<4;e++){let t=7*e+5,a=new Laya.Point(-200,Laya.stage.height),i={},n=()=>{a.x+=20,a.x>Laya.stage.width&&Laya.timer.clearAll(i),a.y-=t,C._Particle._fallingVertical(Laya.stage,new Laya.Point(a.x,a.y),[0,0],null,null,[0,360],[C._SkinUrl.花2],[[255,222,0,1],[255,24,0,1]],null,[100,200],[.8,1.5],[.05,.1])};p._frameLoop(1,i,()=>{n()});let s=new Laya.Point(Laya.stage.width+200,Laya.stage.height),o={},r=()=>{s.x-=20,s.x<0&&Laya.timer.clearAll(o),s.y-=t,C._Particle._fallingVertical(Laya.stage,new Laya.Point(s.x,s.y),[0,0],null,null,[0,360],[C._SkinUrl.花2],[[255,222,0,1],[255,24,0,1]],null,[100,200],[.8,1.5],[.05,.1])};p._frameLoop(1,o,()=>{r()})}}static _completeSidelingCross(){let e=Laya.stage.width,t=2.5*Laya.stage.height,a=new Laya.Image;a.width=100,a.height=t,a.rotation=40,I._Node.changePivot(a,0,t/2),a.pos(0,0),Laya.stage.addChild(a),a.zOrder=1e3;for(let t=0;t<20;t++){let i=new Laya.Point(0,a.height/20*t),n=new Laya.Point(Laya.stage.width,a.height/20*t),s={},o=()=>{i.x+=40,i.x>e&&Laya.timer.clearAll(s),n.x-=40,n.x>e&&Laya.timer.clearAll(s),t%2==0?C._Particle._fallingVertical(a,new Laya.Point(i.x,i.y),[0,0],null,null,[0,360],[C._SkinUrl.星星8],[[255,222,0,1],[255,24,0,1]],null,[100,200],[.8,1.5],[.05,.1]):C._Particle._fallingVertical_Reverse(a,new Laya.Point(n.x,n.y),[0,0],null,null,[0,360],[C._SkinUrl.星星8],[[255,222,0,1],[255,24,0,1]],null,[-100,-200],[-.8,-1.5],[-.05,-.1])};p._frameNumLoop(2,50,s,()=>{o()})}}static _fireworksCelebrate(e){const t=new Laya.Point(Laya.stage.width/2,0);p._frameNumRandomLoop(1,3,150,this,()=>{C._Particle._fallingRotate(Laya.stage,t,[Laya.stage.width,0],[10,30],[10,30],[C._SkinUrl.矩形1,C._SkinUrl.矩形2,C._SkinUrl.矩形3],null,[300,Laya.stage.height],[1,8])});const a=new Laya.Point(Laya.stage.width/2,Laya.stage.height/2-50);p._frameNumRandomLoop(10,25,16,this,()=>{const e=I._Number.randomOneInt(10,20),t=I._Number.randomOneInt(100,300),i=I._Point.randomPointByCenter(a,500,150)[0];for(let a=0;a<2*e;a++)C._Particle._sprayRound(Laya.stage,i,null,[20,40],null,[C._SkinUrl.花4],null,[t,t],[30,30]);for(let a=0;a<2*e;a++)C._Particle._sprayRound(Laya.stage,i,null,[20,40],null,[C._SkinUrl.花4],null,[50,t-20],[30,30])},()=>{e&&e()})}static _oneFireworks(e){const t=I._Number.randomOneInt(10,20),a=I._Number.randomOneInt(100,300);for(let i=0;i<2*t;i++)C._Particle._sprayRound(Laya.stage,e,null,[20,40],null,[C._SkinUrl.花4],null,[a,a],[30,30]);for(let i=0;i<2*t;i++)C._Particle._sprayRound(Laya.stage,e,null,[20,40],null,[C._SkinUrl.花4],null,[50,a-20],[30,30])}static _circleFlowe(e){const t=I._Number.randomOneInt(500,500),a=new Laya.Point(Laya.stage.width/2,Laya.stage.height/2);for(let i=0;i<90;i++)C._Particle._sprayRound(e,a,null,[20,40],null,[C._SkinUrl.花4],null,[t,t],[35,35],null,null,5);for(let i=0;i<180;i++)C._Particle._sprayRound(e,a,null,[20,40],null,[C._SkinUrl.花4],null,[100,t-20],[35,35],null,null,5)}static _bothBlinkOnSprite(e,t){const a={};return p._frameRandomLoop(30,50,a,()=>{C._Glitter._blinkStar(e,new Laya.Point(t.x-350,t.y),[150,100],[C._SkinUrl.星星1],null,[80,80])},!0),p._frameRandomLoop(30,50,a,()=>{C._Glitter._blinkStar(e,new Laya.Point(t.x+350,t.y),[150,100],[C._SkinUrl.星星1],null,[80,80])},!0),a}static _circleExplode(e,t,a){p._once(a||0,this,()=>{const a=I._Number.randomOneInt(30,30);for(let i=0;i<40;i++)C._Particle._sprayRound(e,t,null,[20,40],null,[C._SkinUrl.星星8],null,[a,a],[5,5],null,null,5);v._playSound()})}}class ne extends T._PreLoadScene{constructor(){super(...arguments),this.count=0}lwgOnAwake(){ae.TAPoint(z.PageShow,"loadpage")}lwgOnStart(){this._ImgVar("LoGo").scale(0,0),this._ImgVar("Progress").scale(0,0),this._ImgVar("Anti").alpha=0,this._LabelVar("TextTip1").alpha=0;p._once(600,this,()=>{ie._circleFlowe(this._Owner)}),p._once(600,this,()=>{b._changeOnce(this._ImgVar("BG"),[100,50,0,1],100/3)}),p._frameLoop(100,this,()=>{p._once(600,this,()=>{b._changeOnce(this._ImgVar("LoGo"),[5,40,10,1],50)})}),x.bombs_Appear(this._ImgVar("LoGo"),0,1,1.2,0,500,()=>{ie._bothBlinkOnSprite(this._Owner,this._ImgVar("LoGo")),x.bombs_Appear(this._ImgVar("Progress"),0,1,1.2,0,150,()=>{p._frameNumLoop(2,30,this,()=>{this.count++,this.progressDisplay()},()=>{x.fadeOut(this._LabelVar("TextTip1"),0,1,200,0,()=>{p._frameLoop(100,this,()=>{this._LabelVar("TextTip2").text="",p._frameNumLoop(10,6,this,()=>{this._LabelVar("TextTip2").text+="."})},!0)}),this._evNotify(T._Event.importList,[N._list])},!0),x.fadeOut(this._ImgVar("Anti"),0,1,400,200)},400),p._once(400,this,()=>{v._playSound(v._voiceUrl.btn)})},600)}progressDisplay(){this._ImgVar("ProgressBar").mask.x=-this._ImgVar("ProgressBar").width+this._ImgVar("ProgressBar").width/100*this.count}lwgStepComplete(){this._ImgVar("ProgressBar").mask.x+=5}lwgAllComplete(){return p._frameLoop(5,this,()=>{this._ImgVar("ProgressBar").mask.x<0&&(this._ImgVar("ProgressBar").mask.x+=40,this._ImgVar("ProgressBar").mask.x>0&&(this._ImgVar("ProgressBar").mask.x=0))}),Z._ins().changeClothStart(),D._ins().intoStart(O.PreLoad),2e3}lwgCloseAni(){return u._shutters.Close._paly(u._shutters.Close._type.randomCroAndVer,this._Owner),1500}lwgOnDisable(){ae.TAPoint(z.PageLeave,"loadpage")}}class se{constructor(){this.GRV=null,this.isRecordVideoing=!1,this.isVideoRecord=!1,this.videoRecordTimer=0,this.isHasVideoRecord=!1}static Init(){se.grv=new TJ.Platform.AppRt.DevKit.TT.GameRecorderVideo}static startAutoRecord(){TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.ZJTD_AppRt&&(null==se.grv&&se.Init(),se.recording||(se.autoRecording=!0,console.log("******************开始录屏"),se._start(),se.lastRecordTime=Date.now()))}static stopAutoRecord(){if(TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.ZJTD_AppRt)return se.autoRecording?(se.autoRecording=!1,se._end(!1),Date.now()-se.lastRecordTime>6e3||(!(Date.now()-se.lastRecordTime<3e3)||(console.log("小于3秒"),!1))):(console.log("RecordManager.autoRecording",se.autoRecording),!1)}static startRecord(){TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.ZJTD_AppRt&&(se.autoRecording&&this.stopAutoRecord(),se.recording=!0,se._start(),se.lastRecordTime=Date.now())}static stopRecord(){if(TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.ZJTD_AppRt)return console.log("time:"+(Date.now()-se.lastRecordTime)),!(Date.now()-se.lastRecordTime<=3e3)&&(se.recording=!1,se._end(!0),!0)}static _start(){TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.ZJTD_AppRt&&(console.log("******************180s  ？？？？？"),se.grv.Start(180))}static _end(e){TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.ZJTD_AppRt&&(console.log("******************180结束 ？？？？？"),se.grv.Stop(e))}static _share(e,t,a=null,i=null){if(TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.ZJTD_AppRt)if(console.log("******************吊起分享 ？？？？？",se.grv,se.grv.videoPath),se.grv.videoPath){let a=new TJ.Platform.AppRt.Extern.TT.ShareAppMessageParam;a.extra.videoTopics=["女神修炼手册","番茄小游戏","抖音小游戏"],a.channel="video",a.success=(()=>{m.createHint_Middle("分享成功!"),t()}),a.fail=(()=>{"noAward"===e?m.createHint_Middle("分享失败！"):m.createHint_Middle("分享成功后才能获取奖励！"),i()}),se.grv.Share(a)}else m.createHint_Middle("暂无视频，玩一局游戏之后分享！")}}se.recording=!1,se.autoRecording=!1;class oe{constructor(e){this.time=100,this.delay=100,this.scale=1.4,e&&(this.Scene=e,this.Operation=e.Operation,this.BtnAgain=I._Node.createPrefab(N._list.prefab2D.BtnAgain.prefab,e,[200,79]),L._on(L._Use.value,this.BtnAgain,this,null,null,()=>{ae.TAPoint(z.BtnShow,"next_lose"),this.btnAgainClick&&this.btnAgainClick()}),this.BtnComplete=e.BtnComplete,L._on(L._Use.value,this.BtnComplete,this,null,null,e=>{e.stopPropagation(),this.btnCompleteClick&&this.btnCompleteClick()}),this.BtnBack=I._Node.createPrefab(N._list.prefab2D.BtnBack.prefab,e,[77,79]),L._on(L._Use.value,this.BtnBack,this,null,null,()=>{M._complete&&(D._ins()._Owner.active&&(E._3dToSp=D._ins().cameraToSprite(this.Scene)),ae.TAPoint(z.BtnShow,"back_main"),c._Ues.value===c._Tpye.OPPO||c._Ues.value===c._Tpye.OPPOTest?(E._whereScene=this.Scene,_._openScene(O.BackHint)):c._Ues.value===c._Tpye.Bytedance&&(U._fromBack=!0,p._frameOnce(10,this,()=>{this.Scene[this.Scene.name]._openScene(O.Start,!0,!0)})))}),this.BtnRollback=I._Node.createPrefab(N._list.prefab2D.BtnRollback.prefab,e,[200,79]),L._on(L._Use.value,this.BtnRollback,this,null,null,()=>{M._complete&&this.btnRollbackClick&&this.btnRollbackClick()}),this.Operation.pos(Laya.stage.width+500,20),this.BtnComplete.scale(0,0),this.BtnBack.scale(0,0),this.BtnAgain.scale(0,0),this.BtnRollback.scale(0,0),ae.TAPoint(z.BtnShow,"back_main"),ae.TAPoint(z.BtnShow,"next_lose"),this.BtnTurnFace=this.Scene.BtnTurnFace,this.BtnTurnFace&&(ae.TAPoint(z.BtnShow,"Amian"),ae.TAPoint(z.BtnShow,"Bmian"),this.BtnTurnFace.scale(0,0)),this.BtnRollback.zOrder=this.BtnAgain.zOrder=this.BtnBack.zOrder=this.BtnComplete.zOrder=this.Operation.zOrder=45,this.moveTargetX=Laya.stage.width-this.Operation.width+50)}btnRollbackAppear(e,t){x.bombs_Appear(this.BtnRollback,0,1,this.scale,0,2*this.time,()=>{e&&e()},t||0)}btnRollbackVinish(e,t){x.bombs_Vanish(this.BtnRollback,0,0,0,4*this.time,()=>{e&&e()},t||0)}btnAgainAppear(e,t){x.bombs_Appear(this.BtnAgain,0,1,this.scale,0,2*this.time,()=>{e&&e()},t||0)}btnAgainVinish(e,t){x.bombs_Vanish(this.BtnAgain,0,0,0,4*this.time,()=>{e&&e()},t||0)}btnBackAppear(e,t){x.bombs_Appear(this.BtnBack,0,1,this.scale,0,2*this.time,()=>{e&&e()},t||0)}btnBackVinish(e,t){x.bombs_Vanish(this.BtnBack,0,0,0,4*this.time,()=>{e&&e()},t||0)}btnCompleteAppear(e,t){ie._circleExplode(this.Operation,new Laya.Point(this.BtnComplete.x,this.BtnComplete.y),t),x.bombs_Appear(this.BtnComplete,0,1,this.scale,0,2*this.time,()=>{e&&e()},t||0)}btnCompleteVinish(e,t){x.bombs_Vanish(this.BtnComplete,0,0,0,4*this.time,()=>{e&&e()},t||0)}btnTurnFaceAppear(e,t){this.BtnTurnFace&&(ie._circleExplode(this.Operation,new Laya.Point(this.BtnTurnFace.x,this.BtnTurnFace.y),t),x.bombs_Appear(this.BtnTurnFace,0,1,this.scale,0,2*this.time,()=>{e&&e()}))}btnTurnFaceVinish(e,t){this.BtnTurnFace&&x.bombs_Vanish(this.BtnTurnFace,0,0,0,4*this.time,()=>{e&&e()},t||0)}operationAppear(e,t){"MakeTailor"===this.Scene.name&&x.fadeOut(this.Scene.BG2,this.Scene.BG2.alpha,1,500),x.move(this.Operation,this.moveTargetX-40,this.Operation.y,4*this.time,()=>{x.move(this.Operation,this.moveTargetX,this.Operation.y,this.time,()=>{e&&e()})},t||0)}operationVinish(e,t){"MakeTailor"===this.Scene.name&&x.fadeOut(this.Scene.BG2,this.Scene.BG2.alpha,0,500),x.bombs_Vanish(this.BtnComplete,0,0,0,4*this.time,()=>{x.move(this.Operation,this.moveTargetX-40,this.Operation.y,this.time,()=>{x.move(this.Operation,Laya.stage.width+500,this.Operation.y,4*this.time,()=>{e&&e()})})},t||0)}}class re extends y._Table{constructor(){super(...arguments),this.moveTime=600}static _ins(){return this.ins||(this.ins=new re("DIY_Task")),this.ins}again(e){const t=q._ins().getClothesArr(),a=q._ins()._pitchName?q._ins()._pitchName:t[0].name;for(let i=0;i<t.length;i++){const n=t[i];n.name===a&&(this.LastClothes=n,t[i]=this.Clothes=q._ins().createClothes(a,e),this.LineParent=this.Clothes.getChildAt(0).getChildByName("LineParent"),this.setData())}this.clothesMove(),x.move_rotate(this.LastClothes,45,new Laya.Point(1.5*Laya.stage.width,1.5*Laya.stage.height),this.moveTime,0,()=>{this.LastClothes.removeSelf()})}clothesMove(){this.Clothes.pos(0,1.5*-Laya.stage.height),this.Clothes.rotation=45,x.move_rotate(this.Clothes,0,new Laya.Point(Laya.stage.width/2,Laya.stage.height/2),700)}changeClothes(e){const t=q._ins().getClothesArr(),a=q._ins()._pitchName?q._ins()._pitchName:t[0].name,i=q._ins()._lastPitchName;for(let n=0;n<t.length;n++){const s=t[n];s.name==a?(s.removeSelf(),this.Clothes=t[n]=q._ins().createClothes(a,e),this.LineParent=this.Clothes.getChildAt(0).getChildByName("LineParent"),this.setData()):s.name==i?this.LastClothes=s:s.removeSelf()}this.clothesMove(),this.LastClothes&&x.move_rotate(this.LastClothes,-45,new Laya.Point(1.5*Laya.stage.width,1.5*-Laya.stage.height),this.moveTime,0,()=>{this.LastClothes.removeSelf()})}setData(){this._arr=[];for(let e=0;e<this.LineParent.numChildren;e++){const t=this.LineParent.getChildAt(e);if(t.numChildren>0){let e={};e.Line=t,e[this._property.name]=t.name,e[this._property.conditionNum]=t.numChildren,e[this._property.degreeNum]=0,this._arr.push(e)}}}}class le extends _._ObjectBase{constructor(){super(...arguments),this.Ani={vanishP:new Laya.Point(Laya.stage.width+500,0),shearSpeed:3,range:40,dir:"up",dirType:{up:"up",down:"down"},paly:()=>{p._clearAll([this.Ani]),x._clearAll([this.Ani]),p._frameLoop(1,this.Ani,()=>{this._SceneImg("S2").rotation>this.Ani.range?this.Ani.dir="up":this._SceneImg("S2").rotation<=0&&(this.Ani.dir="down"),"up"==this.Ani.dir?(this._SceneImg("S1").rotation+=4*this.Ani.shearSpeed,this._SceneImg("S2").rotation-=4*this.Ani.shearSpeed):"down"==this.Ani.dir&&(this._SceneImg("S1").rotation-=this.Ani.shearSpeed,this._SceneImg("S2").rotation+=this.Ani.shearSpeed)})},stop:()=>{p._frameOnce(30,this.Ani,()=>{p._clearAll([this.Ani]),x._clearAll([this.Ani]),x.rotate(this._SceneImg("S1"),-this.Ani.range/3,100),x.rotate(this._SceneImg("S2"),this.Ani.range/3,100)})},event:()=>{this._evReg(F.Event.scissorAppear,()=>{x.move_rotate(this._Owner,this._fRotation+360,this._fPoint,800,0,()=>{this._Owner.rotation=this._fRotation,this.Move.switch=!0,M._complete.value||this._evNotify(M.Event.MakeTailorStartTailor,[this._Owner])})}),this._evReg(F.Event.scissorPlay,()=>{this.Ani.paly()}),this._evReg(F.Event.scissorStop,()=>{this.Ani.stop()}),this._evReg(F.Event.scissorRemove,e=>{this.Move.switch=!1;x.move_rotate(this._Owner,this._Owner.rotation+360,new Laya.Point(Laya.stage.width/2,Laya.stage.height/2),300,100,()=>{this._Owner.rotation=0,x.move_rotate(this._Owner,-30,new Laya.Point(this._Owner.x-250,this._Owner.y- -120),300,150,()=>{x.move_rotate(this._Owner,0==I._Number.randomOneHalf()?720:-720,new Laya.Point(this._Owner.x+1500,this._Owner.y+-600),600,100,()=>{e&&e(),this._Owner.rotation=0,this._Owner.pos(this.Ani.vanishP.x,this.Ani.vanishP.y)})})})}),this._evReg(F.Event.scissorAgain,()=>{x.move_rotate(this._Owner,this._fRotation,this._fPoint,600,100,()=>{re._ins().again(this._Scene)})}),this._evReg(F.Event.scissorRotation,e=>{p._clearAll([this._Owner]);let t,a=(t=Math.abs(e-this._Owner.rotation)<180?e-this._Owner.rotation:-(360-(e-this._Owner.rotation)))/10;p._frameNumLoop(1,10,this._Owner,()=>{this._Owner.rotation+=a})})},effcts:()=>{const e=I._Number.randomOneInt(3,6),t=q._ins().getColor()[0],a=q._ins().getColor()[1];for(let i=0;i<e;i++)C._Particle._spray(this._Scene,this._point,[10,30],null,[0,360],[C._SkinUrl.三角形1],[t,a],[20,90],null,null,[1,3],[.1,.2],this._Owner.zOrder-1)}},this.Move={switch:!1,touchP:null,diffP:null}}lwgOnAwake(){this._Owner.pos(this.Ani.vanishP.x,this.Ani.vanishP.y)}lwgEvent(){this.Ani.event()}lwgButton(){this._btnFour(Laya.stage,e=>{this.Move.switch&&(this._evNotify(F.Event.scissorPlay),this.Move.touchP=new Laya.Point(e.stageX,e.stageY),M._complete.value||this._evNotify(M.Event.MakeTailorCloseTailor,[this._Owner]))},e=>{this.Move.touchP&&this.Move.switch&&(this.Move.diffP=new Laya.Point(e.stageX-this.Move.touchP.x,e.stageY-this.Move.touchP.y),this._Owner.x+=this.Move.diffP.x,this._Owner.y+=this.Move.diffP.y,I._Node.tieByStage(this._Owner),this.Move.touchP=new Laya.Point(e.stageX,e.stageY),this._evNotify(F.Event.scissorPlay))},()=>{this._evNotify(F.Event.scissorStop),this.Move.touchP=null,M._complete.value||this._evNotify(M.Event.MakeTailorOpenTailor,[this._Owner])})}onTriggerEnter(e,t){!e.cut&&this.Move.switch&&(e.cut=!0,this._evNotify(F.Event.scissorPlay),this._evNotify(F.Event.scissorStop),g._notify(F.Event.scissorTrigger,[e.owner]),this.Ani.effcts(),ae.VibrateShort())}}class he extends y._Item{$awake(){}$button(){this._btnUp(this._Owner,()=>{if((M._complete.value||"diy_dress_002_final"===this.$data.name)&&"ads"!==this.$data.name){if(this.$data.complete)this.$data.name!==q._ins()._pitchName&&(q._ins()._setPitch(this.$data.name),this._evNotify(F.Event.changeClothes));else switch(this.$data.unlockWay){case this.$unlockWayType.check:m.createHint_Middle("请前往签到页面获取");break;case this.$unlockWayType.customs:m.createHint_Middle(`制作${this.$data.conditionNum}件才能衣服获取哦！`);break;case this.$unlockWayType.ads:ae.ShowReward(()=>{q._ins()._checkCondition(this.$data.name)&&(m.createHint_Middle("恭喜获得一件新服装！"),q._ins()._setPitch(this.$data.name),this._evNotify(F.Event.changeClothes))});break;case this.$unlockWayType.free:m.createHint_Middle("免费获得")}M._complete.value||"diy_dress_002_final"!=this.$data.name||(M.MmakeTailorBtnComSwicth=!0,this._evNotify(M.Event.MakeTailorBtnCom,[this._SceneImg("BtnComplete")._lwg.gPoint]))}})}$render(){if(this._LableChild("UnlockWayNum").visible=!1,"ads"==this.$data.name)this._BoxChild("NativeRoot")||I._Node.createPrefab(N._list.prefab2D.NativeRoot.prefab,this._Owner),this._ImgChild("Mask").visible=this._LableChild("UnlockWay").visible=this._ImgChild("AdsSign").visible=this._ImgChild("Icon").visible=this._ImgChild("Board").visible=!1;else{if(this.$data.complete)this._ImgChild("Mask").visible=this._ImgChild("AdsSign").visible=this._LableChild("UnlockWay").visible=!1;else{if(this.$data.unlockWay===q._ins()._unlockWay.ads)this._ImgChild("AdsSign").visible=!0,this._LableChild("UnlockWay").visible=!1,this._ImgChild("Mask").visible=!1;else switch(this._ImgChild("AdsSign").visible=!1,this._LableChild("UnlockWay").visible=!0,this.$data.unlockWay){case q._ins()._unlockWay.check:this._LableChild("UnlockWay").text="签到",this._LableChild("UnlockWay").fontSize=30,this._LableChild("UnlockWayNum").visible=!1;break;case q._ins()._unlockWay.customs:this._LableChild("UnlockWay").text="制作衣服",this._LableChild("UnlockWay").fontSize=25,this._LableChild("UnlockWayNum").visible=!0,this._LableChild("UnlockWayNum").text=`(${$._completeNum.value} /${this.$data.conditionNum})`}this._ImgChild("Mask").visible=!0}this._ImgChild("Icon").gray=!this.$data.complete,this._BoxChild("NativeRoot")&&this._BoxChild("NativeRoot").destroy(),this._ImgChild("Icon").visible=this._ImgChild("Board").visible=!0,this._ImgChild("Icon").skin=q._ins().getDIYCutIcon(this.$data.name),this._ImgChild("Board").skin="Lwg/UI/ui_orthogon_green.png",this.$data.pitch?this._ImgChild("Board").skin="Game/UI/Common/xuanzhong.png":this._ImgChild("Board").skin=null}}}class ce extends _._SceneBase{lwgOnAwake(){se.startAutoRecord(),ae.TAPoint(z.PageShow,"jiancaipage"),this._ImgVar("BG1").skin="https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/MakeTailorBG1.png",this._ImgVar("BG2").skin="https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/MakeTailorBG2.png",this._ImgVar("Scissor").addComponent(le),q._ins()._listRenderScript=he,q._ins()._List=this._ListVar("List");const e=q._ins()._getArrByPitchClassify();q._ins()._listArray=e,q._ins()._setPitch(e[0][q._ins()._property.name]),M._complete.value||(q._ins()._List.scrollBar.touchScrollEnable=!1)}lwgOnStart(){this.UI=new oe(this._Owner),p._frameOnce(40,this,()=>{this.UI.operationAppear(()=>{this.UI.btnAgainVinish(null,200),this.UI.btnCompleteAppear(null,400)}),this.UI.btnBackAppear(()=>{!M._complete.value&&this._openScene(O.Guide,!1,!1,()=>{M.MmakeTailorPulldownSwicth=!0,this._evNotify(M.Event.MakeTailorPulldown)})})}),this.UI.BtnRollback.visible=!1,p._frameOnce(20,this,()=>{re._ins().changeClothes(this._Owner)})}lwgAdaptive(){c._Ues.value===c._Tpye.Bytedance&&(this._ImgVar("BtnComplete").y+=80)}lwgButton(){this.UI.btnCompleteClick=(()=>{(M._complete.value||M.MmakeTailorBtnComSwicth)&&(this.UI.operationVinish(()=>{this.UI.btnAgainAppear()},200),p._frameOnce(30,this,()=>{this._evNotify(F.Event.scissorAppear)}))}),M._complete.value?this.UI.btnAgainClick=(()=>{this._evNotify(F.Event.scissorRemove,[()=>{re._ins().again(this._Owner)}]),L._switch=!1,p._frameOnce(60,this,()=>{this.UI.operationAppear(()=>{this.UI.btnAgainVinish(null,200),this.UI.btnCompleteAppear()}),L._switch=!0})}):this._btnFour(q._ins()._List,()=>{M.MmakeTailorPulldownSwicth&&(this.Pulldown||(this.Pulldown=1))},()=>{this.Pulldown&&this.Pulldown++},()=>{if(M.MmakeTailorPulldownSwicth&&this.Pulldown&&this.Pulldown>2){let e;c._Ues.value===c._Tpye.Bytedance?e=3:c._Ues.value!==c._Tpye.OPPO&&c._Ues.value!==c._Tpye.OPPOTest||(e=4),q._ins()._List.tweenTo(e,200,Laya.Handler.create(this,()=>{M.MmakeTailorPulldownSwicth=!1,this._evNotify(M.Event.MakeTailorChangeCloth)}))}this.Pulldown=1},null)}lwgEvent(){this._evReg(F.Event.changeClothes,()=>{re._ins().changeClothes(this._Owner)}),this._evReg(F.Event.scissorTrigger,e=>{const t=e.parent,a=re._ins()._checkCondition(t.name);e.visible=!1;let i=t.getChildByName("Eraser");if(i||(i=new Laya.Sprite,t.addChild(i)),"destination-out"!==i.blendMode&&(i.blendMode="destination-out"),"bitmap"!==t.cacheAs&&(t.cacheAs="bitmap"),i.graphics.drawCircle(e.x,e.y,15,"#000000"),a){M._complete.value||this._evNotify(M.Event.MakeTailorNewTailor,[t.name]);for(let t=0;t<re._ins().Clothes.getChildAt(0).numChildren;t++){const a=re._ins().Clothes.getChildAt(0).getChildAt(t);if(a.name.substr(5,2)==e.parent.name.substr(4,2)){let e=1500,t=I._Number.randomOneInt(1e3)+1e3,i=I._Number.randomOneInt(1e3)+1e3;switch(a.name.substr(8)){case"U":t=0,i=-i;break;case"LU":t=-t,i=-i;break;case"L":t=-t,i=0;break;case"R":t=t,i=0;break;case"RU":i=-i;break;case"D":t=0;break;case"RD":break;case"LD":t=-t}x.move_rotate(a,0,new Laya.Point(a.x+t/30,a.y+i/30),e/6,0,()=>{let n=I._Number.randomOneBySection(180),s=I._Number.randomOneBySection(-180);x.move_rotate(a,0==I._Number.randomOneHalf()?n:s,new Laya.Point(a.x+t,a.y+i),e,0,()=>{x.fadeOut(a,1,0,200)})})}}re._ins()._checkAllCompelet()&&(I._Node.removeAllChildren(re._ins().LineParent),this._evNotify(F.Event.scissorRemove),p._frameOnce(80,this,()=>{this._evNotify(F.Event.completeEffcet)}),p._frameOnce(280,this,()=>{$._photo.take(this._Owner,0),this._openScene(O.MakePattern,!0,!0)}))}const n=e.parent.localToGlobal(new Laya.Point(e.x,e.y));"A"==e.name?this._ImgVar("Scissor").x<=n.x?this._evNotify(F.Event.scissorRotation,[e.rotation]):this._evNotify(F.Event.scissorRotation,[180+e.rotation]):this._ImgVar("Scissor").y>=n.y?this._evNotify(F.Event.scissorRotation,[e.rotation]):this._evNotify(F.Event.scissorRotation,[180+e.rotation])}),this._evReg(F.Event.completeEffcet,()=>{switch(this.UI.btnBackVinish(),this.UI.btnAgainVinish(),v._playVictorySound(null,null,null,.5),I._Array.randomGetOne([0,1,2])){case 0:this.heartShapedPathEffcet();break;case 1:ie._completeCross();break;case 2:ie._completeSidelingCross()}})}lwgOnDisable(){ae.TAPoint(z.PageLeave,"jiancaipage")}heartShapedPathEffcet(){this._AniVar("complete").play(0,!1);let e={};p._frameLoop(1,e,()=>{let e=this._ImgVar("EFlower").parent.localToGlobal(new Laya.Point(this._ImgVar("EFlower").x,this._ImgVar("EFlower").y));C._Particle._fallingVertical(this._Owner,new Laya.Point(e.x,e.y-40),[0,0],null,null,[0,360],[C._SkinUrl.花2],[[255,222,0,1],[255,222,0,1]],null,[100,200],[.8,1.5],[.05,.1]),C._Particle._fallingVertical(this._Owner,new Laya.Point(e.x,e.y),[0,0],null,null,[0,360],[C._SkinUrl.花2],[[255,222,0,1],[255,24,0,1]],null,[100,200],[.8,1.5],[.05,.1])}),this._AniVar("complete").on(Laya.Event.COMPLETE,this,()=>{p._clearAll([e])})}}class _e extends _._SceneBase{lwgOnAwake(){ae.TAPoint(z.PageShow,"mainpage"),ae.TAPoint(z.BtnShow,"symaker"),ae.TAPoint(z.BtnShow,"lyqmaker"),ae.TAPoint(z.BtnShow,"xzmaker"),ae.TAPoint(z.BtnShow,"change"),I._Node.childrenVisible2D(this._ImgVar("BtnParent"),!1),D._ins().openStartAni(()=>{this._ImgVar("BtnTop").pos(D._ins().btnTopPos.x,D._ins().btnTopPos.y),this._ImgVar("BtnDress").pos(D._ins().btnDressPos.x,D._ins().btnDressPos.y),this._ImgVar("BtnBottoms").pos(D._ins().btnBottomsPos.x,D._ins().btnBottomsPos.y),this._ImgVar("BtnDressingRoom").pos(D._ins().btnDressingRoomPos.x,D._ins().btnDressingRoomPos.y);for(let e=0;e<this._ImgVar("BtnParent").numChildren;e++){this._ImgVar("BtnParent").getChildAt(e).visible=!1}})}lwgOpenAniAfter(){L._absoluteSwitch=!1;for(let e=0;e<this._ImgVar("BtnParent").numChildren;e++){const t=this._ImgVar("BtnParent").getChildAt(e);t.visible=!0;const a=200*e;x.bombs_Appear(t,0,1,1.2,0,200,()=>{e===this._ImgVar("BtnParent").numChildren-1&&p._once(500,this,()=>{L._absoluteSwitch=!0,H._whereFrom===O.MakePattern?(this._evNotify(H.Event.photo),H._whereFrom=null):M._complete.value?!J._todayCheckIn.value&&this._openScene(O.CheckIn,!1):this._openScene("Guide",!1,!1,()=>{this.BtnDressClick(),this._evNotify(M.Event.StartBtnDress,[this._ImgVar("BtnDress").x,this._ImgVar("BtnDress").y])})})},a),ie._circleExplode(this._Owner,new Laya.Point(t.x,t.y),a)}}lwgOnStart(){this._evNotify(H.Event.updateRanking)}lwgEvent(){this._evReg(M.Event.DelayBtnCheckIn,()=>{this.BtnCheckIn(),this._evNotify(M.Event.BtnCheckIn,[this._ImgVar("BtnCheckIn").x,this._ImgVar("BtnCheckIn").y])}),this._evReg(M.Event.StartOtherBtnClick,()=>{this.lwgButton()}),this._evReg(H.Event.updateRanking,()=>{let e=R._Data._ins()._getPitchObj();this._LabelVar("RankNum").text=`${e[R._Data._ins()._mergePro.rankNum]}/50`}),this._evReg(H.Event.photo,()=>{L._absoluteSwitch=!1;const e=D._ins().cameraToSprite(this._Owner);p._frameOnce(10,this,()=>{$._photo.take(this._Owner,2),e.destroy(),p._frameOnce(10,this,()=>{this._openScene(O.Tweeting_Main,!1)})})}),this._evReg(H.Event.BtnPersonalInfo,()=>{p._once(1e3,this,()=>{this._openScene(O.Guide,!1,!1,()=>{this.BtnPersonalInfoClick(),this._evNotify(M.Event.PersonalInfoBtn,[this._ImgVar("BtnPersonalInfo").x,this._ImgVar("BtnPersonalInfo").y])})})})}BtnDressClick(){this._btnUp(this._ImgVar("BtnDress"),()=>{this._evNotify(M.Event.closeGuide);let e=0;M._complete.value&&(e=300),p._once(e,this,()=>{this.openMakeTailor("Dress")}),ae.TAPoint(z.BtnClick,"lyqmaker")})}BtnPersonalInfoClick(){this._btnUp(this._ImgVar("BtnPersonalInfo"),()=>{!M._complete.value&&this._evNotify(M.Event.vanishGuide),this._openScene(O.PersonalInfo,!1)})}BtnCheckIn(){this._btnUp(this._ImgVar("BtnCheckIn"),()=>{!M._complete.value&&this._evNotify(M.Event.vanishGuide),this._openScene(O.CheckIn,!1)})}openMakeTailor(e){q._ins()._pitchClassify=e,D._ins().cameraToSprite(this._Owner),this._openScene(O.MakeTailor,!0,!0)}lwgButton(){if(!M._complete.value)return;this.BtnDressClick();const e=q._ins();this._btnUp(this._ImgVar("BtnTop"),()=>{e._pitchClassify=e._classify.Top,this.openMakeTailor("Top"),ae.TAPoint(z.BtnClick,"symaker")}),this._btnUp(this._ImgVar("BtnBottoms"),()=>{e._pitchClassify=e._classify.Bottoms,this.openMakeTailor("Bottoms"),ae.TAPoint(z.BtnClick,"xzmaker")}),this.BtnPersonalInfoClick(),this._btnUp(this._ImgVar("BtnRanking"),()=>{R._whereFrom=O.Start,this._openScene(O.Ranking,!1)}),this._btnUp(this._ImgVar("BtnDressingRoom"),()=>{ae.TAPoint(z.BtnClick,"change"),D._ins().cameraToSprite(this._Owner),this._openScene(O.DressingRoom,!0,!0)}),this.BtnCheckIn()}lwgOnDisable(){ae.TAPoint(z.PageLeave,"mainpage")}}!function(e){e._screenShootByRatio=function(e,t,a,i,n,s,o){if(TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.OPPO_AppRt){const r=t?t*window.__canvas.width:0,l=a?a*window.__canvas.height:0;window.__canvas.toTempFilePath({x:r,y:l,width:i?i*window.__canvas.width-r:window.__canvas.width,height:n?n*window.__canvas.height-l:window.__canvas.height,fileType:s||"png",quality:o||1,success:t=>{e&&e(t),console.log(".............................截图成功",t.tempFilePath)},fail:e=>{console.log("？？？？？？？？？？？？？？？？",e.number),console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",e.errMsg)},complete:()=>{}})}},e._screenShoot=function(e,t,a,i,n,s,o){if(TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.OPPO_AppRt){const r=t*Laya.stage.clientScaleX,l=a*Laya.stage.clientScaleY,h=i*Laya.stage.clientScaleX,c=n*Laya.stage.clientScaleY;window.__canvas.toTempFilePath({x:r,y:l,width:h,height:c,fileType:s||"png",quality:o||1,success:t=>{e&&e(t),console.log(".............................截图成功",t.tempFilePath)},fail:e=>{console.log("？？？？？？？？？？？？？？？？",e.number),console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",e.errMsg)},complete:()=>{}})}},e._picSave=function(e,t,a){if(TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.OPPO_AppRt){var i=Laya.Browser.window.qg.getFileSystemManager();let s=f._array(t,null,[1,`${t}.png`]).value,o=Laya.Browser.window.qg.env.USER_DATA_PATH+s[0]+s[1],r=Laya.Browser.window.qg.env.USER_DATA_PATH+(s[0]+1)+s[1];var n=()=>{i.saveFile({tempFilePath:e,filePath:r,success:function(e){console.log("-------------------------图片保存成功",e.savedFilePath),f._array(t).value=[s[0]+1,s[1]],a&&a(e)},fail:function(){console.log("xxxxxxxxxxxxxxxxxxxxxxxxx保存图片失败")},complete:function(){}})};i.access({path:o,success:()=>{i.removeSavedFile({filePath:o,success:()=>{console.log("---------------------------删除保存的图片成功！"),n()}})},fail:()=>{console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxx没有保存这个文件！"),n()},complete:()=>{}})}},e._getStoragePic=function(e){if(TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.OPPO_AppRt){let t=f._array(e).value;if(t.length>0)return Laya.Browser.window.qg.env.USER_DATA_PATH+t[0]+t[1]}}}(W||(W={}));class de extends y._Item{constructor(){super(...arguments),this.diffX=0,this.create=!1}$button(){this._btnFour(this._ImgChild("Icon"),e=>{if(!this.$data.complete)switch(this.$data.unlockWay){case this.$unlockWayType.check:m.createHint_Middle("请前往签到页面获取");break;case this.$unlockWayType.customs:m.createHint_Middle(`制作${this.$data.conditionNum}件衣服才能获取！`);break;case this.$unlockWayType.ads:ae.ShowReward(()=>{Y._Pattern._ins()._checkCondition(this.$data.name)&&(m.createHint_Middle("恭喜获得新贴图！"),Y._Pattern._ins()._setProperty(this.$data.name,Y._Pattern._ins()._property.complete,!0))})}"ads"!==this.$data.name&&this.$data.name&&this.$data.complete?(this.Cancal=!1,this.create=!1,this.diffX=0,this.fX=e.stageX,this._evNotify(Y.Event.close)):this.Cancal=!0},e=>{this.Cancal||this.create||(this.diffX=this.fX-e.stageX,this.diffX>=5&&(this._evNotify(Y.Event.createImg,[this.$data.name,this._Owner._lwg.gPoint]),this.create=!0))},()=>{this.Cancal||(this.create=!0,this._evNotify(Y.Event.close))},()=>{this.Cancal||(this.create=!0)})}$render(){if(this._LableChild("UnlockWayNum").visible=!1,"ads"===this.$data.name)!this._BoxChild("NativeRoot")&&I._Node.createPrefab(N._list.prefab2D.NativeRoot.prefab,this._Owner),this._LableChild("Mask").visible=this._LableChild("UnlockWay").visible=this._ImgChild("AdsSign").visible=this._ImgChild("Icon").visible=!1;else{if(this.$data.complete)this._LableChild("Mask").visible=this._ImgChild("AdsSign").visible=this._LableChild("UnlockWay").visible=!1;else{if(this.$data.unlockWay===Y._Pattern._ins()._unlockWay.ads)this._ImgChild("AdsSign").visible=!0,this._LableChild("UnlockWay").visible=!1;else switch(this._LableChild("AdsSign").visible=!1,this._LableChild("UnlockWay").visible=!0,this.$data.unlockWay){case q._ins()._unlockWay.check:this._LableChild("UnlockWay").text="签到",this._LableChild("UnlockWay").fontSize=30,this._LableChild("UnlockWayNum").visible=!1;break;case q._ins()._unlockWay.customs:this._LableChild("UnlockWay").text="制作衣服",this._LableChild("UnlockWay").fontSize=25,this._LableChild("UnlockWayNum").visible=!0,this._LableChild("UnlockWayNum").text=`(${$._completeNum.value} /${this.$data.conditionNum})`}this._LableChild("Mask").visible=!0}this._ImgChild("Icon").visible=!0,this._ImgChild("Icon").gray=!this.$data.complete,this._BoxChild("NativeRoot")&&this._BoxChild("NativeRoot").destroy(),this.$data.name?this._ImgChild("Icon").skin=`Pattern/${this.$data.name}.png`:(this._LableChild("Mask").visible=this._LableChild("UnlockWay").visible=this._ImgChild("AdsSign").visible=this._ImgChild("Icon").visible=!1,this._ImgChild("Icon").skin=null)}}}class ue extends _._SceneBase{constructor(){super(...arguments),this.Tex={Img:null,DisImg:null,imgSize:[128,128],wireframeSize:[120,150],touchP:null,diffP:null,dir:"Front",dirType:{Front:"Front",Reverse:"Reverse"},state:"none",stateType:{none:"none",move:"move",scale:"scale",rotate:"rotate",addTex:"addTex"},zOderindex:0,createImg:(e,t)=>{this.Tex.DisImg&&this.Tex.DisImg.destroy(),this.Tex.DisImg=new Laya.Image,this.Tex.Img=new Laya.Image;let a=this._SpriteVar("Ultimately").globalToLocal(t);this.Tex.Img.skin=this.Tex.DisImg.skin=`Pattern/${e}.png`,this.Tex.Img.x=this.Tex.DisImg.x=a.x,this.Tex.Img.y=this.Tex.DisImg.y=a.y,this.Tex.Img.name=e,this.Tex.Img.width=this.Tex.DisImg.width=this.Tex.imgSize[0],this.Tex.Img.height=this.Tex.DisImg.height=this.Tex.imgSize[1],this.Tex.Img.anchorX=this.Tex.Img.anchorY=this.Tex.DisImg.anchorX=this.Tex.DisImg.anchorY=.5,this._SpriteVar("Dispaly").addChild(this.Tex.DisImg),this._SpriteVar("Dispaly").visible=!0,this.Tex.zOderindex++,this.Tex.Img.zOrder=this.Tex.zOderindex},getTex:()=>{let e=this._ImgVar(this.Tex.dirType.Front),t=this._ImgVar(this.Tex.dirType.Reverse);return[e.drawToTexture(e.width,e.height,e.x,e.y+e.height),t.drawToTexture(t.width,t.height,t.x,t.y+t.height)]},fDiffX:0,fDiffY:0,rDiffX:0,rDiffY:0,setImgPos:()=>{let e=this.Tex.setPosArr(),t=[],a=[];for(let i=0;i<e.length;i++){const n=I._3D.rayScanning(D._ins()._MainCamara,D._ins()._Owner,new Laya.Vector2(e[i].x,e[i].y),"model");n&&(a.push(n),t.push(e[i]))}if(0!==t.length){const e=a[a.length-1];this._SpriteVar(this.Tex.dir).addChild(this.Tex.Img);let t=this._ImgVar(this.Tex.dir).width,i=this._ImgVar(this.Tex.dir).height,n=I._Point.pointByAngleOld(V._ins().ModelTap.transform.position.x-e.point.x,V._ins().ModelTap.transform.position.z-e.point.z);this.Tex.dir==this.Tex.dirType.Front?this.Tex.Img.x=t-t/180*(n+90):this.Tex.Img.x=-t/180*(n-90);let s=1-(e.point.y-V._ins().ModelTap.transform.position.y)/I._3D.getMeshSize(this.Tex.dir===this.Tex.dirType.Front?V._ins().Front:V._ins().Reverse).y;return this.Tex.Img.y=s*i,this.Tex.dir===this.Tex.dirType.Front?(this.Tex.Img.x+=this.Tex.fDiffX,this.Tex.Img.y+=this.Tex.fDiffY):(this.Tex.Img.x+=this.Tex.rDiffX,this.Tex.Img.y+=this.Tex.rDiffY),!0}return!1},setPosArr:()=>{let e=this._ImgVar("Wireframe").x,t=this._ImgVar("Wireframe").y;return[new Laya.Point(e,t)]},checkInside:()=>{let e=this.Tex.setPosArr(),t=!1;for(let a=0;a<e.length;a++){I._3D.rayScanning(D._ins()._MainCamara,D._ins()._Owner,new Laya.Vector2(e[a].x,e[a].y),"model")&&(t=!0)}return t},getDisGP:()=>this.Tex.DisImg?this._SpriteVar("Dispaly").localToGlobal(new Laya.Point(this.Tex.DisImg.x,this.Tex.DisImg.y)):null,disMove:()=>{this.Tex.DisImg.x+=this.Tex.diffP.x,this.Tex.DisImg.y+=this.Tex.diffP.y;let e=this.Tex.getDisGP();this._ImgVar("Wireframe").pos(e.x,e.y)},move:()=>{this.Tex.disMove(),this._ImgVar("Wireframe").visible=!1,this.Tex.checkInside()&&(this.Tex.setImgPos(),this._ImgVar("Wireframe").visible=!0,this.Tex.state=this.Tex.stateType.addTex,this._SpriteVar("Dispaly").visible=!1)},addTex:()=>{this.Tex.disMove(),this.Tex.setImgPos()||(this._ImgVar("Wireframe").visible=!1,this.Tex.state=this.Tex.stateType.move,this.Tex.Img.x=Laya.stage.width,this._SpriteVar("Dispaly").visible=!0),V._ins().addTexture2D(this.Tex.getTex())},scale:e=>{if(!this.Tex.Img)return;const t=this._ImgVar("Wireframe").globalToLocal(new Laya.Point(e.stageX,e.stageY));this._ImgVar("Wireframe").width=this._ImgVar("WConversion").x=t.x,this._ImgVar("Wireframe").height=this._ImgVar("WConversion").y=t.y;const a=this._Owner.localToGlobal(new Laya.Point(this._ImgVar("Wireframe").x,this._ImgVar("Wireframe").y));this.Tex.Img.rotation=this.Tex.DisImg.rotation=this._ImgVar("Wireframe").rotation=I._Point.pointByAngleOld(e.stageX-a.x,e.stageY-a.y)+45;const i=this._ImgVar("Wireframe").width-this.Tex.wireframeSize[0],n=this._ImgVar("Wireframe").height-this.Tex.wireframeSize[1];this.Tex.DisImg.width=this.Tex.Img.width=this.Tex.imgSize[0]+i,this.Tex.DisImg.height=this.Tex.Img.height=this.Tex.imgSize[1]+n,V._ins().addTexture2D(this.Tex.getTex())},rotate:()=>{M._complete.value&&(this.Tex.diffP.x>0?V._ins().rotate(1):V._ins().rotate(0))},again:()=>{I._Node.removeAllChildren(this._SpriteVar("Front")),I._Node.removeAllChildren(this._SpriteVar("Reverse")),this.Tex.turnFace(),V._ins().addTexture2D(this.Tex.getTex())},none:()=>{},operation:e=>{this.Tex.touchP&&(this.Tex.diffP=new Laya.Point(e.stageX-this.Tex.touchP.x,e.stageY-this.Tex.touchP.y),this.Tex[this.Tex.state](e),this.Tex.touchP=new Laya.Point(e.stageX,e.stageY))},frameRestore:()=>{this._ImgVar("Wireframe").rotation=0,this._ImgVar("Wireframe").visible=!1,this._ImgVar("Wireframe").width=this.Tex.wireframeSize[0],this._ImgVar("Wireframe").height=this.Tex.wireframeSize[1],this._ImgVar("WConversion").x=this._ImgVar("Wireframe").width,this._ImgVar("WConversion").y=this._ImgVar("Wireframe").height,this.Tex.Img=null},close:()=>{this.Tex.frameRestore(),this.Tex.DisImg&&this.Tex.DisImg.destroy(),this.Tex.Img=null,this.Tex.Img&&this.Tex.Img.destroy(),this.Tex.Img=null,this.Tex.state=this.Tex.stateType.none,this.Tex.touchP=null,V._ins().addTexture2D(this.Tex.getTex())},turnFace:e=>{let t,a;this.Tex.dir==this.Tex.dirType.Front?(t=2*Math.abs(V._ins().Present.transform.localRotationEulerY-180),a=180):(t=2*Math.abs(V._ins().Present.transform.localRotationEulerY),a=0),A.rotateTo(V._ins().Present,new Laya.Vector3(0,a,0),t,this,null,()=>{e&&e()})},btn:()=>{this._btnFour(this._ImgVar("WConversion"),e=>{e.stopPropagation(),this.Tex.state=this.Tex.stateType.scale},null,e=>{e.stopPropagation(),this.Tex.state=this.Tex.stateType.addTex,M._complete.value||(M.MakePatternState===M.MakePatternStateType.Frame1?this._evNotify(M.Event.MakePatternTurnFace,[this._ImgVar("BtnTurnFace")._lwg.gPoint.x,this._ImgVar("BtnTurnFace")._lwg.gPoint.y]):M.MakePatternState===M.MakePatternStateType.Frame2&&this._evNotify(M.Event.MakePatternBtnCom,[this._ImgVar("BtnComplete")._lwg.gPoint.x,this._ImgVar("BtnComplete")._lwg.gPoint.y]))}),this._btnUp(this._ImgVar("BtnTurnFace"),e=>{if(!M._complete.value){if(M.MakePatternState!==M.MakePatternStateType.TurnFace)return;this._evNotify(M.Event.MakePatternPattern2)}e.stopPropagation(),this.Tex.frameRestore(),this.Tex.dir===this.Tex.dirType.Front?(this.Tex.dir=this.Tex.dirType.Reverse,this._ImgVar("BtnTurnFace").skin="Game/UI/MakePattern/fan.png",ae.TAPoint(z.BtnClick,"Amian")):(this.Tex.dir=this.Tex.dirType.Front,this._ImgVar("BtnTurnFace").skin="Game/UI/MakePattern/zheng.png",ae.TAPoint(z.BtnClick,"Bmian")),this.Tex.turnFace(),this._ImgVar("Wireframe").visible=!1,this.Tex.state=this.Tex.stateType.rotate}),M._complete.value&&(this._btnUp(this._ImgVar("WClose"),e=>{e.stopPropagation(),this.Tex.close()}),this._btnFour(this._ImgVar("BtnL"),()=>{this.Tex.frameRestore(),this.Tex.state=this.Tex.stateType.rotate,p._frameLoop(1,this._ImgVar("BtnL"),()=>{V._ins().rotate(0)})},null,()=>{Laya.timer.clearAll(this._ImgVar("BtnL"))},()=>{Laya.timer.clearAll(this._ImgVar("BtnL"))}),this._btnFour(this._ImgVar("BtnR"),()=>{this.Tex.frameRestore(),this.Tex.state=this.Tex.stateType.rotate,p._frameLoop(1,this._ImgVar("BtnR"),()=>{V._ins().rotate(1)})},null,()=>{Laya.timer.clearAll(this._ImgVar("BtnR"))},()=>{Laya.timer.clearAll(this._ImgVar("BtnR"))}))}}}lwgOnAwake(){ae.TAPoint(z.PageShow,"tiehuapage"),ae.TAPoint(z.LevelStart,`level_${V._ins().Present.name}`),Y._Pattern._ins()._List=this._ListVar("List"),Y._Pattern._ins()._getProperty("newYear1",Y._Pattern._ins()._property.complete)||!M._complete.value?(this.switchClassify("newYear"),Y._Pattern._ins()._listArray=Y._Pattern._ins().newYearArr):(this.switchClassify("basic"),Y._Pattern._ins()._listArray=Y._Pattern._ins().basicArr),Y._Pattern._ins()._List.scrollBar.touchScrollEnable=!1,Y._Pattern._ins()._listRenderScript=de,this.Tex.fDiffX=Y._PatternDiff._ins().fDiffX,this.Tex.fDiffY=Y._PatternDiff._ins().fDiffY,this.Tex.rDiffX=Y._PatternDiff._ins().rDiffX,this.Tex.rDiffY=Y._PatternDiff._ins().rDiffY}lwgOpenAniAfter(){p._frameOnce(60,this,()=>{!M._complete.value&&this._openScene(O.Guide,!1,!1,()=>{this._evNotify(M.Event.MakePatternChooseClassify)})})}lwgAdaptive(){c._Ues.value===c._Tpye.Bytedance&&(this._ImgVar("BtnComplete").y+=80,this._ImgVar("BtnTurnFace").y+=80),this._adaWidth([this._ImgVar("BtnR"),this._ImgVar("BtnL")])}lwgOnStart(){const e=q._ins().getPitchTexBasicUrl();this._ImgVar("Front").loadImage(e,Laya.Handler.create(this,()=>{this._ImgVar("Reverse").loadImage(e,Laya.Handler.create(this,()=>{V._ins().addTexture2D(this.Tex.getTex())}))})),x.fadeOut(this._ImgVar("BtnL"),0,1,200,200),x.fadeOut(this._ImgVar("BtnR"),0,1,200,200),this.UI=new oe(this._Owner),this.UI.BtnAgain.pos(86,630),p._frameOnce(10,this,()=>{this.UI.operationAppear(()=>{this.UI.btnCompleteAppear(null,400),this.UI.btnTurnFaceAppear(null,200)}),this.UI.btnBackAppear(null,200),this.UI.btnRollbackAppear(null,600),this.UI.btnAgainAppear(null,800)}),this._SpriteVar("Front").y=this._ImgVar("Reverse").y=this._SpriteVar("Front").height=this._ImgVar("Reverse").height=V._ins().texHeight}switchClassify(e){if(M._complete.value||"basic"===e)for(let t=0;t<this._ImgVar("Part").numChildren;t++){const a=this._ImgVar("Part").getChildAt(t),i=a.getChildAt(0);e===a.name?(M._complete.value||M.MakePatternState===M.MakePatternStateType.ChooseClassify&&this._evNotify(M.Event.MakePatternPattern1),a.scale(1.1,1.1),Y._Pattern._ins()._listArray=Y._Pattern._ins()[`${a.name}Arr`],Y._Pattern._ins()._pitchClassify=a.name,a.skin="Game/UI/Common/kuang_fen.png",i.color="#fdfff4",i.stroke=5):(a.skin="Game/UI/Common/kuang_bai.png",a.scale(1,1),i.color="#a84f47",i.stroke=0)}}lwgButton(){for(let e=0;e<this._ImgVar("Part").numChildren;e++){const t=this._ImgVar("Part").getChildAt(e);this._btnUp(t,()=>{this.switchClassify(t.name)},"no")}this.Tex.btn(),this.UI.btnCompleteClick=(()=>{if(!M._complete.value){if(M.MakePatternState!==M.MakePatternStateType.BtnCom)return;this._evNotify(M.Event.closeGuide)}c._Ues.value===c._Tpye.Bytedance?this.operationHidden(()=>{se.stopAutoRecord(),j._whereFrom=O.MakePattern,this._openScene(O.Share,!1)}):c._Ues.value!==c._Tpye.OPPO&&c._Ues.value!==c._Tpye.OPPOTest||(this.operationHidden(),this.backStart())}),M._complete.value&&(this.UI.btnRollbackClick=(()=>{D._ins().cameraToSprite(this._Owner),this._openScene(O.MakeTailor,!0,!0)}),this.UI.btnAgainClick=(()=>{this.Tex.again()}))}operationHidden(e){this.Tex.frameRestore(),this.Tex.dir=this.Tex.dirType.Front,this.Tex.turnFace(()=>{x.fadeOut(this._ImgVar("BtnL"),1,0,200),x.fadeOut(this._ImgVar("BtnR"),1,0,200,0,()=>{e&&e()})})}backStart(){D._ins().cameraToSprite(this._Owner),p._frameOnce(5,this,()=>{$._photo.take(this._Owner,1)}),this.texStorage(),this.UI.operationVinish(()=>{this.UI.btnBackVinish(null,200),this.UI.btnBackVinish(),this.UI.btnRollbackVinish(),this.UI.btnAgainVinish(()=>{});var e=()=>{D._ins().cameraToSprite(this._Owner),H._whereFrom=O.MakePattern,this._openScene(O.Start,!0,!0)};TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.OPPO_AppRt?W._screenShootByRatio(t=>{W._picSave(t.tempFilePath,V._ins().name),e()},.28,null,.72,null,null,.1):e()},200)}lwgEvent(){this._evReg(Y.Event.createImg,(e,t)=>{this.Tex.state=this.Tex.stateType.move,this.Tex.createImg(e,t),this.Tex.turnFace()}),this._evReg(Y.Event.close,()=>{M._complete.value&&(this.Tex.close(),this.Tex.state=this.Tex.stateType.none)}),this._evReg(Y.Event.byteDanceBackStart,()=>{this.backStart()})}texStorage(){const e=[];var t=e=>({name:e.name,x:e.x,y:e.y,width:e.width,height:e.height,rotation:e.rotation,anchorX:e.anchorX,anchorY:e.anchorY,zOrder:e.zOrder});for(let a=0;a<this._SpriteVar("Front").numChildren&&!(a>20);a++){const i=this._SpriteVar("Front").getChildAt(a);e.push(t(i))}const a=[];for(let e=0;e<this._SpriteVar("Reverse").numChildren&&!(e<20);e++){const i=this._SpriteVar("Reverse").getChildAt(e);a.push(t(i))}f._array(`${V._ins().name}/${q._ins()._otherPro.texF}`).value=e,f._array(`${V._ins().name}/${q._ins()._otherPro.texR}`).value=a,R._whereFrom=O.Tweeting_GetFans}lwgOnStageDown(e){if(this.Tex.touchP=new Laya.Point(e.stageX,e.stageY),e.stageX>Laya.stage.width-this.UI.Operation.width)this.slideFY=e.stageY;else{if(!M._complete.value)return;new Laya.Point(e.stageX,e.stageY).distance(this._ImgVar("Wireframe").x,this._ImgVar("Wireframe").y)>this._ImgVar("Wireframe").width/2+50?this._ImgVar("Wireframe").visible=!1:this.Tex.Img?this._ImgVar("Wireframe").visible=!0:this._ImgVar("Wireframe").visible=!1}}lwgOnStageMove(e){if(this.Tex.operation(e),e.stageX>Laya.stage.width-this.UI.Operation.width){if(!M._complete.value)return;if(this.slideFY){let t=this.slideFY-e.stageY,a=Y._Pattern._ins()._List.startIndex;Math.abs(t)>25&&(t>0&&Y._Pattern._ins()._List.tweenTo(a+1,100),t<0&&Y._Pattern._ins()._List.tweenTo(a-1,100),this.slideFY=null)}}else this.slideFY=null}lwgOnStageUp(e){this.slideFY=null,e.stageX>Laya.stage.width-this.UI.Operation.width?this._evNotify(Y.Event.close):this.Tex.checkInside()?M._complete.value||(M.MakePatternState===M.MakePatternStateType.Pattern1?this._evNotify(M.Event.MakePatternFrame1,[this._ImgVar("Wireframe")]):M.MakePatternState===M.MakePatternStateType.Pattern2&&this._evNotify(M.Event.MakePatternFrame2,[this._ImgVar("Wireframe")])):this.Tex.close()}lwgOnDisable(){ae.TAPoint(z.PageLeave,"tiehuapage"),ae.TAPoint(z.LevelFinish,`level_${V._ins().Present.name}`)}}class me{static _showCloth(e){const t=this._showClothParent;t&&t.destroy();this._showClothParent=(()=>{const t=[0,.1,.8],a=[.015,.015],i=[[.06,.06,0],[.06,.06,0]],n=new Laya.Sprite3D;return e.addChild(n),p._frameNumLoop(5,1,this,()=>{for(let e=0;e<2;e++){let s=1===e?10:-10;const o=P._Particle._spiral(n,t,i,null,null,null,[1.3,1.3],a,[s,s]);o.frame.func=(()=>{P._Particle._fade(n,[o.box.transform.position.x,o.box.transform.position.y,o.box.transform.position.z],null,10,.03,.03)})}}),p._frameNumLoop(1,15,this,()=>{for(let e=0;e<1;e++)P._Particle._starsShine(D._ins()._Owner,[0,.5,.8],[[0,0,0],[.4,.6,.4]])}),n})()}}class ge extends y._Item{$button(){this._btnUp(this._Owner,e=>{"ads"!==this.$data.name&&(Z._ins()._getProperty(this.$data.name,Z._ins()._property.complete)?(Z._ins().accurateChange(this.$data.part,this.$data.name),me._showCloth(D._ins()._Owner)):ae.ShowReward(()=>{Z._ins()._checkCondition(this.$data.name)&&(m.createHint_Middle("恭喜获得新服装！"),Z._ins().accurateChange(this.$data.part,this.$data.name))}))},null)}$render(){"ads"===this.$data.name?(!this._BoxChild("NativeRoot")&&I._Node.createPrefab(N._list.prefab2D.NativeRoot.prefab,this._Owner),this._ImgChild("Mask").visible=this._ImgChild("Icon").visible=this._ImgChild("Board").visible=!1):(this._BoxChild("NativeRoot")&&this._BoxChild("NativeRoot").destroy(),this._ImgChild("Icon").visible=this._ImgChild("Board").visible=!0,this.$data.putOn?this._ImgChild("Board").skin="Game/UI/Common/xuanzhong.png":this._ImgChild("Board").skin=null,this.$data.classify===Z._ins()._classify.DIY?TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.OPPO_AppRt?(this._ImgChild("Icon").skin=W._getStoragePic(this.$data.name),this._ImgChild("Icon").size(110,130),this._ImgChild("Icon").scale(1,1)):this._ImgChild("Icon").skin=this.$data.icon:(this._ImgChild("Icon").size(null,null),this._ImgChild("Icon").scale(.9,.9),this._ImgChild("Icon").skin=Z._ins().getGeneralIcon(this.$data.name))),this.$data.complete?this._ImgChild("Mask").visible=this._ImgChild("AdsSign").visible=!1:this._ImgChild("Mask").visible=this._ImgChild("AdsSign").visible=!0}}class pe extends _._SceneBase{lwgOnAwake(){se.startAutoRecord(),ae.TAPoint(z.PageShow,"changepage"),D._ins().openMirror(this._ImgVar("MirrorSurface"));const e=Z._ins().collectDIY();Z._ins()._List=this._ListVar("List"),Z._ins()._listRenderScript=ge,Z._ins()._listArray=Z._ins()._getArrByClassify(Z._ins()._classify.DIY),e.length>0?this.switchClassify(this._ImgVar("DIY")):this.switchClassify(this._ImgVar("Dress"))}lwgAdaptive(){c._Ues.value===c._Tpye.Bytedance&&(this._ImgVar("BtnComplete").y+=80),this._SpriteVar("Mirror").x=.234*Laya.stage.width}lwgOnStart(){Z._ins()._List.refresh(),this.UI=new oe(this._Owner),p._frameOnce(10,this,()=>{this.UI.operationAppear(()=>{this.UI.btnCompleteAppear(null,400)}),this.UI.btnBackAppear(null,200)}),this.UI.btnCompleteClick=(()=>{D._ins().closeMirror(),D._ins().cameraToSprite(this._Owner),c._Ues.value===c._Tpye.Bytedance?p._frameOnce(10,this,()=>{se.stopAutoRecord(),$._photo.take(this._Owner,3),j._whereFrom=O.DressingRoom,this._openScene(O.Share,!1)}):c._Ues.value!==c._Tpye.OPPO&&c._Ues.value!==c._Tpye.OPPOTest||this.backStart()})}backStart(){this.UI.operationVinish(()=>{Laya.Resource.destroyUnusedResources(),this._openScene(O.Start,!0,!0),this.UI.btnBackVinish()},200)}switchClassify(e){let t=[];for(let a=0;a<this._ImgVar("Part").numChildren;a++){const i=this._ImgVar("Part").getChildAt(a),n=i.getChildAt(0);if(e===i)if(i.skin="Game/UI/Common/kuang_fen.png",n.skin=`Game/UI/DressingRoom/PartIcon/${i.name}_s.png`,"DIY"===e.name)t=Z._ins()._getArrByClassify(e.name);else{let a=Z._ins()._getArrByClassify(Z._ins()._classify.General);for(let i=0;i<a.length;i++){const n=a[i];n[Z._ins()._otherPro.part]===e.name&&t.push(n)}}else i.skin="Game/UI/Common/kuang_bai.png",n.skin=`Game/UI/DressingRoom/PartIcon/${i.name}.png`;Z._ins()._listArray=t}}lwgButton(){for(let e=0;e<this._ImgVar("Part").numChildren;e++){const t=this._ImgVar("Part").getChildAt(e);this._btnUp(t,()=>{this.switchClassify(t)},"no")}}lwgEvent(){this._evReg(G.Event.byteDanceBackStart,()=>{this.backStart()})}lwgOnDisable(){ae.TAPoint(z.PageLeave,"changepage")}}class ye extends _._SceneBase{lwgOnAwake(){ae.TAPoint(z.BtnShow,"changename"),this._TextInputVar("NameValue").text=X._name.value;const e=R._Data._ins()._getPitchObj();this._LabelVar("RankValue").text=e[R._Data._ins()._mergePro.rankNum],this._LabelVar("FansValue").text=e[R._Data._ins()._mergePro.fansNum]}lwgOpenAni(){return ee._dialogOpenFadeOut(this._ImgVar("Background"),this._ImgVar("Content"),()=>{!M._complete.value&&this._openScene("Guide",!1,!1,()=>{const e=this._ImgVar("Name").localToGlobal(new Laya.Point(this._ImgVar("NameValue").x,this._ImgVar("NameValue").y));this._evNotify(M.Event.PersonalInfoWriteName,[e.x,e.y])},this._Owner.zOrder+1),p._frameLoop(200,this,()=>{this._AniVar("ani1").play(0,!1),this._AniVar("ani1").on(Laya.Event.LABEL,this,e=>{"comp"===e&&b._changeOnce(this._ImgVar("Head"),[50,10,10,1],40)})},!0)})}BtnCloseClick(){this._btnUp(this._ImgVar("BtnClose"),()=>{!M._complete.value&&this._evNotify(M.Event.vanishGuide),this._closeScene()})}lwgButton(){this._btnFour(this._ImgVar("NameValue"),()=>{this._ImgVar("BtnWrite").scale(.85,.85)},()=>{this._ImgVar("BtnWrite").scale(.85,.85)},()=>{this._ImgVar("BtnWrite").scale(1,1)},()=>{this._ImgVar("BtnWrite").scale(1,1)}),this._TextInputVar("NameValue").on(Laya.Event.FOCUS,this,()=>{!M._complete.value&&this._evNotify(M.Event.vanishGuide)}),this._TextInputVar("NameValue").on(Laya.Event.INPUT,this,()=>{}),this._TextInputVar("NameValue").on(Laya.Event.BLUR,this,()=>{if(this._TextInputVar("NameValue").text.length<=5?this._TextInputVar("NameValue").fontSize=30:6===this._TextInputVar("NameValue").text.length?this._TextInputVar("NameValue").fontSize=27:this._TextInputVar("NameValue").fontSize=24,X._name.value=this._TextInputVar("NameValue").text,!M._complete.value){this.BtnCloseClick();const e=this._ImgVar("Content").localToGlobal(new Laya.Point(this._ImgVar("BtnClose").x,this._ImgVar("BtnClose").y));this._evNotify(M.Event.PersonalInfoCloseBtn,[e.x,e.y])}}),M._complete.value&&this.BtnCloseClick()}lwgCloseAni(){return ee._dialogCloseFadeOut(this._ImgVar("Content"),this._ImgVar("Background"),()=>{!M._complete.value&&this._evNotify(M.Event.DelayBtnCheckIn)})}lwgOnDisable(){ae.TAPoint(z.BtnClick,"changename")}}class fe extends y._Item{$render(){this.$data.classify===R._Data._ins()._classify.self?(this._ImgChild("Board").skin="Game/UI/Ranking/x_di.png",this._LableChild("Name").text=X._name.value):(this._ImgChild("Board").skin="Game/UI/Ranking/w_di.png",this._LableChild("Name").text=this.$data[R._Data._ins()._property.name]),this._LableChild("RankNum").text=String(this.$data.rankNum),this._LableChild("FansNum").text=String(this.$data.fansNum),this._LableChild("Icon").getChildAt(0).skin=this.$data.iconSkin}}class we extends _._SceneBase{lwgOnAwake(){ae.TAPoint(z.PageShow,"rankpage"),R._Data._ins()._List=this._ListVar("List"),R._whereFrom===O.Tweeting_GetFans&&R._Data._ins()._addProValueForAll(R._Data._ins()._mergePro.fansNum,()=>I._Number.randomOneInt(100,150)),this._evNotify(H.Event.updateRanking),R._Data._ins()._listRenderScript=fe}lwgOpenAni(){return R._whereFrom===O.Tweeting_GetFans?ee._dialogOpenPopup(this._ImgVar("Content"),this._ImgVar("Background")):ee._dialogOpenFadeOut(this._ImgVar("Content"),this._ImgVar("Background")),200}lwgOpenAniAfter(){R._whereFrom===O.Tweeting_GetFans&&(ie._fireworksCelebrate(()=>{!M._complete.value&&this._openScene(O.Guide,!1,!1,()=>{this.BtnCloseClick();const e=this._ImgVar("Content").localToGlobal(new Laya.Point(this._ImgVar("BtnClose").x,this._ImgVar("BtnClose").y));this._evNotify(M.Event.RankingCloseBtn,[e.x,e.y])},this._Owner.zOrder+1)}),R._whereFrom=O.Start)}lwgOnStart(){1===R._Data._ins()._getProperty(R._Data._ins()._pitchName,R._Data._ins()._mergePro.rankNum)?R._Data._ins()._List.scrollTo(0):R._whereFrom===O.Tweeting_GetFans?(R._Data._ins()._listScrollToFirstByLast(),R._Data._ins()._listTweenToDiffIndexByPitch(-1,1500)):(R._Data._ins()._listScrollToFirstByLast(),R._Data._ins()._listTweenToDiffIndexByPitch(-1,600))}BtnCloseClick(){this._btnUp(this._ImgVar("BtnClose"),()=>{this._closeScene(),M._complete.value||(this._evNotify(M.Event.closeGuide),this._evNotify(H.Event.BtnPersonalInfo))})}lwgButton(){M._complete.value&&this.BtnCloseClick()}lwgCloseAni(){return ee._dialogCloseFadeOut(this._ImgVar("Content"),this._ImgVar("Background"))}lwgOnDisable(){ae.TAPoint(z.PageLeave,"rankpage")}}class Se extends _._SceneBase{lwgOnAwake(){ae.TAPoint(z.PageShow,"weibopage"),ae.TAPoint(z.BtnShow,"photo_choose"),this._LabelVar("BodyText").text=$._mainBody.getOne(),this._LabelVar("PlayerName").text=X._name.value,this._ImgVar("IconPic").skin="Game/UI/Ranking/IconSkin/Ava.png",$._attentionNum.value+=I._Number.randomOneInt(50,100),this._LabelVar("AttentionNum").text=$._attentionNum.value.toString(),this._LabelVar("FansNum").text=R._Data._ins()._getPitchProperty(R._Data._ins()._mergePro.fansNum),$._completeNum.value++,q._ins()._checkConditionUnlockWay(q._ins()._unlockWay.customs,1),this._LabelVar("CompleteNum").text=$._completeNum.value.toString();const e=I._Number.randomCountBySection(20,50,3);e.sort();const t=$._brief.getThree(),a=I._Number.randomCountBySection(1,20,3);for(let i=0;i<3;i++){const n=this._ImgVar("Hot").getChildByName(`Rank${i+1}`),s=n.getChildByName("Name"),o=n.getChildByName("Tag"),r=n.getChildByName("Brief"),l=n.getChildByName("Heat"),h=n.getChildByName("HeadIcon").getChildByName("Icon"),c=R._Data._ins()._arr[i];s.text=c[R._Data._ins()._property.name],o.skin=`Game/UI/Tweeting/Main/${i+1}.png`,r.text=t[i],l.text=`本周热度 ${e[i]}万`,h.skin=`Game/UI/Tweeting/Head/${a[i]}.jpg`}for(let e=0;e<3;e++){const t=this._ImgVar("BtnChoosePhotos").getChildByName(`Photo${e+1}`).getChildAt(0);$._photo.arr[e]&&(t.texture=$._photo.arr[e])}for(let e=0;e<this._ImgVar("Content").numChildren;e++){this._ImgVar("Content").getChildAt(e).scale(0,0)}}lwgAdaptive(){this._ImgVar("Head").pos(this._Owner.width-(this._ImgVar("Head").width+57),this._ImgVar("Head").y),this._ImgVar("Hot").pos(this._Owner.width-(this._ImgVar("Hot").width+41),this._ImgVar("Hot").y),this._ImgVar("BtnChoosePhotos").size(this._Owner.width-this._ImgVar("BtnChoosePhotos").x-(this._Owner.width-this._ImgVar("Hot").x)-30,this._ImgVar("BtnChoosePhotos").height),c._Ues.value===c._Tpye.Bytedance?(this._ImgVar("PhotoAds").destroy(),this._ImgVar("Photo1").centerX=-(20+this._ImgVar("Photo1").width),this._ImgVar("Photo2").centerX=0,this._ImgVar("Photo3").centerX=20+this._ImgVar("Photo3").width):c._Ues.value!==c._Tpye.OPPO&&c._Ues.value!==c._Tpye.OPPOTest||(this._ImgVar("PhotoAds").x=this._ImgVar("BtnChoosePhotos").width/2-260-30,this._ImgVar("Photo1").x=this._ImgVar("BtnChoosePhotos").width/2-130-10,this._ImgVar("Photo2").x=this._ImgVar("BtnChoosePhotos").width/2+10,this._ImgVar("Photo3").x=this._ImgVar("BtnChoosePhotos").width/2+130+30),this._ImgVar("Body").size(this._Owner.width-this._ImgVar("BtnChoosePhotos").x-(this._Owner.width-this._ImgVar("Hot").x)-50,this._ImgVar("Body").height),this._ImgVar("BtnChoosePhotos").scale(0,0),this._ImgVar("BtnSet").size(0,0),this._ImgVar("Top").size(this._Owner.width-100,this._ImgVar("Top").height)}lwgOpenAni(){return ee._dialogOpenFadeOut(this._ImgVar("Content"),this._ImgVar("Background"),()=>{L._absoluteSwitch=!0,x.scale(this._ImgVar("Top"),0,0,1,1,225,200),x.scale(this._ImgVar("BtnSet"),0,0,1,1,225,400),x.scale(this._ImgVar("Body"),0,0,1,1,225,600),x.scale(this._ImgVar("Head"),0,0,1,1,225,800),x.scale(this._ImgVar("Hot"),0,0,1,1,225,1e3),I._Node.changePivot(this._ImgVar("BtnChoosePhotos"),this._ImgVar("BtnChoosePhotos").width/2,this._ImgVar("BtnChoosePhotos").height/2),x.bombs_Appear(this._ImgVar("BtnChoosePhotos"),0,1,1.08,0,300,()=>{p._once(300,this,()=>{this.BtnChoosePhotosClick(),!M._complete.value&&this._openScene("Guide",!1,!1,()=>{this._evNotify(M.Event.TweetingBtnChoosePhoto,[this._ImgVar("BtnChoosePhotos")._lwg.gPoint.x,this._ImgVar("BtnChoosePhotos")._lwg.gPoint.y,this._ImgVar("Photo2")._lwg.gPoint.x+65,this._ImgVar("Photo2")._lwg.gPoint.y+65])})}),ee._fadeHint(this._ImgVar("BtnChoosePhotos").getChildByName("HintPic"))},1400)}),1625}BtnChoosePhotosClick(){this._btnUp(this._ImgVar("BtnChoosePhotos"),()=>{ae.TAPoint(z.BtnClick,"photo_choose"),this._openScene(O.Tweeting_ChoosePhotos,!1)},"null")}lwgButton(){}lwgCloseAni(){return 100}lwgOnDisable(){ae.TAPoint(z.PageLeave,"weibopage")}}class ve extends _._SceneBase{lwgOnAwake(){this.photoArr=[this._ImgVar("Photo1"),this._ImgVar("Photo2"),this._ImgVar("Photo3")];for(let e=0;e<this.photoArr.length;e++){const t=this.photoArr[e].getChildByName("Pic");$._photo.arr[e]&&(t.texture=$._photo.arr[e])}}lwgOpenAni(){return ee._dialogOpenPopup(this._ImgVar("Content"),this._ImgVar("BackGround"),()=>{!M._complete.value&&this._openScene("Guide",!1,!1,()=>{this._evNotify(M.Event.TweetingChoosePhoto,[this._ImgVar("Photo1")._lwg.gPoint.x,this._ImgVar("Photo1")._lwg.gPoint.y])})})}lwgButton(){for(let e=0;e<this.photoArr.length;e++){const t=this.photoArr[e];this._btnUp(t,()=>{for(let e=0;e<this.photoArr.length;e++){const a=this.photoArr[e],i=a.getChildByName("Tick");if(t==a){a.scale(1.05,1.05),$._photoIndex=e,i.visible=!0;const t=this._ImgVar("Content").localToGlobal(new Laya.Point(this._ImgVar("BtnSend").x,this._ImgVar("BtnSend").y));!M._complete.value&&this._evNotify(M.Event.TweetingBtnSend,[t.x,t.y])}else a.scale(1,1),i.visible=!1}this._ImgVar("BtnSend").skin="Game/UI/Tweeting/ChoosePhotos/anniu_fasong.png"},"null")}this._btnUp(this._ImgVar("BtnSend"),()=>{"Game/UI/Tweeting/ChoosePhotos/anniu_fasong.png"==this._ImgVar("BtnSend").skin?(!M._complete.value&&this._evNotify(M.Event.closeGuide),this._closeScene()):m.createHint_Middle("还未选择照片哦！")})}lwgCloseAni(){return ee._dialogCloseFadeOut(this._ImgVar("Content"),this._ImgVar("BackGround"),()=>{this._openScene(O.Tweeting_Dynamic,!1)})}lwgOnDisable(){}}class Le extends _._SceneBase{constructor(){super(...arguments),this.baseTime=150,this.baseDelay=200}lwgOpenAni(){return this._ImgVar("Photo").texture=$._photo.arr[$._photoIndex],ee._dialogOpenFadeOut(this._ImgVar("Content"),null,()=>{x.scale(this._ImgVar("Head"),0,0,1,1,2*this.baseTime,1.5*this.baseDelay,()=>{this._closeScene(O.Tweeting_Main),this.bodyTextAppear(()=>{x.scale(this._ImgVar("Middle"),0,0,1,1,2*this.baseTime,1.5*this.baseDelay,()=>{x.scale(this._ImgVar("Bottom"),0,0,1,1,2*this.baseTime,1.5*this.baseDelay,()=>{this.replyAppear()})})})})}),2*this.baseTime+this.baseDelay}bodyTextAppear(e){const t=this._ImgVar("Head").getChildByName("Body");ee._charactersEffect(t,$._mainBody.present,()=>{e()})}replyAppear(){const e=$._reply.getTow();x.move(this._ImgVar("Reply1"),this._ImgVar("Reply1").x,this._ImgVar("Reply1").y-500,500,()=>{ee._charactersEffect(this._LabelVar("Reply1Body"),e[0],()=>{const t=this._ImgVar("Reply1").getChildByName("Like").getChildByName("Num"),a=Math.round(I._Number.randomOneBySection(200,5e3,!0)/500);let i=0;p._frameNumLoop(1,80,this,()=>{i+=a,t.text=i.toString()}),x.move(this._LabelVar("Reply2"),this._LabelVar("Reply2").x,this._LabelVar("Reply2").y-500,80,()=>{ee._charactersEffect(this._LabelVar("Reply2Body"),e[1],()=>{const e=this._LabelVar("Reply2").getChildByName("Like").getChildByName("Num"),t=Math.round(I._Number.randomOneBySection(200,5e3,!0)/80);let a=0;p._frameNumLoop(1,80,this,()=>{a+=t,e.text=a.toString()},()=>{p._frameOnce(60,this,()=>{this._openScene(O.Tweeting_GetFans,!1)})})})})})})}lwgOnAwake(){this._ImgVar("Head").width=this._Owner.width-160,this._ImgVar("Head").getChildByName("HeadIcon").getChildAt(0).skin="Game/UI/Ranking/IconSkin/Ava.png",this._LabelVar("Brief").text=$._brief.getOne()[0].toString(),this._LabelVar("PlayerName").text=X._name.value;this._ImgVar("Middle").width=this._Owner.width-160,this._ImgVar("Collect").x=0*(this._ImgVar("Middle").width-240)/4+120,$._forwardedNum.value+=50,this._ImgVar("Forwarded").getChildAt(0).text=$._forwardedNum.value.toString(),this._ImgVar("Forwarded").x=1*(this._ImgVar("Middle").width-240)/4+120,$._commentNum.value+=50,this._ImgVar("Comment").getChildAt(0).text=$._commentNum.value.toString(),this._ImgVar("Comment").x=2*(this._ImgVar("Middle").width-240)/4+120,$._likeNum.value+=100,this._ImgVar("Like").getChildAt(0).text=$._likeNum.value.toString(),this._ImgVar("Like").x=3*(this._ImgVar("Middle").width-240)/4+120,this._ImgVar("Bottom").width=this._Owner.width-160;const e=I._Number.randomCountBySection(1,20,2),t=R._Data._ins()._randomCountObj(2);for(let a=0;a<2;a++){const i=this._ImgVar(`Reply${a+1}`);i.getChildByName("HeadIcon").getChildAt(0).skin=`Game/UI/Tweeting/Head/${e[a]}.jpg`,i.y+=500;const n=this._LabelVar(`Reply${a+1}Body`),s=i.getChildByName("Time");0==a?(n.text=`${t[0].name}: `,s.text=`${w._date.month}月${w._date.date}日    ${w._date.hours}:${w._date.minutes-1>0?0:w._date.minutes-1}`):(s.text=`${w._date.month}月${w._date.date}日    ${w._date.hours}:${w._date.minutes}`,n.text=`${t[1].name}: `)}this._ImgVar("Head").scale(0,0),this._ImgVar("Middle").scale(0,0),this._ImgVar("Bottom").scale(0,0)}lwgButton(){this._btnUp(this._ImgVar("Content"),()=>{console.log("防止穿透！")},"null")}lwgCloseAni(){return ee._dialogCloseFadeOut(this._ImgVar("Content"))}lwgOnDisable(){}}class be extends _._SceneBase{constructor(){super(...arguments),this.fansNum=0}lwgOnAwake(){ae.TAPoint(z.BtnShow,"ADrank"),this.pitchObj=R._Data._ins()._getPitchObj(),this.fansNum=I._Number.randomOneInt(115,383),this.pitchObj.fansNum+=this.fansNum,this._FontClipVar("FansNum").value=this.fansNum.toString()}lwgOpenAni(){return ee._dialogOpenPopup(this._ImgVar("Content"),this._ImgVar("BackGround"),()=>{ie._interfacePointJet(),!M._complete.value&&this._openScene(O.Guide,!1,!1,()=>{this._evNotify(M.Event.TweetingBtnDoubleFans,[this._ImgVar("BtnOk")._lwg.gPoint.x,this._ImgVar("BtnOk")._lwg.gPoint.y])}),p._loop(2e3,this,()=>{x.bomb_LeftRight(this._ImgVar("BtnDouble"),1.1,250)},!0)}),300}lwgButton(){var e=()=>{R._whereFrom=O.Tweeting_GetFans,$._photo.clear(),this._closeScene(O.Tweeting_Dynamic),this._closeScene(),!M._complete.value&&this._evNotify(M.Event.closeGuide)};this._btnUp(this._ImgVar("BtnOk"),()=>{e()}),this._btnUp(this._ImgVar("BtnDouble"),()=>{M._complete.value&&(ae.TAPoint(z.BtnClick,"ADrank"),ae.ShowReward(()=>{this.pitchObj.fansNum+=this.fansNum,m.createHint_Middle("太厉害了，涨粉翻倍了！"),e()}))})}lwgCloseAni(){return ee._dialogCloseFadeOut(this._ImgVar("Content"),this._ImgVar("BackGround"),()=>{this._openScene(O.Ranking,!1)})}lwgOnDisable(){}}class Ce extends _._SceneBase{setCallBack(e){this.adAction=e}lwgOpenAni(){return ee._dialogOpenFadeOut(this._ImgVar("Content"),this._ImgVar("Background")),200}lwgButton(){this._btnUp(this._ImgVar("BtnClose"),()=>{this._closeScene()}),this._btnUp(this._ImgVar("BtnConfirm"),()=>{ae.ShowReward(this.adAction,null),this._closeScene()})}lwgCloseAni(){return ee._dialogCloseFadeOut(this._ImgVar("Content"),this._ImgVar("Background")),200}}class Pe extends y._Item{$button(){this._btnUp(this._ImgChild("Reward"),e=>{J._todayCheckIn.value?m.createHint_Middle("日期不对哦！"):J._checkInNum.value+1===this.$data.serial&&(J._lastCheckDate.value=w._date.date,console.log(J._lastCheckDate.value,J._todayCheckIn.value),J._Data._ins()._setCompleteName(this.$data.name),J._checkInNum.value++,"diy"===this.$data.rewardType.substr(0,3)?(q._ins()._setCompleteByName(this.$data.rewardType),m.createHint_Middle("恭喜获得新的裁剪服装"),ie._oneFireworks(new Laya.Point(e.stageX,e.stageY))):"cat"===this.$data.rewardType&&(Y._Pattern._ins()._setCompleteByClassify(this.$data.rewardType),m.createHint_Middle("恭喜获得猫咪贴图一套"),ie._oneFireworks(new Laya.Point(e.stageX,e.stageY))),M._complete.value||(M.CheckInCloseBtn=!0,this._evNotify(M.Event.CheckInCloseBtn,[this._SceneImg("BtnClose")._lwg.gPoint.x,this._SceneImg("BtnClose")._lwg.gPoint.y])))});var e=e=>{ae.ShowReward(()=>{J._Data._ins()._setOtherCompleteName(this.$data.name),"diy"===this.$data.otherRewardType.substr(0,3)?(q._ins()._setCompleteByName(this.$data.otherRewardType),m.createHint_Middle("恭喜获得新的裁剪服装")):"newYear"===this.$data.otherRewardType&&(Y._Pattern._ins()._setCompleteByClassify(this.$data.otherRewardType),m.createHint_Middle("恭喜获得新年贴图一套")),ie._oneFireworks(new Laya.Point(e.stageX,e.stageY))})},t=t=>{this.$data.otherComplete?m.createHint_Middle("日期不对哦！"):J._todayCheckIn.value?J._checkInNum.value>=this.$data.serial&&e(t):J._checkInNum.value+1>=this.$data.serial&&e(t)};this._btnUp(this._ImgChild("AdsReward"),t),this._btnUp(this._ImgChild("BtnAdsReward"),t)}$render(){this._LableChild("DayNum").text=this.$data.name;const e=this._ImgChild("Reward").getChildByName("Already"),t=this._ImgChild("Reward").getChildByName("Icon");"diy"===this.$data.rewardType.substr(0,3)?(t.skin=q._ins().getDIYCutIcon(this.$data.rewardType),t.scale(.55,.55)):"cat"===this.$data.rewardType&&(t.skin=`Pattern/${this.$data.rewardType}1.png`,t.scale(.18,.18)),e.visible=this.$data.complete,this.$data.complete?this._ImgChild("Reward").skin="Game/UI/ChekIn/k_nei.png":J._checkInNum.value+1===this.$data.serial?J._todayCheckIn.value?this._ImgChild("Reward").skin="Game/UI/ChekIn/k_nei.png":this._ImgChild("Reward").skin="Game/UI/ChekIn/k_nei1.png":this._ImgChild("Reward").skin="Game/UI/ChekIn/k_nei.png";const a=this._ImgChild("AdsReward").getChildByName("Already"),i=this._ImgChild("AdsReward").getChildByName("Icon");"diy"===this.$data.otherRewardType.substr(0,3)?(i.skin=q._ins().getDIYCutIcon(this.$data.otherRewardType),i.scale(.55,.55)):"newYear"===this.$data.otherRewardType&&(i.skin=`Pattern/${this.$data.otherRewardType}1.png`,i.scale(.16,.16)),a.visible=this.$data.otherComplete,this.$data.otherComplete?(this._ImgChild("AdsReward").skin="Game/UI/ChekIn/k_nei.png",this._ImgChild("BtnAdsReward").visible=!1):J._todayCheckIn.value?J._checkInNum.value>=this.$data.serial?(this._ImgChild("AdsReward").skin="Game/UI/ChekIn/k_nei1.png",this._ImgChild("BtnAdsReward").gray=!1):(this._ImgChild("AdsReward").skin="Game/UI/ChekIn/k_nei.png",this._ImgChild("BtnAdsReward").gray=!0):J._checkInNum.value+1>=this.$data.serial?(this._ImgChild("AdsReward").skin="Game/UI/ChekIn/k_nei1.png",this._ImgChild("BtnAdsReward").gray=!1):(this._ImgChild("AdsReward").skin="Game/UI/ChekIn/k_nei.png",this._ImgChild("BtnAdsReward").gray=!0)}}class xe extends _._SceneBase{lwgOnAwake(){J._Data._ins()._List=this._ListVar("List"),J._Data._ins()._listRenderScript=Pe,J._Data._ins()._List.scrollBar.touchScrollEnable=!1,this._LabelVar("ImmediatelyNum").text=`${J._immediately.value} / 4`,(J._immediately.value>=4||J._checkInNum.value>=4)&&(this._ImgVar("BtnImmediately").visible=!1,this._LabelVar("Tip").text="奖励已经全部领取！")}lwgOpenAni(){return ee._dialogOpenFadeOut(this._ImgVar("Content"),this._ImgVar("Background"),()=>{this._openScene(O.Guide,!1,!1,()=>{this.BtnCloseClick(),!M._complete.value&&this._evNotify(M.Event.CheckInGetReward,[this._ImgVar("GuideTab1")._lwg.gPoint.x,this._ImgVar("GuideTab1")._lwg.gPoint.y])})})}BtnCloseClick(){this._btnUp(this._ImgVar("BtnClose"),()=>{!M._complete.value&&M.CheckInCloseBtn&&(M._complete.value=!0,m.createHint_Middle("开启你的女神之路吧!"),this._evNotify(M.Event.closeGuide),this._evNotify(M.Event.StartOtherBtnClick)),this._closeScene()})}lwgButton(){M._complete.value&&(this.BtnCloseClick(),this._btnUp(this._ImgVar("BtnImmediately"),()=>{J._immediately.value<4?ae.ShowReward(()=>{if(J._immediately.value++,this._LabelVar("ImmediatelyNum").text=`${J._immediately.value} / 4 `,J._immediately.value>=4){this._ImgVar("BtnImmediately").visible=!1;const e=this._ImgVar("GuideTab1")._lwg.gPoint;J._Data._ins()._setAllCompleteDelay(300,t=>{const a=new Laya.Point(e.x,e.y);t||ie._oneFireworks(a),e.x+=165},null,null);const t=this._ImgVar("GuideTab2")._lwg.gPoint;J._Data._ins()._setAllOtherCompleteDelay(300,e=>{const a=new Laya.Point(t.x,t.y);e||ie._oneFireworks(a),t.x+=165},null,()=>{m.createHint_Middle("奖励已经全部获得，快去制作服装吧！")}),q._ins()._setCompleteByNameArr(["diy_dress_003_final","diy_dress_007_final","diy_top_004_final","diy_bottom_005_final","diy_dress_006_final","diy_bottom_006_final"]),Y._Pattern._ins()._setCompleteByClassify("cat"),Y._Pattern._ins()._setCompleteByClassify("newYear")}}):m.createHint_Middle("奖励已经全部获得，无需在看广告o.o！")}))}lwgCloseAni(){return ee._dialogCloseFadeOut(this._ImgVar("Content"),this._ImgVar("Background"))}}class Ae extends _._SceneBase{lwgOnAwake(){L._stageSwitch=!1,j._whereFrom===O.MakePattern?this._SpriteVar("Photo").texture=$._photo.arr[0]:j._whereFrom===O.DressingRoom&&(this._SpriteVar("Photo").texture=$._photo.arr[3])}lwgOpenAni(){return this._ImgVar("BtnShare").visible=!1,ee._dialogOpenPopup(this._ImgVar("Content"),this._ImgVar("Background"),()=>{this._ImgVar("BtnShare").visible=!0,ee._dialogOpenPopup(this._ImgVar("BtnShare"))})}closeFunc(){j._whereFrom===O.MakePattern?this._evNotify(Y.Event.byteDanceBackStart):j._whereFrom===O.DressingRoom&&this._evNotify(G.Event.byteDanceBackStart)}lwgButton(){var e=()=>{se._share("noAward",()=>{this.closeFunc()})};this._btnUp(this._ImgVar("BtnShare"),()=>{e()}),this._btnUp(this._ImgVar("BtnBoard"),()=>{e()},"null"),this._btnUp(this._ImgVar("BtnClose"),()=>{this._closeScene()})}lwgCloseAni(){return ee._dialogCloseFadeOut(this._ImgVar("Content"),this._ImgVar("Background"),()=>{this.closeFunc(),L._stageSwitch=!0})}}class Ie extends _._SceneBase{constructor(){super(...arguments),this.closeAniType=null}lwgOpenAni(){return ee._dialogOpenFadeOut(this._ImgVar("Content"),this._ImgVar("Background"))}lwgButton(){this._btnUp(this._ImgVar("BtnLeave"),()=>{U._fromBack=!0,ee._dialogCloseFadeOut(this._ImgVar("Content"),this._ImgVar("Background"),()=>{this._Owner.close(),E._whereScene[E._whereScene.name]._openScene(O.Start,!0,!0)})});var e=()=>{this.closeAniType=100,E._3dToSp&&E._3dToSp.destroy(),ee._dialogCloseFadeOut(this._ImgVar("Content"),this._ImgVar("Background"),()=>{this._Owner.close()})};this._btnUp(this._ImgVar("BtnContinue"),()=>{e()}),this._btnUp(this._ImgVar("BtnClose"),()=>{e()})}lwgCloseAni(){return this.closeAniType}}class Te extends B._InitScene{lwgOnAwake(){c._Ues.value=c._Tpye.Bytedance,Laya.MouseManager.multiTouchEnabled=!1,u._closeSwitch.value=!0,u._Use.value={class:u._shutters.Close,type:u._shutters.Close._type.random},L._Use.value=L._Type.reduce,d._Use.value=[1280,720],_._SceneScript={PreLoad:ne,PreLoadCutIn:K,Guide:te,Start:_e,MakeTailor:ce,MakePattern:ue,DressingRoom:pe,PersonalInfo:ye,Ranking:we,BackHint:Ie,Tweeting_Main:Se,Tweeting_ChoosePhotos:ve,Tweeting_Dynamic:Le,Tweeting_GetFans:be,AdsHint:Ce,CheckIn:xe,Share:Ae}}lwgOnStart(){if(TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.OPPO_AppRt){(new Q).init(),this._Owner.close()}else this._openScene("PreLoad")}}class Be extends a{constructor(){super(...arguments),this.scroll=null,this.layout=null,this.mouseDown=!1,this.lastStageX=0,this.lastStageY=0,this.targetX=0,this.cd=0}get node(){return this.owner}async OnAwake(){this.shield=TJ.Develop.Yun.Location.shield,this.scroll=this.owner.getChildByName("scroll"),this.layout=this.scroll.getChildByName("layout"),TJ.Develop.Yun.Promo.Data.ReportAwake(Be.style),this.layoutS=this.layout.addComponent(Ne),this.active=!1;let e=await TJ.Develop.Yun.Promo.List.Get();if(null!=e&&e.count>0&&null!=this.layoutS){if(this.shield)for(let t=0;t<Math.min(e.count,9);t++)this.layoutS.datas.push(e.Load());else for(let t=0;t<e.count;t++)this.layoutS.datas.push(e.Load());this.layoutS.Init(this.scroll.width,this.scroll.height,this.shield),this.active=!0,TJ.Develop.Yun.Promo.Data.ReportStart(Be.style),this.targetX=this.layout.x}}async OnDisable(){if(!this.shield)return;let e=await TJ.Develop.Yun.Promo.List.Get();if(null!=e&&e.count>0){this.layoutS.datas=[];for(let t=0;t<Math.min(e.count,9);t++)this.layoutS.datas.push(e.Load());this.layoutS.Redata()}}OnStart(){if(this.shield)return;let e=()=>{let e=this.layout.x-this.targetX;e>0&&e>this.layoutS.pageSpace/2?this.targetX+=this.layoutS.pageSpace:e<0&&e<-this.layoutS.pageSpace/2&&(this.targetX-=this.layoutS.pageSpace)};this.scroll.on(Laya.Event.MOUSE_DOWN,null,e=>{this.mouseDown=!0,this.lastStageX=e.stageX,this.lastStageY=e.stageY}),this.scroll.on(Laya.Event.MOUSE_OUT,null,t=>{this.mouseDown=!1,e()}),this.scroll.on(Laya.Event.MOUSE_UP,null,t=>{this.mouseDown=!1,e()}),this.scroll.on(Laya.Event.MOUSE_MOVE,null,e=>{if(this.mouseDown){let t=e.stageX-this.lastStageX;e.stageY,this.lastStageY;this.lastStageX=e.stageX,this.lastStageY=e.stageY;let a=this.layoutS.node.x+t;this.layoutS.node.x=a}})}OnUpdate(){if(!this.shield){if(this.mouseDown)this.cd=0;else{let e=Laya.timer.delta/1e3;if(this.cd+=e,this.cd>=3&&(this.cd-=3,this.targetX-=this.layoutS.pageSpace),this.layout.x!=this.targetX){let e=this.targetX-this.layout.x,t=20;e=e>0?Math.min(this.layout.x+t,this.targetX):Math.max(this.layout.x-t,this.targetX),this.layout.x=e}}this.layoutS.Repos(this.layout.x)}}}Be.style="P402";class Ne extends a{constructor(){super(...arguments),this.datas=[],this.items=[],this.prefab=null,this.line=0,this.column=0,this.spacingX=15,this.spacingY=15,this.pageSpace=0}get node(){return this.owner}OnAwake(){this.prefab=this.node.getChildAt(0),this.prefab.active=this.prefab.visible=!1}Init(e,t,a){for(this.node.x=this.prefab.width/2;e>=this.prefab.width;)e=e-this.prefab.width-this.spacingX,this.column++;for(;t>=this.prefab.height;)t=t-this.prefab.height-this.spacingY,this.line++;if(this.pageSpace=(this.prefab.width+this.spacingX)*this.column,a){let e=this.prefab.width,t=this.prefab.height,a=e+this.spacingX,s=t+this.spacingY;for(let e=0;e<this.line;e++)for(let o=0;o<this.column;o++)if(this.items.length<this.datas.length){let r=n.Instantiate(this.prefab).getComponent(i);this.node.addChild(r.owner),r.owner.active=r.owner.visible=!0,this.items.push(r),r.owner.x=o*a,r.owner.y=s*e+t/2,r.onAwake()}this.Redata()}else{this.datas.sort((e,t)=>t.weight-e.weight),this.column+=2;for(let e=0;e<this.column;e++)for(let e=0;e<this.line;e++){let e=n.Instantiate(this.prefab).getComponent(i);this.node.addChild(e.owner),e.owner.active=e.owner.visible=!0,this.items.push(e),e.onAwake()}}}Redata(){for(let e=0;e<this.items.length;e++){let t=this.items[e];t.data=this.datas[e],t.data.Load(),t.DoLoad()}}Repos(e){let t=this.items.length,a=this.datas.length;if(t<1)return;if(a<1)return;let i=this.prefab.width,n=this.prefab.height,s=i+this.spacingX,o=n+this.spacingY,r=-e/s;r=Math.floor(r);let l=Math.floor(r/this.column)*this.column,h=r<0?(this.column+r%this.column)%this.column:r%this.column,c=(e,t,i,r)=>{let l=(t+r)*this.line+i;if(e.posId!=l){e.posId=l,e.owner.x=(t+r)*s,e.owner.y=o*i+n/2;let h=l<0?(a+l%a)%a:l%a;e.dataId!=h&&(e.dataId=h,e.data=this.datas[h],e.data.Load(),e.DoLoad())}};for(let e=0;e<h;e++)for(let t=0;t<this.line;t++)c(this.items[e*this.line+t],l+this.column,t,e);for(let e=h;e<this.column;e++)for(let t=0;t<this.line;t++)c(this.items[e*this.line+t],l,t,e)}}class ke extends Laya.Script{constructor(){super(...arguments),this.icon=null,this.image=null,this.logo=null,this.title=null,this.desc=null}onStart(){this.ShowNext()}ShowNext(){this.data=TJ.API.AdService.LoadNative(new TJ.API.AdService.Param),null!=this.data&&(this.data.OnShow(),this.title.text=this.data.title,this.desc.text=this.data.desc,this.icon.skin=this.data.iconUrl,this.image.skin=this.data.imgUrl,this.logo.skin=this.data.logoUrl)}onClick(){null!=this.data&&this.data.OnClick(),setTimeout(()=>{this.ShowNext()},1e3)}}class Oe extends Laya.Script{onAwake(){let e=this.owner.getChildByName("pay1"),t=this.owner.getChildByName("pay2"),a=this.owner.getChildByName("pay3"),i=this.owner.getChildByName("restore"),n=this.owner.getChildByName("review"),s=this.owner.getChildByName("banner"),o=this.owner.getChildByName("normal"),r=this.owner.getChildByName("reward"),l=this.owner.getChildByName("vibrateShort"),h=this.owner.getChildByName("vibrateLong"),c=this.owner.getChildByName("userAgreement"),_=this.owner.getChildByName("privacyPolicy");e.clickHandler=new Laya.Handler(null,()=>{this.Pay1()}),t.clickHandler=new Laya.Handler(null,()=>{this.Pay2()}),a.clickHandler=new Laya.Handler(null,()=>{this.Pay3()}),i.clickHandler=new Laya.Handler(null,()=>{this.Restore()}),n.clickHandler=new Laya.Handler(null,()=>{this.Review()}),s.clickHandler=new Laya.Handler(null,()=>{this.Banner()}),o.clickHandler=new Laya.Handler(null,()=>{this.Normal()}),r.clickHandler=new Laya.Handler(null,()=>{this.Reward()}),l.clickHandler=new Laya.Handler(null,()=>{this.VibrateShort()}),h.clickHandler=new Laya.Handler(null,()=>{this.VibrateLong()}),c.clickHandler=new Laya.Handler(null,()=>{this.UserAgreement()}),_.clickHandler=new Laya.Handler(null,()=>{this.PrivacyPolicy()})}onStart(){switch(null!=window.conch&&window.conch.setOnBackPressedFunction(()=>{TJ.API.AppCtl.Quit()}),console.log(TJ.API.AppInfo.ProductName()),console.log(TJ.API.AppInfo.PackageName()),console.log(TJ.API.AppInfo.VersionName()),console.log(TJ.API.AppInfo.VersionCode()),console.log(TJ.API.AppInfo.Channel()),console.log(TJ.API.Billing.Exist()),console.log(TJ.API.AdService.Exist()),TJ.Engine.RuntimeInfo.platform){case TJ.Define.Platform.Android:case TJ.Define.Platform.iOS:case TJ.Define.Platform.AppRt:}switch(TJ.API.AppInfo.Channel()){case TJ.Define.Channel.Android.oppo:case TJ.Define.Channel.AppRt.ZJTD_AppRt:}this.Event()}Event(){let e=new TJ.API.Analytics.Param;e.id="eventName",e.dic.extraParam1=1,e.dic.extraParam2="2",TJ.API.Analytics.Event(e)}Pay1(){let e=new TJ.API.Billing.Param;e.product.price=.01,e.product.name="测试计费点1分",e.product.description="这是一个一分钱的测试计费点",e.cbi.Add(TJ.Define.Event.Reward,()=>{console.log("支付成功")}),e.cbi.Add(TJ.Define.Event.NoReward,()=>{console.log("支付失败")}),TJ.API.Billing.Purchase(e)}Pay2(){let e=new TJ.API.Billing.Param;e.product.price=.1,e.product.name="测试计费点1角",e.product.description="这是一个一角钱的测试计费点",e.cbi.Add(TJ.Define.Event.Reward,()=>{console.log("支付成功")}),e.cbi.Add(TJ.Define.Event.NoReward,()=>{console.log("支付失败")}),TJ.API.Billing.Purchase(e)}Pay3(){let e=new TJ.API.Billing.Param;e.product.price=1,e.product.name="测试计费点1元",e.product.description="这是一个一元钱的测试计费点",e.cbi.Add(TJ.Define.Event.Reward,()=>{console.log("支付成功")}),e.cbi.Add(TJ.Define.Event.NoReward,()=>{console.log("支付失败")}),TJ.API.Billing.Purchase(e)}Restore(){let e=new TJ.API.Billing.Param;e.cbi.Add(TJ.Define.Event.Complete,e=>{for(let t of e)console.log("restore = "+t.product.name+" = "+t.product.id),TJ.API.Billing.Consume(t)}),TJ.API.Billing.QueryAll(e)}Review(){TJ.API.AppCtl.Review()}VibrateShort(){TJ.API.Vibrate.Short()}VibrateLong(){TJ.API.Vibrate.Long()}Vibrate(){TJ.API.Vibrate.Time(.1)}UserAgreement(){TJ.API.AppCtl.UserAgreement()}PrivacyPolicy(){TJ.API.AppCtl.PrivacyPolicy()}AppCtl(){TJ.API.AppCtl.Quit()}Banner(){let e=new TJ.API.AdService.Param;e.place=TJ.API.AdService.Place.BOTTOM|TJ.API.AdService.Place.CENTER,TJ.API.AdService.ShowBanner(e)}Normal(){let e=new TJ.API.AdService.Param;TJ.API.AdService.ShowNormal(e)}Reward(){let e=new TJ.API.AdService.Param;e.extraAd=!0,e.cbi.Add(TJ.Define.Event.Reward,()=>{console.log("发放奖励")}),e.cbi.Add(TJ.Define.Event.NoAds,()=>{console.log("没有广告")}),TJ.API.AdService.ShowReward(e)}Native(){let e=TJ.API.AdService.LoadNative(new TJ.API.AdService.Param);null!=e&&(e.title,e.desc,e.iconUrl,e.imgUrl,e.logoUrl,e.OnShow(),e.OnClick())}}class De extends Laya.Script{constructor(){super(...arguments),this.target=null}onClick(){this.target.active=this.target.visible=!0}}class Ve extends a{constructor(){super(...arguments),this.promoList=null,this.itemList=[],this.scroll=null,this.layout=null,this.prefab=null,this.paddingTop=10,this.paddingBottom=10,this.line=0,this.column=0,this.toTop=!1,this.showing=[]}async OnAwake(){this.scroll=this.owner.getChildByName("scroll"),this.layout=this.scroll.getChildByName("layout"),this.prefab=this.layout.getCell(0);let e=this.owner.width-this.paddingTop-this.paddingBottom;for(;e>=this.prefab.width;)e=e-this.prefab.width-this.layout.spaceX,this.column++;if(TJ.Develop.Yun.Promo.Data.ReportAwake(Ve.style),this.active=!1,this.promoList=await TJ.Develop.Yun.Promo.List.Get(Ve.style),this.promoList.count>0){TJ.Develop.Yun.Promo.Data.ReportStart(Ve.style),this.line=Math.ceil(this.promoList.count/this.column),this.layout.repeatX=this.column,this.layout.repeatY=this.line;for(let e=0;e<this.layout.cells.length;e++){let t=this.layout.getCell(e);if(e<this.promoList.count){let e=t.getComponent(i);null!=e&&(this.itemList.push(e),e.style=Ve.style,e.onAwake()),a.SetActive(t,!0)}else a.SetActive(t,!1)}this.line=Math.ceil(this.itemList.length/this.column);let e=this.paddingTop+this.paddingBottom;e+=this.prefab.height*this.line+this.layout.spaceY*(this.line-1),this.layout.height=e,this.scroll.height<this.layout.height&&(this.scroll.vScrollBarSkin="",this.scroll.vScrollBar.rollRatio=0);for(let e of this.itemList)this.LoadIcon(e);this.active=!0}else this.owner.destroy()}async OnDisable(){this.promoList=await TJ.Develop.Yun.Promo.List.Get(Ve.style);for(let e of this.itemList)this.LoadIcon(e)}get maxTop(){return 0}get maxBottom(){let e=this.paddingTop+this.paddingBottom;return e+=this.prefab.height*this.line+this.layout.spaceY*(this.line-1)-this.scroll.height}get scrollValue(){return null!=this.scroll.vScrollBar?this.scroll.vScrollBar.value:0}set scrollValue(e){null!=this.scroll.vScrollBar&&(this.scroll.vScrollBar.value=e)}OnUpdate(){let e=Laya.timer.delta/1e3;this.scroll.height<this.layout.height?(this.scrollValue<=this.maxTop?this.toTop=!1:this.scrollValue>=this.maxBottom&&(this.toTop=!0),this.toTop?this.scrollValue-=50*e:this.scrollValue+=50*e):this.scrollValue=this.maxTop,this.CheckShow()}LoadIcon(e){let t=this.promoList.Load();return null!=t&&(this.promoList.Unload(e.data),e.data=t,e.onClick_=(e=>{this.LoadAndShowIcon(e)}),e.DoLoad(),e.infoText.text=1+Math.floor(40*Math.random())/10+"w人在玩"),t}LoadAndShowIcon(e){null!=this.LoadIcon(e)&&e.OnShow()}CheckShow(){for(let e of this.itemList){let t=this.showing.indexOf(e),a=e.owner;Math.abs(-a.y-this.paddingTop-this.prefab.height/2+this.scrollValue+this.scroll.height/2)<this.scroll.height/2?t<0&&(this.showing.push(e),e.OnShow()):t>=0&&this.showing.splice(t,1)}}}Ve.style="P202";class Re extends a{constructor(){super(...arguments),this.promoList=null,this.itemList=[],this.layout=null}async OnAwake(){if(this.layout=this.owner.getChildByName("layout"),this.owner.getChildByName("close").clickHandler=new Laya.Handler(null,()=>{this.OnClose()}),TJ.Develop.Yun.Promo.Data.ReportAwake(Re.style),this.active=!1,this.promoList=await TJ.Develop.Yun.Promo.List.Get(Re.style),this.promoList.count>0){TJ.Develop.Yun.Promo.Data.ReportStart(Re.style);for(let e=0;e<this.layout.cells.length;e++){let t=this.layout.getCell(e);if(e<this.promoList.count){let e=t.getComponent(i);null!=e&&(this.itemList.push(e),e.style=Re.style,e.onAwake()),t.active=t.visible=!0}else t.active=t.visible=!1}for(let e of this.itemList)this.LoadIcon(e);this.active=!0}else this.owner.destroy()}OnEnable(){for(let e of this.itemList)e.OnShow()}async OnDisable(){this.promoList=await TJ.Develop.Yun.Promo.List.Get(Re.style);for(let e of this.itemList)this.LoadIcon(e)}LoadIcon(e){let t=this.promoList.Load();return null!=t&&(this.promoList.Unload(e.data),e.data=t,e.onClick_=(e=>{this.LoadAndShowIcon(e)}),e.DoLoad()),t}LoadAndShowIcon(e){null!=this.LoadIcon(e)&&e.OnShow()}OnClose(){let e=this.owner;e.active=e.visible=!1}}Re.style="P103";class Me extends a{constructor(){super(...arguments),this.promoList=null,this.itemList=[],this.scroll=null,this.layout=null,this.prefab=null,this.paddingLeft=20,this.paddingRight=20,this.toLeft=!1,this.showing=[]}async OnAwake(){this.scroll=this.owner.getChildByName("scroll"),this.layout=this.scroll.getChildByName("layout"),this.prefab=this.layout.getCell(0),TJ.Develop.Yun.Promo.Data.ReportAwake(Me.style),this.active=!1;let e=await TJ.Develop.Yun.Promo.List.Get(Me.style);if(null==this.promoList&&(this.promoList=e),this.promoList.count>0){TJ.Develop.Yun.Promo.Data.ReportStart(Me.style),this.layout.repeatX=this.promoList.count;for(let e=0;e<this.layout.cells.length;e++){let t=this.layout.getCell(e);if(e<this.promoList.count){let e=t.getComponent(i);null!=e&&(this.itemList.push(e),e.style=Me.style,e.onAwake()),t.active=t.visible=!0}else t.active=t.visible=!1}let e=this.paddingLeft+this.paddingRight;e+=this.prefab.width*this.itemList.length+this.layout.spaceX*(this.itemList.length-1),this.layout.width=e,this.scroll.width<this.layout.width&&(this.scroll.hScrollBarSkin="",this.scroll.hScrollBar.rollRatio=0),this.layout.width=e;for(let e of this.itemList)this.LoadIcon(e);this.active=!0}else this.owner.destroy()}get maxLeft(){return 0}get maxRight(){return this.scroll.hScrollBar.max}get scrollValue(){return null!=this.scroll.hScrollBar?this.scroll.hScrollBar.value:0}set scrollValue(e){null!=this.scroll.hScrollBar&&(this.scroll.hScrollBar.value=e)}OnUpdate(){let e=Laya.timer.delta/1e3;this.scroll.width<this.layout.width?(this.scrollValue>=this.maxRight?this.toLeft=!0:this.scrollValue<=this.maxLeft&&(this.toLeft=!1),this.toLeft?this.scrollValue-=50*e:this.scrollValue+=50*e):this.layout.x=this.maxLeft,this.CheckShow()}LoadIcon(e){let t=this.promoList.Load();if(null!=t){this.promoList.Unload(e.data),e.data=t,e.onClick_=(e=>{this.LoadIcon(e)}),e.DoLoad();let a=this.showing.indexOf(e);a>=0&&this.showing.splice(a,1)}return t}CheckShow(){for(let e of this.itemList){let t=e.owner,a=Math.abs(t.x-this.scrollValue-this.scroll.width/2+t.width/2+this.layout.spaceX),i=this.showing.indexOf(e);a<this.scroll.width/2?i<0&&(this.showing.push(e),e.OnShow()):i>=0&&this.showing.splice(i,1)}}}Me.style="P204";class Xe extends a{constructor(){super(...arguments),this.promoList=null,this.itemList=[],this.scroll=null,this.layout=null,this.prefab=null,this.paddingTop=10,this.paddingBottom=10,this.move=null,this.show=null,this.hide=null,this.maxX=620,this.line=0,this.column=0,this.targetX=0,this.showing=[]}async OnAwake(){this.move=this.owner.getChildByName("move");let e=this.move.getChildByName("button");this.show=e.getChildByName("show"),this.hide=e.getChildByName("hide");let t=this.move.getChildByName("board");this.scroll=t.getChildByName("scroll"),this.layout=this.scroll.getChildByName("layout"),this.prefab=this.layout.getCell(0),this.show.clickHandler=new Laya.Handler(null,()=>{this.Show()}),this.hide.clickHandler=new Laya.Handler(null,()=>{this.Hide()});let a=this.scroll.width-this.paddingTop-this.paddingBottom;for(;a>=this.prefab.width;)a=a-this.prefab.width-this.layout.spaceX,this.column++;if(TJ.Develop.Yun.Promo.Data.ReportAwake(Xe.style),this.show.parent.scaleX<0&&(this.maxX=-this.maxX),TJ.API.AppInfo.Channel()!=TJ.Define.Channel.AppRt.ZJTD_AppRt)if(this.active=!1,this.promoList=await TJ.Develop.Yun.Promo.List.Get(Xe.style),this.promoList.count>0){TJ.Develop.Yun.Promo.Data.ReportStart(Xe.style),this.line=Math.ceil(this.promoList.count/this.column),this.layout.repeatX=this.column,this.layout.repeatY=this.line;for(let e=0;e<this.layout.cells.length;e++){let t=this.layout.getCell(e);if(e<this.promoList.count){let e=t.getComponent(i);null!=e&&(this.itemList.push(e),e.style=Xe.style,e.onAwake()),t.active=t.visible=!0}else t.active=t.visible=!1}this.line=Math.ceil(this.itemList.length/this.column);let e=this.paddingTop+this.paddingBottom;e+=this.prefab.height*this.line+this.layout.spaceY*(this.line-1),this.layout.height=e,this.scroll.height<this.layout.height&&(this.scroll.vScrollBarSkin="",this.scroll.vScrollBar.rollRatio=0);for(let e of this.itemList)this.LoadIcon(e);this.active=!0}else this.owner.destroy()}get scrollValue(){return null!=this.scroll.vScrollBar?this.scroll.vScrollBar.value:0}set scrollValue(e){null!=this.scroll.vScrollBar&&(this.scroll.vScrollBar.value=e)}LoadIcon(e){let t=this.promoList.Load();return null!=t&&(this.promoList.Unload(e.data),e.data=t,e.onClick_=(e=>{this.LoadAndShowIcon(e)}),e.DoLoad()),t}LoadAndShowIcon(e){null!=this.LoadIcon(e)&&e.OnShow()}Show(){if(TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.ZJTD_AppRt){let e=new TJ.API.Promo.Param;return e.extraData={TJ_App:TJ.API.AppInfo.AppGuid()},void TJ.API.Promo.Pop(e)}this.targetX=this.maxX,this.show.active=this.show.visible=!1,this.hide.active=this.hide.visible=!0,this.scrollValue=0}Hide(){this.targetX=0,this.showing=[]}OnUpdate(){let e=Laya.timer.delta/1e3;if(this.move.centerX!=this.targetX){let t=this.targetX-this.move.centerX,a=3e3*e;t=t>0?Math.min(this.move.centerX+a,this.targetX):Math.max(this.move.centerX-a,this.targetX),this.move.centerX=t,0==this.move.centerX&&(this.show.active=this.show.visible=!0,this.hide.active=this.hide.visible=!1,window.setTimeout(async()=>{this.promoList=await TJ.Develop.Yun.Promo.List.Get(Xe.style);for(let e of this.itemList)this.LoadIcon(e)},0))}else this.move.centerX==this.maxX&&this.CheckShow()}CheckShow(){for(let e of this.itemList){let t=this.showing.indexOf(e),a=e.owner;Math.abs(-a.y-this.paddingTop-this.prefab.height/2+this.scrollValue+this.scroll.height/2)<this.scroll.height/2?t<0&&(this.showing.push(e),e.OnShow()):t>=0&&this.showing.splice(t,1)}}}Xe.style="P205";class Ee extends a{constructor(){super(...arguments),this.promoList=null,this.itemList=[],this.layout=null,this.showing=[]}async OnAwake(){this.scrollView=this.owner.getChildByName("scroll"),this.layout=this.scrollView.getChildByName("layout"),this.scrollView.vScrollBarSkin="",this.owner.getChildByName("close").clickHandler=new Laya.Handler(null,()=>{this.OnClose()}),TJ.Develop.Yun.Promo.Data.ReportAwake(Ee.style),this.active=!1;let e=await TJ.Develop.Yun.Promo.List.Get(Ee.style);if(null==this.promoList&&(this.promoList=e),this.promoList.count>0){TJ.Develop.Yun.Promo.Data.ReportStart(Ee.style),this.layout.repeatY=this.promoList.count;let e=0;for(let t=0;t<this.layout.cells.length;t++){let n=this.layout.getCell(t);if(t<this.promoList.count){let e=n.getComponent(i);null!=e&&(this.itemList.push(e),e.style=Ee.style,e.onAwake()),a.SetActive(n,!0)}else a.SetActive(n,!1);t>0&&(e+=this.layout.spaceY),e+=n.height}this.layout.height=e;for(let e of this.itemList)this.LoadIcon(e);this.active=!0}else this.owner.destroy()}OnEnable(){this.scrollValue=0}async OnDisable(){this.promoList=await TJ.Develop.Yun.Promo.List.Get(Ee.style);for(let e of this.itemList)this.LoadIcon(e)}OnUpdate(){this.CheckShow()}LoadIcon(e){let t=this.promoList.Load();if(null!=t){this.promoList.Unload(e.data),e.data=t,e.onClick_=(e=>{this.LoadIcon(e)}),e.DoLoad();let a=this.showing.indexOf(e);a>=0&&this.showing.splice(a,1)}return t}get scrollValue(){return null!=this.scrollView.vScrollBar?this.scrollView.vScrollBar.value:0}set scrollValue(e){null!=this.scrollView.vScrollBar&&(this.scrollView.vScrollBar.value=e)}CheckShow(){for(let e of this.itemList){let t=e.owner,a=Math.abs(t.y-this.scrollValue-this.scrollView.height/2+t.height/2+this.layout.spaceY),i=this.showing.indexOf(e);a<this.scrollView.height/2?i<0&&(this.showing.push(e),e.OnShow()):i>=0&&this.showing.splice(i,1)}}OnClose(){let e=this.owner;e.active=e.visible=!1}}Ee.style="P106";class Ue extends a{constructor(){super(...arguments),this.layoutsNode=null,this.layouts=[]}get node(){return this.owner}async OnAwake(){this.layoutsNode=this.node.getChildByName("lines"),TJ.Develop.Yun.Promo.Data.ReportAwake(Ue.style);for(let e=0;e<this.layoutsNode.numChildren;e++)this.layouts.push(this.layoutsNode.getChildAt(e).addComponent(He));this.active=!1;let e=await TJ.Develop.Yun.Promo.Data.LoadList();if(null!=e&&e.length>0){let t=new TJ.Common.WWW("http://h5.tomatojoy.cn/res/659827d1-d6a0-8248-c5ec-849bda0841a5/promo/cftest.json");if(await t.Send(),null!=t.text){let a=JSON.parse(t.text);for(let t=0;t<this.layouts.length;t++)if(t<a.P302.length){for(let i=0;i<a.P302[t].length;i++){e.find(e=>e.promoGuid==a.P302[t][i])}this.layouts[t].Init(this.node.width)}else this.layouts[t].node.active=!1;this.active=!0,TJ.Develop.Yun.Promo.Data.ReportStart(Ue.style)}else this.owner.destroy()}else this.owner.destroy()}OnUpdate(){this.layoutsNode.x-=.8;for(let e of this.layouts)e.node.active&&e.Refresh(this.layoutsNode.x)}}Ue.style="P302";class He extends a{constructor(){super(...arguments),this.datas=[],this.items=[],this.prefab=null}get node(){return this.owner}OnAwake(){this.prefab=this.node.getChildAt(0),this.prefab.active=this.prefab.visible=!1}Init(e){let t=e/(this.prefab.width+13);t=Math.ceil(t)+3;let a=0;for(;e>=this.prefab.width;)e=e-this.prefab.width-13,a++;a+=3;for(let e=0;e<a;e++){let e=n.Instantiate(this.prefab).getComponent(i);this.node.addChild(e.owner),e.owner.active=e.owner.visible=!0,this.items.push(e),e.onAwake()}}Refresh(e){let t=this.items.length,a=this.datas.length;if(t<1)return;if(a<1)return;let i=this.prefab.width+13,n=-e/i;n=Math.floor(n);let s=Math.floor(n/t)*t,o=n<0?(t+n%t)%t:n%t,r=(e,t)=>{if(e.posId!=t){e.posId=t,e.owner.x=t*i-this.prefab.width/2;let n=(t-=1)<0?(a+t%a)%a:t%a;e.dataId!=n&&(e.dataId=n,e.data=this.datas[n],e.data.Load(),e.DoLoad())}};for(let e=0;e<o;e++)r(this.items[e],s+t+e);for(let e=o;e<t;e++)r(this.items[e],s+e)}}class Fe extends a{constructor(){super(...arguments),this.promoList=null,this.scroll=null,this.layout=null,this.paddingTop=10,this.paddingBottom=10,this.move=null,this.show=null,this.hide=null,this.maxX=580,this.mouseDown=!1,this.lastStageX=0,this.lastStageY=0,this.targetX=0,this.showing=[]}async OnAwake(){this.move=this.owner.getChildByName("move");let e=this.move.getChildByName("button");this.show=e.getChildByName("show"),this.hide=e.getChildByName("hide");let t=this.move.getChildByName("board");if(this.scroll=t.getChildByName("scroll"),this.layout=this.scroll.getChildByName("layout"),TJ.Develop.Yun.Promo.Data.ReportAwake(Fe.style),this.show.clickHandler=new Laya.Handler(null,()=>{this.Show()}),this.hide.clickHandler=new Laya.Handler(null,()=>{this.Hide()}),this.layoutS=this.layout.addComponent(Ye),this.show.parent.scaleX<0&&(this.maxX=-this.maxX),TJ.API.AppInfo.Channel()!=TJ.Define.Channel.AppRt.ZJTD_AppRt)if(this.active=!1,this.promoList=await TJ.Develop.Yun.Promo.List.Get(),this.promoList.count>0)if(null!=this.layoutS){for(let e=0;e<this.promoList.count;e++)this.layoutS.datas.push(this.promoList.Load());this.layoutS.Init(this.scroll.width,this.scroll.height),this.active=!0,TJ.Develop.Yun.Promo.Data.ReportStart(Fe.style)}else this.owner.destroy();else this.owner.destroy()}OnStart(){this.scroll.on(Laya.Event.MOUSE_DOWN,null,e=>{this.mouseDown=!0,this.lastStageX=e.stageX,this.lastStageY=e.stageY}),this.scroll.on(Laya.Event.MOUSE_OUT,null,e=>{this.mouseDown=!1}),this.scroll.on(Laya.Event.MOUSE_UP,null,e=>{this.mouseDown=!1}),this.scroll.on(Laya.Event.MOUSE_MOVE,null,e=>{if(this.mouseDown){e.stageX,this.lastStageX;let t=e.stageY-this.lastStageY;this.lastStageX=e.stageX,this.lastStageY=e.stageY;let a=this.layoutS.node.y+t;this.layoutS.node.y=a}})}Show(){if(TJ.API.AppInfo.Channel()==TJ.Define.Channel.AppRt.ZJTD_AppRt){let e=new TJ.API.Promo.Param;return e.extraData={TJ_App:TJ.API.AppInfo.AppGuid()},void TJ.API.Promo.Pop(e)}this.targetX=this.maxX,this.show.active=this.show.visible=!1,this.hide.active=this.hide.visible=!0,this.layout.y=0}Hide(){this.targetX=0,this.showing=[]}OnUpdate(){let e=Laya.timer.delta/1e3;if(this.move.centerX!=this.targetX){let t=this.targetX-this.move.centerX,a=3e3*e;t=t>0?Math.min(this.move.centerX+a,this.targetX):Math.max(this.move.centerX-a,this.targetX),this.move.centerX=t,0==this.move.centerX&&(this.show.active=this.show.visible=!0,this.hide.active=this.hide.visible=!1)}else this.move.centerX==this.maxX&&(this.layout.y-=.8);this.layoutS.Refresh(this.layout.y)}}Fe.style="P305";class Ye extends a{constructor(){super(...arguments),this.datas=[],this.items=[],this.prefab=null,this.line=0,this.column=0}get node(){return this.owner}OnAwake(){this.prefab=this.node.getChildAt(0),this.prefab.active=this.prefab.visible=!1}Init(e,t){for(;e>=this.prefab.width;)e=e-this.prefab.width-15,this.column++;for(;t>=this.prefab.height;)t=t-this.prefab.height-10,this.line++;this.line+=2;for(let e=0;e<this.line;e++)for(let e=0;e<this.column;e++){let e=n.Instantiate(this.prefab).getComponent(i);this.node.addChild(e.owner),e.owner.active=e.owner.visible=!0,this.items.push(e),e.onAwake()}}Refresh(e){let t=this.items.length,a=this.datas.length;if(t<1)return;if(a<1)return;let i=this.prefab.height+10,n=this.prefab.width+15,s=-e/i;s=Math.floor(s);let o=Math.floor(s/this.line)*this.line,r=s<0?(this.line+s%this.line)%this.line:s%this.line,l=(e,t,s,o)=>{let r=t+s*this.column+o;if(e.posId!=r){e.posId=r,e.owner.x=n*o+this.prefab.width/2,e.owner.y=(t+s)*i+this.prefab.height/2;let l=r<0?(a+r%a)%a:r%a;e.dataId!=l&&(e.dataId=l,e.data=this.datas[l],e.data.Load(),e.DoLoad())}};for(let e=0;e<r;e++)for(let t=0;t<this.column;t++)l(this.items[e*this.column+t],o+this.line,e,t);for(let e=r;e<this.line;e++)for(let t=0;t<this.column;t++)l(this.items[e*this.column+t],o,e,t)}}var Ge,$e=Laya.Scene,Je=Laya.ClassUtils.regClass;!function(e){!function(e){class t extends $e{constructor(){super()}createChildren(){super.createChildren(),this.loadScene("test/TestScene")}}e.TestSceneUI=t,Je("ui.test.TestSceneUI",t)}(e.test||(e.test={}))}(Ge||(Ge={}));class je extends Ge.test.TestSceneUI{constructor(){super(),this.newScene=Laya.stage.addChild(new Laya.Scene3D);var e=this.newScene.addChild(new Laya.Camera(0,.1,100));e.transform.translate(new Laya.Vector3(0,6,9.5)),e.transform.rotate(new Laya.Vector3(-15,0,0),!0,!1);var t=new Laya.DirectionLight;this.newScene.addChild(t),t.color=new Laya.Vector3(.6,.6,.6);var a=t.transform.worldMatrix;a.setForward(new Laya.Vector3(-1,-1,-1)),t.transform.worldMatrix=a;var i=this.newScene.addChild(new Laya.MeshSprite3D(Laya.PrimitiveMesh.createPlane(10,10,10,10))),n=new Laya.BlinnPhongMaterial;Laya.Texture2D.load("res/grass.png",Laya.Handler.create(this,function(e){n.albedoTexture=e}));var s=n.tilingOffset;s.setValue(5,5,0,0),n.tilingOffset=s,i.meshRenderer.material=n;var o=i.addComponent(Laya.PhysicsCollider),r=new Laya.BoxColliderShape(10,0,10);o.colliderShape=r,o.friction=2,o.restitution=.3,this.mat1=new Laya.BlinnPhongMaterial,Laya.Texture2D.load("res/wood.jpg",Laya.Handler.create(this,function(e){this.mat1.albedoTexture=e,Laya.timer.once(100,this,function(){this.addBox()})}))}addBox(){var e=this.newScene.addChild(new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(.75,.5,.5)));e.meshRenderer.material=this.mat1;var t=e.transform,a=t.position;a.setValue(0,10,0),t.position=a;var i=e.addComponent(Laya.Rigidbody3D),n=new Laya.BoxColliderShape(.75,.5,.5);i.colliderShape=n,i.mass=10}}class ze{constructor(){}static init(){var a=Laya.ClassUtils.regClass;a("TJ/NativeAd.ts",e),a("TJ/Promo/script/ButtonScale.ts",t),a("TJ/Promo/script/PromoItem.ts",i),a("TJ/Promo/script/P405.ts",o),a("TJ/Promo/script/P201.ts",l),a("script/Lwg/LwgInit.ts",Te),a("TJ/Promo/script/P402.ts",Be),a("nativeAd.ts",ke),a("demo.ts",Oe),a("TJ/Promo/script/PromoOpen.ts",De),a("TJ/Promo/script/P202.ts",Ve),a("TJ/Promo/script/P103.ts",Re),a("TJ/Promo/script/P204.ts",Me),a("TJ/Promo/script/P205.ts",Xe),a("TJ/Promo/script/P106.ts",Ee),a("TJ/Promo/script/P302.ts",Ue),a("TJ/Promo/script/P305.ts",Fe),a("script/GameUI.ts",je)}}ze.width=1280,ze.height=720,ze.scaleMode="fixedheight",ze.screenMode="horizontal",ze.alignV="top",ze.alignH="left",ze.startScene="Scene/LwgInit.scene",ze.sceneRoot="",ze.debug=!1,ze.stat=!1,ze.physicsDebug=!1,ze.exportSceneToJson=!0,ze.init();new class{constructor(){window.Laya3D?Laya3D.init(ze.width,ze.height):Laya.init(ze.width,ze.height,Laya.WebGL),Laya.Physics&&Laya.Physics.enable(),Laya.DebugPanel&&Laya.DebugPanel.enable(),Laya.stage.scaleMode=ze.scaleMode,Laya.stage.screenMode=ze.screenMode,Laya.stage.alignV=ze.alignV,Laya.stage.alignH=ze.alignH,Laya.URL.exportSceneToJson=ze.exportSceneToJson,(ze.debug||"true"==Laya.Utils.getQueryString("debug"))&&Laya.enableDebugPanel(),ze.physicsDebug&&Laya.PhysicsDebugDraw&&Laya.PhysicsDebugDraw.enable(),ze.stat&&Laya.Stat.show(),Laya.alertGlobalError=!0,Laya.ResourceVersion.enable("version.json",Laya.Handler.create(this,this.onVersionLoaded),Laya.ResourceVersion.FILENAME_VERSION)}onVersionLoaded(){Laya.AtlasInfoManager.enable("fileconfig.json",Laya.Handler.create(this,this.onConfigLoaded))}onConfigLoaded(){ze.startScene&&Laya.Scene.open(ze.startScene)}}}();
+(function () {
+    'use strict';
+
+    class NativeAd extends Laya.Script {
+        constructor() {
+            super(...arguments);
+            this.defaultNode = null;
+            this.nativetNode = null;
+            this.icon = null;
+            this.title = null;
+            this.desc = null;
+            this.contant = null;
+            this.close = null;
+            this.WatchAD1 = null;
+            this.WatchAD2 = null;
+        }
+        onAwake() {
+            this.defaultNode = this.owner.getChildByName("defaultNode");
+            this.nativetNode = this.owner.getChildByName("nativeNode");
+            this.icon = this.nativetNode.getChildByName("Icon");
+            this.title = this.nativetNode.getChildByName("Title");
+            this.desc = this.nativetNode.getChildByName("Des");
+            this.contant = this.nativetNode.getChildByName('Contant');
+            this.WatchAD2 = this.owner.getChildByName("WatchAD2");
+            this.close = this.owner.getChildByName("Close");
+            if (this.WatchAD2) {
+                this.WatchAD2.on(Laya.Event.CLICK, this, this.Click);
+            }
+            else {
+                this.WatchAD2 = this.nativetNode.getChildByName("WatchAD2");
+                if (this.WatchAD2) {
+                    this.WatchAD2.on(Laya.Event.CLICK, this, this.Click);
+                }
+            }
+            this.WatchAD1 = this.owner.getChildByName("WatchAD1");
+            if (this.WatchAD1) {
+                this.WatchAD1.on(Laya.Event.CLICK, this, this.Click);
+            }
+            else {
+                this.WatchAD1 = this.nativetNode.getChildByName("WatchAD1");
+                if (this.WatchAD1) {
+                    this.WatchAD1.on(Laya.Event.CLICK, this, this.Click);
+                }
+            }
+            this.nativetNode.on(Laya.Event.CLICK, this, this.Click);
+            this.owner.visible = false;
+            this.close.on(Laya.Event.CLICK, this, () => {
+                this.owner.removeSelf();
+            });
+            Laya.timer.once(100, this, () => {
+                this.Show();
+            });
+        }
+        Show() {
+            let p = new TJ.API.AdService.Param();
+            this.nativeAd = TJ.API.AdService.LoadNative(p);
+            console.log("展示原生广告 =》", this.nativeAd);
+            if (this.nativeAd != null) {
+                console.log("展示原生广告 =》", this.nativeAd.iconUrl);
+                console.log("展示原生广告 =》", this.nativeAd.title);
+            }
+            if (this.nativeAd != null) {
+                this.owner.visible = true;
+                if (this.nativeAd) {
+                    console.log("this.nativeAd = ", this.nativeAd);
+                    this.nativeAd.OnShow();
+                    this.icon.skin = this.nativeAd.iconUrl;
+                    this.title.text = this.nativeAd.title;
+                    this.desc.text = this.nativeAd.desc;
+                    this.contant.skin = this.nativeAd.imgUrl;
+                }
+            }
+            else {
+                this.owner.visible = false;
+            }
+        }
+        Click() {
+            if (this.nativeAd != null) {
+                this.nativeAd.OnClick();
+            }
+        }
+    }
+
+    class ButtonScale extends Laya.Script {
+        constructor() {
+            super(...arguments);
+            this.time = .1;
+            this.ratio = 1.04;
+            this.startScaleX = 1;
+            this.startScaleY = 1;
+            this.scaled = false;
+        }
+        onAwake() {
+            this.owner.on(Laya.Event.MOUSE_DOWN, null, () => { this.ScaleBig(); });
+            this.owner.on(Laya.Event.MOUSE_UP, null, () => { this.ScaleSmall(); });
+            this.owner.on(Laya.Event.MOUSE_OUT, null, () => { this.ScaleSmall(); });
+        }
+        ScaleBig() {
+            if (this.scaled)
+                return;
+            this.scaled = true;
+            Laya.Tween.to(this.owner, { scaleX: this.startScaleX * this.ratio, scaleY: this.startScaleY * this.ratio }, this.time * 1000);
+        }
+        ScaleSmall() {
+            if (!this.scaled)
+                return;
+            this.scaled = false;
+            Laya.Tween.to(this.owner, { scaleX: this.startScaleX, scaleY: this.startScaleY }, this.time * 1000);
+        }
+    }
+
+    class Behaviour extends Laya.Script {
+        constructor() {
+            super(...arguments);
+            this.isAwake = false;
+            this.isStart = false;
+            this.isEnable = false;
+            this.isDestroy = false;
+        }
+        OnAwake() { }
+        OnStart() { }
+        OnUpdate() { }
+        OnEnable() { }
+        OnDisable() { }
+        OnDestroy() { }
+        DoAwake() {
+            if (!this.active)
+                return;
+            if (!this.isAwake) {
+                this.isAwake = true;
+                this.OnAwake();
+            }
+        }
+        DoStart() {
+            if (!this.active)
+                return;
+            if (!this.isStart) {
+                this.isStart = true;
+                this.OnStart();
+            }
+        }
+        DoUpdate() {
+            if (!this.active)
+                return;
+            if (this.isStart) {
+                this.OnUpdate();
+            }
+        }
+        DoEnable() {
+            if (!this.active)
+                return;
+            if (!this.isEnable) {
+                this.isEnable = true;
+                this.OnEnable();
+            }
+        }
+        DoDisable() {
+            if (this.isEnable) {
+                this.isEnable = false;
+                this.OnDisable();
+            }
+        }
+        DoDestroy() {
+            if (!this.isDestroy) {
+                this.isDestroy = true;
+                this.OnDestroy();
+            }
+        }
+        onAwake() {
+            this.DoAwake();
+        }
+        onStart() {
+            this.DoAwake();
+            this.DoStart();
+        }
+        onUpdate() {
+            this.DoAwake();
+            this.DoEnable();
+            this.DoStart();
+            this.DoUpdate();
+        }
+        onEnable() {
+            this.DoAwake();
+            this.DoEnable();
+            this.DoStart();
+        }
+        onDisable() {
+            this.DoDisable();
+        }
+        onDestroy() {
+            this.DoDestroy();
+        }
+        static SetActive(node, value) {
+            if (node == null)
+                return;
+            node.active = value;
+            if (node instanceof Laya.Box) {
+                node.visible = value;
+            }
+        }
+        static GetActive(node) {
+            if (node == null)
+                return false;
+            if (!node.active)
+                return false;
+            if (node instanceof Laya.Box) {
+                if (!node.visible)
+                    return false;
+            }
+            return true;
+        }
+        get active() {
+            return Behaviour.GetActive(this.owner);
+        }
+        set active(value) {
+            Behaviour.SetActive(this.owner, value);
+            if (value) {
+                this.DoEnable();
+            }
+            else {
+                this.DoDisable();
+            }
+        }
+    }
+
+    class PromoItem extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.bgImage = null;
+            this.iconImage = null;
+            this.nameText = null;
+            this.infoText = null;
+            this.flag1 = null;
+            this.flag2 = null;
+            this.flag3 = null;
+            this.nbg = null;
+        }
+        OnAwake() {
+            this.bgImage = this.owner.getChildByName("bg");
+            this.iconImage = this.owner.getChildByName("icon");
+            if (this.iconImage != null) {
+                this.flag1 = this.iconImage.getChildByName("flag1");
+                this.flag2 = this.iconImage.getChildByName("flag2");
+                this.flag3 = this.iconImage.getChildByName("flag3");
+            }
+            this.nameText = this.owner.getChildByName("name");
+            this.infoText = this.owner.getChildByName("info");
+            this.nbg = this.owner.getChildByName("nbg");
+        }
+        DoLoad() {
+            if (this.data == null)
+                return;
+            if (this.iconImage != null)
+                this.iconImage.skin = this.data.icon;
+            if (this.nameText != null)
+                this.nameText.text = this.data.title;
+            if (this.nbg != null)
+                this.nbg.skin = "TJ/Promo/image/互推icon底色/" + this.data.titleBG + ".png";
+            this.SetFlag();
+        }
+        SetFlag() {
+            if (this.flag1 != null)
+                this.flag1.active = this.flag1.visible = false;
+            if (this.flag2 != null)
+                this.flag2.active = this.flag2.visible = false;
+            if (this.flag3 != null)
+                this.flag3.active = this.flag3.visible = false;
+            switch (this.data.tag) {
+                case 1:
+                    if (this.flag1 != null)
+                        this.flag1.active = this.flag1.visible = true;
+                    break;
+                case 2:
+                    if (this.flag2 != null)
+                        this.flag2.active = this.flag2.visible = true;
+                    break;
+                case 3:
+                    if (this.flag3 != null)
+                        this.flag3.active = this.flag3.visible = true;
+                    break;
+            }
+        }
+        OnShow() {
+            this.data.ReportShow();
+        }
+        OnClick() {
+            this.data.Click();
+            if (this.onClick_ != null) {
+                this.onClick_(this);
+            }
+        }
+        onClick() {
+            this.OnClick();
+        }
+    }
+
+    var GO;
+    (function (GO) {
+        function Instantiate(node) {
+            let comp = Node2Comp(node);
+            let gobj = Laya.SceneUtils.createComp(comp);
+            return gobj;
+        }
+        GO.Instantiate = Instantiate;
+        function Node2Comp(node) {
+            let comp = {};
+            comp.type = node.constructor.name;
+            comp.props = {};
+            if (node.name != null)
+                comp.props.name = node.name;
+            if (node instanceof Laya.Sprite)
+                Props_Sprite(node, comp.props);
+            if (node instanceof Laya.Scene)
+                Props_Scene(node, comp.props);
+            if (node instanceof Laya.UIComponent)
+                Props_UIComponent(node, comp.props);
+            if (node instanceof Laya.Text) {
+                if (node.parent instanceof Laya.Label && node.parent.textField == node) {
+                    return null;
+                }
+                Props_Text(node, comp.props);
+            }
+            if (node instanceof Laya.Dialog)
+                Props_Dialog(node, comp.props);
+            if (node instanceof Laya.Clip)
+                Props_Clip(node, comp.props);
+            if (node instanceof Laya.FontClip)
+                Props_FontClip(node, comp.props);
+            if (node instanceof Laya.Image)
+                Props_Image(node, comp.props);
+            if (node instanceof Laya.Button)
+                Props_Button(node, comp.props);
+            if (node instanceof Laya.ComboBox)
+                Props_ComboBox(node, comp.props);
+            if (node instanceof Laya.Slider)
+                Props_Slider(node, comp.props);
+            if (node instanceof Laya.ScrollBar)
+                Props_ScrollBar(node, comp.props);
+            if (node instanceof Laya.ProgressBar)
+                Props_ProgressBar(node, comp.props);
+            if (node instanceof Laya.Label)
+                Props_Label(node, comp.props);
+            if (node instanceof Laya.TextInput)
+                Props_TextInput(node, comp.props);
+            if (node instanceof Laya.TextArea)
+                Props_TextArea(node, comp.props);
+            if (node instanceof Laya.ColorPicker)
+                Props_ColorPicker(node, comp.props);
+            if (node instanceof Laya.Box)
+                Props_Box(node, comp.props);
+            if (node instanceof Laya.LayoutBox)
+                Props_LayoutBox(node, comp.props);
+            if (node instanceof Laya.Panel)
+                Props_Panel(node, comp.props);
+            if (node instanceof Laya.List)
+                Props_List(node, comp.props);
+            if (node instanceof Laya.Tree)
+                Props_Tree(node, comp.props);
+            if (node instanceof Laya.ViewStack)
+                Props_ViewStack(node, comp.props);
+            if (node instanceof Laya.UIGroup)
+                Props_UIGroup(node, comp.props);
+            if (node instanceof Laya.Tab)
+                Props_Tab(node, comp.props);
+            comp.child = [];
+            for (let i = 0; i < node.numChildren; i++) {
+                let cc = Node2Comp(node.getChildAt(i));
+                if (cc != null) {
+                    comp.child.push(cc);
+                }
+            }
+            if (node instanceof Laya.Sprite)
+                Child_Mask(node, comp.child);
+            Child_Script(node, comp.child);
+            return comp;
+        }
+        function Child_Script(node, child) {
+            let cs = node.getComponents(Laya.Script);
+            if (cs != null) {
+                for (let c of cs) {
+                    child.push({ type: "Script", props: { runtime: c.runtime } });
+                }
+            }
+        }
+        function Child_Mask(node, child) {
+            if (node.mask != null) {
+                child.push(Node2Comp(node.mask));
+            }
+        }
+        function Props_Sprite(node, props) {
+            if (!isNaN(node.x))
+                props.x = node.x;
+            if (!isNaN(node.y))
+                props.y = node.y;
+            if (!isNaN(node.width))
+                props.width = node.width;
+            if (!isNaN(node.height))
+                props.height = node.height;
+            if (node.visible != null)
+                props.visible = node.visible;
+            if (node.texture != null)
+                props.texture = node.texture.url;
+            if (node["renderType"] != null)
+                props.renderType = node["renderType"];
+        }
+        function Props_Scene(node, props) {
+            if (node.autoDestroyAtClosed != null)
+                props.autoDestroyAtClosed = node.autoDestroyAtClosed;
+        }
+        function Props_UIComponent(node, props) {
+            if (!isNaN(node.anchorX))
+                props.anchorX = node.anchorX;
+            if (!isNaN(node.anchorY))
+                props.anchorY = node.anchorY;
+            if (!isNaN(node.centerX))
+                props.centerX = node.centerX;
+            if (!isNaN(node.centerY))
+                props.centerY = node.centerY;
+            if (!isNaN(node.top))
+                props.top = node.top;
+            if (!isNaN(node.bottom))
+                props.bottom = node.bottom;
+            if (!isNaN(node.left))
+                props.left = node.left;
+            if (!isNaN(node.right))
+                props.right = node.right;
+        }
+        function Props_Text(node, props) {
+            if (node.text != null)
+                props.text = node.text;
+            if (node["runtime"] != null)
+                props.runtime = node["runtime"];
+        }
+        function Props_Dialog(node, props) {
+            if (node.group != null)
+                props.group = node.group;
+            if (node.dragArea != null)
+                props.dragArea = node.dragArea;
+            if (node.isShowEffect != null)
+                props.isShowEffect = node.isShowEffect;
+            if (node.isPopupCenter != null)
+                props.isPopupCenter = node.isPopupCenter;
+            if (node.isModal != null)
+                props.isModal = node.isModal;
+        }
+        function Props_Clip(node, props) {
+            if (node.skin != null)
+                props.skin = node.skin;
+            if (node.group != null)
+                props.group = node.group;
+            if (node.sizeGrid != null)
+                props.sizeGrid = node.sizeGrid;
+            if (node.autoPlay != null)
+                props.autoPlay = node.autoPlay;
+            if (!isNaN(node.index))
+                props.index = node.index;
+            if (!isNaN(node.clipX))
+                props.clipX = node.clipX;
+            if (!isNaN(node.clipY))
+                props.clipY = node.clipY;
+            if (!isNaN(node.clipWidth))
+                props.clipWidth = node.clipWidth;
+            if (!isNaN(node.clipHeight))
+                props.clipHeight = node.clipHeight;
+        }
+        function Props_FontClip(node, props) {
+            if (node.value != null)
+                props.value = node.value;
+            if (node.sheet != null)
+                props.sheet = node.sheet;
+            if (node.align != null)
+                props.align = node.align;
+            if (node.direction != null)
+                props.direction = node.direction;
+            if (!isNaN(node.spaceX))
+                props.spaceX = node.spaceX;
+            if (!isNaN(node.spaceY))
+                props.spaceY = node.spaceY;
+        }
+        function Props_Image(node, props) {
+            if (node.skin != null)
+                props.skin = node.skin;
+            if (node.group != null)
+                props.group = node.group;
+            if (node.sizeGrid != null)
+                props.sizeGrid = node.sizeGrid;
+        }
+        function Props_Button(node, props) {
+            if (node.skin != null)
+                props.skin = node.skin;
+            if (node.label != null)
+                props.label = node.label;
+            if (node.toggle != null)
+                props.toggle = node.toggle;
+            if (node.sizeGrid != null)
+                props.sizeGrid = node.sizeGrid;
+            if (node.selected != null)
+                props.selected = node.selected;
+            if (node.strokeColors != null)
+                props.strokeColors = node.strokeColors;
+            if (node.labelStrokeColor != null)
+                props.labelStrokeColor = node.labelStrokeColor;
+            if (node.labelPadding != null)
+                props.labelPadding = node.labelPadding;
+            if (node.labelFont != null)
+                props.labelFont = node.labelFont;
+            if (node.labelColors != null)
+                props.labelColors = node.labelColors;
+            if (node.labelBold != null)
+                props.labelBold = node.labelBold;
+            if (node.labelAlign != null)
+                props.labelAlign = node.labelAlign;
+            if (!isNaN(node.stateNum))
+                props.stateNum = node.stateNum;
+            if (!isNaN(node.labelSize))
+                props.labelSize = node.labelSize;
+            if (!isNaN(node.labelStroke))
+                props.labelStroke = node.labelStroke;
+        }
+        function Props_ComboBox(node, props) {
+            if (node.skin != null)
+                props.skin = node.skin;
+            if (node.sizeGrid != null)
+                props.sizeGrid = node.sizeGrid;
+            if (node.selectedLabel != null)
+                props.selectedLabel = node.selectedLabel;
+            if (node.scrollBarSkin != null)
+                props.scrollBarSkin = node.scrollBarSkin;
+            if (node.labels != null)
+                props.labels = node.labels;
+            if (node.labelFont != null)
+                props.labelFont = node.labelFont;
+            if (node.labelBold != null)
+                props.labelBold = node.labelBold;
+            if (node.labelColors != null)
+                props.labelColors = node.labelColors;
+            if (node.labelPadding != null)
+                props.labelPadding = node.labelPadding;
+            if (node.itemColors != null)
+                props.itemColors = node.itemColors;
+            if (!isNaN(node.itemSize))
+                props.itemSize = node.itemSize;
+            if (!isNaN(node.labelSize))
+                props.labelSize = node.labelSize;
+            if (!isNaN(node.stateNum))
+                props.stateNum = node.stateNum;
+            if (!isNaN(node.visibleNum))
+                props.visibleNum = node.visibleNum;
+            if (!isNaN(node.selectedIndex))
+                props.selectedIndex = node.selectedIndex;
+        }
+        function Props_Slider(node, props) {
+            if (node.skin != null)
+                props.skin = node.skin;
+            if (node.sizeGrid != null)
+                props.sizeGrid = node.sizeGrid;
+            if (node.showLabel != null)
+                props.showLabel = node.showLabel;
+            if (node.allowClickBack != null)
+                props.allowClickBack = node.allowClickBack;
+            if (!isNaN(node.value))
+                props.value = node.value;
+            if (!isNaN(node.tick))
+                props.tick = node.tick;
+            if (!isNaN(node.min))
+                props.min = node.min;
+            if (!isNaN(node.max))
+                props.max = node.max;
+        }
+        function Props_ScrollBar(node, props) {
+            if (node.skin != null)
+                props.skin = node.skin;
+            if (node.hide != null)
+                props.hide = node.hide;
+            if (node.autoHide != null)
+                props.autoHide = node.autoHide;
+            if (node.sizeGrid != null)
+                props.sizeGrid = node.sizeGrid;
+            if (node.showButtons != null)
+                props.showButtons = node.showButtons;
+            if (node.mouseWheelEnable != null)
+                props.mouseWheelEnable = node.mouseWheelEnable;
+            if (node.touchScrollEnable != null)
+                props.touchScrollEnable = node.touchScrollEnable;
+            if (!isNaN(node.value))
+                props.value = node.value;
+            if (!isNaN(node.min))
+                props.min = node.min;
+            if (!isNaN(node.max))
+                props.max = node.max;
+            if (!isNaN(node.rollRatio))
+                props.rollRatio = node.rollRatio;
+            if (!isNaN(node.scrollSize))
+                props.scrollSize = node.scrollSize;
+            if (!isNaN(node.elasticDistance))
+                props.elasticDistance = node.elasticDistance;
+            if (!isNaN(node.elasticBackTime))
+                props.elasticBackTime = node.elasticBackTime;
+        }
+        function Props_ProgressBar(node, props) {
+            if (node.skin != null)
+                props.skin = node.skin;
+            if (node.sizeGrid != null)
+                props.sizeGrid = node.sizeGrid;
+            if (!isNaN(node.value))
+                props.value = node.value;
+        }
+        function Props_Label(node, props) {
+            if (node.text != null)
+                props.text = node.text;
+            if (node.font != null)
+                props.font = node.font;
+            if (node.color != null)
+                props.color = node.color;
+            if (node.align != null)
+                props.align = node.align;
+            if (node.valign != null)
+                props.valign = node.valign;
+            if (node.wordWrap != null)
+                props.wordWrap = node.wordWrap;
+            if (node.underline != null)
+                props.underline = node.underline;
+            if (node.underlineColor != null)
+                props.underlineColor = node.underlineColor;
+            if (node.padding != null)
+                props.padding = node.padding;
+            if (node.overflow != null)
+                props.overflow = node.overflow;
+            if (node.italic != null)
+                props.italic = node.italic;
+            if (node.strokeColor != null)
+                props.strokeColor = node.strokeColor;
+            if (node.borderColor != null)
+                props.borderColor = node.borderColor;
+            if (node.bold != null)
+                props.bold = node.bold;
+            if (node.bgColor != null)
+                props.bgColor = node.bgColor;
+            if (!isNaN(node.leading))
+                props.leading = node.leading;
+            if (!isNaN(node.fontSize))
+                props.fontSize = node.fontSize;
+            if (!isNaN(node.stroke))
+                props.stroke = node.stroke;
+        }
+        function Props_TextInput(node, props) {
+            if (node.text != null)
+                props.text = node.text;
+            if (node.skin != null)
+                props.skin = node.skin;
+            if (node.type != null)
+                props.type = node.type;
+            if (node.sizeGrid != null)
+                props.sizeGrid = node.sizeGrid;
+            if (node.restrict != null)
+                props.restrict = node.restrict;
+            if (node.prompt != null)
+                props.prompt = node.prompt;
+            if (node.promptColor != null)
+                props.promptColor = node.promptColor;
+            if (node.multiline != null)
+                props.multiline = node.multiline;
+            if (node.editable != null)
+                props.editable = node.editable;
+            if (!isNaN(node.maxChars))
+                props.maxChars = node.maxChars;
+        }
+        function Props_TextArea(node, props) {
+            if (node.vScrollBarSkin != null)
+                props.vScrollBarSkin = node.vScrollBarSkin;
+            if (node.hScrollBarSkin != null)
+                props.hScrollBarSkin = node.hScrollBarSkin;
+        }
+        function Props_ColorPicker(node, props) {
+            if (node.selectedColor != null)
+                props.selectedColor = node.selectedColor;
+            if (node.inputColor != null)
+                props.inputColor = node.inputColor;
+            if (node.inputBgColor != null)
+                props.inputBgColor = node.inputBgColor;
+            if (node.borderColor != null)
+                props.borderColor = node.borderColor;
+            if (node.bgColor != null)
+                props.bgColor = node.bgColor;
+        }
+        function Props_Box(node, props) {
+            if (node.bgColor != null)
+                props.bgColor = node.bgColor;
+        }
+        function Props_LayoutBox(node, props) {
+            if (node.align != null)
+                props.align = node.align;
+            if (!isNaN(node.space))
+                props.space = node.space;
+        }
+        function Props_Panel(node, props) {
+            if (node.elasticEnabled != null)
+                props.elasticEnabled = node.elasticEnabled;
+            if (node.hScrollBarSkin != null)
+                props.hScrollBarSkin = node.hScrollBarSkin;
+            if (node.vScrollBarSkin != null)
+                props.vScrollBarSkin = node.vScrollBarSkin;
+        }
+        function Props_List(node, props) {
+            if (!isNaN(node.width))
+                props.width = node.width;
+            if (!isNaN(node.height))
+                props.height = node.height;
+            if (!isNaN(node.spaceX))
+                props.spaceX = node.spaceX;
+            if (!isNaN(node.spaceY))
+                props.spaceY = node.spaceY;
+            if (!isNaN(node.repeatX))
+                props.repeatX = node.repeatX;
+            if (!isNaN(node.repeatY))
+                props.repeatY = node.repeatY;
+            if (!isNaN(node.selectedIndex))
+                props.selectedIndex = node.selectedIndex;
+            if (node.selectEnable != null)
+                props.selectEnable = node.selectEnable;
+            if (node.elasticEnabled != null)
+                props.elasticEnabled = node.elasticEnabled;
+            if (node.hScrollBarSkin != null)
+                props.hScrollBarSkin = node.hScrollBarSkin;
+            if (node.vScrollBarSkin != null)
+                props.vScrollBarSkin = node.vScrollBarSkin;
+        }
+        function Props_Tree(node, props) {
+            if (!isNaN(node.width))
+                props.width = node.width;
+            if (!isNaN(node.height))
+                props.height = node.height;
+            if (!isNaN(node.spaceLeft))
+                props.spaceLeft = node.spaceLeft;
+            if (!isNaN(node.spaceBottom))
+                props.spaceBottom = node.spaceBottom;
+            if (!isNaN(node.selectedIndex))
+                props.selectedIndex = node.selectedIndex;
+            if (node.scrollBarSkin != null)
+                props.scrollBarSkin = node.scrollBarSkin;
+            if (node.keepStatus != null)
+                props.keepStatus = node.keepStatus;
+        }
+        function Props_ViewStack(node, props) {
+            if (!isNaN(node.selectedIndex))
+                props.selectedIndex = node.selectedIndex;
+        }
+        function Props_UIGroup(node, props) {
+            if (node.skin != null)
+                props.skin = node.skin;
+            if (node.labels != null)
+                props.labels = node.labels;
+            if (node.labelStrokeColor != null)
+                props.labelStrokeColor = node.labelStrokeColor;
+            if (node.labelPadding != null)
+                props.labelPadding = node.labelPadding;
+            if (node.labelFont != null)
+                props.labelFont = node.labelFont;
+            if (node.labelColors != null)
+                props.labelColors = node.labelColors;
+            if (node.labelBold != null)
+                props.labelBold = node.labelBold;
+            if (node.strokeColors != null)
+                props.strokeColors = node.strokeColors;
+            if (node.direction != null)
+                props.direction = node.direction;
+            if (!isNaN(node.space))
+                props.space = node.space;
+            if (!isNaN(node.stateNum))
+                props.stateNum = node.stateNum;
+            if (!isNaN(node.selectedIndex))
+                props.selectedIndex = node.selectedIndex;
+            if (!isNaN(node.labelStroke))
+                props.labelStroke = node.labelStroke;
+            if (!isNaN(node.labelSize))
+                props.labelSize = node.labelSize;
+        }
+        function Props_Tab(node, props) {
+            if (node["labelAlign"] != null)
+                props.labelAlign = node["labelAlign"];
+        }
+    })(GO || (GO = {}));
+
+    class P405 extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.scroll = null;
+            this.layout = null;
+            this.paddingTop = 10;
+            this.paddingBottom = 10;
+            this.move = null;
+            this.show = null;
+            this.hide = null;
+            this.maxX = 560;
+            this.mouseDown = false;
+            this.lastStageX = 0;
+            this.lastStageY = 0;
+            this.targetX = 0;
+            this.showing = [];
+        }
+        async OnAwake() {
+            this.shield = TJ.Develop.Yun.Location.shield;
+            this.move = this.owner.getChildByName("move");
+            let button = this.move.getChildByName("button");
+            this.show = button.getChildByName("show");
+            this.hide = button.getChildByName("hide");
+            let board = this.move.getChildByName("board");
+            this.scroll = board.getChildByName("scroll");
+            this.layout = this.scroll.getChildByName("layout");
+            TJ.Develop.Yun.Promo.Data.ReportAwake(P405.style);
+            this.show.clickHandler = new Laya.Handler(null, () => { this.Show(); });
+            this.hide.clickHandler = new Laya.Handler(null, () => { this.Hide(); });
+            this.layoutS = this.layout.addComponent(P405Layout);
+            if (this.show.parent.scaleX < 0)
+                this.maxX = -this.maxX;
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.ZJTD_AppRt) {
+                return;
+            }
+            this.active = false;
+            let list = await TJ.Develop.Yun.Promo.List.Get();
+            if (list.count > 0) {
+                if (this.layoutS != null) {
+                    if (this.shield) {
+                        for (let i = 0; i < Math.min(list.count, 5); i++) {
+                            this.layoutS.datas.push(list.Load());
+                        }
+                    }
+                    else {
+                        for (let i = 0; i < list.count; i++) {
+                            this.layoutS.datas.push(list.Load());
+                        }
+                    }
+                    this.layoutS.Init(this.scroll.width, this.scroll.height, this.shield);
+                    this.active = true;
+                    TJ.Develop.Yun.Promo.Data.ReportStart(P405.style);
+                }
+                else {
+                }
+            }
+            else {
+            }
+        }
+        OnStart() {
+            if (this.shield)
+                return;
+            this.scroll.on(Laya.Event.MOUSE_DOWN, null, (event) => {
+                this.mouseDown = true;
+                this.lastStageX = event.stageX;
+                this.lastStageY = event.stageY;
+            });
+            this.scroll.on(Laya.Event.MOUSE_OUT, null, (event) => {
+                this.mouseDown = false;
+            });
+            this.scroll.on(Laya.Event.MOUSE_UP, null, (event) => {
+                this.mouseDown = false;
+            });
+            this.scroll.on(Laya.Event.MOUSE_MOVE, null, (event) => {
+                if (this.mouseDown) {
+                    let dx = event.stageX - this.lastStageX;
+                    let dy = event.stageY - this.lastStageY;
+                    this.lastStageX = event.stageX;
+                    this.lastStageY = event.stageY;
+                    let ty = this.layoutS.node.y + dy;
+                    this.layoutS.node.y = ty;
+                }
+            });
+        }
+        Show() {
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.ZJTD_AppRt) {
+                let param = new TJ.API.Promo.Param();
+                param.extraData = { "TJ_App": TJ.API.AppInfo.AppGuid() };
+                TJ.API.Promo.Pop(param);
+                return;
+            }
+            this.targetX = this.maxX;
+            this.show.active = this.show.visible = false;
+            this.hide.active = this.hide.visible = true;
+            this.layout.y = 0;
+        }
+        Hide() {
+            this.targetX = 0;
+            this.showing = [];
+        }
+        OnUpdate() {
+            let deltaTime = Laya.timer.delta / 1000;
+            if (this.move.centerX != this.targetX) {
+                let d = this.targetX - this.move.centerX;
+                let s = 3000 * deltaTime;
+                if (d > 0) {
+                    d = Math.min(this.move.centerX + s, this.targetX);
+                }
+                else {
+                    d = Math.max(this.move.centerX - s, this.targetX);
+                }
+                this.move.centerX = d;
+                if (this.move.centerX == 0) {
+                    this.show.active = this.show.visible = true;
+                    this.hide.active = this.hide.visible = false;
+                    if (this.shield) {
+                        window.setTimeout(async () => {
+                            let list = await TJ.Develop.Yun.Promo.List.Get();
+                            if (list != null && list.count > 0) {
+                                this.layoutS.datas = [];
+                                for (let i = 0; i < Math.min(list.count, 5); i++) {
+                                    this.layoutS.datas.push(list.Load());
+                                }
+                                this.layoutS.Redata();
+                            }
+                        }, 0);
+                    }
+                }
+            }
+            else {
+                if (this.shield)
+                    return;
+                if (this.move.centerX == this.maxX) {
+                    this.layout.y -= 0.8;
+                }
+            }
+            if (this.shield)
+                return;
+            this.layoutS.Repos(this.layout.y);
+        }
+    }
+    P405.style = "P405";
+    class P405Layout extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.datas = [];
+            this.items = [];
+            this.prefab = null;
+            this.line = 0;
+            this.column = 0;
+            this.spacingX = 12;
+            this.spacingY = 12;
+        }
+        get node() {
+            return this.owner;
+        }
+        OnAwake() {
+            this.prefab = this.node.getChildAt(0);
+            this.prefab.active = this.prefab.visible = false;
+        }
+        Init(width, height, shield) {
+            while (width >= this.prefab.width) {
+                width = width - this.prefab.width - this.spacingX;
+                this.column++;
+            }
+            while (height >= this.prefab.height) {
+                height = height - this.prefab.height - this.spacingY;
+                this.line++;
+            }
+            if (shield) {
+                let uw = this.prefab.width;
+                let uh = this.prefab.height;
+                let spaceX = uw + this.spacingX;
+                let spaceY = uh + this.spacingY;
+                for (let y = 0; y < this.line; y++) {
+                    for (let x = 0; x < this.column; x++) {
+                        if (this.items.length < this.datas.length) {
+                            let item = GO.Instantiate(this.prefab).getComponent(PromoItem);
+                            this.node.addChild(item.owner);
+                            item.owner.active = item.owner.visible = true;
+                            this.items.push(item);
+                            item.owner.x = x * spaceX + uw / 2;
+                            item.owner.y = spaceY * y + uh / 2;
+                            item.onAwake();
+                        }
+                    }
+                }
+                this.Redata();
+            }
+            else {
+                this.line += 2;
+                for (let y = 0; y < this.line; y++) {
+                    for (let x = 0; x < this.column; x++) {
+                        let item = GO.Instantiate(this.prefab).getComponent(PromoItem);
+                        this.node.addChild(item.owner);
+                        item.owner.active = item.owner.visible = true;
+                        this.items.push(item);
+                        item.onAwake();
+                    }
+                }
+            }
+        }
+        Redata() {
+            for (let i = 0; i < this.items.length; i++) {
+                let item = this.items[i];
+                item.data = this.datas[i];
+                item.data.Load();
+                item.DoLoad();
+            }
+        }
+        Repos(posY) {
+            let ic = this.items.length;
+            let dc = this.datas.length;
+            if (ic < 1)
+                return;
+            if (dc < 1)
+                return;
+            let uw = this.prefab.width;
+            let uh = this.prefab.height;
+            let spaceX = uw + this.spacingX;
+            let spaceY = uh + this.spacingY;
+            let k = -posY / spaceY;
+            k = Math.floor(k);
+            let k1 = Math.floor(k / this.line) * this.line, k2 = k < 0 ? (this.line + k % this.line) % this.line : (k % this.line);
+            let checkPos = (item, b, l, c) => {
+                let pid = b + l * this.column + c;
+                if (item.posId != pid) {
+                    item.posId = pid;
+                    item.owner.x = spaceX * c + uw / 2;
+                    item.owner.y = (b + l) * spaceY + uh / 2;
+                    let did = pid < 0 ? (dc + pid % dc) % dc : (pid % dc);
+                    if (item.dataId != did) {
+                        item.dataId = did;
+                        item.data = this.datas[did];
+                        item.data.Load();
+                        item.DoLoad();
+                    }
+                }
+            };
+            for (let l = 0; l < k2; l++) {
+                for (let c = 0; c < this.column; c++) {
+                    checkPos(this.items[l * this.column + c], k1 + this.line, l, c);
+                }
+            }
+            for (let l = k2; l < this.line; l++) {
+                for (let c = 0; c < this.column; c++) {
+                    checkPos(this.items[l * this.column + c], k1, l, c);
+                }
+            }
+        }
+    }
+
+    class P201 extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.promoItem = null;
+            this.shake = false;
+            this.animTime = 0;
+            this.refrTime = 0;
+        }
+        async OnAwake() {
+            this.promoItem = this.owner.getComponent(PromoItem);
+            TJ.Develop.Yun.Promo.Data.ReportAwake(P201.style);
+            this.promoItem.style = P201.style;
+            this.active = false;
+            if (P201.promoList == null) {
+                let list = await TJ.Develop.Yun.Promo.List.Get(P201.style);
+                if (P201.promoList == null)
+                    P201.promoList = list;
+            }
+            if (P201.promoList.count > 0) {
+                TJ.Develop.Yun.Promo.Data.ReportStart(P201.style);
+                this.active = true;
+            }
+            else {
+            }
+        }
+        OnEnable() {
+            this.LoadAndShowIcon();
+        }
+        OnDisable() {
+            if (P201.promoList != null) {
+                P201.promoList.Unload(this.promoItem.data);
+            }
+        }
+        OnUpdate() {
+            let deltaTime = Laya.timer.delta / 1000;
+            this.refrTime += deltaTime;
+            if (this.refrTime > 5) {
+                this.refrTime -= 5;
+                this.LoadAndShowIcon();
+            }
+            if (!this.shake)
+                return;
+            this.animTime += deltaTime;
+            this.animTime %= 2.5;
+            if (this.animTime <= .75) {
+                this.promoItem.owner.rotation = Math.sin(this.animTime * 6 * Math.PI) * 25 * (1 - this.animTime / .75);
+            }
+            else {
+                this.promoItem.owner.rotation = 0;
+            }
+        }
+        LoadIcon() {
+            let data = P201.promoList.Load();
+            if (data != null) {
+                P201.promoList.Unload(this.promoItem.data);
+                this.promoItem.data = data;
+                this.promoItem.onClick_ = () => { this.LoadAndShowIcon(); };
+                this.promoItem.DoLoad();
+            }
+            return data;
+        }
+        LoadAndShowIcon() {
+            if (this.LoadIcon() != null) {
+                this.promoItem.OnShow();
+            }
+            else {
+                if (this.promoItem.data == null) {
+                    this.owner.destroy();
+                }
+            }
+        }
+    }
+    P201.style = "P201";
+    P201.promoList = null;
+
+    var Lwg;
+    (function (Lwg) {
+        let PlatformAdmin;
+        (function (PlatformAdmin) {
+            PlatformAdmin._Tpye = {
+                Bytedance: 'Bytedance',
+                WeChat: 'WeChat',
+                OPPO: 'OPPO',
+                OPPOTest: 'OPPOTest',
+                VIVO: 'VIVO',
+                General: 'General',
+                Web: 'Web',
+                WebTest: 'WebTest',
+                Research: 'Research',
+            };
+            PlatformAdmin._Ues = {
+                get value() {
+                    return this['_platform/name'] ? this['_platform/name'] : null;
+                },
+                set value(val) {
+                    this['_platform/name'] = val;
+                    switch (val) {
+                        case PlatformAdmin._Tpye.WebTest:
+                            Laya.LocalStorage.clear();
+                            GoldAdmin._num.value = 5000;
+                            break;
+                        case PlatformAdmin._Tpye.Research:
+                            GoldAdmin._num.value = 50000000000000;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            };
+        })(PlatformAdmin = Lwg.PlatformAdmin || (Lwg.PlatformAdmin = {}));
+        let GameAdmin;
+        (function (GameAdmin) {
+            GameAdmin._switch = true;
+            GameAdmin.pause = {
+                get value() {
+                    return GameAdmin._switch;
+                },
+                set value(bool) {
+                    if (bool) {
+                        GameAdmin._switch = false;
+                        TimerAdmin._switch = false;
+                        LwgClick._switch = true;
+                    }
+                    else {
+                        GameAdmin._switch = true;
+                        TimerAdmin._switch = true;
+                        LwgClick._switch = false;
+                    }
+                }
+            };
+            GameAdmin.level = {
+                get value() {
+                    return Laya.LocalStorage.getItem('_Game/Level') ? Number(Laya.LocalStorage.getItem('_Game/Level')) : 1;
+                },
+                set value(val) {
+                    let diff = val - this.level;
+                    if (diff > 0) {
+                        this.maxLevel += diff;
+                    }
+                    if (val > this.loopLevel && this.loopLevel != -1) {
+                        Laya.LocalStorage.setItem('_Game/Level', (1).toString());
+                    }
+                    else {
+                        Laya.LocalStorage.setItem('_Game/Level', (val).toString());
+                    }
+                }
+            };
+            GameAdmin.maxLevel = {
+                get value() {
+                    return Laya.LocalStorage.getItem('_Game/maxLevel') ? Number(Laya.LocalStorage.getItem('_Game/maxLevel')) : this.level;
+                },
+                set value(val) {
+                    Laya.LocalStorage.setItem('_Game/maxLevel', val.toString());
+                }
+            };
+            GameAdmin.loopLevel = {
+                get value() {
+                    return this['_Game/loopLevel'] ? this['_Game/loopLevel'] : -1;
+                },
+                set value(val) {
+                    this['_Game/loopLevel'] = val;
+                }
+            };
+            function _createLevel(parent, x, y) {
+                let sp;
+                Laya.loader.load('prefab/LevelNode.json', Laya.Handler.create(this, function (prefab) {
+                    const _prefab = new Laya.Prefab();
+                    _prefab.json = prefab;
+                    sp = Laya.Pool.getItemByCreateFun('prefab', _prefab.create, _prefab);
+                    parent.addChild(sp);
+                    sp.pos(x, y);
+                    sp.zOrder = 0;
+                    const level = sp.getChildByName('level');
+                    this.LevelNode = sp;
+                }));
+            }
+            GameAdmin._createLevel = _createLevel;
+            ;
+        })(GameAdmin = Lwg.GameAdmin || (Lwg.GameAdmin = {}));
+        let SceneAdmin;
+        (function (SceneAdmin) {
+            SceneAdmin._SceneControl = {};
+            SceneAdmin._SceneScript = {};
+            class _BaseName {
+            }
+            _BaseName.PreLoad = 'PreLoad';
+            _BaseName.PreLoadCutIn = 'PreLoadCutIn';
+            _BaseName.Guide = 'Guide';
+            _BaseName.Start = 'Start';
+            _BaseName.Shop = 'Shop';
+            _BaseName.Task = 'Task';
+            _BaseName.Set = 'Set';
+            _BaseName.Victory = 'Victory';
+            _BaseName.Defeated = 'Defeated';
+            _BaseName.CheckIn = 'CheckIn';
+            _BaseName.LwgInit = 'LwgInit';
+            _BaseName.SelectLevel = 'SelectLevel';
+            _BaseName.Settle = 'Settle';
+            _BaseName.Share = 'Share';
+            _BaseName.Ranking = 'Ranking';
+            SceneAdmin._BaseName = _BaseName;
+            SceneAdmin._PreLoadCutIn = {
+                openName: null,
+                closeName: null,
+                func: null,
+                zOrder: null,
+            };
+            function _preLoadOpenScene(openName, closeName, func, zOrder) {
+                _openScene(_BaseName.PreLoadCutIn, closeName, func);
+                SceneAdmin._PreLoadCutIn.openName = openName;
+                SceneAdmin._PreLoadCutIn.closeName = closeName;
+                SceneAdmin._PreLoadCutIn.func = func;
+                SceneAdmin._PreLoadCutIn.zOrder = zOrder;
+            }
+            SceneAdmin._preLoadOpenScene = _preLoadOpenScene;
+            class _SceneServe {
+                static _openZOderUp() {
+                    if (SceneAniAdmin._closeSwitch.value) {
+                        let num = 0;
+                        for (const key in SceneAdmin._SceneControl) {
+                            if (Object.prototype.hasOwnProperty.call(SceneAdmin._SceneControl, key)) {
+                                const Scene = SceneAdmin._SceneControl[key];
+                                if (Scene.parent) {
+                                    Scene.zOrder = 0;
+                                    num++;
+                                }
+                            }
+                        }
+                        if (this._openScene) {
+                            this._openScene.zOrder = num;
+                            for (let index = 0; index < this._closeSceneArr.length; index++) {
+                                const element = this._closeSceneArr[index];
+                                if (element) {
+                                    element.zOrder = --num;
+                                }
+                                else {
+                                    this._closeSceneArr.splice(index, 1);
+                                    index--;
+                                }
+                            }
+                        }
+                    }
+                }
+                ;
+                static _closeZOderUP(CloseScene) {
+                    if (SceneAniAdmin._closeSwitch.value) {
+                        let num = 0;
+                        for (const key in SceneAdmin._SceneControl) {
+                            if (Object.prototype.hasOwnProperty.call(SceneAdmin._SceneControl, key)) {
+                                const Scene = SceneAdmin._SceneControl[key];
+                                if (Scene.parent) {
+                                    num++;
+                                }
+                            }
+                        }
+                        if (CloseScene) {
+                            CloseScene.zOrder = num;
+                            if (this._openScene) {
+                                this._openScene.zOrder = --num;
+                            }
+                        }
+                    }
+                }
+                ;
+                static _open() {
+                    if (this._openScene) {
+                        if (this._openZOder) {
+                            Laya.stage.addChildAt(this._openScene, this._openZOder);
+                        }
+                        else {
+                            Laya.stage.addChild(this._openScene);
+                        }
+                        if (SceneAdmin._SceneScript[this._openScene.name]) {
+                            if (!this._openScene.getComponent(SceneAdmin._SceneScript[this._openScene.name])) {
+                                this._openScene.addComponent(SceneAdmin._SceneScript[this._openScene.name]);
+                            }
+                        }
+                        else {
+                            console.log(`${this._openScene.name}场景没有同名脚本！,需在LwgInit脚本中导入该脚本！`);
+                        }
+                        this._openZOderUp();
+                        this._openFunc();
+                    }
+                }
+                ;
+                static _close() {
+                    if (this._closeSceneArr.length > 0) {
+                        for (let index = 0; index < this._closeSceneArr.length; index++) {
+                            let scene = this._closeSceneArr[index];
+                            if (scene) {
+                                _closeScene(scene.name);
+                                this._closeSceneArr.splice(index, 1);
+                                index--;
+                            }
+                        }
+                    }
+                    this._remake();
+                }
+                static _remake() {
+                    this._openScene = null;
+                    this._openZOder = 1;
+                    this._openFunc = null;
+                    this._closeZOder = 0;
+                }
+            }
+            _SceneServe._openScene = null;
+            _SceneServe._openZOder = 1;
+            _SceneServe._openFunc = null;
+            _SceneServe._closeSceneArr = [];
+            _SceneServe._closeZOder = 0;
+            _SceneServe._sceneNum = 1;
+            SceneAdmin._SceneServe = _SceneServe;
+            function _openScene(openName, closeName, func, zOrder) {
+                LwgClick._switch = false;
+                Laya.Scene.load('Scene/' + openName + '.json', Laya.Handler.create(this, function (scene) {
+                    const openScene = ToolsAdmin._Node.checkChildren(Laya.stage, openName);
+                    if (openScene) {
+                        openScene.close();
+                        console.log(`场景${openName}重复出现！前面的场景将会被关闭！`);
+                    }
+                    _SceneServe._openScene = SceneAdmin._SceneControl[scene.name = openName] = scene;
+                    if (closeName && SceneAdmin._SceneControl[closeName]) {
+                        _SceneServe._closeSceneArr.push(SceneAdmin._SceneControl[closeName]);
+                        _SceneServe._closeZOder = SceneAdmin._SceneControl[closeName].zOrder;
+                    }
+                    _SceneServe._openZOder = zOrder ? zOrder : null;
+                    _SceneServe._openFunc = func ? func : () => { };
+                    _SceneServe._open();
+                }));
+            }
+            SceneAdmin._openScene = _openScene;
+            function _closeScene(closeName, func) {
+                if (!SceneAdmin._SceneControl[closeName]) {
+                    console.log(`场景${closeName}关闭失败，可能不存在！`);
+                    return;
+                }
+                var closef = () => {
+                    func && func();
+                    LwgClick._switch = true;
+                    SceneAdmin._SceneControl[closeName].close();
+                };
+                if (!SceneAniAdmin._closeSwitch.value) {
+                    closef();
+                }
+                else {
+                    _SceneServe._closeZOderUP(LwgScene._SceneControl[closeName]);
+                    const script = SceneAdmin._SceneControl[closeName][closeName];
+                    if (script) {
+                        LwgClick._switch = false;
+                        let time0 = script.lwgCloseAni();
+                        if (time0 !== null) {
+                            SceneAniAdmin._closeAniDelay = time0;
+                            script.lwgBeforeCloseAni();
+                            Laya.timer.once(time0, this, () => {
+                                closef();
+                                LwgClick._switch = true;
+                            });
+                        }
+                        else {
+                            const delay = SceneAniAdmin._commonCloseAni(SceneAdmin._SceneControl[closeName]);
+                            Laya.timer.once(delay, this, () => {
+                                script.lwgBeforeCloseAni();
+                                closef();
+                            });
+                        }
+                    }
+                }
+            }
+            SceneAdmin._closeScene = _closeScene;
+            class _ScriptBase extends Laya.Script {
+                constructor() {
+                    super(...arguments);
+                    this.ownerSceneName = '';
+                }
+                getFind(name, type) {
+                    if (!this[`_Scene${type}${name}`]) {
+                        let Node = ToolsAdmin._Node.findChild2D(this.owner.scene, name);
+                        if (Node) {
+                            return this[`_Scene${type}${name}`] = Node;
+                        }
+                        else {
+                            console.log(`场景内不存在节点${name}`);
+                        }
+                    }
+                    else {
+                        return this[`_Scene${type}${name}`];
+                    }
+                }
+                _FindImg(name) {
+                    return this.getFind(name, '_FindImg');
+                }
+                _FindSp(name) {
+                    return this.getFind(name, '_FindSp');
+                }
+                _FindBox(name) {
+                    return this.getFind(name, '_FindBox');
+                }
+                _FindTap(name) {
+                    return this.getFind(name, '_FindTap');
+                }
+                _FindLabel(name) {
+                    return this.getFind(name, '_FindLabel');
+                }
+                _FindList(name) {
+                    return this.getFind(name, '_FindList');
+                }
+                _storeNum(name, _func, initial) {
+                    return StorageAdmin._num(`${this.owner.name}/${name}`, _func, initial);
+                }
+                _storeStr(name, _func, initial) {
+                    return StorageAdmin._str(`${this.owner.name}/${name}`, _func, initial);
+                }
+                _storeBool(name, _func, initial) {
+                    return StorageAdmin._bool(`${this.owner.name}/${name}`, _func, initial);
+                }
+                _storeArray(name, _func, initial) {
+                    return StorageAdmin._array(`${this.owner.name}/${name}`, _func, initial);
+                }
+                lwgOnAwake() { }
+                ;
+                lwgAdaptive() { }
+                ;
+                lwgEvent() { }
+                ;
+                _evReg(name, func) {
+                    EventAdmin._register(name, this, func);
+                }
+                _evRegOne(name, func) {
+                    EventAdmin._registerOnce(name, this, func);
+                }
+                _evNotify(name, args) {
+                    EventAdmin._notify(name, args);
+                }
+                lwgOnEnable() { }
+                lwgOnStart() { }
+                lwgButton() { }
+                ;
+                _btnDown(target, down, effect) {
+                    LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, (e) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && down && down(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
+                    }, null, null, null);
+                }
+                _btnMove(target, move, effect) {
+                    LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, (e) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && move && move(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
+                    }, null, null);
+                }
+                _btnUp(target, up, effect) {
+                    LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, (e) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && up && up(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
+                    }, null);
+                }
+                _btnOut(target, out, effect) {
+                    LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, null, (e) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && out && out(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
+                    });
+                }
+                _btnFour(target, down, move, up, out, effect) {
+                    LwgClick._on(effect == null ? effect : LwgClick._Use.value, target, this, (e) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && down && down(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
+                    }, (e) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && move && move(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
+                    }, (e) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && up && up(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
+                    }, (e) => {
+                        var func = () => {
+                            ClickAdmin._absoluteSwitch && LwgClick._switch && out && out(e);
+                        };
+                        if (ClickAdmin._assign.length > 0) {
+                            ClickAdmin._checkAssign(target.name) && func();
+                        }
+                        else {
+                            func();
+                        }
+                    });
+                }
+                _openScene(openName, closeSelf, preLoadCutIn, func, zOrder) {
+                    let closeName;
+                    if (closeSelf == undefined || closeSelf == true) {
+                        closeName = this.ownerSceneName;
+                    }
+                    if (!preLoadCutIn) {
+                        LwgScene._openScene(openName, closeName, func, zOrder);
+                    }
+                    else {
+                        LwgScene._preLoadOpenScene(openName, closeName, func, zOrder);
+                    }
+                }
+                _closeScene(sceneName, func) {
+                    LwgScene._closeScene(sceneName ? sceneName : this.ownerSceneName, func);
+                }
+                lwgOnUpdate() { }
+                ;
+                lwgOnDisable() { }
+                ;
+                onStageMouseDown(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageDown(e); }
+                ;
+                onStageMouseMove(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageMove(e); }
+                ;
+                onStageMouseUp(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageUp(e); }
+                ;
+                lwgOnStageDown(e) { }
+                ;
+                lwgOnStageMove(e) { }
+                ;
+                lwgOnStageUp(e) { }
+                ;
+            }
+            SceneAdmin._ScriptBase = _ScriptBase;
+            class _SceneBase extends _ScriptBase {
+                constructor() {
+                    super();
+                }
+                get _Owner() {
+                    return this.owner;
+                }
+                getVar(name, type) {
+                    if (!this[`_Scene${type}${name}`]) {
+                        if (this._Owner[name]) {
+                            NodeAdmin._addProperty(this._Owner[name]);
+                            return this[`_Scene${type}${name}`] = this._Owner[name];
+                        }
+                        else {
+                            console.log('场景内不存在var节点：', name);
+                            return undefined;
+                        }
+                    }
+                    else {
+                        return this[`_Scene${type}${name}`];
+                    }
+                }
+                _SpriteVar(name) {
+                    return this.getVar(name, '_SpriteVar');
+                }
+                _AniVar(name) {
+                    return this.getVar(name, '_AniVar');
+                }
+                _BtnVar(name) {
+                    return this.getVar(name, '_BtnVar');
+                }
+                _BoxVar(name) {
+                    return this.getVar(name, '_BoxVar');
+                }
+                _ImgVar(name) {
+                    return this.getVar(name, '_ImgVar');
+                }
+                _LabelVar(name) {
+                    return this.getVar(name, '_LabelVar');
+                }
+                _ListVar(name) {
+                    return this.getVar(name, '_ListVar');
+                }
+                _TapVar(name) {
+                    return this.getVar(name, '_TapVar');
+                }
+                _TextVar(name) {
+                    return this.getVar(name, '_TextVar');
+                }
+                _TextInputVar(name) {
+                    return this.getVar(name, '_TextInputVar');
+                }
+                _FontClipVar(name) {
+                    return this.getVar(name, '_FontClipVar');
+                }
+                _FontBox(name) {
+                    return this.getVar(name, '_FontBox');
+                }
+                _FontTextInput(name) {
+                    return this.getVar(name, '_FontInput');
+                }
+                onAwake() {
+                    this._Owner.width = Laya.stage.width;
+                    this._Owner.height = Laya.stage.height;
+                    if (this._Owner.getChildByName('Background')) {
+                        this._Owner.getChildByName('Background')['width'] = Laya.stage.width;
+                        this._Owner.getChildByName('Background')['height'] = Laya.stage.height;
+                    }
+                    if (!this._Owner.name) {
+                        console.log('场景名称失效，脚本赋值失败');
+                    }
+                    else {
+                        this.ownerSceneName = this._Owner.name;
+                        this._Owner[this._Owner.name] = this;
+                    }
+                    this.moduleOnAwake();
+                    this.lwgOnAwake();
+                    this.lwgAdaptive();
+                }
+                moduleOnAwake() { }
+                onEnable() {
+                    this.moduleEvent();
+                    this.lwgEvent();
+                    this.moduleOnEnable();
+                    this.lwgOnEnable();
+                }
+                moduleOnEnable() { }
+                ;
+                moduleEvent() { }
+                ;
+                onStart() {
+                    this.moduleOnStart();
+                    this.lwgOnStart();
+                    this.btnAndOpenAni();
+                }
+                moduleOnStart() { }
+                btnAndOpenAni() {
+                    let time = this.lwgOpenAni();
+                    if (time !== null) {
+                        Laya.timer.once(time, this, () => {
+                            LwgClick._switch = true;
+                            this.lwgOpenAniAfter();
+                            this.lwgButton();
+                            _SceneServe._close();
+                        });
+                    }
+                    else {
+                        SceneAniAdmin._commonOpenAni(this._Owner);
+                    }
+                }
+                lwgOpenAni() { return null; }
+                ;
+                lwgOpenAniAfter() { }
+                ;
+                _adaHeight(arr) {
+                    LwgAdaptive._stageHeight(arr);
+                }
+                ;
+                _adaWidth(arr) {
+                    LwgAdaptive._stageWidth(arr);
+                }
+                ;
+                _adaptiveCenter(arr) {
+                    LwgAdaptive._center(arr, Laya.stage);
+                }
+                ;
+                onUpdate() { this.lwgOnUpdate(); }
+                ;
+                lwgBeforeCloseAni() { }
+                lwgCloseAni() { return null; }
+                ;
+                onDisable() {
+                    Laya.Tween.clearAll(this);
+                    Laya.Tween.clearAll(this._Owner);
+                    Laya.timer.clearAll(this);
+                    Laya.timer.clearAll(this._Owner);
+                    EventAdmin._offCaller(this);
+                    EventAdmin._offCaller(this._Owner);
+                    this.lwgOnDisable();
+                }
+            }
+            SceneAdmin._SceneBase = _SceneBase;
+            class _ObjectBase extends _ScriptBase {
+                constructor() {
+                    super();
+                }
+                _ownerDestroy() {
+                    this._Owner.destroy();
+                    this.clear();
+                }
+                get _Owner() {
+                    return this.owner;
+                }
+                get _point() {
+                    return new Laya.Point(this._Owner.x, this._Owner.y);
+                }
+                get _Scene() {
+                    return this.owner.scene;
+                }
+                get _Parent() {
+                    if (this._Owner.parent) {
+                        return this.owner.parent;
+                    }
+                }
+                get _RigidBody() {
+                    if (!this._Owner['_OwnerRigidBody']) {
+                        this._Owner['_OwnerRigidBody'] = this._Owner.getComponent(Laya.RigidBody);
+                    }
+                    return this._Owner['_OwnerRigidBody'];
+                }
+                get _BoxCollier() {
+                    if (!this._Owner['_OwnerBoxCollier']) {
+                        this._Owner['_OwnerBoxCollier'] = this._Owner.getComponent(Laya.BoxCollider);
+                    }
+                    return this._Owner['_OwnerBoxCollier'];
+                }
+                get _CilrcleCollier() {
+                    if (!this._Owner['_OwnerCilrcleCollier']) {
+                        return this._Owner['_OwnerCilrcleCollier'] = this._Owner.getComponent(Laya.BoxCollider);
+                    }
+                    return this._Owner['_OwnerCilrcleCollier'];
+                }
+                get _PolygonCollier() {
+                    if (!this._Owner['_OwnerPolygonCollier']) {
+                        return this._Owner['_OwnerPolygonCollier'] = this._Owner.getComponent(Laya.BoxCollider);
+                    }
+                    return this._Owner['_OwnerPolygonCollier'];
+                }
+                getSceneVar(name, type) {
+                    if (!this[`_Scene${type}${name}`]) {
+                        if (this._Scene[name]) {
+                            NodeAdmin._addProperty(this._Scene[name]);
+                            return this[`_Scene${type}${name}`] = this._Scene[name];
+                        }
+                        else {
+                            console.log(`场景内不存在var节点${name}`);
+                        }
+                    }
+                    else {
+                        return this[`_Scene${type}${name}`];
+                    }
+                }
+                _SceneSprite(name) {
+                    return this.getSceneVar(name, '_SceneSprite');
+                }
+                _SceneAni(name) {
+                    return this.getSceneVar(name, '_SceneAni');
+                }
+                _SceneImg(name) {
+                    return this.getSceneVar(name, '_SceneImg');
+                }
+                _SceneLabel(name) {
+                    return this.getSceneVar(name, '_SceneLabel');
+                }
+                _SceneList(name) {
+                    return this.getSceneVar(name, '_SceneList');
+                }
+                _SceneTap(name) {
+                    return this.getSceneVar(name, '_SceneTap');
+                }
+                _SceneText(name) {
+                    return this.getSceneVar(name, '_SceneText');
+                }
+                _SceneFontClip(name) {
+                    return this.getSceneVar(name, '_SceneFontClip');
+                }
+                _SceneBox(name) {
+                    return this.getSceneVar(name, '_SceneBox');
+                }
+                getChild(name, type) {
+                    if (!this[`${type}${name}`]) {
+                        const child = this._Owner.getChildByName(name);
+                        if (child) {
+                            NodeAdmin._addProperty(child);
+                            return this[`${type}${name}`] = child;
+                        }
+                        else {
+                            return null;
+                        }
+                    }
+                    else {
+                        return this[`${type}${name}`];
+                    }
+                }
+                _ImgChild(name) {
+                    return this.getChild(name, '_ImgChild');
+                }
+                _BoxChild(name) {
+                    return this.getChild(name, '_ImgBox');
+                }
+                _SpriteChild(name) {
+                    return this.getChild(name, '_SpriteChild');
+                }
+                _LableChild(name) {
+                    return this.getChild(name, '_LableChild');
+                }
+                _ListChild(name) {
+                    return this.getChild(name, '_ListChild');
+                }
+                _TapChild(name) {
+                    return this.getChild(name, '_TapChild');
+                }
+                _TapBox(name) {
+                    return this.getChild(name, '_TapBox');
+                }
+                _TapFontClip(name) {
+                    return this.getChild(name, '_TapFontClip');
+                }
+                onAwake() {
+                    NodeAdmin._addProperty(this._Owner);
+                    this._Owner[this._Owner.name] = this;
+                    this.ownerSceneName = this._Scene.name;
+                    this.lwgOnAwake();
+                    this.lwgAdaptive();
+                }
+                onEnable() {
+                    this.lwgButton();
+                    this.lwgEvent();
+                    this.lwgOnEnable();
+                }
+                onStart() {
+                    this.lwgOnStart();
+                }
+                onUpdate() {
+                    this.lwgOnUpdate();
+                }
+                clear() {
+                    Laya.Tween.clearAll(this);
+                    Laya.Tween.clearAll(this._Owner);
+                    Laya.timer.clearAll(this);
+                    Laya.timer.clearAll(this._Owner);
+                    EventAdmin._offCaller(this);
+                    EventAdmin._offCaller(this._Owner);
+                }
+                onDisable() {
+                    this.clear();
+                    this.lwgOnDisable();
+                }
+            }
+            SceneAdmin._ObjectBase = _ObjectBase;
+        })(SceneAdmin = Lwg.SceneAdmin || (Lwg.SceneAdmin = {}));
+        let NodeAdmin;
+        (function (NodeAdmin) {
+            class _Sprite extends Laya.Sprite {
+            }
+            NodeAdmin._Sprite = _Sprite;
+            class _Image extends Laya.Image {
+            }
+            NodeAdmin._Image = _Image;
+            class _Box extends Laya.Box {
+            }
+            NodeAdmin._Box = _Box;
+            function _addProperty(node, nodeType) {
+                let _proType;
+                switch (nodeType) {
+                    case 'Img':
+                        _proType;
+                        break;
+                    case 'box':
+                        _proType;
+                        break;
+                    default:
+                        _proType;
+                        break;
+                }
+                var getGPoint = () => {
+                    if (node.parent) {
+                        return node.parent.localToGlobal(new Laya.Point(node.x, node.y));
+                    }
+                    else {
+                        return null;
+                    }
+                };
+                const _fPoint = new Laya.Point(node.x, node.y);
+                const _fGPoint = getGPoint();
+                const _fRotation = node.rotation;
+                _proType = {
+                    get gPoint() {
+                        return getGPoint();
+                    },
+                    fPoint: _fPoint,
+                    fGPoint: _fGPoint,
+                    fRotation: _fRotation,
+                };
+                node['_lwg'] = _proType;
+            }
+            NodeAdmin._addProperty = _addProperty;
+        })(NodeAdmin = Lwg.NodeAdmin || (Lwg.NodeAdmin = {}));
+        let Dialogue;
+        (function (Dialogue) {
+            let Skin;
+            (function (Skin) {
+                Skin["blackBord"] = "Lwg/UI/ui_orthogon_black_0.7.png";
+            })(Skin || (Skin = {}));
+            function _middleHint(describe) {
+                const Hint_M = Laya.Pool.getItemByClass('Hint_M', Laya.Sprite);
+                Hint_M.name = 'Hint_M';
+                Laya.stage.addChild(Hint_M);
+                Hint_M.width = Laya.stage.width;
+                Hint_M.height = 100;
+                Hint_M.pivotY = Hint_M.height / 2;
+                Hint_M.pivotX = Laya.stage.width / 2;
+                Hint_M.x = Laya.stage.width / 2;
+                Hint_M.y = Laya.stage.height / 2;
+                Hint_M.zOrder = 100;
+                const Pic = new Laya.Image();
+                Hint_M.addChild(Pic);
+                Pic.skin = Skin.blackBord;
+                Pic.width = Laya.stage.width;
+                Pic.pivotX = Laya.stage.width / 2;
+                Pic.height = 100;
+                Pic.pivotY = Pic.height / 2;
+                Pic.y = Hint_M.height / 2;
+                Pic.x = Laya.stage.width / 2;
+                Pic.alpha = 0.6;
+                const Dec = new Laya.Label();
+                Hint_M.addChild(Dec);
+                Dec.width = Laya.stage.width;
+                Dec.text = describe;
+                Dec.pivotX = Laya.stage.width / 2;
+                Dec.x = Laya.stage.width / 2;
+                Dec.height = 100;
+                Dec.pivotY = 50;
+                Dec.y = Hint_M.height / 2;
+                Dec.bold = true;
+                Dec.fontSize = 35;
+                Dec.color = '#ffffff';
+                Dec.align = 'center';
+                Dec.valign = 'middle';
+                Dec.alpha = 0;
+                Ani2DAdmin.scale_Alpha(Hint_M, 0, 1, 0, 1, 1, 1, 200, 0, f => {
+                    Ani2DAdmin.fadeOut(Dec, 0, 1, 150, 0, f => {
+                        Ani2DAdmin.fadeOut(Dec, 1, 0, 200, 800, f => {
+                            Ani2DAdmin.scale_Alpha(Hint_M, 1, 1, 1, 1, 0, 0, 200, 0, f => {
+                                Hint_M.removeSelf();
+                            });
+                        });
+                    });
+                });
+            }
+            Dialogue._middleHint = _middleHint;
+            Dialogue._dialogContent = {
+                get Array() {
+                    return Laya.loader.getRes("GameData/Dialogue/Dialogue.json")['RECORDS'] !== null ? Laya.loader.getRes("GameData/Dialogue/Dialogue.json")['RECORDS'] : [];
+                },
+            };
+            function getDialogContent(useWhere, name) {
+                let dia;
+                for (let index = 0; index < Dialogue._dialogContent.Array.length; index++) {
+                    const element = Dialogue._dialogContent.Array[index];
+                    if (element['useWhere'] == useWhere && element['name'] == name) {
+                        dia = element;
+                        break;
+                    }
+                }
+                const arr = [];
+                for (const key in dia) {
+                    if (dia.hasOwnProperty(key)) {
+                        const value = dia[key];
+                        if (key.substring(0, 7) == 'content' || value !== -1) {
+                            arr.push(value);
+                        }
+                    }
+                }
+                return arr;
+            }
+            Dialogue.getDialogContent = getDialogContent;
+            function getDialogContent_Random(useWhere) {
+                let contentArr = [];
+                let whereArr = getUseWhere(useWhere);
+                let index = Math.floor(Math.random() * whereArr.length);
+                for (const key in whereArr[index]) {
+                    if (whereArr[index].hasOwnProperty(key)) {
+                        const value = whereArr[index][key];
+                        if (key.substring(0, 7) == 'content' && value !== "-1") {
+                            contentArr.push(value);
+                        }
+                    }
+                }
+                return contentArr;
+            }
+            Dialogue.getDialogContent_Random = getDialogContent_Random;
+            function getUseWhere(useWhere) {
+                let arr = [];
+                for (let index = 0; index < Dialogue._dialogContent.Array.length; index++) {
+                    const element = Dialogue._dialogContent.Array[index];
+                    if (element['useWhere'] == useWhere) {
+                        arr.push(element);
+                    }
+                }
+                return arr;
+            }
+            Dialogue.getUseWhere = getUseWhere;
+            let UseWhere;
+            (function (UseWhere) {
+                UseWhere["scene1"] = "scene1";
+                UseWhere["scene2"] = "scene2";
+                UseWhere["scene3"] = "scene3";
+            })(UseWhere = Dialogue.UseWhere || (Dialogue.UseWhere = {}));
+            let DialogProperty;
+            (function (DialogProperty) {
+                DialogProperty["name"] = "name";
+                DialogProperty["useWhere"] = "useWhere";
+                DialogProperty["content"] = "content";
+                DialogProperty["max"] = "max";
+            })(DialogProperty = Dialogue.DialogProperty || (Dialogue.DialogProperty = {}));
+            let PlayMode;
+            (function (PlayMode) {
+                PlayMode["voluntarily"] = "voluntarily";
+                PlayMode["manual"] = "manual";
+                PlayMode["clickContent"] = "clickContent";
+            })(PlayMode = Dialogue.PlayMode || (Dialogue.PlayMode = {}));
+            function createVoluntarilyDialogue(x, y, useWhere, startDelayed, delayed, parent, content) {
+                if (startDelayed == undefined) {
+                    startDelayed = 0;
+                }
+                Laya.timer.once(startDelayed, this, () => {
+                    let Pre_Dialogue;
+                    Laya.loader.load('Prefab/Dialogue_Common.json', Laya.Handler.create(this, function (prefab) {
+                        let _prefab = new Laya.Prefab();
+                        _prefab.json = prefab;
+                        Pre_Dialogue = Laya.Pool.getItemByCreateFun('Pre_Dialogue', _prefab.create, _prefab);
+                        if (parent) {
+                            parent.addChild(Pre_Dialogue);
+                        }
+                        else {
+                            Laya.stage.addChild(Pre_Dialogue);
+                        }
+                        Pre_Dialogue.x = x;
+                        Pre_Dialogue.y = y;
+                        let ContentLabel = Pre_Dialogue.getChildByName('Content');
+                        let contentArr;
+                        if (content !== undefined) {
+                            ContentLabel.text = content[0];
+                        }
+                        else {
+                            contentArr = getDialogContent_Random(useWhere);
+                            ContentLabel.text = contentArr[0];
+                        }
+                        Pre_Dialogue.zOrder = 100;
+                        if (delayed == undefined) {
+                            delayed = 1000;
+                        }
+                        Ani2DAdmin.scale_Alpha(Pre_Dialogue, 0, 0, 0, 1, 1, 1, 150, 1000, () => {
+                            for (let index = 0; index < contentArr.length; index++) {
+                                Laya.timer.once(index * delayed, this, () => {
+                                    ContentLabel.text = contentArr[index];
+                                    if (index == contentArr.length - 1) {
+                                        Laya.timer.once(delayed, this, () => {
+                                            Ani2DAdmin.scale_Alpha(Pre_Dialogue, 1, 1, 1, 0, 0, 0, 150, 1000, () => {
+                                                Pre_Dialogue.removeSelf();
+                                            });
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                        Dialogue.DialogueNode = Pre_Dialogue;
+                    }));
+                });
+            }
+            Dialogue.createVoluntarilyDialogue = createVoluntarilyDialogue;
+            function createCommonDialog(parent, x, y, content) {
+                let Dialogue_Common;
+                Laya.loader.load('Prefab/Dialogue_Common.json', Laya.Handler.create(this, function (prefab) {
+                    let _prefab = new Laya.Prefab();
+                    _prefab.json = prefab;
+                    Dialogue_Common = Laya.Pool.getItemByCreateFun('Dialogue_Common', _prefab.create, _prefab);
+                    parent.addChild(Dialogue_Common);
+                    Dialogue_Common.pos(x, y);
+                    let Content = Dialogue_Common.getChildByName('Dialogue_Common');
+                    Content.text = content;
+                }));
+            }
+            Dialogue.createCommonDialog = createCommonDialog;
+        })(Dialogue = Lwg.Dialogue || (Lwg.Dialogue = {}));
+        let GoldAdmin;
+        (function (GoldAdmin) {
+            GoldAdmin._num = {
+                get value() {
+                    return Laya.LocalStorage.getItem('GoldNum') ? Number(Laya.LocalStorage.getItem('GoldNum')) : 0;
+                },
+                set value(val) {
+                    Laya.LocalStorage.setItem('GoldNum', val.toString());
+                }
+            };
+            function _createGoldNode(x, y, parent) {
+                if (!parent) {
+                    parent = Laya.stage;
+                }
+                if (GoldAdmin.GoldNode) {
+                    GoldAdmin.GoldNode.removeSelf();
+                }
+                let sp;
+                Laya.loader.load('Prefab/LwgGold.json', Laya.Handler.create(this, function (prefab) {
+                    let _prefab = new Laya.Prefab();
+                    _prefab.json = prefab;
+                    sp = Laya.Pool.getItemByCreateFun('gold', _prefab.create, _prefab);
+                    let Num = sp.getChildByName('Num');
+                    Num.text = ToolsAdmin._Format.formatNumber(GoldAdmin._num.value);
+                    parent.addChild(sp);
+                    sp.pos(x, y);
+                    sp.zOrder = 100;
+                    GoldAdmin.GoldNode = sp;
+                }));
+            }
+            GoldAdmin._createGoldNode = _createGoldNode;
+            function _add(number) {
+                GoldAdmin._num.value += Number(number);
+                let Num = GoldAdmin.GoldNode.getChildByName('Num');
+                Num.text = ToolsAdmin._Format.formatNumber(GoldAdmin._num.value);
+            }
+            GoldAdmin._add = _add;
+            function _addDisPlay(number) {
+                let Num = GoldAdmin.GoldNode.getChildByName('Num');
+                Num.value = (Number(Num.value) + Number(number)).toString();
+            }
+            GoldAdmin._addDisPlay = _addDisPlay;
+            function _addNoDisPlay(number) {
+                GoldAdmin._num.value += Number(number);
+            }
+            GoldAdmin._addNoDisPlay = _addNoDisPlay;
+            function _nodeAppear(delayed, x, y) {
+                if (!GoldAdmin.GoldNode) {
+                    return;
+                }
+                if (delayed) {
+                    Ani2DAdmin.scale_Alpha(GoldAdmin.GoldNode, 0, 1, 1, 1, 1, 1, delayed, 0, f => {
+                        GoldAdmin.GoldNode.visible = true;
+                    });
+                }
+                else {
+                    GoldAdmin.GoldNode.visible = true;
+                }
+                if (x) {
+                    GoldAdmin.GoldNode.x = x;
+                }
+                if (y) {
+                    GoldAdmin.GoldNode.y = y;
+                }
+            }
+            GoldAdmin._nodeAppear = _nodeAppear;
+            function _nodeVinish(delayed) {
+                if (!GoldAdmin.GoldNode) {
+                    return;
+                }
+                if (delayed) {
+                    Ani2DAdmin.scale_Alpha(GoldAdmin.GoldNode, 1, 1, 1, 1, 1, 0, delayed, 0, f => {
+                        GoldAdmin.GoldNode.visible = false;
+                    });
+                }
+                else {
+                    GoldAdmin.GoldNode.visible = false;
+                }
+            }
+            GoldAdmin._nodeVinish = _nodeVinish;
+            let SkinUrl;
+            (function (SkinUrl) {
+                SkinUrl[SkinUrl["Frame/Effects/iconGold.png"] = 0] = "Frame/Effects/iconGold.png";
+            })(SkinUrl || (SkinUrl = {}));
+            function _createOne(width, height, url) {
+                const Gold = Laya.Pool.getItemByClass('addGold', Laya.Image);
+                Gold.name = 'addGold';
+                let num = Math.floor(Math.random() * 12);
+                Gold.alpha = 1;
+                Gold.zOrder = 60;
+                Gold.width = width;
+                Gold.height = height;
+                Gold.pivotX = width / 2;
+                Gold.pivotY = height / 2;
+                if (!url) {
+                    Gold.skin = SkinUrl[0];
+                }
+                else {
+                    Gold.skin = url;
+                }
+                if (GoldAdmin.GoldNode) {
+                    Gold.zOrder = GoldAdmin.GoldNode.zOrder + 10;
+                }
+                return Gold;
+            }
+            GoldAdmin._createOne = _createOne;
+            function _getAni_Single(parent, number, width, height, url, firstPoint, targetPoint, func1, func2) {
+                for (let index = 0; index < number; index++) {
+                    Laya.timer.once(index * 30, this, () => {
+                        let Gold = _createOne(width, height, url);
+                        parent.addChild(Gold);
+                        Ani2DAdmin.move_Scale(Gold, 1, firstPoint.x, firstPoint.y, targetPoint.x, targetPoint.y, 1, 350, 0, null, () => {
+                            AudioAdmin._playSound(AudioAdmin._voiceUrl.huodejinbi);
+                            if (index === number - 1) {
+                                Laya.timer.once(200, this, () => {
+                                    if (func2) {
+                                        func2();
+                                    }
+                                });
+                            }
+                            else {
+                                if (func1) {
+                                    func1();
+                                }
+                            }
+                            Gold.removeSelf();
+                        });
+                    });
+                }
+            }
+            GoldAdmin._getAni_Single = _getAni_Single;
+            function _getAni_Heap(parent, number, width, height, url, firstPoint, targetPoint, func1, func2) {
+                for (let index = 0; index < number; index++) {
+                    let Gold = _createOne(width ? width : 100, height ? height : 100, url ? url : SkinUrl[0]);
+                    parent = parent ? parent : Laya.stage;
+                    parent.addChild(Gold);
+                    firstPoint = firstPoint ? firstPoint : new Laya.Point(Laya.stage.width / 2, Laya.stage.height / 2);
+                    targetPoint = targetPoint ? targetPoint : new Laya.Point(GoldAdmin.GoldNode.x, GoldAdmin.GoldNode.y);
+                    let x = Math.floor(Math.random() * 2) == 1 ? firstPoint.x + Math.random() * 100 : firstPoint.x - Math.random() * 100;
+                    let y = Math.floor(Math.random() * 2) == 1 ? firstPoint.y + Math.random() * 100 : firstPoint.y - Math.random() * 100;
+                    Ani2DAdmin.move_Scale(Gold, 0.5, firstPoint.x, firstPoint.y, x, y, 1, 300, Math.random() * 100 + 100, Laya.Ease.expoIn, () => {
+                        Ani2DAdmin.move_Scale(Gold, 1, Gold.x, Gold.y, targetPoint.x, targetPoint.y, 1, 400, Math.random() * 200 + 100, Laya.Ease.cubicOut, () => {
+                            AudioAdmin._playSound(AudioAdmin._voiceUrl.huodejinbi);
+                            if (index === number - 1) {
+                                Laya.timer.once(200, this, () => {
+                                    if (func2) {
+                                        func2();
+                                    }
+                                });
+                            }
+                            else {
+                                if (func1) {
+                                    func1();
+                                }
+                            }
+                            Gold.removeSelf();
+                        });
+                    });
+                }
+            }
+            GoldAdmin._getAni_Heap = _getAni_Heap;
+        })(GoldAdmin = Lwg.GoldAdmin || (Lwg.GoldAdmin = {}));
+        let EventAdmin;
+        (function (EventAdmin) {
+            EventAdmin.dispatcher = new Laya.EventDispatcher();
+            function _register(type, caller, listener) {
+                if (!caller) {
+                    console.error("事件的执行域必须存在!");
+                }
+                EventAdmin.dispatcher.on(type.toString(), caller, listener);
+            }
+            EventAdmin._register = _register;
+            function _registerOnce(type, caller, listener) {
+                if (!caller) {
+                    console.error("事件的执行域必须存在!");
+                }
+                EventAdmin.dispatcher.once(type.toString(), caller, listener);
+            }
+            EventAdmin._registerOnce = _registerOnce;
+            function _notify(type, args) {
+                EventAdmin.dispatcher.event(type.toString(), args);
+            }
+            EventAdmin._notify = _notify;
+            function _off(type, caller, listener) {
+                EventAdmin.dispatcher.off(type.toString(), caller, listener);
+            }
+            EventAdmin._off = _off;
+            function _offAll(type) {
+                EventAdmin.dispatcher.offAll(type.toString());
+            }
+            EventAdmin._offAll = _offAll;
+            function _offCaller(caller) {
+                EventAdmin.dispatcher.offAllCaller(caller);
+            }
+            EventAdmin._offCaller = _offCaller;
+        })(EventAdmin = Lwg.EventAdmin || (Lwg.EventAdmin = {}));
+        let DateAdmin;
+        (function (DateAdmin) {
+            DateAdmin._date = {
+                get year() {
+                    return (new Date()).getFullYear();
+                },
+                get month() {
+                    return (new Date()).getMonth();
+                },
+                get date() {
+                    return (new Date()).getDate();
+                },
+                get day() {
+                    return (new Date()).getDay();
+                },
+                get hours() {
+                    return (new Date()).getHours();
+                },
+                get minutes() {
+                    return (new Date()).getMinutes();
+                },
+                get seconds() {
+                    return (new Date()).getSeconds();
+                },
+                get milliseconds() {
+                    return (new Date()).getMilliseconds();
+                },
+                get toLocaleDateString() {
+                    return (new Date()).toLocaleDateString();
+                },
+                get toLocaleTimeString() {
+                    return (new Date()).toLocaleTimeString();
+                }
+            };
+            function _init() {
+                const d = new Date;
+                DateAdmin._loginInfo = StorageAdmin._arrayArr('DateAdmin/loginInfo');
+                DateAdmin._loginInfo.value.push([d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getDay(), d.getHours(), d.getMinutes(), d.getSeconds()]);
+                let arr = [];
+                if (DateAdmin._loginInfo.value.length > 0) {
+                    for (let index = 0; index < DateAdmin._loginInfo.value.length; index++) {
+                        arr.push(DateAdmin._loginInfo.value[index]);
+                    }
+                }
+                arr.push([d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getDay(), d.getHours(), d.getMinutes(), d.getSeconds()]);
+                DateAdmin._loginInfo.value = arr;
+                DateAdmin._loginCount = StorageAdmin._num('DateAdmin/_loginCount');
+                DateAdmin._loginCount.value++;
+                DateAdmin._loginToday.num++;
+            }
+            DateAdmin._init = _init;
+            DateAdmin._loginToday = {
+                get num() {
+                    return Laya.LocalStorage.getItem('DateAdmin/loginToday') ? Number(Laya.LocalStorage.getItem('DateAdmin/loginToday')) : 0;
+                },
+                set num(val) {
+                    if (DateAdmin._date.date == DateAdmin._loginInfo.value[DateAdmin._loginInfo.value.length - 1][2]) {
+                        Laya.LocalStorage.setItem('DateAdmin/loginToday', val.toString());
+                    }
+                }
+            };
+            DateAdmin._last = {
+                get date() {
+                    if (DateAdmin._loginInfo.value.length > 1) {
+                        return DateAdmin._loginInfo.value[DateAdmin._loginInfo.value.length - 2][2];
+                    }
+                    else {
+                        return DateAdmin._loginInfo.value[DateAdmin._loginInfo.value.length - 1][2];
+                    }
+                },
+            };
+            DateAdmin._front = {
+                get date() {
+                    return DateAdmin._loginInfo.value[DateAdmin._loginInfo.value.length - 1][2];
+                },
+            };
+        })(DateAdmin = Lwg.DateAdmin || (Lwg.DateAdmin = {}));
+        let TimerAdmin;
+        (function (TimerAdmin) {
+            TimerAdmin._switch = true;
+            function _frameLoop(delay, caller, method, immediately, args, coverBefore) {
+                if (immediately) {
+                    if (TimerAdmin._switch) {
+                        method();
+                    }
+                }
+                Laya.timer.frameLoop(delay, caller, () => {
+                    if (TimerAdmin._switch) {
+                        method();
+                    }
+                }, args, coverBefore);
+            }
+            TimerAdmin._frameLoop = _frameLoop;
+            function _frameRandomLoop(delay1, delay2, caller, method, immediately, args, coverBefore) {
+                if (immediately) {
+                    if (TimerAdmin._switch) {
+                        method();
+                    }
+                }
+                var func = () => {
+                    let delay = ToolsAdmin._Number.randomOneInt(delay1, delay2);
+                    Laya.timer.frameOnce(delay, caller, () => {
+                        if (TimerAdmin._switch) {
+                            method();
+                            func();
+                        }
+                    }, args, coverBefore);
+                };
+                func();
+            }
+            TimerAdmin._frameRandomLoop = _frameRandomLoop;
+            function _frameNumLoop(delay, num, caller, method, compeletMethod, immediately, args, coverBefore) {
+                if (immediately) {
+                    if (TimerAdmin._switch) {
+                        method();
+                    }
+                }
+                let num0 = 0;
+                var func = () => {
+                    if (TimerAdmin._switch) {
+                        num0++;
+                        if (num0 >= num) {
+                            method();
+                            if (compeletMethod) {
+                                compeletMethod();
+                            }
+                            Laya.timer.clear(caller, func);
+                        }
+                        else {
+                            method();
+                        }
+                    }
+                };
+                Laya.timer.frameLoop(delay, caller, func, args, coverBefore);
+            }
+            TimerAdmin._frameNumLoop = _frameNumLoop;
+            function _numRandomLoop(delay1, delay2, num, caller, method, compeletMethod, immediately, args, coverBefore) {
+                immediately && TimerAdmin._switch && method();
+                let num0 = 0;
+                var func = () => {
+                    let delay = ToolsAdmin._Number.randomOneInt(delay1, delay2);
+                    Laya.timer.frameOnce(delay, caller, () => {
+                        if (TimerAdmin._switch) {
+                            num0++;
+                            if (num0 >= num) {
+                                method();
+                                compeletMethod();
+                            }
+                            else {
+                                method();
+                                func();
+                            }
+                        }
+                    }, args, coverBefore);
+                };
+                func();
+            }
+            TimerAdmin._numRandomLoop = _numRandomLoop;
+            function _frameNumRandomLoop(delay1, delay2, num, caller, method, compeletMethod, immediately, args, coverBefore) {
+                immediately && TimerAdmin._switch && method();
+                let num0 = 0;
+                var func = () => {
+                    let delay = ToolsAdmin._Number.randomOneInt(delay1, delay2);
+                    Laya.timer.frameOnce(delay, caller, () => {
+                        if (TimerAdmin._switch) {
+                            num0++;
+                            if (num0 >= num) {
+                                method();
+                                compeletMethod && compeletMethod();
+                            }
+                            else {
+                                method();
+                                func();
+                            }
+                        }
+                    }, args, coverBefore);
+                };
+                func();
+            }
+            TimerAdmin._frameNumRandomLoop = _frameNumRandomLoop;
+            function _frameOnce(delay, caller, afterMethod, beforeMethod, args, coverBefore) {
+                beforeMethod && beforeMethod();
+                Laya.timer.frameOnce(delay, caller, () => {
+                    afterMethod();
+                }, args, coverBefore);
+            }
+            TimerAdmin._frameOnce = _frameOnce;
+            function _frameNumOnce(delay, num, caller, afterMethod, beforeMethod, args, coverBefore) {
+                for (let index = 0; index < num; index++) {
+                    if (beforeMethod) {
+                        beforeMethod();
+                    }
+                    Laya.timer.frameOnce(delay, caller, () => {
+                        afterMethod();
+                    }, args, coverBefore);
+                }
+            }
+            TimerAdmin._frameNumOnce = _frameNumOnce;
+            function _loop(delay, caller, method, immediately, args, coverBefore) {
+                if (immediately) {
+                    if (TimerAdmin._switch) {
+                        method();
+                    }
+                }
+                Laya.timer.loop(delay, caller, () => {
+                    if (TimerAdmin._switch) {
+                        method();
+                    }
+                }, args, coverBefore);
+            }
+            TimerAdmin._loop = _loop;
+            function _randomLoop(delay1, delay2, caller, method, immediately, args, coverBefore) {
+                if (immediately) {
+                    if (TimerAdmin._switch) {
+                        method();
+                    }
+                }
+                var func = () => {
+                    let delay = ToolsAdmin._Number.randomOneInt(delay1, delay2);
+                    Laya.timer.once(delay, caller, () => {
+                        if (TimerAdmin._switch) {
+                            method();
+                            func();
+                        }
+                    }, args, coverBefore);
+                };
+                func();
+            }
+            TimerAdmin._randomLoop = _randomLoop;
+            function _numLoop(delay, num, caller, method, compeletMethod, immediately, args, coverBefore) {
+                if (immediately) {
+                    method();
+                }
+                let num0 = 0;
+                var func = () => {
+                    if (TimerAdmin._switch) {
+                        num0++;
+                        if (num0 > num) {
+                            method();
+                            if (compeletMethod) {
+                                compeletMethod();
+                            }
+                            Laya.timer.clear(caller, func);
+                        }
+                        else {
+                            method();
+                        }
+                    }
+                };
+                Laya.timer.loop(delay, caller, func, args, coverBefore);
+            }
+            TimerAdmin._numLoop = _numLoop;
+            function _once(delay, caller, afterMethod, beforeMethod, args, coverBefore) {
+                if (beforeMethod) {
+                    beforeMethod();
+                }
+                Laya.timer.once(delay, caller, () => {
+                    afterMethod();
+                }, args, coverBefore);
+            }
+            TimerAdmin._once = _once;
+            function _clearAll(arr) {
+                for (let index = 0; index < arr.length; index++) {
+                    Laya.timer.clearAll(arr[index]);
+                }
+            }
+            TimerAdmin._clearAll = _clearAll;
+            function _clear(arr) {
+                for (let index = 0; index < arr.length; index++) {
+                    Laya.timer.clear(arr[index][0], arr[index][1]);
+                }
+            }
+            TimerAdmin._clear = _clear;
+        })(TimerAdmin = Lwg.TimerAdmin || (Lwg.TimerAdmin = {}));
+        let AdaptiveAdmin;
+        (function (AdaptiveAdmin) {
+            AdaptiveAdmin._Use = {
+                get value() {
+                    return this['Adaptive/value'] ? this['Adaptive/value'] : null;
+                },
+                set value(val) {
+                    this['Adaptive/value'] = val;
+                }
+            };
+            function _stageWidth(arr) {
+                for (let index = 0; index < arr.length; index++) {
+                    const element = arr[index];
+                    if (element.pivotX == 0 && element.width) {
+                        element.x = element.x / AdaptiveAdmin._Use.value[0] * Laya.stage.width + element.width / 2;
+                    }
+                    else {
+                        element.x = element.x / AdaptiveAdmin._Use.value[0] * Laya.stage.width;
+                    }
+                }
+            }
+            AdaptiveAdmin._stageWidth = _stageWidth;
+            function _stageHeight(arr) {
+                for (let index = 0; index < arr.length; index++) {
+                    const element = arr[index];
+                    if (element.pivotY == 0 && element.height) {
+                        element.y = element.y / AdaptiveAdmin._Use.value[1] * element.scaleX * Laya.stage.height + element.height / 2;
+                    }
+                    else {
+                        element.y = element.y / AdaptiveAdmin._Use.value[1] * element.scaleX * Laya.stage.height;
+                    }
+                }
+            }
+            AdaptiveAdmin._stageHeight = _stageHeight;
+            function _center(arr, target) {
+                for (let index = 0; index < arr.length; index++) {
+                    const element = arr[index];
+                    if (element.width > 0) {
+                        element.x = target.width / 2 - (element.width / 2 - element.pivotX) * element.scaleX;
+                    }
+                    else {
+                        element.x = target.width / 2;
+                    }
+                    if (element.height > 0) {
+                        element.y = target.height / 2 - (element.height / 2 - element.pivotY) * element.scaleY;
+                    }
+                    else {
+                        element.y = target.height / 2;
+                    }
+                }
+            }
+            AdaptiveAdmin._center = _center;
+        })(AdaptiveAdmin = Lwg.AdaptiveAdmin || (Lwg.AdaptiveAdmin = {}));
+        let SceneAniAdmin;
+        (function (SceneAniAdmin) {
+            SceneAniAdmin._openSwitch = {
+                get value() {
+                    return this['openSwitch'] ? this['openSwitch'] : false;
+                },
+                set value(val) {
+                    if (val) {
+                        SceneAniAdmin._closeSwitch.value = false;
+                    }
+                    this['openSwitch'] = val;
+                }
+            };
+            SceneAniAdmin._closeSwitch = {
+                get value() {
+                    return this['closeSwitch'] ? this['closeSwitch'] : false;
+                },
+                set value(val) {
+                    if (val) {
+                        SceneAniAdmin._openSwitch.value = false;
+                    }
+                    this['closeSwitch'] = val;
+                }
+            };
+            SceneAniAdmin._Use = {
+                get value() {
+                    return this['SceneAnimation/name'] ? this['SceneAnimation/name'] : null;
+                },
+                set value(val) {
+                    this['SceneAnimation/name'] = val;
+                }
+            };
+            SceneAniAdmin._closeAniDelay = 0;
+            SceneAniAdmin._closeAniTime = 0;
+            function _commonOpenAni(Scene) {
+                var afterAni = () => {
+                    LwgScene._SceneServe._close();
+                    LwgClick._switch = true;
+                    if (Scene[Scene.name]) {
+                        Scene[Scene.name].lwgOpenAniAfter();
+                        Scene[Scene.name].lwgButton();
+                    }
+                };
+                if (!SceneAniAdmin._openSwitch.value) {
+                    LwgScene._SceneServe._close();
+                    Laya.timer.once(SceneAniAdmin._closeAniDelay + SceneAniAdmin._closeAniTime, this, () => {
+                        afterAni();
+                    });
+                    return 0;
+                }
+                let sumDelay = 0;
+                sumDelay = SceneAniAdmin._Use.value.class['_paly'](SceneAniAdmin._Use.value.type, Scene);
+                Laya.timer.once(sumDelay, this, () => {
+                    afterAni();
+                });
+                return sumDelay;
+            }
+            SceneAniAdmin._commonOpenAni = _commonOpenAni;
+            function _commonCloseAni(CloseScene) {
+                return SceneAniAdmin._Use.value.class['_paly'](SceneAniAdmin._Use.value.type, CloseScene);
+            }
+            SceneAniAdmin._commonCloseAni = _commonCloseAni;
+            let _fadeOut;
+            (function (_fadeOut) {
+                let _time = 700;
+                let _delay = 150;
+                class Close {
+                    static _paly(type, Scene) {
+                        _fadeOut_Close(Scene);
+                        SceneAniAdmin._closeAniDelay = _delay;
+                        SceneAniAdmin._closeAniTime = _time;
+                        return _time + _delay;
+                    }
+                    ;
+                }
+                _fadeOut.Close = Close;
+                class Open {
+                    static _paly(type, Scene) {
+                        _fadeOut_Open(Scene);
+                        return _time + _delay;
+                    }
+                    ;
+                }
+                _fadeOut.Open = Open;
+                function _fadeOut_Open(Scene) {
+                    let time = 400;
+                    let delay = 300;
+                    if (Scene['Background']) {
+                        Ani2DAdmin.fadeOut(Scene, 0, 1, time / 2, delay);
+                    }
+                    Ani2DAdmin.fadeOut(Scene, 0, 1, time, 0);
+                    return time + delay;
+                }
+                function _fadeOut_Close(Scene) {
+                    let time = 150;
+                    let delay = 50;
+                    if (Scene['Background']) {
+                        Ani2DAdmin.fadeOut(Scene, 1, 0, time / 2);
+                    }
+                    Ani2DAdmin.fadeOut(Scene, 1, 0, time, delay);
+                    return time + delay;
+                }
+            })(_fadeOut = SceneAniAdmin._fadeOut || (SceneAniAdmin._fadeOut = {}));
+            let _shutters;
+            (function (_shutters) {
+                let _num = 10;
+                let _time = 700;
+                let _delay = 150;
+                function _moveClose(sp, tex, scaleX, scealeY) {
+                    Ani2DAdmin.scale(sp, 1, 1, scaleX, scealeY, _time, 0, () => {
+                        tex.disposeBitmap();
+                        tex.destroy();
+                        sp.destroy();
+                    });
+                }
+                function _moveOpen(sp, tex, scaleX, scealeY) {
+                    Ani2DAdmin.scale(sp, scaleX, scealeY, 1, 1, _time, 0, () => {
+                        tex.disposeBitmap();
+                        tex.destroy();
+                        sp.destroy();
+                    });
+                }
+                function _moveRule(sp, tex, scaleModul, open) {
+                    if (open) {
+                        if (scaleModul === 'x') {
+                            _moveOpen(sp, tex, 0, 1);
+                        }
+                        else {
+                            _moveOpen(sp, tex, 1, 0);
+                        }
+                    }
+                    else {
+                        if (scaleModul === 'x') {
+                            _moveClose(sp, tex, 0, 1);
+                        }
+                        else {
+                            _moveClose(sp, tex, 1, 0);
+                        }
+                    }
+                }
+                function _createNoMaskSp(x, y, width, height, tex, scaleModul, open) {
+                    const sp = new Laya.Sprite;
+                    Laya.stage.addChild(sp);
+                    sp.name = 'shutters';
+                    sp.zOrder = 1000;
+                    sp.pos(x, y);
+                    sp.size(width, height);
+                    ToolsAdmin._Node.changePivot(sp, width / 2, height / 2);
+                    sp.texture = tex;
+                    _moveRule(sp, tex, scaleModul, open);
+                    return sp;
+                }
+                function _createMaskSp(Scene, scaleModul, open) {
+                    const sp = new Laya.Sprite;
+                    Laya.stage.addChild(sp);
+                    const _width = Laya.stage.width;
+                    const _height = Laya.stage.height;
+                    sp.size(_width, _height);
+                    sp.pos(0, 0);
+                    sp.zOrder = 1000;
+                    sp.name = 'shutters';
+                    const tex = Scene.drawToTexture(_width, _height, 0, 0);
+                    sp.texture = tex;
+                    _moveRule(sp, tex, scaleModul, open);
+                    return sp;
+                }
+                function _createMask(sp) {
+                    const Mask = new Laya.Image;
+                    Mask.skin = `Lwg/UI/ui_orthogon_cycn.png`;
+                    Mask.sizeGrid = '12,12,12,12';
+                    sp.mask = Mask;
+                    Mask.anchorX = Mask.anchorY = 0.5;
+                    return Mask;
+                }
+                function _crosswise(Scene, open) {
+                    for (let index = 0; index < _num; index++) {
+                        const _width = Scene.width / _num;
+                        const _height = Laya.stage.height;
+                        const tex = Scene.drawToTexture(_width, _height, -_width * index, 0);
+                        _createNoMaskSp(_width * index, 0, _width, _height, tex, 'x', open);
+                    }
+                }
+                _shutters._crosswise = _crosswise;
+                function _vertical(Scene, open) {
+                    for (let index = 0; index < _num; index++) {
+                        const _width = Scene.width;
+                        const _height = Laya.stage.height / _num;
+                        const tex = Scene.drawToTexture(_width, _height, 0, -_height * index);
+                        _createNoMaskSp(0, _height * index, _width, _height, tex, 'y', false);
+                    }
+                }
+                _shutters._vertical = _vertical;
+                function _croAndVer(Scene, open) {
+                    const num = _num - 2;
+                    for (let index = 0; index < num; index++) {
+                        const _width = Scene.width / num;
+                        const _height = Laya.stage.height;
+                        const tex = Scene.drawToTexture(_width, _height, -_width * index, 0);
+                        _createNoMaskSp(_width * index, 0, _width, _height, tex, 'x', false);
+                    }
+                    for (let index = 0; index < num; index++) {
+                        const _width = Scene.width;
+                        const _height = Laya.stage.height / num;
+                        const tex = Scene.drawToTexture(_width, _height, 0, -_height * index);
+                        _createNoMaskSp(0, _height * index, _width, _height, tex, 'y', open);
+                    }
+                }
+                _shutters._croAndVer = _croAndVer;
+                function _rSideling(Scene, open) {
+                    for (let index = 0; index < _num; index++) {
+                        let addLen = 1000;
+                        const sp = _createMaskSp(Scene, 'x', open);
+                        const Mask = _createMask(sp);
+                        Mask.size(Math.round(Laya.stage.width / _num), Math.round(Laya.stage.height + addLen));
+                        Mask.pos(Math.round(Laya.stage.width / _num * index), Math.round(-addLen / 2));
+                        ToolsAdmin._Node.changePivot(Mask, Math.round(Mask.width / 2), Math.round(Mask.height / 2));
+                        ToolsAdmin._Node.changePivot(sp, Math.round(index * sp.width / _num + sp.width / _num / 2), Math.round(sp.height / 2));
+                        Mask.rotation = -10;
+                    }
+                }
+                _shutters._rSideling = _rSideling;
+                function _lSideling(Scene, open) {
+                    for (let index = 0; index < _num; index++) {
+                        const sp = _createMaskSp(Scene, 'x', open);
+                        const Mask = _createMask(sp);
+                        Mask.size(Math.round(Laya.stage.width / _num), Math.round(Laya.stage.height + 1000));
+                        Mask.pos(Math.round(Laya.stage.width / _num * index), -1000 / 2);
+                        ToolsAdmin._Node.changePivot(Mask, Math.round(Mask.width / 2), Math.round(Mask.height / 2));
+                        ToolsAdmin._Node.changePivot(sp, Math.round(index * sp.width / _num + sp.width / _num / 2), Math.round(sp.height / 2));
+                        Mask.rotation = 10;
+                    }
+                }
+                _shutters._lSideling = _lSideling;
+                function _sidelingIntersection(Scene, open) {
+                    for (let index = 0; index < _num; index++) {
+                        let addLen = 1000;
+                        const sp1 = _createMaskSp(Scene, 'x', open);
+                        const Mask1 = _createMask(sp1);
+                        Mask1.width = Math.round(Laya.stage.width / _num);
+                        Mask1.height = Math.round(Laya.stage.height + addLen);
+                        Mask1.pos(Math.round(Laya.stage.width / _num * index), Math.round(-addLen / 2));
+                        ToolsAdmin._Node.changePivot(Mask1, Math.round(Mask1.width / 2), Math.round(Mask1.height / 2));
+                        ToolsAdmin._Node.changePivot(sp1, Math.round(index * sp1.width / _num + sp1.width / _num / 2), Math.round(sp1.height / 2));
+                        Mask1.rotation = -15;
+                        const sp2 = _createMaskSp(Scene, 'x', open);
+                        const Mask2 = _createMask(sp2);
+                        Mask2.width = Laya.stage.width / _num;
+                        Mask2.height = Laya.stage.height + addLen;
+                        Mask2.pos(Laya.stage.width / _num * index, -addLen / 2);
+                        ToolsAdmin._Node.changePivot(Mask2, Mask2.width / 2, Mask2.height / 2);
+                        ToolsAdmin._Node.changePivot(sp2, index * sp2.width / _num + sp2.width / _num / 2, sp2.height / 2);
+                        Mask2.rotation = 15;
+                    }
+                }
+                _shutters._sidelingIntersection = _sidelingIntersection;
+                function _randomCroAndVer(Scene, open) {
+                    const index = ToolsAdmin._Array.randomGetOne([0, 1, 2]);
+                    switch (index) {
+                        case 0:
+                            _crosswise(Scene, open);
+                            break;
+                        case 1:
+                            _vertical(Scene, open);
+                            break;
+                        case 2:
+                            _croAndVer(Scene, open);
+                            break;
+                        default:
+                            _crosswise(Scene, open);
+                            break;
+                    }
+                }
+                _shutters._randomCroAndVer = _randomCroAndVer;
+                function _random(Scene, open) {
+                    const index = ToolsAdmin._Array.randomGetOne([0, 1, 2, 3, 4, 5]);
+                    switch (index) {
+                        case 0:
+                            _crosswise(Scene, open);
+                            break;
+                        case 1:
+                            _vertical(Scene, open);
+                            break;
+                        case 2:
+                            _croAndVer(Scene, open);
+                            break;
+                        case 3:
+                            _sidelingIntersection(Scene, open);
+                            break;
+                        case 4:
+                            _lSideling(Scene, open);
+                            break;
+                        case 5:
+                            _rSideling(Scene, open);
+                            break;
+                        default:
+                            _crosswise(Scene, open);
+                            break;
+                    }
+                }
+                _shutters._random = _random;
+                class Close {
+                    static _paly(type, Scene) {
+                        TimerAdmin._once(_delay, this, () => {
+                            _shutters[`_${type}`](Scene, false);
+                            Scene.visible = false;
+                        });
+                        SceneAniAdmin._closeAniDelay = _delay;
+                        SceneAniAdmin._closeAniTime = _time;
+                        return _time + _delay;
+                    }
+                    ;
+                }
+                Close._type = {
+                    crosswise: 'crosswise',
+                    vertical: 'vertical',
+                    croAndVer: 'croAndVer',
+                    rSideling: 'rSideling',
+                    sidelingIntersection: 'sidelingIntersection',
+                    randomCroAndVer: 'randomCroAndVer',
+                    random: 'random',
+                };
+                _shutters.Close = Close;
+                class Open {
+                    static _paly(type, Scene) {
+                        TimerAdmin._once(_delay, this, () => {
+                            _shutters[`_${type}`](Scene, true);
+                            Scene.visible = false;
+                            TimerAdmin._once(_time, this, () => {
+                                Scene.visible = true;
+                            });
+                        });
+                        return _time + _delay;
+                    }
+                    ;
+                }
+                Open._type = {
+                    crosswise: 'crosswise',
+                    vertical: 'vertical',
+                    croAndVer: 'croAndVer',
+                    _sidelingIntersection: '_sidelingIntersection',
+                    randomCroAndVer: 'randomCroAndVer',
+                    random: 'random',
+                };
+                _shutters.Open = Open;
+            })(_shutters = SceneAniAdmin._shutters || (SceneAniAdmin._shutters = {}));
+            let _stickIn;
+            (function (_stickIn_1) {
+                function _stickIn(Scene, type) {
+                    let sumDelay = 0;
+                    let time = 700;
+                    let delay = 100;
+                    if (Scene.getChildByName('Background')) {
+                        Ani2DAdmin.fadeOut(Scene.getChildByName('Background'), 0, 1, time);
+                    }
+                    let stickInLeftArr = ToolsAdmin._Node.childZOrderByY(Scene, false);
+                    for (let index = 0; index < stickInLeftArr.length; index++) {
+                        const element = stickInLeftArr[index];
+                        if (element.name !== 'Background' && element.name.substr(0, 5) !== 'NoAni') {
+                            let originalPovitX = element.pivotX;
+                            let originalPovitY = element.pivotY;
+                            let originalX = element.x;
+                            let originalY = element.y;
+                            element.x = element.pivotX > element.width / 2 ? 800 + element.width : -800 - element.width;
+                            element.y = element.rotation > 0 ? element.y + 200 : element.y - 200;
+                            Ani2DAdmin.rotate(element, 0, time, delay * index);
+                            Ani2DAdmin.move(element, originalX, originalY, time, () => {
+                                ToolsAdmin._Node.changePivot(element, originalPovitX, originalPovitY);
+                            }, delay * index);
+                        }
+                    }
+                    sumDelay = Scene.numChildren * delay + time + 200;
+                    return sumDelay;
+                }
+            })(_stickIn = SceneAniAdmin._stickIn || (SceneAniAdmin._stickIn = {}));
+        })(SceneAniAdmin = Lwg.SceneAniAdmin || (Lwg.SceneAniAdmin = {}));
+        let StorageAdmin;
+        (function (StorageAdmin) {
+            class admin {
+                removeSelf() { }
+                func() { }
+            }
+            class _NumVariable extends admin {
+            }
+            StorageAdmin._NumVariable = _NumVariable;
+            class _StrVariable extends admin {
+            }
+            StorageAdmin._StrVariable = _StrVariable;
+            class _BoolVariable extends admin {
+            }
+            StorageAdmin._BoolVariable = _BoolVariable;
+            class _ArrayVariable extends admin {
+            }
+            StorageAdmin._ArrayVariable = _ArrayVariable;
+            class _ArrayArrVariable extends admin {
+            }
+            StorageAdmin._ArrayArrVariable = _ArrayArrVariable;
+            class _Object extends admin {
+            }
+            StorageAdmin._Object = _Object;
+            function _num(name, _func, initial) {
+                if (!this[`_num${name}`]) {
+                    this[`_num${name}`] = {
+                        get value() {
+                            if (Laya.LocalStorage.getItem(name)) {
+                                return Number(Laya.LocalStorage.getItem(name));
+                            }
+                            else {
+                                initial = initial ? initial : 0;
+                                Laya.LocalStorage.setItem(name, initial.toString());
+                                return initial;
+                            }
+                        },
+                        set value(data) {
+                            Laya.LocalStorage.setItem(name, data.toString());
+                            this['func']();
+                        },
+                        removeSelf() {
+                            Laya.LocalStorage.removeItem(name);
+                        },
+                        func() {
+                            this['_func'] && this['_func']();
+                        }
+                    };
+                }
+                if (_func) {
+                    this[`_num${name}`]['_func'] = _func;
+                }
+                return this[`_num${name}`];
+            }
+            StorageAdmin._num = _num;
+            function _str(name, _func, initial) {
+                if (!this[`_str${name}`]) {
+                    this[`_str${name}`] = {
+                        get value() {
+                            if (Laya.LocalStorage.getItem(name)) {
+                                return Laya.LocalStorage.getItem(name);
+                            }
+                            else {
+                                initial = initial ? initial : null;
+                                Laya.LocalStorage.setItem(name, initial.toString());
+                                return initial;
+                            }
+                        },
+                        set value(data) {
+                            Laya.LocalStorage.setItem(name, data.toString());
+                            this['func']();
+                        },
+                        removeSelf() {
+                            Laya.LocalStorage.removeItem(name);
+                        },
+                        func() {
+                            _func && _func();
+                        }
+                    };
+                }
+                if (_func) {
+                    this[`_str${name}`]['_func'] = _func;
+                }
+                return this[`_str${name}`];
+            }
+            StorageAdmin._str = _str;
+            function _bool(name, _func, initial) {
+                if (!this[`_bool${name}`]) {
+                    this[`_bool${name}`] = {
+                        get value() {
+                            if (Laya.LocalStorage.getItem(name)) {
+                                if (Laya.LocalStorage.getItem(name) === "false") {
+                                    return false;
+                                }
+                                else if (Laya.LocalStorage.getItem(name) === "true") {
+                                    return true;
+                                }
+                            }
+                            else {
+                                if (initial) {
+                                    Laya.LocalStorage.setItem(name, "true");
+                                }
+                                else {
+                                    Laya.LocalStorage.setItem(name, "false");
+                                }
+                                this['func']();
+                                return initial;
+                            }
+                        },
+                        set value(bool) {
+                            bool = bool ? "true" : "false";
+                            Laya.LocalStorage.setItem(name, bool.toString());
+                        },
+                        removeSelf() {
+                            Laya.LocalStorage.removeItem(name);
+                        },
+                        func() {
+                            _func && _func();
+                        }
+                    };
+                }
+                if (_func) {
+                    this[`_bool${name}`]['_func'] = _func;
+                }
+                return this[`_bool${name}`];
+            }
+            StorageAdmin._bool = _bool;
+            function _array(name, _func, initial) {
+                if (!this[`_array${name}`]) {
+                    this[`_array${name}`] = {
+                        get value() {
+                            try {
+                                let data = Laya.LocalStorage.getJSON(name);
+                                if (data) {
+                                    return JSON.parse(data);
+                                }
+                                else {
+                                    initial = initial ? initial : [];
+                                    Laya.LocalStorage.setJSON(name, JSON.stringify(initial));
+                                    this['func']();
+                                    return initial;
+                                }
+                            }
+                            catch (error) {
+                                return [];
+                            }
+                        },
+                        set value(array) {
+                            Laya.LocalStorage.setJSON(name, JSON.stringify(array));
+                        },
+                        removeSelf() {
+                            Laya.LocalStorage.removeItem(name);
+                        },
+                        func() {
+                            _func && _func();
+                        }
+                    };
+                }
+                if (_func) {
+                    this[`_array${name}`]['_func'] = _func;
+                }
+                return this[`_array${name}`];
+            }
+            StorageAdmin._array = _array;
+            function _obj(name, _func, initial) {
+                if (!this[`_obj${name}`]) {
+                    this[`_obj${name}`] = {
+                        get value() {
+                            try {
+                                let data = Laya.LocalStorage.getJSON(name);
+                                if (data) {
+                                    return JSON.parse(data);
+                                }
+                                else {
+                                    initial = initial ? initial : {};
+                                    Laya.LocalStorage.setJSON(name, JSON.stringify(initial));
+                                    this['func']();
+                                    return initial;
+                                }
+                            }
+                            catch (error) {
+                                return {};
+                            }
+                        },
+                        set value(array) {
+                            Laya.LocalStorage.setJSON(name, JSON.stringify(array));
+                        },
+                        removeSelf() {
+                            Laya.LocalStorage.removeItem(name);
+                        },
+                        func() {
+                            _func && _func();
+                        }
+                    };
+                }
+                if (_func) {
+                    this[`_obj${name}`]['_func'] = _func;
+                }
+                return this[`_obj${name}`];
+            }
+            StorageAdmin._obj = _obj;
+            function _arrayArr(name, _func, initial) {
+                if (!this[`_arrayArr${name}`]) {
+                    this[`_arrayArr${name}`] = {
+                        get value() {
+                            try {
+                                let data = Laya.LocalStorage.getJSON(name);
+                                if (data) {
+                                    return JSON.parse(data);
+                                    ;
+                                }
+                                else {
+                                    initial = initial ? initial : [];
+                                    Laya.LocalStorage.setItem(name, initial.toString());
+                                    return initial;
+                                }
+                            }
+                            catch (error) {
+                                return [];
+                            }
+                        },
+                        set value(array) {
+                            Laya.LocalStorage.setJSON(name, JSON.stringify(array));
+                            this['func']();
+                        },
+                        removeSelf() {
+                            Laya.LocalStorage.removeItem(name);
+                        },
+                        func() {
+                            _func && _func();
+                        }
+                    };
+                }
+                if (_func) {
+                    this[`_arrayArr${name}`]['_func'] = _func;
+                }
+                return this[`_arrayArr${name}`];
+            }
+            StorageAdmin._arrayArr = _arrayArr;
+        })(StorageAdmin = Lwg.StorageAdmin || (Lwg.StorageAdmin = {}));
+        let DataAdmin;
+        (function (DataAdmin) {
+            class _BaseProperty {
+                constructor() {
+                    this.name = 'name';
+                    this.serial = 'serial';
+                    this.sort = 'sort';
+                    this.chName = 'chName';
+                    this.classify = 'classify';
+                    this.unlockWay = 'unlockWay';
+                    this.otherUnlockWay = 'otherUnlockWay';
+                    this.conditionNum = 'conditionNum';
+                    this.otherConditionNum = 'otherConditionNum';
+                    this.degreeNum = 'degreeNum';
+                    this.otherDegreeNum = 'otherDegreeNum';
+                    this.rewardType = 'otherGetAward';
+                    this.otherRewardType = 'otherRewardType';
+                    this.complete = 'complete';
+                    this.otherComplete = 'otherComplete';
+                    this.getAward = 'getAward';
+                    this.otherGetAward = 'otherGetAward';
+                    this.pitch = 'pitch';
+                }
+            }
+            DataAdmin._BaseProperty = _BaseProperty;
+            ;
+            DataAdmin._unlockWayType = {
+                ads: 'ads',
+                gold: 'gold',
+                diamond: 'diamond',
+                customs: 'customs',
+                check: 'check',
+                free: 'free',
+            };
+            class _Item extends SceneAdmin._ObjectBase {
+                constructor() {
+                    super(...arguments);
+                    this.$data = null;
+                    this.$unlockWayType = DataAdmin._unlockWayType;
+                }
+                get $dataIndex() { return this['item/dataIndex']; }
+                set $dataIndex(_dataIndex) { this['item/dataIndex'] = _dataIndex; }
+                get $dataArrName() { return this['item/dataArrName']; }
+                set $dataArrName(name) {
+                    this['item/dataArrName'] = name;
+                }
+                $render() { }
+                ;
+                lwglistRender(data, index) {
+                    this.$data = data;
+                    this.$dataIndex = index;
+                    if (!this.$data)
+                        return;
+                    this.$render();
+                }
+                $button() { }
+                ;
+                $awake() { }
+                ;
+                lwgOnAwake() {
+                    this.$awake();
+                    this.$button();
+                }
+            }
+            DataAdmin._Item = _Item;
+            class _Table {
+                constructor(tableName, _tableArr, localStorage, lastVtableName, lastProArr) {
+                    this._unlockWay = DataAdmin._unlockWayType;
+                    this._tableName = 'name';
+                    this._lastArr = [];
+                    this._localStorage = false;
+                    this._property = new _BaseProperty;
+                    if (tableName) {
+                        this._tableName = tableName;
+                        if (localStorage) {
+                            this._localStorage = localStorage;
+                            this._arr = addCompare(_tableArr, tableName, this._property.name);
+                            if (lastVtableName) {
+                                if (lastProArr) {
+                                    this._compareLastInforByPro(lastVtableName, lastProArr);
+                                }
+                                else {
+                                    this._compareLastDefaultPro(lastVtableName);
+                                }
+                            }
+                        }
+                        else {
+                            this._arr = _tableArr;
+                        }
+                    }
+                }
+                get _arr() {
+                    return this[`_${this._tableName}arr`];
+                }
+                set _arr(arr) {
+                    this[`_${this._tableName}arr`] = arr;
+                    Laya.LocalStorage.setJSON(this._tableName, JSON.stringify(this[`_${this._tableName}arr`]));
+                }
+                get _List() {
+                    return this[`${this._tableName}_List`];
+                }
+                set _List(list) {
+                    this[`${this._tableName}_List`] = list;
+                    list.array = this._arr;
+                    list.selectEnable = false;
+                    list.vScrollBarSkin = "";
+                    list.renderHandler = new Laya.Handler(this, (cell, index) => {
+                        if (this._listRenderScript) {
+                            let _item = cell.getComponent(this._listRenderScript);
+                            if (!_item) {
+                                _item = cell.addComponent(this._listRenderScript);
+                            }
+                            _item.lwglistRender(this._listArray[index], index);
+                        }
+                    });
+                    list.selectHandler = new Laya.Handler(this, (index) => {
+                        this._listSelect && this._listSelect(index);
+                    });
+                }
+                get _listArray() {
+                    return this._List.array;
+                }
+                set _listArray(arr) {
+                    this._List.array = arr;
+                    this._List.scrollTo(0);
+                    this._refreshAndStorage();
+                }
+                _refreshAndStorage() {
+                    if (this._localStorage) {
+                        Laya.LocalStorage.setJSON(this._tableName, JSON.stringify(this._arr));
+                    }
+                    if (this._List) {
+                        this._List.refresh();
+                    }
+                }
+                _compareLastInforByPro(lastVtableName, proArr) {
+                    this._lastArr = this._getlastVersion(lastVtableName);
+                    for (let index = 0; index < this._lastArr.length; index++) {
+                        const elementLast = this._lastArr[index];
+                        for (let index = 0; index < this._arr.length; index++) {
+                            const element = this._arr[index];
+                            if (elementLast.name === element.name) {
+                                for (let index = 0; index < proArr.length; index++) {
+                                    const proName = proArr[index];
+                                    element[proName] = elementLast[proName];
+                                }
+                            }
+                        }
+                    }
+                    this._refreshAndStorage();
+                }
+                _compareLastDefaultPro(lastVtableName) {
+                    this._lastArr = this._getlastVersion(lastVtableName);
+                    if (this._lastArr.length > 0) {
+                        for (let i = 0; i < this._lastArr.length; i++) {
+                            const _lastelement = this._lastArr[i];
+                            for (let j = 0; j < this._arr.length; j++) {
+                                const element = this._arr[j];
+                                if (_lastelement.complete) {
+                                    element.complete = true;
+                                }
+                                if (_lastelement.getAward) {
+                                    element.getAward = true;
+                                }
+                                if (_lastelement.degreeNum > element.degreeNum) {
+                                    element.degreeNum = _lastelement.degreeNum;
+                                }
+                            }
+                        }
+                    }
+                    this._refreshAndStorage();
+                }
+                _getlastVersion(lastVtableName) {
+                    let dataArr = [];
+                    try {
+                        if (Laya.LocalStorage.getJSON(lastVtableName)) {
+                            dataArr = JSON.parse(Laya.LocalStorage.getJSON(lastVtableName));
+                        }
+                    }
+                    catch (error) {
+                        console.log(lastVtableName + '前版本不存在！');
+                    }
+                    return dataArr;
+                }
+                _getProperty(name, pro) {
+                    let value;
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (element.name === name) {
+                                value = element[pro];
+                                break;
+                            }
+                        }
+                    }
+                    return value;
+                }
+                ;
+                _geConditionNumByName(name, pro) {
+                    let value;
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (element.name === name) {
+                                value = element.conditionNum;
+                                break;
+                            }
+                        }
+                    }
+                    return value;
+                }
+                ;
+                _getPitchIndexInArr() {
+                    for (let index = 0; index < this._arr.length; index++) {
+                        const element = this._arr[index];
+                        if (element.name === this._pitchName) {
+                            return index;
+                        }
+                    }
+                }
+                _getPitchIndexInListArr() {
+                    if (this._List) {
+                        for (let index = 0; index < this._List.array.length; index++) {
+                            const element = this._List.array[index];
+                            if (element.name === this._pitchName) {
+                                return index;
+                            }
+                        }
+                    }
+                }
+                _listTweenToPitch(time, func) {
+                    const index = this._getPitchIndexInListArr();
+                    index && this._List.tweenTo(index, time, Laya.Handler.create(this, () => {
+                        func && func();
+                    }));
+                }
+                _listTweenToDiffIndexByPitch(diffIndex, time, func) {
+                    const index = this._getPitchIndexInListArr();
+                    index && this._List.tweenTo(index + diffIndex, time, Laya.Handler.create(this, () => {
+                        func && func();
+                    }));
+                }
+                _listScrollToFirstByLast() {
+                    const index = this._List.array.length - 1;
+                    index && this._List.scrollTo(index);
+                }
+                _setProperty(name, pro, value) {
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (element.name == name) {
+                                element[pro] = value;
+                                this._refreshAndStorage();
+                                break;
+                            }
+                        }
+                    }
+                    return value;
+                }
+                ;
+                _setCompleteByName(name) {
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (element.name == name) {
+                                element.complete = true;
+                                this._refreshAndStorage();
+                                return;
+                            }
+                        }
+                    }
+                }
+                ;
+                _setCompleteByNameArr(nameArr) {
+                    for (let index = 0; index < this._arr.length; index++) {
+                        const element = this._arr[index];
+                        for (let index = 0; index < nameArr.length; index++) {
+                            const name = nameArr[index];
+                            if (element.name === name) {
+                                element.complete = true;
+                            }
+                        }
+                    }
+                    this._refreshAndStorage();
+                }
+                ;
+                _getObjByName(name) {
+                    let obj = null;
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (element.name == name) {
+                                obj = element;
+                                break;
+                            }
+                        }
+                    }
+                    return obj;
+                }
+                _setProSoleByClassify(name, pro, value) {
+                    const obj = this._getObjByName(name);
+                    const objArr = this._getArrByClassify(obj[this._property.classify]);
+                    for (const key in objArr) {
+                        if (Object.prototype.hasOwnProperty.call(objArr, key)) {
+                            const element = objArr[key];
+                            if (element.name == name) {
+                                element[pro] = value;
+                            }
+                            else {
+                                element[pro] = !value;
+                            }
+                        }
+                    }
+                    this._refreshAndStorage();
+                }
+                _setOneProForAll(pro, value) {
+                    for (let index = 0; index < this._arr.length; index++) {
+                        const element = this._arr[index];
+                        element[pro] = value;
+                    }
+                    this._refreshAndStorage();
+                }
+                _setAllComplete() {
+                    this._setOneProForAll(this._property.complete, true);
+                    this._refreshAndStorage();
+                }
+                _setCompleteName(name) {
+                    this._setProperty(name, this._property.complete, true);
+                    this._refreshAndStorage();
+                }
+                _setOtherCompleteName(name) {
+                    this._setProperty(name, this._property.otherComplete, true);
+                    this._refreshAndStorage();
+                }
+                _setAllCompleteDelay(delay, eachFrontFunc, eachEndFunc, comFunc) {
+                    for (let index = 0; index < this._arr.length; index++) {
+                        TimerAdmin._once(delay * index, this, () => {
+                            const element = this._arr[index];
+                            eachFrontFunc && eachFrontFunc(element.complete);
+                            element.complete = true;
+                            eachEndFunc && eachEndFunc();
+                            if (index === this._arr.length - 1) {
+                                comFunc && comFunc();
+                            }
+                            this._refreshAndStorage();
+                        });
+                    }
+                }
+                _setAllOtherComplete() {
+                    this._setOneProForAll(this._property.otherComplete, true);
+                    this._refreshAndStorage();
+                }
+                _setAllOtherCompleteDelay(delay, eachFrontFunc, eachEndFunc, comFunc) {
+                    for (let index = 0; index < this._arr.length; index++) {
+                        TimerAdmin._once(delay * index, this, () => {
+                            const element = this._arr[index];
+                            eachFrontFunc && eachFrontFunc(element[this._property.otherComplete]);
+                            element[this._property.otherComplete] = true;
+                            eachEndFunc && eachEndFunc();
+                            if (index === this._arr.length - 1) {
+                                comFunc && comFunc();
+                            }
+                            this._refreshAndStorage();
+                        });
+                    }
+                }
+                _addProValueForAll(pro, valueFunc) {
+                    for (let index = 0; index < this._arr.length; index++) {
+                        const element = this._arr[index];
+                        element[pro] += valueFunc();
+                    }
+                    this._refreshAndStorage();
+                }
+                _setPitchProperty(pro, value) {
+                    const obj = this._getPitchObj();
+                    obj[pro] = value;
+                    this._refreshAndStorage();
+                    return value;
+                }
+                ;
+                _getPitchProperty(pro) {
+                    const obj = this._getPitchObj();
+                    return obj[pro];
+                }
+                ;
+                _randomOneObjByPro(proName, value) {
+                    let arr = [];
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (value) {
+                                if (element[proName] && element[proName] == value) {
+                                    arr.push(element);
+                                }
+                            }
+                            else {
+                                if (element[proName]) {
+                                    arr.push(element);
+                                }
+                            }
+                        }
+                    }
+                    if (arr.length == 0) {
+                        return null;
+                    }
+                    else {
+                        let any = ToolsAdmin._Array.randomGetOne(arr);
+                        return any;
+                    }
+                }
+                _randomOneObj() {
+                    const index = ToolsAdmin._Number.randomOneBySection(0, this._arr.length - 1, true);
+                    return this._arr[index];
+                }
+                _randomCountObj(count) {
+                    const indexArr = ToolsAdmin._Number.randomCountBySection(0, this._arr.length - 1, count, true);
+                    const arr = [];
+                    for (let i = 0; i < this._arr.length; i++) {
+                        for (let j = 0; j < indexArr.length; j++) {
+                            if (i === indexArr[j]) {
+                                arr.push(this._arr[i]);
+                            }
+                        }
+                    }
+                    return arr;
+                }
+                _getArrByClassify(classify) {
+                    let arr = [];
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (element[this._property.classify] == classify) {
+                                arr.push(element);
+                            }
+                        }
+                    }
+                    return arr;
+                }
+                _getArrByUnlockWay(_unlockWay) {
+                    let arr = [];
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (element.unlockWay === _unlockWay) {
+                                arr.push(element);
+                            }
+                        }
+                    }
+                    return arr;
+                }
+                _getArrByPitchClassify() {
+                    let arr = [];
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (element[this._property.classify] == this._pitchClassify) {
+                                arr.push(element);
+                            }
+                        }
+                    }
+                    return arr;
+                }
+                _getArrByProperty(proName, value) {
+                    let arr = [];
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (element[proName] && element[proName] == value) {
+                                arr.push(element);
+                            }
+                        }
+                    }
+                    return arr;
+                }
+                _getPitchClassfiyName() {
+                    const obj = this._getObjByName(this._pitchName);
+                    return obj[this._property.classify];
+                }
+                _getArrByNoProperty(proName, value) {
+                    let arr = [];
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (element[proName] && element[proName] !== value) {
+                                arr.push(element);
+                            }
+                        }
+                    }
+                    return arr;
+                }
+                _setArrByPropertyName(proName, value) {
+                    let arr = [];
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (element[proName]) {
+                                element[proName] == value;
+                                arr.push(element);
+                            }
+                        }
+                    }
+                    this._refreshAndStorage();
+                    return arr;
+                }
+                _setPropertyByClassify(classify, pro, value) {
+                    const arr = this._getArrByClassify(classify);
+                    for (const key in arr) {
+                        if (Object.prototype.hasOwnProperty.call(arr, key)) {
+                            const element = arr[key];
+                            element[pro] = value;
+                        }
+                    }
+                    this._refreshAndStorage();
+                    return arr;
+                }
+                _setCompleteByClassify(classify) {
+                    let arr = this._getArrByClassify(classify);
+                    for (const key in arr) {
+                        if (Object.prototype.hasOwnProperty.call(arr, key)) {
+                            const element = arr[key];
+                            element.complete = true;
+                        }
+                    }
+                    this._refreshAndStorage();
+                    return arr;
+                }
+                _checkCondition(name, number, func) {
+                    let com = null;
+                    number = number == undefined ? 1 : number;
+                    let degreeNum = this._getProperty(name, this._property.degreeNum);
+                    let condition = this._getProperty(name, this._property.conditionNum);
+                    let complete = this._getProperty(name, this._property.complete);
+                    if (!complete) {
+                        if (condition <= degreeNum + number) {
+                            this._setProperty(name, this._property.degreeNum, condition);
+                            this._setProperty(name, this._property.complete, true);
+                            com = true;
+                        }
+                        else {
+                            this._setProperty(name, this._property.degreeNum, degreeNum + number);
+                            com = false;
+                        }
+                    }
+                    else {
+                        com = -1;
+                    }
+                    if (func) {
+                        func();
+                    }
+                    return com;
+                }
+                _checkConditionUnlockWay(_unlockWay, num) {
+                    let arr = [];
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (element.unlockWay === _unlockWay) {
+                                this._checkCondition(element.name, num ? num : 1);
+                            }
+                        }
+                    }
+                    return arr;
+                }
+                _checkAllCompelet() {
+                    let bool = true;
+                    for (let index = 0; index < this._arr.length; index++) {
+                        const element = this._arr[index];
+                        if (!element.complete) {
+                            bool = false;
+                            return bool;
+                        }
+                    }
+                    return bool;
+                }
+                get _pitchClassify() {
+                    if (!this[`${this._tableName}/pitchClassify`]) {
+                        if (this._localStorage) {
+                            return Laya.LocalStorage.getItem(`${this._tableName}/pitchClassify`) ? Laya.LocalStorage.getItem(`${this._tableName}/pitchClassify`) : null;
+                        }
+                        else {
+                            return this[`${this._tableName}/pitchClassify`] = null;
+                        }
+                    }
+                    else {
+                        return this[`${this._tableName}/pitchClassify`];
+                    }
+                }
+                ;
+                set _pitchClassify(str) {
+                    this._lastPitchClassify = this[`${this._tableName}/pitchClassify`] ? this[`${this._tableName}/pitchClassify`] : null;
+                    this[`${this._tableName}/pitchClassify`] = str;
+                    if (this._localStorage) {
+                        Laya.LocalStorage.setItem(`${this._tableName}/pitchClassify`, str.toString());
+                    }
+                    this._refreshAndStorage();
+                }
+                ;
+                get _pitchName() {
+                    if (!this[`${this._tableName}/_pitchName`]) {
+                        if (this._localStorage) {
+                            return Laya.LocalStorage.getItem(`${this._tableName}/_pitchName`) ? Laya.LocalStorage.getItem(`${this._tableName}/_pitchName`) : null;
+                        }
+                        else {
+                            return this[`${this._tableName}/_pitchName`] = null;
+                        }
+                    }
+                    else {
+                        return this[`${this._tableName}/_pitchName`];
+                    }
+                }
+                ;
+                set _pitchName(str) {
+                    this._lastPitchName = this[`${this._tableName}/_pitchName`];
+                    this[`${this._tableName}/_pitchName`] = str;
+                    if (this._localStorage) {
+                        Laya.LocalStorage.setItem(`${this._tableName}/_pitchName`, str.toString());
+                    }
+                    this._refreshAndStorage();
+                }
+                ;
+                get _lastPitchClassify() {
+                    if (!this[`${this._tableName}/_lastPitchClassify`]) {
+                        if (this._localStorage) {
+                            return Laya.LocalStorage.getItem(`${this._tableName}/_lastPitchClassify`) ? Laya.LocalStorage.getItem(`${this._tableName}/_lastPitchClassify`) : null;
+                        }
+                        else {
+                            return this[`${this._tableName}/_lastPitchClassify`] = null;
+                        }
+                    }
+                    else {
+                        return this[`${this._tableName}/_lastPitchClassify`];
+                    }
+                }
+                ;
+                set _lastPitchClassify(str) {
+                    this[`${this._tableName}/_lastPitchClassify`] = str;
+                    if (this._localStorage && str) {
+                        Laya.LocalStorage.setItem(`${this._tableName}/_lastPitchClassify`, str.toString());
+                    }
+                }
+                ;
+                get _lastPitchName() {
+                    if (!this[`${this._tableName}/_lastPitchName`]) {
+                        if (this._localStorage) {
+                            return Laya.LocalStorage.getItem(`${this._tableName}/_lastPitchName`) ? Laya.LocalStorage.getItem(`${this._tableName}/_lastPitchName`) : null;
+                        }
+                        else {
+                            return this[`${this._tableName}/_lastPitchName`] = null;
+                        }
+                    }
+                    else {
+                        return this[`${this._tableName}/_lastPitchName`];
+                    }
+                }
+                set _lastPitchName(str) {
+                    this[`${this._tableName}/_lastPitchName`] = str;
+                    if (this._localStorage && str) {
+                        Laya.LocalStorage.setItem(`${this._tableName}/_lastPitchName`, str.toString());
+                    }
+                }
+                ;
+                _setPitch(name) {
+                    let _calssify;
+                    for (let index = 0; index < this._arr.length; index++) {
+                        const element = this._arr[index];
+                        if (element.name == name) {
+                            element.pitch = true;
+                            _calssify = element[this._property.classify];
+                        }
+                        else {
+                            element.pitch = false;
+                        }
+                    }
+                    this._pitchClassify = _calssify;
+                    this._pitchName = name;
+                    this._refreshAndStorage();
+                }
+                _getPitchObj() {
+                    for (const key in this._arr) {
+                        if (Object.prototype.hasOwnProperty.call(this._arr, key)) {
+                            const element = this._arr[key];
+                            if (element.name === this._pitchName) {
+                                return element;
+                            }
+                        }
+                    }
+                }
+                _addObject(obj) {
+                    let _obj = ToolsAdmin._ObjArray.objCopy(obj);
+                    for (let index = 0; index < this._arr.length; index++) {
+                        const element = this._arr[index];
+                        if (element.name === _obj.name) {
+                            this._arr[index] == _obj;
+                        }
+                    }
+                    this._refreshAndStorage();
+                }
+                _addObjectArr(objArr) {
+                    const _objArr = ToolsAdmin._ObjArray.arrCopy(objArr);
+                    for (let i = 0; i < _objArr.length; i++) {
+                        const obj = _objArr[i];
+                        for (let j = 0; j < this._arr.length; j++) {
+                            const element = this._arr[j];
+                            if (obj && obj.name === element.name) {
+                                this._arr[j] = obj;
+                                _objArr.splice(i, 1);
+                                i--;
+                                continue;
+                            }
+                        }
+                    }
+                    for (let k = 0; k < _objArr.length; k++) {
+                        const element = _objArr[k];
+                        this._arr.push(element);
+                    }
+                    this._refreshAndStorage();
+                }
+                _deleteObjByName(name) {
+                    for (let index = 0; index < this._arr.length; index++) {
+                        const element = this._arr[index];
+                        if (element.name === name) {
+                            this._arr.splice(index, 1);
+                            index--;
+                        }
+                    }
+                    this._refreshAndStorage();
+                }
+                _sortByProperty(pro, indexPro, inverted) {
+                    ToolsAdmin._ObjArray.sortByProperty(this._arr, pro);
+                    if (inverted == undefined || inverted) {
+                        for (let index = this._arr.length - 1; index >= 0; index--) {
+                            const element = this._arr[index];
+                            element[indexPro] = this._arr.length - index;
+                        }
+                        this._arr.reverse();
+                    }
+                    else {
+                        for (let index = 0; index < this._arr.length; index++) {
+                            const element = this._arr[index];
+                            element[indexPro] = index + 1;
+                        }
+                    }
+                    this._refreshAndStorage();
+                }
+            }
+            DataAdmin._Table = _Table;
+            function addCompare(tableArr, storageName, propertyName) {
+                try {
+                    Laya.LocalStorage.getJSON(storageName);
+                }
+                catch (error) {
+                    Laya.LocalStorage.setJSON(storageName, JSON.stringify(tableArr));
+                    return tableArr;
+                }
+                let storeArr;
+                if (Laya.LocalStorage.getJSON(storageName)) {
+                    storeArr = JSON.parse(Laya.LocalStorage.getJSON(storageName));
+                    let diffArray = ToolsAdmin._ObjArray.diffProByTwo(tableArr, storeArr, propertyName);
+                    console.log(`${storageName}新添加对象`, diffArray);
+                    ToolsAdmin._Array.addToarray(storeArr, diffArray);
+                }
+                else {
+                    storeArr = tableArr;
+                }
+                Laya.LocalStorage.setJSON(storageName, JSON.stringify(storeArr));
+                return storeArr;
+            }
+            function _jsonCompare(url, storageName, propertyName) {
+                let dataArr;
+                try {
+                    Laya.LocalStorage.getJSON(storageName);
+                }
+                catch (error) {
+                    dataArr = Laya.loader.getRes(url)['RECORDS'];
+                    Laya.LocalStorage.setJSON(storageName, JSON.stringify(dataArr));
+                    return dataArr;
+                }
+                if (Laya.LocalStorage.getJSON(storageName)) {
+                    dataArr = JSON.parse(Laya.LocalStorage.getJSON(storageName));
+                    console.log(storageName + '从本地缓存中获取到数据,将和文件夹的json文件进行对比');
+                    try {
+                        let dataArr_0 = Laya.loader.getRes(url)['RECORDS'];
+                        if (dataArr_0.length >= dataArr.length) {
+                            let diffArray = ToolsAdmin._ObjArray.diffProByTwo(dataArr_0, dataArr, propertyName);
+                            console.log('两个数据的差值为：', diffArray);
+                            ToolsAdmin._Array.addToarray(dataArr, diffArray);
+                        }
+                        else {
+                            console.log(storageName + '数据表填写有误，长度不能小于之前的长度');
+                        }
+                    }
+                    catch (error) {
+                        console.log(storageName, '数据赋值失败！请检查数据表或者手动赋值！');
+                    }
+                }
+                else {
+                    try {
+                        dataArr = Laya.loader.getRes(url)['RECORDS'];
+                    }
+                    catch (error) {
+                        console.log(storageName + '数据赋值失败！请检查数据表或者手动赋值！');
+                    }
+                }
+                Laya.LocalStorage.setJSON(storageName, JSON.stringify(dataArr));
+                return dataArr;
+            }
+        })(DataAdmin = Lwg.DataAdmin || (Lwg.DataAdmin = {}));
+        let ColorAdmin;
+        (function (ColorAdmin) {
+            function RGBToHexString(r, g, b) {
+                return '#' + ("00000" + (r << 16 | g << 8 | b).toString(16)).slice(-6);
+            }
+            ColorAdmin.RGBToHexString = RGBToHexString;
+            function HexStringToRGB(str) {
+                let r, g, b;
+                r = (0xff << 16 & str) >> 16;
+                g = (0xff << 8 & str) >> 8;
+                b = 0xff & str;
+                return [r, g, b];
+            }
+            ColorAdmin.HexStringToRGB = HexStringToRGB;
+            function _colour(node, RGBA, vanishtime) {
+                let cf = new Laya.ColorFilter();
+                node.blendMode = 'null';
+                if (!RGBA) {
+                    cf.color(ToolsAdmin._Number.randomOneBySection(255, 100, true), ToolsAdmin._Number.randomOneBySection(255, 100, true), ToolsAdmin._Number.randomOneBySection(255, 100, true), 1);
+                }
+                else {
+                    cf.color(RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
+                }
+                node.filters = [cf];
+                if (vanishtime) {
+                    Laya.timer.once(vanishtime, this, () => {
+                        for (let index = 0; index < node.filters.length; index++) {
+                            if (node.filters[index] == cf) {
+                                node.filters = [];
+                                break;
+                            }
+                        }
+                    });
+                }
+                return cf;
+            }
+            ColorAdmin._colour = _colour;
+            function _changeOnce(node, RGBA, time, func) {
+                if (!node) {
+                    return;
+                }
+                let cf = new Laya.ColorFilter();
+                cf.color(0, 0, 0, 0);
+                let speedR = RGBA[0] / time;
+                let speedG = RGBA[1] / time;
+                let speedB = RGBA[2] / time;
+                let speedA = 0;
+                if (RGBA[3]) {
+                    speedA = RGBA[3] / time;
+                }
+                let caller = {
+                    add: true,
+                };
+                let R = 0, G = 0, B = 0, A = 0;
+                TimerAdmin._frameLoop(1, caller, () => {
+                    if (R < RGBA[0] && caller.add) {
+                        R += speedR;
+                        G += speedG;
+                        B += speedB;
+                        if (speedA !== 0)
+                            A += speedA;
+                        if (R >= RGBA[0]) {
+                            caller.add = false;
+                        }
+                    }
+                    else {
+                        R -= speedR;
+                        G -= speedG;
+                        B -= speedB;
+                        if (speedA !== 0)
+                            A -= speedA;
+                        if (R <= 0) {
+                            if (func) {
+                                func();
+                            }
+                            Laya.timer.clearAll(caller);
+                        }
+                    }
+                    cf.color(R, G, B, A);
+                    node.filters = [cf];
+                });
+            }
+            ColorAdmin._changeOnce = _changeOnce;
+            function _changeConstant(node, RGBA1, RGBA2, frameTime) {
+                let cf;
+                let RGBA0 = [];
+                if (!node.filters) {
+                    cf = new Laya.ColorFilter();
+                    cf.color(RGBA1[0], RGBA1[1], RGBA1[2], RGBA1[3] ? RGBA1[3] : 1);
+                    RGBA0 = [RGBA1[0], RGBA1[1], RGBA1[2], RGBA1[3] ? RGBA1[3] : 1];
+                    node.filters = [cf];
+                }
+                else {
+                    cf = node.filters[0];
+                    RGBA0 = [node.filters[0]['_alpha'][0], node.filters[0]['_alpha'][1], node.filters[0]['_alpha'][2], node.filters[0]['_alpha'][3] ? node.filters[0]['_alpha'][3] : 1];
+                }
+                let RGBA = [ToolsAdmin._Number.randomCountBySection(RGBA1[0], RGBA2[0])[0], ToolsAdmin._Number.randomCountBySection(RGBA1[1], RGBA2[1])[0], ToolsAdmin._Number.randomCountBySection(RGBA1[2], RGBA2[2])[0], ToolsAdmin._Number.randomCountBySection(RGBA1[3] ? RGBA1[3] : 1, RGBA2[3] ? RGBA2[3] : 1)[0]];
+                let speedR = (RGBA[0] - RGBA0[0]) / frameTime;
+                let speedG = (RGBA[1] - RGBA0[1]) / frameTime;
+                let speedB = (RGBA[2] - RGBA0[2]) / frameTime;
+                let speedA = 0;
+                if (RGBA[3]) {
+                    speedA = (RGBA[3] - RGBA0[3]) / frameTime;
+                }
+                if (node['changeCaller']) {
+                    Laya.timer.clearAll(node['changeCaller']);
+                }
+                let changeCaller = {};
+                node['changeCaller'] = changeCaller;
+                let _time = 0;
+                TimerAdmin._frameLoop(1, changeCaller, () => {
+                    _time++;
+                    if (_time <= frameTime) {
+                        RGBA0[0] += speedR;
+                        RGBA0[1] += speedG;
+                        RGBA0[2] += speedB;
+                    }
+                    else {
+                        Laya.timer.clearAll(changeCaller);
+                    }
+                    cf.color(RGBA0[0], RGBA0[1], RGBA0[2], RGBA0[3]);
+                    node.filters = [cf];
+                });
+            }
+            ColorAdmin._changeConstant = _changeConstant;
+        })(ColorAdmin = Lwg.ColorAdmin || (Lwg.ColorAdmin = {}));
+        let Eff3DAdmin;
+        (function (Eff3DAdmin) {
+            Eff3DAdmin._tex2D = {
+                爱心2: {
+                    url: 'Lwg/Effects/3D/aixin2.png',
+                    texture2D: null,
+                    name: '爱心2',
+                },
+                星星8: {
+                    url: 'Lwg/Effects/3D/star8.png',
+                    texture2D: null,
+                    name: '星星8',
+                },
+                星星5: {
+                    url: 'Lwg/Effects/3D/star5.png',
+                    texture2D: null,
+                    name: '星星5',
+                },
+                圆形发光: {
+                    url: 'Lwg/Effects/3D/yuanfaguang.png',
+                    texture2D: null,
+                    name: '圆形发光',
+                }
+            };
+            let _Particle;
+            (function (_Particle) {
+                class _Caller {
+                    constructor(_time, _appear, _move, _vinish, _frameFuncInterval, _frameFunc, _endFunc) {
+                        this.time = 0;
+                        this.appear = true;
+                        this.move = false;
+                        this.vinish = false;
+                        this.frame = {
+                            interval: 1,
+                            func: null,
+                        };
+                        this.end = false;
+                        this.stateType = {
+                            appear: 'appear',
+                            move: 'move',
+                            vinish: 'vinish',
+                            end: 'end',
+                        };
+                        this._positionByARY_FA = 0;
+                        this._positionARXY_FR = 0;
+                        this._positionByTimeRecord = 0;
+                        this.frame.interval = _frameFuncInterval ? _frameFuncInterval : 1;
+                        this.frame.func = _frameFunc ? _frameFunc : null;
+                        this.endFunc = _endFunc ? _endFunc : null;
+                        this.time = _time ? _time : 0;
+                        this.appear = _appear ? _appear : true;
+                        this.move = _move ? _move : false;
+                        this.vinish = _vinish ? _vinish : false;
+                        TimerAdmin._frameLoop(1, this, () => {
+                            this.time++;
+                            if (this.box) {
+                                if (!this.box.parent) {
+                                    this.clear();
+                                    return;
+                                }
+                            }
+                            this.time % this.frame.interval == 0 && this.frame.func && this.frame.func();
+                            this.appear && this.appearFunc && this.appearFunc();
+                            this.move && this.moveFunc && this.moveFunc();
+                            this.vinish && this.vinishFunc && this.vinishFunc();
+                            this.end && this.endFunc && this.endFunc();
+                            this.everyFrameFunc && this.everyFrameFunc();
+                            this.clear();
+                        });
+                    }
+                    get box() {
+                        if (!this['_box']) {
+                            console.log('粒子没有初始化！');
+                        }
+                        return this['_box'];
+                    }
+                    set box(_box) {
+                        this['_box'] = _box;
+                    }
+                    stateSwitch(str) {
+                        if (str == 'a' || str == 'appear') {
+                            this.appear = true;
+                            this.move = false;
+                            this.vinish = false;
+                            this.end = false;
+                        }
+                        if (str == 'm' || str == 'move') {
+                            this.appear = false;
+                            this.move = true;
+                        }
+                        else if (str == 'v' || str == 'vinish') {
+                            this.move = false;
+                            this.vinish = true;
+                        }
+                        else if (str == 'e' || str == 'end') {
+                            this.vinish = false;
+                            this.end = true;
+                        }
+                    }
+                    clear() {
+                        if (this.end) {
+                            this.mat.destroy();
+                            this.box.meshFilter.destroy();
+                            this.box.destroy();
+                            Laya.timer.clearAll(this);
+                        }
+                    }
+                    _boxInit(parent, position, sectionSize, sectionRotation, texArr, colorRGBA) {
+                        const _scaleX = sectionSize ? ToolsAdmin._Number.randomOneBySection(sectionSize[0][0], sectionSize[1][0]) : ToolsAdmin._Number.randomOneBySection(0.06, 0.08);
+                        const _scaleY = sectionSize ? ToolsAdmin._Number.randomOneBySection(sectionSize[0][1], sectionSize[1][1]) : ToolsAdmin._Number.randomOneBySection(0.06, 0.08);
+                        const _scaleZ = sectionSize ? ToolsAdmin._Number.randomOneBySection(sectionSize[0][2], sectionSize[1][2]) : ToolsAdmin._Number.randomOneBySection(0.06, 0.08);
+                        this.box = parent.addChild(new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(_scaleX, _scaleY, _scaleZ)));
+                        if (position) {
+                            this.box.transform.position = new Laya.Vector3(position[0], position[1], position[2]);
+                        }
+                        else {
+                            this.box.transform.position = new Laya.Vector3(0, 0, 0);
+                        }
+                        this.fPosition = new Laya.Vector3(this.box.transform.position.x, this.box.transform.position.y, this.box.transform.position.z);
+                        this.box.transform.localRotationEulerX = sectionRotation ? ToolsAdmin._Number.randomOneBySection(sectionRotation[0][0], sectionRotation[1][0]) : ToolsAdmin._Number.randomOneBySection(0, 360);
+                        this.box.transform.localRotationEulerX = sectionRotation ? ToolsAdmin._Number.randomOneBySection(sectionRotation[0][1], sectionRotation[1][1]) : ToolsAdmin._Number.randomOneBySection(0, 360);
+                        this.box.transform.localRotationEulerX = sectionRotation ? ToolsAdmin._Number.randomOneBySection(sectionRotation[0][2], sectionRotation[1][2]) : ToolsAdmin._Number.randomOneBySection(0, 360);
+                        this.fEuler = new Laya.Vector3(this.box.transform.localRotationEulerX, this.box.transform.localRotationEulerY, this.box.transform.localRotationEulerZ);
+                        const mat = this.box.meshRenderer.material = new Laya.BlinnPhongMaterial();
+                        mat.albedoTexture = texArr ? ToolsAdmin._Array.randomGetOne(texArr) : Eff3DAdmin._tex2D.圆形发光.texture2D;
+                        mat.renderMode = 2;
+                        const R = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : ToolsAdmin._Number.randomOneBySection(10, 25);
+                        const G = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : ToolsAdmin._Number.randomOneBySection(5, 15);
+                        const B = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : ToolsAdmin._Number.randomOneBySection(5, 10);
+                        const A = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : ToolsAdmin._Number.randomOneBySection(1, 1);
+                        mat.albedoColor = new Laya.Vector4(R, G, B, A);
+                        this.mat = mat;
+                    }
+                    get fPosition() {
+                        return this['_fPosition'];
+                    }
+                    ;
+                    set fPosition(fP) {
+                        this['_fPosition'] = fP;
+                    }
+                    get fEuler() {
+                        return this['_fEuler'];
+                    }
+                    set fEuler(fE) {
+                        this['_fEuler'] = fE;
+                    }
+                    get mat() {
+                        return this.box.meshRenderer.material;
+                    }
+                    set mat(m) {
+                        this.box.meshRenderer.material = m;
+                    }
+                    _positionByARY(angleSpeed, radius, speedY, distance, stateSwitch) {
+                        const pXZ = ToolsAdmin._Point.getRoundPosOld(this._positionByARY_FA += angleSpeed, radius, new Laya.Point(this.fPosition.x, this.fPosition.z));
+                        this.box.transform.position = new Laya.Vector3(pXZ.x, this.box.transform.position.y += speedY, pXZ.y);
+                        if (this.box.transform.position.y - this.fPosition.y > distance) {
+                            stateSwitch && stateSwitch();
+                        }
+                    }
+                    _positionARXY_R(angle, speedR, distance, stateSwitch) {
+                        this._positionARXY_FR += speedR;
+                        const point = ToolsAdmin._Point.getRoundPosOld(angle, this._positionARXY_FR, new Laya.Point(0, 0));
+                        this.box.transform.position = new Laya.Vector3(this.fPosition.x + point.x, this.fPosition.y + point.y, this.fPosition.z);
+                        if (this._positionARXY_FR >= distance) {
+                            stateSwitch && stateSwitch();
+                        }
+                    }
+                    _fadeAway(albedoColorASpeed, endNum = 0, stateSwitch) {
+                        this.mat.albedoColorA -= albedoColorASpeed;
+                        if (this.mat.albedoColorA <= endNum) {
+                            this.mat.albedoColorA = endNum;
+                            stateSwitch && stateSwitch();
+                        }
+                    }
+                    _fadeIn(albedoColorASpeed, endNum = 1, stateSwitch) {
+                        this.mat.albedoColorA += albedoColorASpeed;
+                        if (this.mat.albedoColorA >= endNum) {
+                            this.mat.albedoColorA = endNum;
+                            stateSwitch && stateSwitch();
+                        }
+                    }
+                    _positionByTime(posSpeed, time, stateSwitch) {
+                        this._positionByTimeRecord++;
+                        this.box.transform.position = new Laya.Vector3(this.box.transform.position.x += posSpeed[0], this.box.transform.position.y += posSpeed[1], this.box.transform.position.z += posSpeed[2]);
+                        if (time && this._positionByTimeRecord > time) {
+                            stateSwitch && stateSwitch();
+                        }
+                    }
+                    _scaleX(scaleSpeedX, endNum, stateSwitch) {
+                        this.box.transform.localScaleX += scaleSpeedX;
+                        if (endNum) {
+                            if (scaleSpeedX >= 0) {
+                                if (this.box.transform.localScaleX >= endNum) {
+                                    this.box.transform.localScaleX = endNum;
+                                    stateSwitch && stateSwitch();
+                                }
+                            }
+                            else {
+                                if (this.box.transform.localScaleX <= endNum) {
+                                    this.box.transform.localScaleX = endNum;
+                                    stateSwitch && stateSwitch();
+                                }
+                            }
+                        }
+                    }
+                    _scaleY(scaleSpeedY, endNum, stateSwitch) {
+                        this.box.transform.localScaleY += scaleSpeedY;
+                        if (endNum) {
+                            if (scaleSpeedY >= 0) {
+                                if (this.box.transform.localScaleY >= endNum) {
+                                    this.box.transform.localScaleY = endNum;
+                                    stateSwitch && stateSwitch();
+                                }
+                            }
+                            else {
+                                if (this.box.transform.localScaleY <= endNum) {
+                                    this.box.transform.localScaleY = endNum;
+                                    stateSwitch && stateSwitch();
+                                }
+                            }
+                        }
+                    }
+                    _scaleZ(scaleSpeedZ, endNum, stateSwitch) {
+                        this.box.transform.localScaleZ += scaleSpeedZ;
+                        if (endNum) {
+                            if (scaleSpeedZ >= 0) {
+                                if (this.box.transform.localScaleZ >= endNum) {
+                                    this.box.transform.localScaleZ = endNum;
+                                    stateSwitch && stateSwitch();
+                                }
+                            }
+                            else {
+                                if (this.box.transform.localScaleZ <= endNum) {
+                                    this.box.transform.localScaleZ = endNum;
+                                    stateSwitch && stateSwitch();
+                                }
+                            }
+                        }
+                    }
+                    _rotateX(rotateSpeedX, endNum, stateSwitch) {
+                        this.box.transform.localRotationEulerX += rotateSpeedX;
+                        if (endNum) {
+                            if (rotateSpeedX >= 0) {
+                                if (this.box.transform.localRotationEulerX >= endNum) {
+                                    this.box.transform.localRotationEulerX = endNum;
+                                    stateSwitch && stateSwitch();
+                                }
+                            }
+                            else {
+                                if (this.box.transform.localRotationEulerX <= endNum) {
+                                    this.box.transform.localRotationEulerX = endNum;
+                                    stateSwitch && stateSwitch();
+                                }
+                            }
+                        }
+                    }
+                    _rotateY(rotateSpeedY, endNum, stateSwitch) {
+                        this.box.transform.localRotationEulerY += rotateSpeedY;
+                        if (endNum) {
+                            if (rotateSpeedY >= 0) {
+                                if (this.box.transform.localRotationEulerY >= endNum) {
+                                    this.box.transform.localRotationEulerY = endNum;
+                                    stateSwitch && stateSwitch();
+                                }
+                            }
+                            else {
+                                if (this.box.transform.localRotationEulerY <= endNum) {
+                                    this.box.transform.localRotationEulerY = endNum;
+                                    stateSwitch && stateSwitch();
+                                }
+                            }
+                        }
+                    }
+                    _rotateZ(rotateSpeedZ, endNum, stateSwitch) {
+                        this.box.transform.localRotationEulerZ += rotateSpeedZ;
+                        if (endNum) {
+                            if (rotateSpeedZ >= 0) {
+                                if (this.box.transform.localRotationEulerZ >= endNum) {
+                                    this.box.transform.localRotationEulerZ = endNum;
+                                    stateSwitch && stateSwitch();
+                                }
+                            }
+                            else {
+                                if (this.box.transform.localRotationEulerZ <= endNum) {
+                                    this.box.transform.localRotationEulerZ = endNum;
+                                    stateSwitch && stateSwitch();
+                                }
+                            }
+                        }
+                    }
+                    _randomScopeByPosition(scopeSize) {
+                        scopeSize = scopeSize ? scopeSize : [[0.1, 0.1, 0.1], [0.3, 0.3, 0.3]];
+                        ToolsAdmin._3D.randomScopeByPosition(this.box, scopeSize);
+                    }
+                    _excludeZ() {
+                        this.box.transform.localScaleZ = 0;
+                    }
+                    _rotateTheZero() {
+                        this.box.transform.localRotationEulerZ = 0;
+                        this.box.transform.localRotationEulerX = 0;
+                        this.box.transform.localRotationEulerY = 0;
+                    }
+                    _scaleTheZero() {
+                        this.box.transform.localRotationEulerZ = 0;
+                        this.box.transform.localRotationEulerX = 0;
+                        this.box.transform.localRotationEulerY = 0;
+                    }
+                }
+                _Particle._Caller = _Caller;
+                function _spiral(parent, position, sectionSize, sectionRotation, texArr, colorRGBA, distance, speedY, angleSpeed, radius) {
+                    const caller = new _Caller();
+                    caller._boxInit(parent, position, sectionSize, sectionRotation, texArr, colorRGBA);
+                    caller._excludeZ();
+                    caller._rotateTheZero();
+                    const _distance = ToolsAdmin._Number.randomNumerical(distance, [1.5, 1.5]);
+                    const _speedY = ToolsAdmin._Number.randomNumerical(speedY, [0.02, 0.02]);
+                    const _angleSpeed = ToolsAdmin._Number.randomNumerical(angleSpeed, [6, 6]);
+                    const _radius = ToolsAdmin._Number.randomNumerical(radius, [0.5, 0.5]);
+                    caller.mat.albedoColorA = 0;
+                    caller.stateSwitch('m');
+                    caller.moveFunc = () => {
+                        caller._fadeIn(0.2);
+                        caller._positionByARY(_angleSpeed, _radius, _speedY, _distance, () => {
+                            caller.stateSwitch('v');
+                        });
+                    };
+                    caller.vinishFunc = () => {
+                        caller._fadeAway(0.15, 0, () => {
+                            caller.stateSwitch('e');
+                        });
+                        caller._positionByTime([0, 0.002, 0]);
+                    };
+                    return caller;
+                }
+                _Particle._spiral = _spiral;
+                function _explode(parent, position, sectionSize, sectionRotation, texArr, colorRGBA, distance, speedR) {
+                    const caller = new _Caller();
+                    caller._boxInit(parent, position, sectionSize, sectionRotation, texArr, colorRGBA);
+                    caller._excludeZ();
+                    caller._rotateTheZero();
+                    const _distance = ToolsAdmin._Number.randomNumerical(distance, [0.3, 0.6]);
+                    const _speedR = ToolsAdmin._Number.randomNumerical(speedR, [0.008, 0.012]);
+                    const _angle = ToolsAdmin._Number.randomNumerical([0, 360]);
+                    caller.mat.albedoColorA = 0;
+                    caller.stateSwitch('m');
+                    caller.moveFunc = () => {
+                        caller._fadeIn(0.15);
+                        caller._positionARXY_R(_angle, _speedR, _distance, () => {
+                            caller.stateSwitch('v');
+                        });
+                    };
+                    caller.vinishFunc = () => {
+                        caller._fadeAway(0.15, 0, () => {
+                            caller.stateSwitch('e');
+                        });
+                    };
+                    return;
+                }
+                _Particle._explode = _explode;
+                function _fade(parent, position, sectionSize, staytime, vainshASpeed, vainshSSpeed, sectionRotation, texArr, colorRGBA) {
+                    const caller = new _Caller();
+                    caller._boxInit(parent, position, sectionSize ? sectionSize : [[0.04, 0.04, 0], [0.04, 0.04, 0]], sectionRotation, texArr, colorRGBA);
+                    caller._excludeZ();
+                    const _staytime = staytime ? staytime : 20;
+                    const _vainshASpeed = vainshASpeed ? vainshASpeed : 0.02;
+                    const _vainshSSpeed = vainshSSpeed ? vainshSSpeed : 0.02;
+                    caller._rotateTheZero();
+                    caller.stateSwitch('m');
+                    caller.moveFunc = () => {
+                        if (caller.time > _staytime) {
+                            caller.stateSwitch('v');
+                        }
+                    };
+                    caller.vinishFunc = () => {
+                        caller._scaleX(_vainshSSpeed);
+                        caller._fadeAway(_vainshASpeed, 0, () => {
+                            caller.stateSwitch('e');
+                        });
+                    };
+                    caller.everyFrameFunc = () => {
+                        caller.box.transform.localScaleY = caller.box.transform.localScaleX;
+                    };
+                    return caller;
+                }
+                _Particle._fade = _fade;
+                function _starsShine(parent, position, scopeSize, scaleSpeed, maxScale, angelspeed, ASpeed, texArr, colorRGBA) {
+                    const caller = new _Caller();
+                    caller._boxInit(parent, position, null, null, texArr ? texArr : [Eff3DAdmin._tex2D.星星5.texture2D], colorRGBA ? colorRGBA : [[15, 15, 15, 1], [30, 30, 30, 1]]);
+                    caller._excludeZ();
+                    caller._rotateTheZero();
+                    caller._scaleTheZero();
+                    caller._randomScopeByPosition(scopeSize);
+                    caller.mat.albedoColorA = 0;
+                    const _maxScale = ToolsAdmin._Number.randomNumerical(maxScale, [1, 2]);
+                    const _scaleSpeed = ToolsAdmin._Number.randomNumerical(scaleSpeed, [0.01, 0.05]);
+                    const _angelspeed = ToolsAdmin._Number.randomNumerical(angelspeed, [2, 6], true);
+                    const _ASpeed = ToolsAdmin._Number.randomNumerical(ASpeed, [0.01, 0.05]);
+                    caller.appearFunc = () => {
+                        caller._fadeIn(_ASpeed, 1, () => {
+                            caller.stateSwitch('m');
+                        });
+                        caller._scaleX(_scaleSpeed, 1);
+                        caller._rotateZ(_angelspeed);
+                    };
+                    caller.moveFunc = () => {
+                        caller._scaleX(_scaleSpeed, _maxScale, () => {
+                            caller.stateSwitch('v');
+                        });
+                        caller._rotateZ(_angelspeed);
+                    };
+                    caller.vinishFunc = () => {
+                        caller._fadeAway(_ASpeed, 0, () => {
+                            caller.stateSwitch('e');
+                        });
+                        caller._scaleX(-_scaleSpeed);
+                        caller._rotateZ(-_angelspeed);
+                    };
+                    caller.everyFrameFunc = () => {
+                        caller.box.transform.localScaleY = caller.box.transform.localScaleX;
+                    };
+                    return caller;
+                }
+                _Particle._starsShine = _starsShine;
+            })(_Particle = Eff3DAdmin._Particle || (Eff3DAdmin._Particle = {}));
+        })(Eff3DAdmin = Lwg.Eff3DAdmin || (Lwg.Eff3DAdmin = {}));
+        let Eff2DAdmin;
+        (function (Eff2DAdmin) {
+            let _SkinUrl;
+            (function (_SkinUrl) {
+                _SkinUrl["\u7231\u5FC31"] = "Lwg/Effects/aixin1.png";
+                _SkinUrl["\u7231\u5FC32"] = "Lwg/Effects/aixin2.png";
+                _SkinUrl["\u7231\u5FC33"] = "Lwg/Effects/aixin3.png";
+                _SkinUrl["\u82B11"] = "Lwg/Effects/hua1.png";
+                _SkinUrl["\u82B12"] = "Lwg/Effects/hua2.png";
+                _SkinUrl["\u82B13"] = "Lwg/Effects/hua3.png";
+                _SkinUrl["\u82B14"] = "Lwg/Effects/hua4.png";
+                _SkinUrl["\u661F\u661F1"] = "Lwg/Effects/star1.png";
+                _SkinUrl["\u661F\u661F2"] = "Lwg/Effects/star2.png";
+                _SkinUrl["\u661F\u661F3"] = "Lwg/Effects/star3.png";
+                _SkinUrl["\u661F\u661F4"] = "Lwg/Effects/star4.png";
+                _SkinUrl["\u661F\u661F5"] = "Lwg/Effects/star5.png";
+                _SkinUrl["\u661F\u661F6"] = "Lwg/Effects/star6.png";
+                _SkinUrl["\u661F\u661F7"] = "Lwg/Effects/star7.png";
+                _SkinUrl["\u661F\u661F8"] = "Lwg/Effects/star8.png";
+                _SkinUrl["\u83F1\u5F621"] = "Lwg/Effects/rhombus1.png";
+                _SkinUrl["\u83F1\u5F622"] = "Lwg/Effects/rhombus1.png";
+                _SkinUrl["\u83F1\u5F623"] = "Lwg/Effects/rhombus1.png";
+                _SkinUrl["\u77E9\u5F621"] = "Lwg/Effects/rectangle1.png";
+                _SkinUrl["\u77E9\u5F622"] = "Lwg/Effects/rectangle2.png";
+                _SkinUrl["\u77E9\u5F623"] = "Lwg/Effects/rectangle3.png";
+                _SkinUrl["\u96EA\u82B11"] = "Lwg/Effects/xuehua1.png";
+                _SkinUrl["\u53F6\u5B501"] = "Lwg/Effects/yezi1.png";
+                _SkinUrl["\u5706\u5F62\u53D1\u51491"] = "Lwg/Effects/yuanfaguang.png";
+                _SkinUrl["\u5706\u5F621"] = "Lwg/Effects/yuan1.png";
+                _SkinUrl["\u65B9\u5F62\u5149\u57081"] = "Lwg/Effects/ui_square_guang1.png";
+                _SkinUrl["\u65B9\u5F62\u5706\u89D2\u5149\u57081"] = "Lwg/Effects/ui_square_guang2.png";
+                _SkinUrl["\u5706\u5F62\u5C0F\u5149\u73AF"] = "Lwg/Effects/xiaoguanghuan.png";
+                _SkinUrl["\u5149\u57082"] = "Lwg/Effects/guangquan2.png";
+                _SkinUrl["\u4E09\u89D2\u5F621"] = "Lwg/Effects/triangle1.png";
+                _SkinUrl["\u4E09\u89D2\u5F622"] = "Lwg/Effects/triangle2.png";
+            })(_SkinUrl = Eff2DAdmin._SkinUrl || (Eff2DAdmin._SkinUrl = {}));
+            let _Aperture;
+            (function (_Aperture) {
+                class _ApertureImage extends Laya.Image {
+                    constructor(parent, centerPoint, size, rotation, urlArr, colorRGBA, zOrder) {
+                        super();
+                        if (!parent.parent) {
+                            return;
+                        }
+                        parent.addChild(this);
+                        centerPoint ? this.pos(centerPoint[0], centerPoint[1]) : this.pos(0, 0);
+                        this.width = size ? size[0] : 100;
+                        this.height = size ? size[1] : 100;
+                        this.pivotX = this.width / 2;
+                        this.pivotY = this.height / 2;
+                        this.rotation = rotation ? ToolsAdmin._Number.randomOneBySection(rotation[0], rotation[1]) : ToolsAdmin._Number.randomOneBySection(360);
+                        this.skin = urlArr ? ToolsAdmin._Array.randomGetOne(urlArr) : _SkinUrl.花3;
+                        this.zOrder = zOrder ? zOrder : 0;
+                        this.alpha = 0;
+                        let RGBA = [];
+                        RGBA[0] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : ToolsAdmin._Number.randomOneBySection(180, 255);
+                        RGBA[1] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : ToolsAdmin._Number.randomOneBySection(10, 180);
+                        RGBA[2] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : ToolsAdmin._Number.randomOneBySection(10, 180);
+                        RGBA[3] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : ToolsAdmin._Number.randomOneBySection(1, 1);
+                        ColorAdmin._colour(this, RGBA);
+                    }
+                }
+                _Aperture._ApertureImage = _ApertureImage;
+                function _continuous(parent, centerPoint, size, minScale, rotation, urlArr, colorRGBA, zOrder, maxScale, speed, accelerated) {
+                    const Img = new _ApertureImage(parent, centerPoint, size, rotation, urlArr, colorRGBA, zOrder);
+                    let _speed = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : 0.025;
+                    let _accelerated = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : 0.0005;
+                    if (minScale) {
+                        Img.scale(minScale[0], minScale[1]);
+                    }
+                    else {
+                        Img.scale(0, 0);
+                    }
+                    const _maxScale = maxScale ? ToolsAdmin._Number.randomOneBySection(maxScale[0], maxScale[1]) : 2;
+                    let moveCaller = {
+                        alpha: true,
+                        scale: false,
+                        vanish: false
+                    };
+                    Img['moveCaller'] = moveCaller;
+                    let acc = 0;
+                    TimerAdmin._frameLoop(1, moveCaller, () => {
+                        if (moveCaller.alpha) {
+                            Img.alpha += 0.05;
+                            acc = 0;
+                            if (Img.alpha >= 1) {
+                                moveCaller.alpha = false;
+                                moveCaller.scale = true;
+                            }
+                        }
+                        if (moveCaller.scale) {
+                            acc += _accelerated;
+                            if (Img.scaleX >= _maxScale) {
+                                moveCaller.scale = false;
+                                moveCaller.vanish = true;
+                            }
+                        }
+                        if (moveCaller.vanish) {
+                            Img.alpha -= 0.015;
+                            if (Img.alpha <= 0) {
+                                Img.removeSelf();
+                                Laya.timer.clearAll(moveCaller);
+                            }
+                        }
+                        Img.scaleX = Img.scaleY += (_speed + acc);
+                    });
+                }
+                _Aperture._continuous = _continuous;
+                function _continuousByDs(parent, centerPoint, size, minScale, rotation, urlArr, colorRGBA, zOrder, maxScale, speed, accelerated) {
+                    const Img = new _ApertureImage(parent, centerPoint, size, rotation, urlArr, colorRGBA, zOrder);
+                    let _speed = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : 0.025;
+                    let _accelerated = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : 0.0005;
+                    if (minScale) {
+                        Img.scale(minScale[0], minScale[1]);
+                    }
+                    else {
+                        Img.scale(0, 0);
+                    }
+                    const _maxScale = maxScale ? ToolsAdmin._Number.randomOneBySection(maxScale[0], maxScale[1]) : 2;
+                    let moveCaller = {
+                        alpha: true,
+                        scale: false,
+                        vanish: false
+                    };
+                    Img['moveCaller'] = moveCaller;
+                    let acc = 0;
+                    TimerAdmin._frameLoop(1, moveCaller, () => {
+                        if (moveCaller.alpha) {
+                            Img.alpha += 0.05;
+                            acc = 0;
+                            if (Img.alpha >= 1) {
+                                moveCaller.alpha = false;
+                                moveCaller.scale = true;
+                            }
+                        }
+                        if (moveCaller.scale) {
+                            acc += _accelerated;
+                            if (Img.scaleX > _maxScale) {
+                                moveCaller.scale = false;
+                                moveCaller.vanish = true;
+                            }
+                        }
+                        if (moveCaller.vanish) {
+                            acc -= _accelerated;
+                            if (acc <= 0) {
+                                acc = 0;
+                                Img.alpha -= 0.015;
+                                if (Img.alpha <= 0) {
+                                    Img.removeSelf();
+                                    Laya.timer.clearAll(moveCaller);
+                                }
+                            }
+                        }
+                        Img.scaleX = Img.scaleY += (_speed + acc);
+                    });
+                }
+                _Aperture._continuousByDs = _continuousByDs;
+            })(_Aperture = Eff2DAdmin._Aperture || (Eff2DAdmin._Aperture = {}));
+            let _Particle;
+            (function (_Particle) {
+                class _ParticleImgBase extends Laya.Image {
+                    constructor(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder) {
+                        super();
+                        parent.addChild(this);
+                        let sectionWidth = sectionWH ? ToolsAdmin._Number.randomOneBySection(sectionWH[0]) : ToolsAdmin._Number.randomOneBySection(200);
+                        let sectionHeight = sectionWH ? ToolsAdmin._Number.randomOneBySection(sectionWH[1]) : ToolsAdmin._Number.randomOneBySection(50);
+                        sectionWidth = ToolsAdmin._Number.randomOneHalf() == 0 ? sectionWidth : -sectionWidth;
+                        sectionHeight = ToolsAdmin._Number.randomOneHalf() == 0 ? sectionHeight : -sectionHeight;
+                        this.x = centerPoint ? centerPoint.x + sectionWidth : sectionWidth;
+                        this.y = centerPoint ? centerPoint.y + sectionHeight : sectionHeight;
+                        this.width = width ? ToolsAdmin._Number.randomOneBySection(width[0], width[1]) : ToolsAdmin._Number.randomOneBySection(20, 50);
+                        this.height = height ? ToolsAdmin._Number.randomOneBySection(height[0], height[1]) : this.width;
+                        this.pivotX = this.width / 2;
+                        this.pivotY = this.height / 2;
+                        this.skin = urlArr ? ToolsAdmin._Array.randomGetOne(urlArr) : _SkinUrl.圆形1;
+                        this.rotation = rotation ? ToolsAdmin._Number.randomOneBySection(rotation[0], rotation[1]) : 0;
+                        this.alpha = 0;
+                        this.zOrder = zOrder ? zOrder : 1000;
+                        let RGBA = [];
+                        RGBA[0] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : ToolsAdmin._Number.randomOneBySection(180, 255);
+                        RGBA[1] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : ToolsAdmin._Number.randomOneBySection(10, 180);
+                        RGBA[2] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : ToolsAdmin._Number.randomOneBySection(10, 180);
+                        RGBA[3] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : ToolsAdmin._Number.randomOneBySection(1, 1);
+                        ColorAdmin._colour(this, RGBA);
+                    }
+                }
+                _Particle._ParticleImgBase = _ParticleImgBase;
+                function _snow(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder, distance, rotationSpeed, speed, windX) {
+                    let Img = new _ParticleImgBase(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder);
+                    let _rotationSpeed = rotationSpeed ? ToolsAdmin._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 1);
+                    _rotationSpeed = ToolsAdmin._Number.randomOneHalf() == 0 ? _rotationSpeed : -_rotationSpeed;
+                    let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(1, 2.5);
+                    let _windX = windX ? ToolsAdmin._Number.randomOneBySection(windX[0], windX[1]) : 0;
+                    let moveCaller = {
+                        alpha: true,
+                        move: false,
+                        vinish: false,
+                    };
+                    Img['moveCaller'] = moveCaller;
+                    let distance0 = 0;
+                    let distance1 = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(100, 300);
+                    TimerAdmin._frameLoop(1, moveCaller, () => {
+                        Img.x += _windX;
+                        Img.rotation += _rotationSpeed;
+                        if (Img.alpha < 1 && moveCaller.alpha) {
+                            Img.alpha += 0.05;
+                            distance0 = Img.y++;
+                            if (Img.alpha >= 1) {
+                                moveCaller.alpha = false;
+                                moveCaller.move = true;
+                            }
+                        }
+                        if (distance0 < distance1 && moveCaller.move) {
+                            distance0 = Img.y += speed0;
+                            if (distance0 >= distance1) {
+                                moveCaller.move = false;
+                                moveCaller.vinish = true;
+                            }
+                        }
+                        if (moveCaller.vinish) {
+                            Img.alpha -= 0.03;
+                            Img.y += speed0;
+                            if (Img.alpha <= 0 || speed0 <= 0) {
+                                Img.removeSelf();
+                                Laya.timer.clearAll(moveCaller);
+                            }
+                        }
+                    });
+                    return Img;
+                }
+                _Particle._snow = _snow;
+                function _downwardSpray(parent, point, width, height, angle, urlArr, colorRGBA, vanishDistance, moveSpeed, gravity, accelerated, rotationSpeed, scaleRotationSpeed, skewSpeed, zOrder) {
+                    const Img = new _ParticleImgBase(parent, point, [0, 0], width, height, null, urlArr, colorRGBA, zOrder);
+                    const _angle = angle ? ToolsAdmin._Number.randomOneBySection(angle[0], angle[1]) : ToolsAdmin._Number.randomOneBySection(0, 90);
+                    const p = ToolsAdmin._Point.angleByPoint(_angle);
+                    const _vanishDistance = vanishDistance ? ToolsAdmin._Number.randomOneBySection(vanishDistance[0], vanishDistance[1]) : ToolsAdmin._Number.randomOneBySection(200, 800);
+                    let _speed = moveSpeed ? ToolsAdmin._Number.randomOneBySection(moveSpeed[0], moveSpeed[1]) : ToolsAdmin._Number.randomOneBySection(10, 30);
+                    let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.3, 1.5);
+                    const _gravity = gravity ? ToolsAdmin._Number.randomOneBySection(gravity[0], gravity[1]) : ToolsAdmin._Number.randomOneBySection(1, 5);
+                    let acc = 0;
+                    const moveCaller = {
+                        appear: true,
+                        move: false,
+                        dropFp: null,
+                        drop: false,
+                        vinish: false,
+                        scaleSub: true,
+                        scaleAdd: false,
+                        rotateFunc: null,
+                    };
+                    moveCaller.rotateFunc = rotatingWay(Img, rotationSpeed, scaleRotationSpeed, skewSpeed);
+                    Img['moveCaller'] = moveCaller;
+                    TimerAdmin._frameLoop(1, moveCaller, () => {
+                        moveCaller.rotateFunc();
+                        if (moveCaller.appear) {
+                            Img.alpha += 0.5;
+                            if (Img.alpha >= 1) {
+                                moveCaller.appear = false;
+                                moveCaller.move = true;
+                            }
+                            Img.x += p.x * _speed;
+                            Img.y += p.y * _speed;
+                        }
+                        if (moveCaller.move) {
+                            acc -= accelerated0;
+                            const speed0 = _speed + acc;
+                            Img.x += p.x * speed0;
+                            Img.y += p.y * speed0;
+                            if (speed0 <= 1) {
+                                _speed = 1;
+                                moveCaller.dropFp = new Laya.Point(Img.x, Img.y);
+                                moveCaller.move = false;
+                                moveCaller.drop = true;
+                            }
+                        }
+                        if (moveCaller.drop) {
+                            Img.x += p.x * _speed;
+                            Img.y += p.y * _speed;
+                            if (moveCaller.dropFp.distance(Img.x, Img.y) > _vanishDistance) {
+                                moveCaller.drop = false;
+                                moveCaller.vinish = true;
+                            }
+                        }
+                        if (moveCaller.vinish) {
+                            Img.alpha -= 0.05;
+                            if (Img.alpha <= 0.3) {
+                                Img.removeSelf();
+                                Laya.timer.clearAll(moveCaller);
+                            }
+                        }
+                        Img.y += _gravity;
+                    });
+                    return Img;
+                }
+                _Particle._downwardSpray = _downwardSpray;
+                function rotatingWay(Img, rotationSpeed, scaleRotationSpeed, skewSpeed) {
+                    let _rotationSpeed = rotationSpeed ? ToolsAdmin._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 1);
+                    _rotationSpeed = ToolsAdmin._Number.randomOneHalf() == 0 ? _rotationSpeed : -_rotationSpeed;
+                    const _scaleSpeed = scaleRotationSpeed ? ToolsAdmin._Number.randomOneBySection(scaleRotationSpeed[0], scaleRotationSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 0.25);
+                    const _scaleDir = ToolsAdmin._Number.randomOneHalf();
+                    let _skewSpeed = skewSpeed ? ToolsAdmin._Number.randomOneBySection(skewSpeed[0], skewSpeed[1]) : ToolsAdmin._Number.randomOneBySection(1, 10);
+                    _skewSpeed = ToolsAdmin._Number.randomOneHalf() === 1 ? _skewSpeed : -_skewSpeed;
+                    const _skewDir = ToolsAdmin._Number.randomOneHalf();
+                    const _scaleOrSkew = ToolsAdmin._Number.randomOneHalf();
+                    var rotateFunc = () => {
+                        Img.rotation += _rotationSpeed;
+                        if (_scaleOrSkew === 1) {
+                            if (_skewDir === 1) {
+                                Img.skewX += _skewSpeed;
+                            }
+                            else {
+                                Img.skewY += _skewSpeed;
+                            }
+                        }
+                        else {
+                            if (_scaleDir === 1) {
+                                if (Img['moveCaller']['scaleSub']) {
+                                    Img.scaleX -= _scaleSpeed;
+                                    if (Img.scaleX <= 0) {
+                                        Img['moveCaller']['scaleSub'] = false;
+                                    }
+                                }
+                                else {
+                                    Img.scaleX += _scaleSpeed;
+                                    if (Img.scaleX >= 1) {
+                                        Img['moveCaller']['scaleSub'] = true;
+                                    }
+                                }
+                            }
+                            else {
+                                if (Img['moveCaller']['scaleSub']) {
+                                    Img.scaleY -= _scaleSpeed;
+                                    if (Img.scaleY <= 0) {
+                                        Img['moveCaller']['scaleSub'] = false;
+                                    }
+                                }
+                                else {
+                                    Img.scaleY += _scaleSpeed;
+                                    if (Img.scaleY >= 1) {
+                                        Img['moveCaller']['scaleSub'] = true;
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    return rotateFunc;
+                }
+                function _fallingRotate(parent, centerPoint, sectionWH, width, height, urlArr, colorRGBA, distance, moveSpeed, scaleRotationSpeed, skewSpeed, rotationSpeed, zOrder) {
+                    const Img = new _ParticleImgBase(parent, centerPoint, sectionWH, width, height, null, urlArr, colorRGBA, zOrder);
+                    const _moveSpeed = moveSpeed ? ToolsAdmin._Number.randomOneBySection(moveSpeed[0], moveSpeed[1]) : ToolsAdmin._Number.randomOneBySection(1, 2.5);
+                    let _distance0 = 0;
+                    const _distance = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(100, 300);
+                    const moveCaller = {
+                        appear: true,
+                        move: false,
+                        vinish: false,
+                        scaleSub: true,
+                        scaleAdd: false,
+                        rotateFunc: null,
+                    };
+                    moveCaller.rotateFunc = rotatingWay(Img, rotationSpeed, scaleRotationSpeed, skewSpeed);
+                    Img['moveCaller'] = moveCaller;
+                    TimerAdmin._frameLoop(1, moveCaller, () => {
+                        moveCaller.rotateFunc();
+                        if (moveCaller.appear) {
+                            Img.alpha += 0.05;
+                            Img.y += _moveSpeed / 2;
+                            if (Img.alpha >= 1) {
+                                moveCaller.appear = false;
+                                moveCaller.move = true;
+                            }
+                        }
+                        if (moveCaller.move) {
+                            Img.y += _moveSpeed;
+                            _distance0 += _moveSpeed;
+                            if (_distance0 >= _distance) {
+                                moveCaller.move = false;
+                                moveCaller.vinish = true;
+                            }
+                        }
+                        if (moveCaller.vinish) {
+                            Img.alpha -= 0.01;
+                            Img.y += _moveSpeed;
+                            if (Img.alpha <= 0) {
+                                Img.removeSelf();
+                                Laya.timer.clearAll(moveCaller);
+                            }
+                        }
+                    });
+                    return Img;
+                }
+                _Particle._fallingRotate = _fallingRotate;
+                function _fallingVertical(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder, distance, speed, accelerated) {
+                    let Img = new _ParticleImgBase(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder);
+                    let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(4, 8);
+                    let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.25, 0.45);
+                    let acc = 0;
+                    let moveCaller = {
+                        alpha: true,
+                        move: false,
+                        vinish: false,
+                    };
+                    Img['moveCaller'] = moveCaller;
+                    let distance1 = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(100, 300);
+                    let fY = Img.y;
+                    TimerAdmin._frameLoop(1, moveCaller, () => {
+                        if (Img.alpha < 1 && moveCaller.alpha) {
+                            Img.alpha += 0.04;
+                            if (Img.alpha >= 1) {
+                                moveCaller.alpha = false;
+                                moveCaller.move = true;
+                            }
+                        }
+                        if (!moveCaller.alpha) {
+                            acc += accelerated0;
+                            Img.y += (speed0 + acc);
+                        }
+                        if (!moveCaller.alpha && moveCaller.move) {
+                            if (Img.y - fY >= distance1) {
+                                moveCaller.move = false;
+                                moveCaller.vinish = true;
+                            }
+                        }
+                        if (moveCaller.vinish) {
+                            Img.alpha -= 0.03;
+                            if (Img.alpha <= 0) {
+                                Laya.timer.clearAll(moveCaller);
+                                Img.removeSelf();
+                            }
+                        }
+                    });
+                    return Img;
+                }
+                _Particle._fallingVertical = _fallingVertical;
+                function _fallingVertical_Reverse(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder, distance, speed, accelerated) {
+                    let Img = new _ParticleImgBase(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder);
+                    let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(4, 8);
+                    let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.25, 0.45);
+                    let acc = 0;
+                    let moveCaller = {
+                        alpha: true,
+                        move: false,
+                        vinish: false,
+                    };
+                    Img['moveCaller'] = moveCaller;
+                    let distance1 = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(100, 300);
+                    let fY = Img.y;
+                    TimerAdmin._frameLoop(1, moveCaller, () => {
+                        if (Img.alpha < 1 && moveCaller.alpha) {
+                            Img.alpha += 0.04;
+                            if (Img.alpha >= 1) {
+                                moveCaller.alpha = false;
+                                moveCaller.move = true;
+                            }
+                        }
+                        if (!moveCaller.alpha) {
+                            acc += accelerated0;
+                            Img.y += (speed0 + acc);
+                        }
+                        if (!moveCaller.alpha && moveCaller.move) {
+                            if (Img.y - fY <= distance1) {
+                                moveCaller.move = false;
+                                moveCaller.vinish = true;
+                            }
+                        }
+                        if (moveCaller.vinish) {
+                            Img.alpha -= 0.03;
+                            if (Img.alpha <= 0) {
+                                Laya.timer.clearAll(moveCaller);
+                                Img.removeSelf();
+                            }
+                        }
+                    });
+                    return Img;
+                }
+                _Particle._fallingVertical_Reverse = _fallingVertical_Reverse;
+                function _slowlyUp(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder, distance, speed, accelerated) {
+                    let Img = new _ParticleImgBase(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder);
+                    let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(1.5, 2);
+                    let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.001, 0.005);
+                    let acc = 0;
+                    let moveCaller = {
+                        alpha: true,
+                        move: false,
+                        vinish: false,
+                    };
+                    Img['moveCaller'] = moveCaller;
+                    let fy = Img.y;
+                    let distance0 = 0;
+                    let distance1 = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(-250, -600);
+                    TimerAdmin._frameLoop(1, moveCaller, () => {
+                        if (Img.alpha < 1 && moveCaller.alpha) {
+                            Img.alpha += 0.03;
+                            if (Img.alpha >= 1) {
+                                moveCaller.alpha = false;
+                                moveCaller.move = true;
+                            }
+                        }
+                        if (distance0 > distance1 && moveCaller.move) {
+                        }
+                        else {
+                            moveCaller.move = false;
+                            moveCaller.vinish = true;
+                        }
+                        if (moveCaller.vinish) {
+                            Img.alpha -= 0.02;
+                            Img.scaleX -= 0.005;
+                            Img.scaleY -= 0.005;
+                            if (Img.alpha <= 0) {
+                                Img.removeSelf();
+                                Laya.timer.clearAll(moveCaller);
+                            }
+                        }
+                        acc += accelerated0;
+                        Img.y -= (speed0 + acc);
+                        distance0 = fy - Img.y;
+                    });
+                    return Img;
+                }
+                _Particle._slowlyUp = _slowlyUp;
+                function _sprayRound(parent, centerPoint, width, height, rotation, urlArr, colorRGBA, distance, time, moveAngle, rotationSpeed, zOrder) {
+                    let Img = new _ParticleImgBase(parent, centerPoint, [0, 0], width, height, rotation, urlArr, colorRGBA, zOrder);
+                    let centerPoint0 = centerPoint ? centerPoint : new Laya.Point(0, 0);
+                    let radius = 0;
+                    const _time = time ? ToolsAdmin._Number.randomOneBySection(time[0], time[1]) : ToolsAdmin._Number.randomOneBySection(30, 50);
+                    const _distance = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(100, 200);
+                    const _speed = _distance / _time;
+                    const _angle = moveAngle ? ToolsAdmin._Number.randomOneBySection(moveAngle[0], moveAngle[1]) : ToolsAdmin._Number.randomOneBySection(0, 360);
+                    let rotationSpeed0 = rotationSpeed ? ToolsAdmin._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 20);
+                    rotationSpeed0 = ToolsAdmin._Number.randomOneHalf() == 0 ? rotationSpeed0 : -rotationSpeed0;
+                    const vinishTime = ToolsAdmin._Number.randomOneInt(60);
+                    const subAlpha = 1 / vinishTime;
+                    let moveCaller = {
+                        alpha: true,
+                        move: false,
+                        vinish: false,
+                    };
+                    Img['moveCaller'] = moveCaller;
+                    TimerAdmin._frameLoop(1, moveCaller, () => {
+                        Img.rotation += rotationSpeed0;
+                        if (Img.alpha < 1 && moveCaller.alpha) {
+                            Img.alpha += 0.5;
+                            if (Img.alpha >= 1) {
+                                moveCaller.alpha = false;
+                                moveCaller.move = true;
+                            }
+                        }
+                        else {
+                            if (!moveCaller.vinish) {
+                                radius += _speed;
+                                let point = ToolsAdmin._Point.getRoundPosOld(_angle, radius, centerPoint0);
+                                Img.pos(point.x, point.y);
+                                if (radius > _distance) {
+                                    moveCaller.move = false;
+                                    moveCaller.vinish = true;
+                                }
+                            }
+                            else {
+                                Img.alpha -= subAlpha;
+                                if (Img.alpha <= 0) {
+                                    Img.removeSelf();
+                                    Laya.timer.clearAll(moveCaller);
+                                }
+                                radius += _speed / 2;
+                                let point = ToolsAdmin._Point.getRoundPosOld(_angle, radius, centerPoint0);
+                                Img.pos(point.x, point.y);
+                            }
+                        }
+                    });
+                    return Img;
+                }
+                _Particle._sprayRound = _sprayRound;
+                function _spray(parent, centerPoint, width, height, rotation, urlArr, colorRGBA, distance, moveAngle, rotationSpeed, speed, accelerated, zOrder) {
+                    let Img = new _ParticleImgBase(parent, centerPoint, [0, 0], width, height, rotation, urlArr, colorRGBA, zOrder);
+                    let centerPoint0 = centerPoint ? centerPoint : new Laya.Point(0, 0);
+                    let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(3, 10);
+                    let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.25, 0.45);
+                    let acc = 0;
+                    let moveCaller = {
+                        alpha: true,
+                        move: false,
+                        vinish: false,
+                    };
+                    Img['moveCaller'] = moveCaller;
+                    let radius = 0;
+                    let distance1 = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(100, 200);
+                    let angle0 = moveAngle ? ToolsAdmin._Number.randomOneBySection(moveAngle[0], moveAngle[1]) : ToolsAdmin._Number.randomOneBySection(0, 360);
+                    let rotationSpeed0 = rotationSpeed ? ToolsAdmin._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 20);
+                    rotationSpeed0 = ToolsAdmin._Number.randomOneHalf() == 0 ? rotationSpeed0 : -rotationSpeed0;
+                    TimerAdmin._frameLoop(1, moveCaller, () => {
+                        Img.rotation += rotationSpeed0;
+                        if (Img.alpha < 1 && moveCaller.alpha) {
+                            Img.alpha += 0.5;
+                            if (Img.alpha >= 1) {
+                                moveCaller.alpha = false;
+                                moveCaller.move = true;
+                            }
+                        }
+                        else {
+                            if (radius < distance1 && moveCaller.move) {
+                            }
+                            else {
+                                moveCaller.move = false;
+                                moveCaller.vinish = true;
+                            }
+                            if (moveCaller.vinish) {
+                                Img.alpha -= 0.05;
+                                if (Img.alpha <= 0.3) {
+                                    Img.removeSelf();
+                                    Laya.timer.clearAll(moveCaller);
+                                }
+                            }
+                            acc += accelerated0;
+                            radius += speed0 + acc;
+                            let point = ToolsAdmin._Point.getRoundPosOld(angle0, radius, centerPoint0);
+                            Img.pos(point.x, point.y);
+                        }
+                    });
+                    return Img;
+                }
+                _Particle._spray = _spray;
+                function _outsideBox(parent, centerPoint, sectionWH, width, height, rotation, urlArr, colorRGBA, zOrder, curtailAngle, distance, rotateSpeed, speed, accelerated) {
+                    let Img = new _ParticleImgBase(parent, centerPoint, [0, 0], width, height, rotation, urlArr, colorRGBA, zOrder);
+                    let _angle = 0;
+                    sectionWH = sectionWH ? sectionWH : [100, 100];
+                    let fixedXY = ToolsAdmin._Number.randomOneHalf() == 0 ? 'x' : 'y';
+                    curtailAngle = curtailAngle ? curtailAngle : 60;
+                    if (fixedXY == 'x') {
+                        if (ToolsAdmin._Number.randomOneHalf() == 0) {
+                            Img.x += sectionWH[0];
+                            _angle = ToolsAdmin._Number.randomOneHalf() == 0 ? ToolsAdmin._Number.randomOneBySection(0, 90 - curtailAngle) : ToolsAdmin._Number.randomOneBySection(0, -90 + curtailAngle);
+                        }
+                        else {
+                            Img.x -= sectionWH[0];
+                            _angle = ToolsAdmin._Number.randomOneBySection(90 + curtailAngle, 270 - curtailAngle);
+                        }
+                        Img.y += ToolsAdmin._Number.randomOneBySection(-sectionWH[1], sectionWH[1]);
+                    }
+                    else {
+                        if (ToolsAdmin._Number.randomOneHalf() == 0) {
+                            Img.y -= sectionWH[1];
+                            _angle = ToolsAdmin._Number.randomOneBySection(180 + curtailAngle, 360 - curtailAngle);
+                        }
+                        else {
+                            Img.y += sectionWH[1];
+                            _angle = ToolsAdmin._Number.randomOneBySection(0 + curtailAngle, 180 - curtailAngle);
+                        }
+                        Img.x += ToolsAdmin._Number.randomOneBySection(-sectionWH[0], sectionWH[0]);
+                    }
+                    let p = ToolsAdmin._Point.angleByPoint(_angle);
+                    let _distance = distance ? ToolsAdmin._Number.randomOneBySection(distance[0], distance[1]) : ToolsAdmin._Number.randomOneBySection(20, 50);
+                    let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(0.5, 1);
+                    let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.25, 0.45);
+                    let acc = 0;
+                    let rotationSpeed0 = rotateSpeed ? ToolsAdmin._Number.randomOneBySection(rotateSpeed[0], rotateSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 20);
+                    let firstP = new Laya.Point(Img.x, Img.y);
+                    let moveCaller = {
+                        alpha: true,
+                        move: false,
+                        vinish: false,
+                    };
+                    Img['moveCaller'] = moveCaller;
+                    TimerAdmin._frameLoop(1, moveCaller, () => {
+                        Img.rotation += rotationSpeed0;
+                        if (moveCaller.alpha) {
+                            Img.alpha += 0.5;
+                            if (Img.alpha >= 1) {
+                                moveCaller.alpha = false;
+                                moveCaller.move = true;
+                            }
+                        }
+                        else if (moveCaller.move) {
+                            if (firstP.distance(Img.x, Img.y) >= _distance) {
+                                moveCaller.move = false;
+                                moveCaller.vinish = true;
+                            }
+                        }
+                        else if (moveCaller.vinish) {
+                            Img.alpha -= 0.05;
+                            if (Img.alpha <= 0.3) {
+                                Img.removeSelf();
+                                Laya.timer.clearAll(moveCaller);
+                            }
+                        }
+                        if (!moveCaller.alpha) {
+                            acc += accelerated0;
+                            Img.x += p.x * (speed0 + acc);
+                            Img.y += p.y * (speed0 + acc);
+                        }
+                    });
+                    return Img;
+                }
+                _Particle._outsideBox = _outsideBox;
+                function _moveToTargetToMove(parent, centerPoint, width, height, rotation, angle, urlArr, colorRGBA, zOrder, distance1, distance2, rotationSpeed, speed, accelerated) {
+                    let Img = new _ParticleImgBase(parent, centerPoint, [0, 0], width, height, rotation, urlArr, colorRGBA, zOrder);
+                    let centerPoint0 = centerPoint ? centerPoint : new Laya.Point(0, 0);
+                    let speed0 = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(5, 6);
+                    let accelerated0 = accelerated ? ToolsAdmin._Number.randomOneBySection(accelerated[0], accelerated[1]) : ToolsAdmin._Number.randomOneBySection(0.25, 0.45);
+                    let acc = 0;
+                    let moveCaller = {
+                        alpha: true,
+                        move1: false,
+                        stop: false,
+                        move2: false,
+                        vinish: false,
+                    };
+                    Img['moveCaller'] = moveCaller;
+                    let radius = 0;
+                    let dis1 = distance1 ? ToolsAdmin._Number.randomOneBySection(distance1[0], distance1[1]) : ToolsAdmin._Number.randomOneBySection(100, 200);
+                    let dis2 = distance2 ? ToolsAdmin._Number.randomOneBySection(distance2[0], distance2[1]) : ToolsAdmin._Number.randomOneBySection(100, 200);
+                    let angle0 = angle ? ToolsAdmin._Number.randomOneBySection(angle[0], angle[1]) : ToolsAdmin._Number.randomOneBySection(0, 360);
+                    Img.rotation = angle0 - 90;
+                    let rotationSpeed0 = rotationSpeed ? ToolsAdmin._Number.randomOneBySection(rotationSpeed[0], rotationSpeed[1]) : ToolsAdmin._Number.randomOneBySection(0, 20);
+                    TimerAdmin._frameLoop(1, moveCaller, () => {
+                        if (moveCaller.alpha) {
+                            acc += accelerated0;
+                            radius += speed0 + acc;
+                            Img.alpha += 0.5;
+                            if (Img.alpha >= 1) {
+                                moveCaller.alpha = false;
+                                moveCaller.move1 = true;
+                            }
+                        }
+                        else if (moveCaller.move1) {
+                            acc += accelerated0;
+                            radius += speed0 + acc;
+                            if (radius >= dis1) {
+                                moveCaller.move1 = false;
+                                moveCaller.stop = true;
+                            }
+                        }
+                        else if (moveCaller.stop) {
+                            acc -= 0.3;
+                            radius += 0.1;
+                            if (acc <= 0) {
+                                moveCaller.stop = false;
+                                moveCaller.move2 = true;
+                            }
+                        }
+                        else if (moveCaller.move2) {
+                            acc += accelerated0 / 2;
+                            radius += speed0 + acc;
+                            if (radius >= dis1 + dis2) {
+                                moveCaller.move2 = false;
+                                moveCaller.vinish = true;
+                            }
+                        }
+                        else if (moveCaller.vinish) {
+                            radius += 0.5;
+                            Img.alpha -= 0.05;
+                            if (Img.alpha <= 0) {
+                                Img.removeSelf();
+                                Laya.timer.clearAll(moveCaller);
+                            }
+                        }
+                        let point = ToolsAdmin._Point.getRoundPosOld(angle0, radius, centerPoint0);
+                        Img.pos(point.x, point.y);
+                    });
+                    return Img;
+                }
+                _Particle._moveToTargetToMove = _moveToTargetToMove;
+                function _AnnularInhalation(parent, centerPoint, radius, rotation, width, height, urlArr, speed, accelerated, zOrder) {
+                    let Img = new Laya.Image();
+                    parent.addChild(Img);
+                    width = width ? width : [25, 50];
+                    Img.width = ToolsAdmin._Number.randomCountBySection(width[0], width[1])[0];
+                    Img.height = height ? ToolsAdmin._Number.randomCountBySection(height[0], height[1])[0] : Img.width;
+                    Img.pivotX = Img.width / 2;
+                    Img.pivotY = Img.height / 2;
+                    Img.skin = urlArr ? ToolsAdmin._Array.randomGetOut(urlArr)[0] : _SkinUrl[ToolsAdmin._Number.randomCountBySection(0, 12)[0]];
+                    let radius0 = ToolsAdmin._Number.randomCountBySection(radius[0], radius[1])[0];
+                    Img.alpha = 0;
+                    let speed0 = speed ? ToolsAdmin._Number.randomCountBySection(speed[0], speed[1])[0] : ToolsAdmin._Number.randomCountBySection(5, 10)[0];
+                    let angle = rotation ? ToolsAdmin._Number.randomCountBySection(rotation[0], rotation[1])[0] : ToolsAdmin._Number.randomCountBySection(0, 360)[0];
+                    let caller = {};
+                    let acc = 0;
+                    accelerated = accelerated ? accelerated : 0.35;
+                    TimerAdmin._frameLoop(1, caller, () => {
+                        if (Img.alpha < 1) {
+                            Img.alpha += 0.05;
+                            acc += (accelerated / 5);
+                            radius0 -= (speed0 / 2 + acc);
+                        }
+                        else {
+                            acc += accelerated;
+                            radius0 -= (speed0 + acc);
+                        }
+                        let point = ToolsAdmin._Point.getRoundPosOld(angle, radius0, centerPoint);
+                        Img.pos(point.x, point.y);
+                        if (point.distance(centerPoint.x, centerPoint.y) <= 20 || point.distance(centerPoint.x, centerPoint.y) >= 1000) {
+                            Img.removeSelf();
+                            Laya.timer.clearAll(caller);
+                        }
+                    });
+                    return Img;
+                }
+                _Particle._AnnularInhalation = _AnnularInhalation;
+            })(_Particle = Eff2DAdmin._Particle || (Eff2DAdmin._Particle = {}));
+            let _Glitter;
+            (function (_Glitter) {
+                class _GlitterImage extends Laya.Image {
+                    constructor(parent, centerPos, radiusXY, urlArr, colorRGBA, width, height, zOder) {
+                        super();
+                        if (!parent.parent) {
+                            return;
+                        }
+                        parent.addChild(this);
+                        this.skin = urlArr ? ToolsAdmin._Array.randomGetOne(urlArr) : _SkinUrl.星星1;
+                        this.width = width ? ToolsAdmin._Number.randomOneBySection(width[0], width[1]) : 80;
+                        this.height = height ? ToolsAdmin._Number.randomOneBySection(height[0], height[1]) : this.width;
+                        this.pivotX = this.width / 2;
+                        this.pivotY = this.height / 2;
+                        let p = radiusXY ? ToolsAdmin._Point.randomPointByCenter(centerPos, radiusXY[0], radiusXY[1], 1) : ToolsAdmin._Point.randomPointByCenter(centerPos, 100, 100, 1);
+                        this.pos(p[0].x, p[0].y);
+                        let RGBA = [];
+                        RGBA[0] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : ToolsAdmin._Number.randomOneBySection(10, 255);
+                        RGBA[1] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : ToolsAdmin._Number.randomOneBySection(200, 255);
+                        RGBA[2] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : ToolsAdmin._Number.randomOneBySection(10, 255);
+                        RGBA[3] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : ToolsAdmin._Number.randomOneBySection(1, 1);
+                        ColorAdmin._colour(this, RGBA);
+                        this.alpha = 0;
+                        this.zOrder = zOder ? zOder : 1000;
+                    }
+                }
+                _Glitter._GlitterImage = _GlitterImage;
+                function _blinkStar(parent, centerPos, radiusXY, urlArr, colorRGBA, width, height, scale, speed, rotateSpeed, zOder) {
+                    let Img = new _GlitterImage(parent, centerPos, radiusXY, urlArr, colorRGBA, width, height, zOder);
+                    Img.scaleX = 0;
+                    Img.scaleY = 0;
+                    let _scale = scale ? ToolsAdmin._Number.randomOneBySection(scale[0], scale[1]) : ToolsAdmin._Number.randomOneBySection(0.8, 1.2);
+                    let _speed = speed ? ToolsAdmin._Number.randomOneBySection(speed[0], speed[1]) : ToolsAdmin._Number.randomOneBySection(0.01, 0.02);
+                    let _rotateSpeed = rotateSpeed ? ToolsAdmin._Number.randomOneInt(rotateSpeed[0], rotateSpeed[1]) : ToolsAdmin._Number.randomOneInt(0, 5);
+                    _rotateSpeed = ToolsAdmin._Number.randomOneHalf() == 0 ? -_rotateSpeed : _rotateSpeed;
+                    let moveCaller = {
+                        appear: true,
+                        scale: false,
+                        vanish: false,
+                    };
+                    Img['moveCaller'] = moveCaller;
+                    var ani = () => {
+                        if (moveCaller.appear) {
+                            Img.alpha += 0.1;
+                            Img.rotation += _rotateSpeed;
+                            Img.scaleX = Img.scaleY += _speed;
+                            if (Img.alpha >= 1) {
+                                moveCaller.appear = false;
+                                moveCaller.scale = true;
+                            }
+                        }
+                        else if (moveCaller.scale) {
+                            Img.rotation += _rotateSpeed;
+                            Img.scaleX = Img.scaleY += _speed;
+                            if (Img.scaleX > _scale) {
+                                moveCaller.scale = false;
+                                moveCaller.vanish = true;
+                            }
+                        }
+                        else if (moveCaller.vanish) {
+                            Img.rotation -= _rotateSpeed;
+                            Img.alpha -= 0.015;
+                            Img.scaleX -= 0.01;
+                            Img.scaleY -= 0.01;
+                            if (Img.scaleX <= 0) {
+                                Img.removeSelf();
+                                Laya.timer.clearAll(moveCaller);
+                            }
+                        }
+                    };
+                    Laya.timer.frameLoop(1, moveCaller, ani);
+                    return Img;
+                }
+                _Glitter._blinkStar = _blinkStar;
+                function _simpleInfinite(parent, x, y, width, height, zOrder, url, speed) {
+                    let Img = new Laya.Image();
+                    parent.addChild(Img);
+                    Img.width = width;
+                    Img.height = height;
+                    Img.pos(x, y);
+                    Img.skin = url ? url : _SkinUrl.方形光圈1;
+                    Img.alpha = 0;
+                    Img.zOrder = zOrder ? zOrder : 0;
+                    let add = true;
+                    let caller = {};
+                    let func = () => {
+                        if (!add) {
+                            Img.alpha -= speed ? speed : 0.01;
+                            if (Img.alpha <= 0) {
+                                if (caller['end']) {
+                                    Laya.timer.clearAll(caller);
+                                    Img.removeSelf();
+                                }
+                                else {
+                                    add = true;
+                                }
+                            }
+                        }
+                        else {
+                            Img.alpha += speed ? speed * 2 : 0.01 * 2;
+                            if (Img.alpha >= 1) {
+                                add = false;
+                                caller['end'] = true;
+                            }
+                        }
+                    };
+                    Laya.timer.frameLoop(1, caller, func);
+                    return Img;
+                }
+                _Glitter._simpleInfinite = _simpleInfinite;
+            })(_Glitter = Eff2DAdmin._Glitter || (Eff2DAdmin._Glitter = {}));
+            let _circulation;
+            (function (_circulation) {
+                class _circulationImage extends Laya.Image {
+                    constructor(parent, urlArr, colorRGBA, width, height, zOrder) {
+                        super();
+                        parent.addChild(this);
+                        this.skin = urlArr ? ToolsAdmin._Array.randomGetOne(urlArr) : _SkinUrl.圆形发光1;
+                        this.width = width ? ToolsAdmin._Number.randomOneBySection(width[0], width[1]) : 80;
+                        this.height = height ? ToolsAdmin._Number.randomOneBySection(height[0], height[1]) : this.width;
+                        this.pivotX = this.width / 2;
+                        this.pivotY = this.height / 2;
+                        let RGBA = [];
+                        RGBA[0] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][0], colorRGBA[1][0]) : ToolsAdmin._Number.randomOneBySection(0, 255);
+                        RGBA[1] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][1], colorRGBA[1][1]) : ToolsAdmin._Number.randomOneBySection(0, 255);
+                        RGBA[2] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][2], colorRGBA[1][2]) : ToolsAdmin._Number.randomOneBySection(0, 255);
+                        RGBA[3] = colorRGBA ? ToolsAdmin._Number.randomOneBySection(colorRGBA[0][3], colorRGBA[1][3]) : ToolsAdmin._Number.randomOneBySection(0, 255);
+                        ColorAdmin._colour(this, RGBA);
+                        this.zOrder = zOrder ? zOrder : 0;
+                        this.alpha = 0;
+                        this.scaleX = 0;
+                        this.scaleY = 0;
+                    }
+                }
+                _circulation._circulationImage = _circulationImage;
+                function _corner(parent, posArray, urlArr, colorRGBA, width, height, zOrder, parallel, speed) {
+                    if (posArray.length <= 1) {
+                        return;
+                    }
+                    let Img = new _circulationImage(parent, urlArr, colorRGBA, width, height, zOrder);
+                    let Imgfootprint = new _circulationImage(parent, urlArr, colorRGBA, width, height, zOrder);
+                    Imgfootprint.filters = Img.filters;
+                    Img.pos(posArray[0][0], posArray[0][1]);
+                    Img.alpha = 1;
+                    let moveCaller = {
+                        num: 0,
+                        alpha: true,
+                        move: false,
+                    };
+                    Img['moveCaller'] = moveCaller;
+                    let _speed = speed ? speed : 3;
+                    let index = 0;
+                    Img.scale(1, 1);
+                    TimerAdmin._frameLoop(1, moveCaller, () => {
+                        let Imgfootprint = new _circulationImage(parent, urlArr, colorRGBA, width, height, zOrder);
+                        Imgfootprint.filters = Img.filters;
+                        Imgfootprint.x = Img.x;
+                        Imgfootprint.y = Img.y;
+                        Imgfootprint.rotation = Img.rotation;
+                        Imgfootprint.alpha = 1;
+                        Imgfootprint.zOrder = -1;
+                        Imgfootprint.scaleX = Img.scaleX;
+                        Imgfootprint.scaleY = Img.scaleY;
+                        Ani2DAdmin.fadeOut(Imgfootprint, 1, 0, 200, 0, () => {
+                            Imgfootprint.removeSelf();
+                        });
+                        if (Img.parent == null) {
+                            Laya.timer.clearAll(moveCaller);
+                        }
+                        moveCaller.num++;
+                        if (urlArr) {
+                            if (moveCaller.num > urlArr.length) {
+                                moveCaller.num = 0;
+                            }
+                            else {
+                                Img.skin = urlArr[moveCaller.num];
+                            }
+                        }
+                    });
+                    var func = () => {
+                        let targetXY = [posArray[index][0], posArray[index][1]];
+                        let distance = (new Laya.Point(Img.x, Img.y)).distance(targetXY[0], targetXY[1]);
+                        if (parallel) {
+                            Img.rotation = ToolsAdmin._Point.pointByAngleOld(Img.x - targetXY[0], Img.y - targetXY[1]) + 180;
+                        }
+                        let time = speed * 100 + distance / 5;
+                        if (index == posArray.length + 1) {
+                            targetXY = [posArray[0][0], posArray[0][1]];
+                        }
+                        Ani2DAdmin.move(Img, targetXY[0], targetXY[1], time, () => {
+                            index++;
+                            if (index == posArray.length) {
+                                index = 0;
+                            }
+                            func();
+                        });
+                    };
+                    func();
+                    return Img;
+                }
+                _circulation._corner = _corner;
+            })(_circulation = Eff2DAdmin._circulation || (Eff2DAdmin._circulation = {}));
+        })(Eff2DAdmin = Lwg.Eff2DAdmin || (Lwg.Eff2DAdmin = {}));
+        let ClickAdmin;
+        (function (ClickAdmin) {
+            ClickAdmin._switch = true;
+            ClickAdmin._absoluteSwitch = true;
+            ClickAdmin._assign = [];
+            ClickAdmin._stageSwitch = true;
+            function _checkAssign(name) {
+                let assign = false;
+                if (LwgClick._assign.length > 0) {
+                    for (let index = 0; index < LwgClick._assign.length; index++) {
+                        const _name = LwgClick._assign[index];
+                        if (_name === name) {
+                            assign = true;
+                        }
+                    }
+                }
+                return assign;
+            }
+            ClickAdmin._checkAssign = _checkAssign;
+            ClickAdmin._Type = {
+                no: 'no',
+                largen: 'largen',
+                reduce: 'reduce',
+            };
+            ClickAdmin._Use = {
+                get value() {
+                    return this['Click/name'] ? this['Click/name'] : null;
+                },
+                set value(val) {
+                    this['Click/name'] = val;
+                }
+            };
+            function _effectSwitch(effectType) {
+                let btnEffect;
+                switch (effectType) {
+                    case ClickAdmin._Type.no:
+                        btnEffect = new _NoEffect();
+                        break;
+                    case ClickAdmin._Type.largen:
+                        btnEffect = new _Largen();
+                        break;
+                    case ClickAdmin._Type.reduce:
+                        btnEffect = new _Reduce();
+                        break;
+                    default:
+                        btnEffect = new _NoEffect();
+                        break;
+                }
+                return btnEffect;
+            }
+            ClickAdmin._effectSwitch = _effectSwitch;
+            function _on(effect, target, caller, down, move, up, out) {
+                const btnEffect = _effectSwitch(effect);
+                target.on(Laya.Event.MOUSE_DOWN, caller, down);
+                target.on(Laya.Event.MOUSE_MOVE, caller, move);
+                target.on(Laya.Event.MOUSE_UP, caller, up);
+                target.on(Laya.Event.MOUSE_OUT, caller, out);
+                target.on(Laya.Event.MOUSE_DOWN, caller, btnEffect.down);
+                target.on(Laya.Event.MOUSE_MOVE, caller, btnEffect.move);
+                target.on(Laya.Event.MOUSE_UP, caller, btnEffect.up);
+                target.on(Laya.Event.MOUSE_OUT, caller, btnEffect.out);
+            }
+            ClickAdmin._on = _on;
+            function _off(effect, target, caller, down, move, up, out) {
+                const btnEffect = _effectSwitch(effect);
+                target._off(Laya.Event.MOUSE_DOWN, caller, down);
+                target._off(Laya.Event.MOUSE_MOVE, caller, move);
+                target._off(Laya.Event.MOUSE_UP, caller, up);
+                target._off(Laya.Event.MOUSE_OUT, caller, out);
+                target._off(Laya.Event.MOUSE_DOWN, caller, btnEffect.down);
+                target._off(Laya.Event.MOUSE_MOVE, caller, btnEffect.move);
+                target._off(Laya.Event.MOUSE_UP, caller, btnEffect.up);
+                target._off(Laya.Event.MOUSE_OUT, caller, btnEffect.out);
+            }
+            ClickAdmin._off = _off;
+            class _NoEffect {
+                down() { }
+                move() { }
+                up() { }
+                out() { }
+            }
+            ClickAdmin._NoEffect = _NoEffect;
+            class _Largen {
+                down(event) {
+                    event.currentTarget.scale(1.1, 1.1);
+                    AudioAdmin._playSound(LwgClick._audioUrl);
+                }
+                move() { }
+                up(event) {
+                    event.currentTarget.scale(1, 1);
+                }
+                out(event) {
+                    event.currentTarget.scale(1, 1);
+                }
+            }
+            ClickAdmin._Largen = _Largen;
+            class _Reduce {
+                down(event) {
+                    event.currentTarget.scale(0.9, 0.9);
+                    AudioAdmin._playSound(LwgClick._audioUrl);
+                }
+                move() { }
+                up(event) {
+                    event.currentTarget.scale(1, 1);
+                }
+                out(event) {
+                    event.currentTarget.scale(1, 1);
+                }
+            }
+            ClickAdmin._Reduce = _Reduce;
+        })(ClickAdmin = Lwg.ClickAdmin || (Lwg.ClickAdmin = {}));
+        let Ani3DAdmin;
+        (function (Ani3DAdmin) {
+            Ani3DAdmin.tweenMap = {};
+            Ani3DAdmin.frameRate = 1;
+            function moveTo(target, toPos, duration, caller, ease, complete, delay = 0, coverBefore = true, update, frame) {
+                let position = target.transform.position.clone();
+                if (duration == 0 || duration === undefined || duration === null) {
+                    target.transform.position = toPos.clone();
+                    complete && complete.apply(caller);
+                    return;
+                }
+                if (frame <= 0 || frame === undefined || frame === null) {
+                    frame = Ani3DAdmin.frameRate;
+                }
+                let updateRenderPos = function () {
+                    if (target.transform) {
+                        target.transform.position = position;
+                    }
+                    update && update();
+                };
+                Laya.timer.once(delay, target, function () {
+                    Laya.timer.frameLoop(frame, target, updateRenderPos);
+                });
+                let endTween = function () {
+                    if (target.transform) {
+                        target.transform.position = toPos.clone();
+                        Laya.timer.clear(target, updateRenderPos);
+                    }
+                    complete && complete.apply(caller);
+                };
+                let tween = Laya.Tween.to(position, { x: toPos.x, y: toPos.y, z: toPos.z }, duration, ease, Laya.Handler.create(target, endTween), delay, coverBefore);
+                if (!Ani3DAdmin.tweenMap[target.id]) {
+                    Ani3DAdmin.tweenMap[target.id] = [];
+                }
+                Ani3DAdmin.tweenMap[target.id].push(tween);
+            }
+            Ani3DAdmin.moveTo = moveTo;
+            function rotateTo(target, toRotation, duration, caller, ease, complete, delay, coverBefore, update, frame) {
+                let rotation = target.transform.localRotationEuler.clone();
+                if (duration == 0 || duration === undefined || duration === null) {
+                    target.transform.localRotationEuler = toRotation.clone();
+                    complete && complete.apply(caller);
+                    return;
+                }
+                if (frame <= 0 || frame === undefined || frame === null) {
+                    frame = Ani3DAdmin.frameRate;
+                }
+                let updateRenderRotation = function () {
+                    if (target.transform) {
+                        target.transform.localRotationEuler = rotation;
+                    }
+                    update && update();
+                };
+                Laya.timer.once(delay, target, function () {
+                    Laya.timer.frameLoop(frame, target, updateRenderRotation);
+                });
+                let endTween = function () {
+                    if (target.transform) {
+                        target.transform.localRotationEuler = toRotation.clone();
+                        Laya.timer.clear(target, updateRenderRotation);
+                    }
+                    complete && complete.apply(caller);
+                };
+                let tween = Laya.Tween.to(rotation, { x: toRotation.x, y: toRotation.y, z: toRotation.z }, duration, ease, Laya.Handler.create(target, endTween), delay, coverBefore);
+                if (!Ani3DAdmin.tweenMap[target.id]) {
+                    Ani3DAdmin.tweenMap[target.id] = [];
+                }
+                Ani3DAdmin.tweenMap[target.id].push(tween);
+            }
+            Ani3DAdmin.rotateTo = rotateTo;
+            function scaleTo(target, toScale, duration, caller, ease, complete, delay, coverBefore, update, frame) {
+                let localScale = target.transform.localScale.clone();
+                if (duration == 0 || duration === undefined || duration === null) {
+                    target.transform.localScale = toScale.clone();
+                    complete && complete.apply(caller);
+                    return;
+                }
+                if (frame <= 0 || frame === undefined || frame === null) {
+                    frame = Ani3DAdmin.frameRate;
+                }
+                let updateRenderPos = function () {
+                    target.transform.localScale = localScale.clone();
+                    update && update();
+                };
+                Laya.timer.once(delay, this, function () {
+                    Laya.timer.frameLoop(frame, target, updateRenderPos);
+                });
+                let endTween = function () {
+                    target.transform.localScale = toScale.clone();
+                    Laya.timer.clear(target, updateRenderPos);
+                    complete && complete.apply(caller);
+                };
+                let tween = Laya.Tween.to(localScale, { x: toScale.x, y: toScale.y, z: toScale.z }, duration, ease, Laya.Handler.create(target, endTween), delay, coverBefore);
+                if (!Ani3DAdmin.tweenMap[target.id]) {
+                    Ani3DAdmin.tweenMap[target.id] = [];
+                }
+                Ani3DAdmin.tweenMap[target.id].push(tween);
+            }
+            Ani3DAdmin.scaleTo = scaleTo;
+            function ClearTween(target) {
+                let tweens = Ani3DAdmin.tweenMap[target.id];
+                if (tweens && tweens.length) {
+                    while (tweens.length > 0) {
+                        let tween = tweens.pop();
+                        tween.clear();
+                    }
+                }
+                Laya.timer.clearAll(target);
+            }
+            Ani3DAdmin.ClearTween = ClearTween;
+            function rock(target, range, duration, caller, func, delayed, ease) {
+                if (!delayed) {
+                    delayed = 0;
+                }
+                let v1 = new Laya.Vector3(target.transform.localRotationEulerX + range.x, target.transform.localRotationEulerY + range.y, target.transform.localRotationEulerZ + range.z);
+                rotateTo(target, v1, duration / 2, caller, ease, () => {
+                    let v2 = new Laya.Vector3(target.transform.localRotationEulerX - range.x * 2, target.transform.localRotationEulerY - range.y * 2, target.transform.localRotationEulerZ - range.z * 2);
+                    rotateTo(target, v2, duration, caller, ease, () => {
+                        let v3 = new Laya.Vector3(target.transform.localRotationEulerX + range.x, target.transform.localRotationEulerY + range.y, target.transform.localRotationEulerZ + range.z);
+                        rotateTo(target, v3, duration / 2, caller, ease, () => {
+                            if (func) {
+                                func();
+                            }
+                        });
+                    });
+                }, delayed);
+            }
+            Ani3DAdmin.rock = rock;
+            function moveRotateTo(Sp3d, Target, duration, caller, ease, complete, delay, coverBefore, update, frame) {
+                moveTo(Sp3d, Target.transform.position, duration, caller, ease, null, delay, coverBefore, update, frame);
+                rotateTo(Sp3d, Target.transform.localRotationEuler, duration, caller, ease, complete, delay, coverBefore, null, frame);
+            }
+            Ani3DAdmin.moveRotateTo = moveRotateTo;
+        })(Ani3DAdmin = Lwg.Ani3DAdmin || (Lwg.Ani3DAdmin = {}));
+        let Ani2DAdmin;
+        (function (Ani2DAdmin) {
+            function _clearAll(arr) {
+                for (let index = 0; index < arr.length; index++) {
+                    Laya.Tween.clearAll(arr[index]);
+                }
+            }
+            Ani2DAdmin._clearAll = _clearAll;
+            function circulation_scale(node, range, time, delayed, func) {
+                Laya.Tween.to(node, { scaleX: 1 + range, scaleY: 1 + range }, time, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(node, { scaleX: 1 - range, scaleY: 1 - range }, time / 2, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(node, { scaleX: 1, scaleY: 1 }, time / 2, null, Laya.Handler.create(this, function () {
+                            if (func) {
+                                func();
+                            }
+                        }), 0);
+                    }), 0);
+                }), delayed ? delayed : 0);
+            }
+            Ani2DAdmin.circulation_scale = circulation_scale;
+            function leftRight_Shake(node, range, time, delayed, func, click) {
+                if (!delayed) {
+                    delayed = 0;
+                }
+                if (!click) {
+                    LwgClick._switch = false;
+                }
+                Laya.Tween.to(node, { x: node.x - range }, time, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(node, { x: node.x + range * 2 }, time, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(node, { x: node.x - range }, time, null, Laya.Handler.create(this, function () {
+                            if (func) {
+                                func();
+                            }
+                            if (!click) {
+                                LwgClick._switch = true;
+                            }
+                        }));
+                    }));
+                }), delayed);
+            }
+            Ani2DAdmin.leftRight_Shake = leftRight_Shake;
+            function rotate(node, Erotate, time, delayed, func) {
+                Laya.Tween.to(node, { rotation: Erotate }, time, null, Laya.Handler.create(node, function () {
+                    if (func) {
+                        func();
+                    }
+                }), delayed ? delayed : 0);
+            }
+            Ani2DAdmin.rotate = rotate;
+            function upDown_Overturn(node, time, func) {
+                Laya.Tween.to(node, { scaleY: 0 }, time, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(node, { scaleY: 1 }, time, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(node, { scaleY: 0 }, time, null, Laya.Handler.create(this, function () {
+                            Laya.Tween.to(node, { scaleY: 1 }, time, null, Laya.Handler.create(this, function () {
+                                if (func !== null || func !== undefined) {
+                                    func();
+                                }
+                            }), 0);
+                        }), 0);
+                    }), 0);
+                }), 0);
+            }
+            Ani2DAdmin.upDown_Overturn = upDown_Overturn;
+            function leftRight_Overturn(node, time, func) {
+                Laya.Tween.to(node, { scaleX: 0 }, time, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(node, { scaleX: 1 }, time, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(node, { scaleX: 0 }, time, null, Laya.Handler.create(this, function () {
+                            Laya.Tween.to(node, { scaleX: 1 }, time, null, Laya.Handler.create(this, function () {
+                            }), 0);
+                            if (func !== null) {
+                                func();
+                            }
+                        }), 0);
+                    }), 0);
+                }), 0);
+            }
+            Ani2DAdmin.leftRight_Overturn = leftRight_Overturn;
+            function upDwon_Shake(node, range, time, delayed, func) {
+                Laya.Tween.to(node, { y: node.y + range }, time, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(node, { y: node.y - range * 2 }, time, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(node, { y: node.y + range }, time, null, Laya.Handler.create(this, function () {
+                            if (func !== null) {
+                                func();
+                            }
+                        }));
+                    }));
+                }), delayed);
+            }
+            Ani2DAdmin.upDwon_Shake = upDwon_Shake;
+            function fadeOut(node, alpha1, alpha2, time, delayed, func, stageClick) {
+                node.alpha = alpha1;
+                if (stageClick) {
+                    LwgClick._switch = false;
+                }
+                Laya.Tween.to(node, { alpha: alpha2 }, time, null, Laya.Handler.create(this, function () {
+                    if (func) {
+                        func();
+                    }
+                    if (stageClick) {
+                        LwgClick._switch = true;
+                    }
+                }), delayed ? delayed : 0);
+            }
+            Ani2DAdmin.fadeOut = fadeOut;
+            function fadeOut_KickBack(node, alpha1, alpha2, time, delayed, func) {
+                node.alpha = alpha1;
+                Laya.Tween.to(node, { alpha: alpha2 }, time, null, Laya.Handler.create(this, function () {
+                    if (func !== null) {
+                        func();
+                    }
+                }), delayed);
+            }
+            Ani2DAdmin.fadeOut_KickBack = fadeOut_KickBack;
+            function move_FadeOut(node, firstX, firstY, targetX, targetY, time, delayed, func) {
+                node.alpha = 0;
+                node.x = firstX;
+                node.y = firstY;
+                Laya.Tween.to(node, { alpha: 1, x: targetX, y: targetY }, time, null, Laya.Handler.create(this, function () {
+                    if (func !== null) {
+                        func();
+                    }
+                }), delayed);
+            }
+            Ani2DAdmin.move_FadeOut = move_FadeOut;
+            function move_Fade_Out(node, firstX, firstY, targetX, targetY, time, delayed, func) {
+                node.alpha = 1;
+                node.x = firstX;
+                node.y = firstY;
+                Laya.Tween.to(node, { alpha: 0, x: targetX, y: targetY }, time, null, Laya.Handler.create(this, function () {
+                    if (func !== null) {
+                        func();
+                    }
+                }), delayed);
+            }
+            Ani2DAdmin.move_Fade_Out = move_Fade_Out;
+            function move_FadeOut_Scale_01(node, firstX, firstY, targetX, targetY, time, delayed, func) {
+                node.alpha = 0;
+                node.targetX = 0;
+                node.targetY = 0;
+                node.x = firstX;
+                node.y = firstY;
+                Laya.Tween.to(node, { alpha: 1, x: targetX, y: targetY, scaleX: 1, scaleY: 1 }, time, null, Laya.Handler.create(this, function () {
+                    if (func !== null) {
+                        func();
+                    }
+                }), delayed);
+            }
+            Ani2DAdmin.move_FadeOut_Scale_01 = move_FadeOut_Scale_01;
+            function move_Scale(node, fScale, fX, fY, tX, tY, eScale, time, delayed, ease, func) {
+                node.scaleX = fScale;
+                node.scaleY = fScale;
+                node.x = fX;
+                node.y = fY;
+                Laya.Tween.to(node, { x: tX, y: tY, scaleX: eScale, scaleY: eScale }, time, ease ? null : ease, Laya.Handler.create(this, function () {
+                    if (func) {
+                        func();
+                    }
+                }), delayed ? delayed : 0);
+            }
+            Ani2DAdmin.move_Scale = move_Scale;
+            function move_rotate(Node, tRotate, tPoint, time, delayed, func) {
+                Laya.Tween.to(Node, { rotation: tRotate, x: tPoint.x, y: tPoint.y }, time, null, Laya.Handler.create(Node, () => {
+                    if (func) {
+                        func();
+                    }
+                }), delayed ? delayed : 0);
+            }
+            Ani2DAdmin.move_rotate = move_rotate;
+            function rotate_Scale(target, fRotate, fScaleX, fScaleY, eRotate, eScaleX, eScaleY, time, delayed, func) {
+                target.scaleX = fScaleX;
+                target.scaleY = fScaleY;
+                target.rotation = fRotate;
+                Laya.Tween.to(target, { rotation: eRotate, scaleX: eScaleX, scaleY: eScaleY }, time, null, Laya.Handler.create(this, () => {
+                    if (func) {
+                        func();
+                    }
+                    target.rotation = 0;
+                }), delayed ? delayed : 0);
+            }
+            Ani2DAdmin.rotate_Scale = rotate_Scale;
+            function drop_Simple(node, fY, tY, rotation, time, delayed, func) {
+                node.y = fY;
+                Laya.Tween.to(node, { y: tY, rotation: rotation }, time, Laya.Ease.circOut, Laya.Handler.create(this, function () {
+                    if (func !== null) {
+                        func();
+                    }
+                }), delayed);
+            }
+            Ani2DAdmin.drop_Simple = drop_Simple;
+            function drop_KickBack(target, fAlpha, firstY, targetY, extendY, time1, delayed, func) {
+                target.alpha = fAlpha;
+                target.y = firstY;
+                if (!delayed) {
+                    delayed = 0;
+                }
+                Laya.Tween.to(target, { alpha: 1, y: targetY + extendY }, time1, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(target, { y: targetY - extendY / 2 }, time1 / 2, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(target, { y: targetY }, time1 / 4, null, Laya.Handler.create(this, function () {
+                            if (func) {
+                                func();
+                            }
+                        }), 0);
+                    }), 0);
+                }), delayed);
+            }
+            Ani2DAdmin.drop_KickBack = drop_KickBack;
+            function drop_Excursion(node, targetY, targetX, rotation, time, delayed, func) {
+                Laya.Tween.to(node, { x: node.x + targetX, y: node.y + targetY * 1 / 6 }, time, Laya.Ease.expoIn, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(node, { x: node.x + targetX + 50, y: targetY, rotation: rotation }, time, null, Laya.Handler.create(this, function () {
+                        if (func !== null) {
+                            func();
+                        }
+                    }), 0);
+                }), delayed);
+            }
+            Ani2DAdmin.drop_Excursion = drop_Excursion;
+            function goUp_Simple(node, initialY, initialR, targetY, time, delayed, func) {
+                node.y = initialY;
+                node.rotation = initialR;
+                Laya.Tween.to(node, { y: targetY, rotation: 0 }, time, Laya.Ease.cubicOut, Laya.Handler.create(this, function () {
+                    if (func !== null) {
+                        func();
+                    }
+                }), delayed);
+            }
+            Ani2DAdmin.goUp_Simple = goUp_Simple;
+            function cardRotateX_TowFace(node, time, func1, delayed, func2) {
+                Laya.Tween.to(node, { scaleX: 0 }, time, null, Laya.Handler.create(this, function () {
+                    ToolsAdmin._Node.childrenVisible2D(node, false);
+                    if (func1) {
+                        func1();
+                    }
+                    Laya.Tween.to(node, { scaleX: 1 }, time * 0.9, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(node, { scaleX: 0 }, time * 0.8, null, Laya.Handler.create(this, function () {
+                            ToolsAdmin._Node.childrenVisible2D(node, true);
+                            Laya.Tween.to(node, { scaleX: 1 }, time * 0.7, null, Laya.Handler.create(this, function () {
+                                if (func2) {
+                                    func2();
+                                }
+                            }), 0);
+                        }), 0);
+                    }), 0);
+                }), delayed);
+            }
+            Ani2DAdmin.cardRotateX_TowFace = cardRotateX_TowFace;
+            function cardRotateX_OneFace(node, func1, time, delayed, func2) {
+                Laya.Tween.to(node, { scaleX: 0 }, time, null, Laya.Handler.create(this, function () {
+                    if (func1 !== null) {
+                        func1();
+                    }
+                    Laya.Tween.to(node, { scaleX: 1 }, time, null, Laya.Handler.create(this, function () {
+                        if (func2 !== null) {
+                            func2();
+                        }
+                    }), 0);
+                }), delayed);
+            }
+            Ani2DAdmin.cardRotateX_OneFace = cardRotateX_OneFace;
+            function cardRotateY_TowFace(node, time, func1, delayed, func2) {
+                Laya.Tween.to(node, { scaleY: 0 }, time, null, Laya.Handler.create(this, function () {
+                    ToolsAdmin._Node.childrenVisible2D(node, false);
+                    if (func1) {
+                        func1();
+                    }
+                    Laya.Tween.to(node, { scaleY: 1 }, time, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(node, { scaleY: 0 }, time, null, Laya.Handler.create(this, function () {
+                            Laya.Tween.to(node, { scaleY: 1 }, time * 1 / 2, null, Laya.Handler.create(this, function () {
+                                ToolsAdmin._Node.childrenVisible2D(node, true);
+                                if (func2) {
+                                    func2();
+                                }
+                            }), 0);
+                        }), 0);
+                    }), 0);
+                }), delayed);
+            }
+            Ani2DAdmin.cardRotateY_TowFace = cardRotateY_TowFace;
+            function cardRotateY_OneFace(node, func1, time, delayed, func2) {
+                Laya.Tween.to(node, { scaleY: 0 }, time, null, Laya.Handler.create(this, function () {
+                    if (func1) {
+                        func1();
+                    }
+                    Laya.Tween.to(node, { scaleY: 1 }, time, null, Laya.Handler.create(this, function () {
+                        if (func2) {
+                            func2();
+                        }
+                    }), 0);
+                }), delayed ? delayed : 0);
+            }
+            Ani2DAdmin.cardRotateY_OneFace = cardRotateY_OneFace;
+            function move_changeRotate(node, targetX, targetY, per, rotation_pe, time, func) {
+                let targetPerX = targetX * per + node.x * (1 - per);
+                let targetPerY = targetY * per + node.y * (1 - per);
+                Laya.Tween.to(node, { x: targetPerX, y: targetPerY, rotation: 45 }, time, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(node, { x: targetX, y: targetY, rotation: 0 }, time, null, Laya.Handler.create(this, function () {
+                        if (func !== null) {
+                            func();
+                        }
+                    }), 0);
+                }), 0);
+            }
+            Ani2DAdmin.move_changeRotate = move_changeRotate;
+            function bomb_LeftRight(node, MaxScale, time, func, delayed) {
+                Laya.Tween.to(node, { scaleX: MaxScale }, time, Laya.Ease.cubicInOut, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(node, { scaleX: 0.85 }, time * 0.5, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(node, { scaleX: MaxScale * 0.9 }, time * 0.55, null, Laya.Handler.create(this, function () {
+                            Laya.Tween.to(node, { scaleX: 0.95 }, time * 0.6, null, Laya.Handler.create(this, function () {
+                                Laya.Tween.to(node, { scaleX: 1 }, time * 0.65, null, Laya.Handler.create(this, function () {
+                                    if (func)
+                                        func();
+                                }), 0);
+                            }), 0);
+                        }), 0);
+                    }), 0);
+                }), delayed);
+            }
+            Ani2DAdmin.bomb_LeftRight = bomb_LeftRight;
+            function bombs_Appear(node, firstAlpha, endScale, maxScale, rotation, time, func, delayed) {
+                node.scale(0, 0);
+                node.alpha = firstAlpha;
+                Laya.Tween.to(node, { scaleX: maxScale, scaleY: maxScale, alpha: 1, rotation: rotation }, time, Laya.Ease.cubicInOut, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(node, { scaleX: endScale, scaleY: endScale, rotation: 0 }, time / 2, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(node, { scaleX: endScale + (maxScale - endScale) / 3, scaleY: endScale + (maxScale - endScale) / 3, rotation: 0 }, time / 3, null, Laya.Handler.create(this, function () {
+                            Laya.Tween.to(node, { scaleX: endScale, scaleY: endScale, rotation: 0 }, time / 4, null, Laya.Handler.create(this, function () {
+                                if (func) {
+                                    func();
+                                }
+                            }), 0);
+                        }), 0);
+                    }), 0);
+                }), delayed ? delayed : 0);
+            }
+            Ani2DAdmin.bombs_Appear = bombs_Appear;
+            function bombs_AppearAllChild(node, firstAlpha, endScale, scale1, rotation1, time1, interval, func, audioType) {
+                let de1 = 0;
+                if (!interval) {
+                    interval = 100;
+                }
+                for (let index = 0; index < node.numChildren; index++) {
+                    let Child = node.getChildAt(index);
+                    Child.alpha = 0;
+                    Laya.timer.once(de1, this, () => {
+                        Child.alpha = 1;
+                        if (index !== node.numChildren - 1) {
+                            func == null;
+                        }
+                        bombs_Appear(Child, firstAlpha, endScale, scale1, rotation1, time1, func);
+                    });
+                    de1 += interval;
+                }
+            }
+            Ani2DAdmin.bombs_AppearAllChild = bombs_AppearAllChild;
+            function bombs_VanishAllChild(node, endScale, alpha, rotation, time, interval, func) {
+                let de1 = 0;
+                if (!interval) {
+                    interval = 100;
+                }
+                for (let index = 0; index < node.numChildren; index++) {
+                    let Child = node.getChildAt(index);
+                    Laya.timer.once(de1, this, () => {
+                        if (index !== node.numChildren - 1) {
+                            func == null;
+                        }
+                        bombs_Vanish(node, endScale, alpha, rotation, time, func);
+                    });
+                    de1 += interval;
+                }
+            }
+            Ani2DAdmin.bombs_VanishAllChild = bombs_VanishAllChild;
+            function bombs_Vanish(node, scale, alpha, rotation, time, func, delayed) {
+                Laya.Tween.to(node, { scaleX: scale, scaleY: scale, alpha: alpha, rotation: rotation }, time, Laya.Ease.cubicOut, Laya.Handler.create(this, function () {
+                    if (func) {
+                        func();
+                    }
+                }), delayed ? delayed : 0);
+            }
+            Ani2DAdmin.bombs_Vanish = bombs_Vanish;
+            function swell_shrink(node, firstScale, scale1, time, delayed, func) {
+                if (!delayed) {
+                    delayed = 0;
+                }
+                Laya.Tween.to(node, { scaleX: scale1, scaleY: scale1, alpha: 1, }, time, Laya.Ease.cubicInOut, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(node, { scaleX: firstScale, scaleY: firstScale, rotation: 0 }, time, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(node, { scaleX: firstScale + (scale1 - firstScale) * 0.5, scaleY: firstScale + (scale1 - firstScale) * 0.5, rotation: 0 }, time * 0.5, null, Laya.Handler.create(this, function () {
+                            Laya.Tween.to(node, { scaleX: firstScale, scaleY: firstScale, rotation: 0 }, time, null, Laya.Handler.create(this, function () {
+                                if (func) {
+                                    func();
+                                }
+                            }), 0);
+                        }), 0);
+                    }), 0);
+                }), delayed);
+            }
+            Ani2DAdmin.swell_shrink = swell_shrink;
+            function move(node, targetX, targetY, time, func, delayed, ease) {
+                Laya.Tween.to(node, { x: targetX, y: targetY }, time, ease ? ease : null, Laya.Handler.create(this, function () {
+                    if (func) {
+                        func();
+                    }
+                }), delayed ? delayed : 0);
+            }
+            Ani2DAdmin.move = move;
+            function move_Deform_X(node, firstX, firstR, targetX, scaleX, scaleY, time, delayed, func) {
+                node.alpha = 0;
+                node.x = firstX;
+                node.rotation = firstR;
+                Laya.Tween.to(node, { x: targetX, scaleX: 1 + scaleX, scaleY: 1 + scaleY, rotation: firstR / 3, alpha: 1 }, time, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(node, { scaleX: 1, scaleY: 1, rotation: 0 }, time, null, Laya.Handler.create(this, function () {
+                        if (func !== null) {
+                            func();
+                        }
+                    }), 0);
+                }), delayed);
+            }
+            Ani2DAdmin.move_Deform_X = move_Deform_X;
+            function move_Deform_Y(target, firstY, firstR, targeY, scaleX, scaleY, time, delayed, func) {
+                target.alpha = 0;
+                if (firstY) {
+                    target.y = firstY;
+                }
+                target.rotation = firstR;
+                Laya.Tween.to(target, { y: targeY, scaleX: 1 + scaleX, scaleY: 1 + scaleY, rotation: firstR / 3, alpha: 1 }, time, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(target, { scaleX: 1, scaleY: 1, rotation: 0 }, time, null, Laya.Handler.create(this, function () {
+                        if (func !== null) {
+                            func();
+                        }
+                    }), 0);
+                }), delayed);
+            }
+            Ani2DAdmin.move_Deform_Y = move_Deform_Y;
+            function blink_FadeOut_v(target, minAlpha, maXalpha, time, delayed, func) {
+                target.alpha = minAlpha;
+                Laya.Tween.to(target, { alpha: maXalpha }, time, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(target, { alpha: minAlpha }, time, null, Laya.Handler.create(this, function () {
+                        if (func !== null) {
+                            func();
+                        }
+                    }), 0);
+                }), delayed);
+            }
+            Ani2DAdmin.blink_FadeOut_v = blink_FadeOut_v;
+            function blink_FadeOut(target, minAlpha, maXalpha, time, delayed, func) {
+                target.alpha = minAlpha;
+                if (!delayed) {
+                    delayed = 0;
+                }
+                Laya.Tween.to(target, { alpha: minAlpha }, time, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(target, { alpha: maXalpha }, time, null, Laya.Handler.create(this, function () {
+                        if (func) {
+                            func();
+                        }
+                    }), 0);
+                }), delayed);
+            }
+            Ani2DAdmin.blink_FadeOut = blink_FadeOut;
+            function shookHead_Simple(target, rotate, time, delayed, func) {
+                let firstR = target.rotation;
+                Laya.Tween.to(target, { rotation: firstR + rotate }, time, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(target, { rotation: firstR - rotate * 2 }, time, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(target, { rotation: firstR + rotate }, time, null, Laya.Handler.create(this, function () {
+                            Laya.Tween.to(target, { rotation: firstR }, time, null, Laya.Handler.create(this, function () {
+                                if (func) {
+                                    func();
+                                }
+                            }), 0);
+                        }), 0);
+                    }), 0);
+                }), delayed ? delayed : 0);
+            }
+            Ani2DAdmin.shookHead_Simple = shookHead_Simple;
+            function HintAni_01(target, upNum, time1, stopTime, downNum, time2, func) {
+                target.alpha = 0;
+                Laya.Tween.to(target, { alpha: 1, y: target.y - upNum }, time1, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(target, { y: target.y - 15 }, stopTime, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(target, { alpha: 0, y: target.y + upNum + downNum }, time2, null, Laya.Handler.create(this, function () {
+                            if (func !== null) {
+                                func();
+                            }
+                        }), 0);
+                    }), 0);
+                }), 0);
+            }
+            Ani2DAdmin.HintAni_01 = HintAni_01;
+            function scale_Alpha(target, fAlpha, fScaleX, fScaleY, eScaleX, eScaleY, eAlpha, time, delayed, func, ease) {
+                if (!delayed) {
+                    delayed = 0;
+                }
+                if (!ease) {
+                    ease = null;
+                }
+                target.alpha = fAlpha;
+                target.scaleX = fScaleX;
+                target.scaleY = fScaleY;
+                Laya.Tween.to(target, { scaleX: eScaleX, scaleY: eScaleY, alpha: eAlpha }, time, ease, Laya.Handler.create(this, function () {
+                    if (func) {
+                        func();
+                    }
+                }), delayed);
+            }
+            Ani2DAdmin.scale_Alpha = scale_Alpha;
+            function scale(target, fScaleX, fScaleY, eScaleX, eScaleY, time, delayed, func, ease) {
+                target.scaleX = fScaleX;
+                target.scaleY = fScaleY;
+                Laya.Tween.to(target, { scaleX: eScaleX, scaleY: eScaleY }, time, ease ? ease : null, Laya.Handler.create(this, function () {
+                    if (func) {
+                        func();
+                    }
+                }), delayed ? delayed : 0);
+            }
+            Ani2DAdmin.scale = scale;
+            function rotate_Magnify_KickBack(node, eAngle, eScale, time1, time2, delayed1, delayed2, func) {
+                node.alpha = 0;
+                node.scaleX = 0;
+                node.scaleY = 0;
+                Laya.Tween.to(node, { alpha: 1, rotation: 360 + eAngle, scaleX: 1 + eScale, scaleY: 1 + eScale }, time1, null, Laya.Handler.create(this, function () {
+                    Laya.Tween.to(node, { rotation: 360 - eAngle / 2, scaleX: 1 + eScale / 2, scaleY: 1 + eScale / 2 }, time2, null, Laya.Handler.create(this, function () {
+                        Laya.Tween.to(node, { rotation: 360 + eAngle / 3, scaleX: 1 + eScale / 5, scaleY: 1 + eScale / 5 }, time2, null, Laya.Handler.create(this, function () {
+                            Laya.Tween.to(node, { rotation: 360, scaleX: 1, scaleY: 1 }, time2, null, Laya.Handler.create(this, function () {
+                                node.rotation = 0;
+                                if (func !== null) {
+                                    func();
+                                }
+                            }), 0);
+                        }), delayed2);
+                    }), 0);
+                }), delayed1);
+            }
+            Ani2DAdmin.rotate_Magnify_KickBack = rotate_Magnify_KickBack;
+        })(Ani2DAdmin = Lwg.Ani2DAdmin || (Lwg.Ani2DAdmin = {}));
+        let SetAdmin;
+        (function (SetAdmin) {
+            SetAdmin._sound = {
+                get switch() {
+                    return Laya.LocalStorage.getItem('Setting/sound') == '0' ? false : true;
+                },
+                set switch(value) {
+                    let val;
+                    if (value) {
+                        val = 1;
+                    }
+                    else {
+                        val = 0;
+                    }
+                    Laya.LocalStorage.setItem('Setting/sound', val.toString());
+                }
+            };
+            SetAdmin._bgMusic = {
+                get switch() {
+                    return Laya.LocalStorage.getItem('Setting/bgMusic') == '0' ? false : true;
+                },
+                set switch(value) {
+                    let val;
+                    if (value) {
+                        val = 1;
+                        Laya.LocalStorage.setItem('Setting/bgMusic', val.toString());
+                        AudioAdmin._playMusic();
+                    }
+                    else {
+                        val = 0;
+                        Laya.LocalStorage.setItem('Setting/bgMusic', val.toString());
+                        AudioAdmin._stopMusic();
+                    }
+                }
+            };
+            SetAdmin._shake = {
+                get switch() {
+                    return Laya.LocalStorage.getItem('Setting/shake') == '0' ? false : true;
+                },
+                set switch(value) {
+                    let val;
+                    if (value) {
+                        val = 1;
+                    }
+                    else {
+                        val = 0;
+                    }
+                    Laya.LocalStorage.setItem('Setting/shake', val.toString());
+                }
+            };
+            function _createBtnSet(x, y, width, height, skin, parent, ZOder) {
+                let btn = new Laya.Image;
+                btn.width = width ? width : 100;
+                btn.height = width ? width : 100;
+                btn.skin = skin ? skin : 'Frame/UI/icon_set.png';
+                if (parent) {
+                    parent.addChild(btn);
+                }
+                else {
+                    Laya.stage.addChild(btn);
+                }
+                btn.pivotX = btn.width / 2;
+                btn.pivotY = btn.height / 2;
+                btn.x = x;
+                btn.y = y;
+                btn.zOrder = ZOder ? ZOder : 100;
+                var btnSetUp = function (e) {
+                    e.stopPropagation();
+                    LwgScene._openScene(LwgScene._BaseName.Set);
+                };
+                LwgClick._on(LwgClick._Type.largen, btn, null, null, btnSetUp, null);
+                SetAdmin._BtnSet = btn;
+                SetAdmin._BtnSet.name = 'BtnSetNode';
+                return btn;
+            }
+            SetAdmin._createBtnSet = _createBtnSet;
+            function btnSetAppear(delayed, x, y) {
+                if (!SetAdmin._BtnSet) {
+                    return;
+                }
+                if (delayed) {
+                    Ani2DAdmin.scale_Alpha(SetAdmin._BtnSet, 0, 1, 1, 1, 1, 1, delayed, 0, f => {
+                        SetAdmin._BtnSet.visible = true;
+                    });
+                }
+                else {
+                    SetAdmin._BtnSet.visible = true;
+                }
+                if (x) {
+                    SetAdmin._BtnSet.x = x;
+                }
+                if (y) {
+                    SetAdmin._BtnSet.y = y;
+                }
+            }
+            SetAdmin.btnSetAppear = btnSetAppear;
+            function btnSetVinish(delayed) {
+                if (!SetAdmin._BtnSet) {
+                    return;
+                }
+                if (delayed) {
+                    Ani2DAdmin.scale_Alpha(SetAdmin._BtnSet, 1, 1, 1, 1, 1, 0, delayed, 0, f => {
+                        SetAdmin._BtnSet.visible = false;
+                    });
+                }
+                else {
+                    SetAdmin._BtnSet.visible = false;
+                }
+            }
+            SetAdmin.btnSetVinish = btnSetVinish;
+        })(SetAdmin = Lwg.SetAdmin || (Lwg.SetAdmin = {}));
+        let AudioAdmin;
+        (function (AudioAdmin) {
+            let _voiceUrl;
+            (function (_voiceUrl) {
+                _voiceUrl["bgm"] = "Lwg/Voice/bgm.mp3";
+                _voiceUrl["btn"] = "https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Voice/btn.wav";
+                _voiceUrl["victory"] = "https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Voice/guoguan.wav";
+                _voiceUrl["defeated"] = "https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Voice/wancheng.wav";
+                _voiceUrl["huodejinbi"] = "https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Voice/huodejinbi.wav";
+            })(_voiceUrl = AudioAdmin._voiceUrl || (AudioAdmin._voiceUrl = {}));
+            function _playSound(url, number, func) {
+                if (!url) {
+                    url = _voiceUrl.btn;
+                }
+                if (!number) {
+                    number = 1;
+                }
+                if (SetAdmin._sound.switch) {
+                    Laya.SoundManager.playSound(url, number, Laya.Handler.create(this, function () {
+                        if (func) {
+                            func();
+                        }
+                    }));
+                }
+            }
+            AudioAdmin._playSound = _playSound;
+            function _playDefeatedSound(url, number, func, soundVolume) {
+                if (SetAdmin._sound.switch) {
+                    Laya.SoundManager.soundVolume = soundVolume ? soundVolume : 1;
+                    Laya.SoundManager.playSound(url ? url : _voiceUrl.defeated, number ? number : 1, Laya.Handler.create(this, function () {
+                        if (func) {
+                            func();
+                        }
+                        Laya.SoundManager.soundVolume = 1;
+                    }));
+                }
+            }
+            AudioAdmin._playDefeatedSound = _playDefeatedSound;
+            function _playVictorySound(url, number, func, soundVolume) {
+                if (SetAdmin._sound.switch) {
+                    Laya.SoundManager.soundVolume = soundVolume ? soundVolume : 1;
+                    Laya.SoundManager.playSound(url ? url : _voiceUrl.victory, number ? number : 1, Laya.Handler.create(this, function () {
+                        if (func) {
+                            func();
+                        }
+                        Laya.SoundManager.soundVolume = 1;
+                    }));
+                }
+            }
+            AudioAdmin._playVictorySound = _playVictorySound;
+            function _playMusic(url, number, delayed) {
+                if (SetAdmin._bgMusic.switch) {
+                    Laya.SoundManager.playMusic(url ? url : _voiceUrl.bgm, number ? number : 0, Laya.Handler.create(this, function () { }), delayed ? delayed : 0);
+                }
+            }
+            AudioAdmin._playMusic = _playMusic;
+            function _stopMusic() {
+                Laya.SoundManager.stopMusic();
+            }
+            AudioAdmin._stopMusic = _stopMusic;
+        })(AudioAdmin = Lwg.AudioAdmin || (Lwg.AudioAdmin = {}));
+        let ToolsAdmin;
+        (function (ToolsAdmin) {
+            function color_RGBtoHexString(r, g, b) {
+                return '#' + ("00000" + (r << 16 | g << 8 | b).toString(16)).slice(-6);
+            }
+            ToolsAdmin.color_RGBtoHexString = color_RGBtoHexString;
+            let _Format;
+            (function (_Format) {
+                function formatNumber(crc, fixNum = 0) {
+                    let textTemp;
+                    if (crc >= 1e27) {
+                        textTemp = (crc / 1e27).toFixed(fixNum) + "ae";
+                    }
+                    else if (crc >= 1e24) {
+                        textTemp = (crc / 1e24).toFixed(fixNum) + "ad";
+                    }
+                    else if (crc >= 1e21) {
+                        textTemp = (crc / 1e21).toFixed(fixNum) + "ac";
+                    }
+                    else if (crc >= 1e18) {
+                        textTemp = (crc / 1e18).toFixed(fixNum) + "ab";
+                    }
+                    else if (crc >= 1e15) {
+                        textTemp = (crc / 1e15).toFixed(fixNum) + "aa";
+                    }
+                    else if (crc >= 1e12) {
+                        textTemp = (crc / 1e12).toFixed(fixNum) + "t";
+                    }
+                    else if (crc >= 1e9) {
+                        textTemp = (crc / 1e9).toFixed(fixNum) + "b";
+                    }
+                    else if (crc >= 1e6) {
+                        textTemp = (crc / 1e6).toFixed(fixNum) + "m";
+                    }
+                    else if (crc >= 1e3) {
+                        textTemp = (crc / 1e3).toFixed(fixNum) + "k";
+                    }
+                    else {
+                        textTemp = Math.round(crc).toString();
+                    }
+                    return textTemp;
+                }
+                _Format.formatNumber = formatNumber;
+                function strAddNum(str, num) {
+                    return (Number(str) + num).toString();
+                }
+                _Format.strAddNum = strAddNum;
+                function NumAddStr(num, str) {
+                    return Number(str) + num;
+                }
+                _Format.NumAddStr = NumAddStr;
+            })(_Format = ToolsAdmin._Format || (ToolsAdmin._Format = {}));
+            let _Node;
+            (function (_Node) {
+                function tieByParent(Node) {
+                    const Parent = Node.parent;
+                    if (Node.x > Parent.width - Node.width / 2) {
+                        Node.x = Parent.width - Node.width / 2;
+                    }
+                    if (Node.x < Node.width / 2) {
+                        Node.x = Node.width / 2;
+                    }
+                    if (Node.y > Parent.height - Node.height / 2) {
+                        Node.y = Parent.height - Node.height / 2;
+                    }
+                    if (Node.y < Node.height / 2) {
+                        Node.y = Node.height / 2;
+                    }
+                }
+                _Node.tieByParent = tieByParent;
+                function tieByStage(Node, center) {
+                    const Parent = Node.parent;
+                    const gPoint = Parent.localToGlobal(new Laya.Point(Node.x, Node.y));
+                    if (!center) {
+                        if (gPoint.x > Laya.stage.width) {
+                            gPoint.x = Laya.stage.width;
+                        }
+                    }
+                    else {
+                        if (gPoint.x > Laya.stage.width - Node.width / 2) {
+                            gPoint.x = Laya.stage.width - Node.width / 2;
+                        }
+                    }
+                    if (!center) {
+                        if (gPoint.x < 0) {
+                            gPoint.x = 0;
+                        }
+                    }
+                    else {
+                        if (gPoint.x < Node.width / 2) {
+                            gPoint.x = Node.width / 2;
+                        }
+                    }
+                    if (!center) {
+                        if (gPoint.y > Laya.stage.height) {
+                            gPoint.y = Laya.stage.height;
+                        }
+                    }
+                    else {
+                        if (gPoint.y > Laya.stage.height - Node.height / 2) {
+                            gPoint.y = Laya.stage.height - Node.height / 2;
+                        }
+                    }
+                    if (!center) {
+                        if (gPoint.y < 0) {
+                            gPoint.y = 0;
+                        }
+                    }
+                    else {
+                        if (gPoint.y < Node.height / 2) {
+                            gPoint.y = Node.height / 2;
+                        }
+                    }
+                    const lPoint = Parent.globalToLocal(gPoint);
+                    Node.pos(lPoint.x, lPoint.y);
+                }
+                _Node.tieByStage = tieByStage;
+                function simpleCopyImg(Target) {
+                    let Img = new Laya.Image;
+                    Img.skin = Target.skin;
+                    Img.width = Target.width;
+                    Img.height = Target.height;
+                    Img.pivotX = Target.pivotX;
+                    Img.pivotY = Target.pivotY;
+                    Img.scaleX = Target.scaleX;
+                    Img.scaleY = Target.scaleY;
+                    Img.skewX = Target.skewX;
+                    Img.skewY = Target.skewY;
+                    Img.rotation = Target.rotation;
+                    Img.x = Target.x;
+                    Img.y = Target.y;
+                    return Img;
+                }
+                _Node.simpleCopyImg = simpleCopyImg;
+                function leaveStage(_Sprite, func) {
+                    let Parent = _Sprite.parent;
+                    let gPoint = Parent.localToGlobal(new Laya.Point(_Sprite.x, _Sprite.y));
+                    if (gPoint.x > Laya.stage.width + 10 || gPoint.x < -10) {
+                        if (func) {
+                            func();
+                        }
+                        return true;
+                    }
+                    if (gPoint.y > Laya.stage.height + 10 || gPoint.y < -10) {
+                        if (func) {
+                            func();
+                        }
+                        return true;
+                    }
+                }
+                _Node.leaveStage = leaveStage;
+                function getNodeGP(sp) {
+                    if (!sp.parent) {
+                        return;
+                    }
+                    return sp.parent.localToGlobal(new Laya.Point(sp.x, sp.y));
+                }
+                _Node.getNodeGP = getNodeGP;
+                function checkTwoDistance(_Sprite1, _Sprite2, distance, func) {
+                    if (!_Sprite1 || !_Sprite2) {
+                        return;
+                    }
+                    let Parent1 = _Sprite1.parent;
+                    let Parent2 = _Sprite2.parent;
+                    if (!_Sprite1.parent || !_Sprite2.parent) {
+                        return;
+                    }
+                    let gPoint1 = Parent1.localToGlobal(new Laya.Point(_Sprite1.x, _Sprite1.y));
+                    let gPoint2 = Parent2.localToGlobal(new Laya.Point(_Sprite2.x, _Sprite2.y));
+                    if (gPoint1.distance(gPoint2.x, gPoint2.y) <= distance) {
+                        func && func();
+                    }
+                    return gPoint1.distance(gPoint2.x, gPoint2.y);
+                }
+                _Node.checkTwoDistance = checkTwoDistance;
+                function childZOrderByY(sp, zOrder, along) {
+                    let arr = [];
+                    if (sp.numChildren == 0) {
+                        return arr;
+                    }
+                    ;
+                    for (let index = 0; index < sp.numChildren; index++) {
+                        const element = sp.getChildAt(index);
+                        arr.push(element);
+                    }
+                    _ObjArray.sortByProperty(arr, 'y');
+                    if (zOrder) {
+                        for (let index = 0; index < arr.length; index++) {
+                            const element = arr[index];
+                            element['zOrder'] = index;
+                        }
+                    }
+                    if (along) {
+                        let arr0 = [];
+                        for (let index = arr.length - 1; index >= 0; index--) {
+                            const element = arr[index];
+                            console.log(element);
+                            element['zOrder'] = arr.length - index;
+                            arr0.push(element);
+                        }
+                        return arr0;
+                    }
+                    else {
+                        return arr;
+                    }
+                }
+                _Node.childZOrderByY = childZOrderByY;
+                function changePivot(sp, _pivotX, _pivotY, int) {
+                    let originalPovitX = sp.pivotX;
+                    let originalPovitY = sp.pivotY;
+                    if (int) {
+                        _pivotX = Math.round(_pivotX);
+                        _pivotY = Math.round(_pivotY);
+                    }
+                    if (sp.width) {
+                        sp.pivot(_pivotX, _pivotY);
+                        sp.x += (sp.pivotX - originalPovitX);
+                        sp.y += (sp.pivotY - originalPovitY);
+                    }
+                }
+                _Node.changePivot = changePivot;
+                function changePivotCenter(sp, int) {
+                    let originalPovitX = sp.pivotX;
+                    let originalPovitY = sp.pivotY;
+                    let _pivotX;
+                    let _pivotY;
+                    if (int) {
+                        _pivotX = Math.round(sp.width / 2);
+                        _pivotY = Math.round(sp.height / 2);
+                    }
+                    if (sp.width) {
+                        sp.pivot(sp.width / 2, sp.height / 2);
+                        sp.x += (sp.pivotX - originalPovitX);
+                        sp.y += (sp.pivotY - originalPovitY);
+                    }
+                }
+                _Node.changePivotCenter = changePivotCenter;
+                function getChildArrByProperty(node, property, value) {
+                    let childArr = [];
+                    for (let index = 0; index < node.numChildren; index++) {
+                        const element = node.getChildAt(index);
+                        if (element[property] == value) {
+                            childArr.push(element);
+                        }
+                    }
+                    return childArr;
+                }
+                _Node.getChildArrByProperty = getChildArrByProperty;
+                function randomChildren(node, num) {
+                    let childArr = [];
+                    let indexArr = [];
+                    for (let i = 0; i < node.numChildren; i++) {
+                        indexArr.push(i);
+                    }
+                    let randomIndex = ToolsAdmin._Array.randomGetOut(indexArr, num);
+                    for (let j = 0; j < randomIndex.length; j++) {
+                        childArr.push(node.getChildAt(randomIndex[j]));
+                    }
+                    return childArr;
+                }
+                _Node.randomChildren = randomChildren;
+                function destroyAllChildren(node) {
+                    for (let index = 0; index < node.numChildren; index++) {
+                        const element = node.getChildAt(index);
+                        element.destroy();
+                        index--;
+                    }
+                }
+                _Node.destroyAllChildren = destroyAllChildren;
+                function destroyOneChildren(node, nodeName) {
+                    for (let index = 0; index < node.numChildren; index++) {
+                        const element = node.getChildAt(index);
+                        if (element.name == nodeName) {
+                            element.destroy();
+                            index--;
+                        }
+                    }
+                }
+                _Node.destroyOneChildren = destroyOneChildren;
+                function removeAllChildren(node) {
+                    if (node.numChildren > 0) {
+                        node.removeChildren(0, node.numChildren - 1);
+                    }
+                }
+                _Node.removeAllChildren = removeAllChildren;
+                function removeOneChildren(node, nodeName) {
+                    for (let index = 0; index < node.numChildren; index++) {
+                        const element = node.getChildAt(index);
+                        if (element.name == nodeName) {
+                            element.removeSelf();
+                            index--;
+                        }
+                    }
+                }
+                _Node.removeOneChildren = removeOneChildren;
+                function checkChildren(node, nodeName) {
+                    for (let index = 0; index < node.numChildren; index++) {
+                        const element = node.getChildAt(index);
+                        if (element.name == nodeName) {
+                            return element;
+                        }
+                    }
+                }
+                _Node.checkChildren = checkChildren;
+                function showExcludedChild2D(node, childNameArr, bool) {
+                    for (let i = 0; i < node.numChildren; i++) {
+                        let Child = node.getChildAt(i);
+                        for (let j = 0; j < childNameArr.length; j++) {
+                            if (Child.name == childNameArr[j]) {
+                                if (bool || bool == undefined) {
+                                    Child.visible = true;
+                                }
+                                else {
+                                    Child.visible = false;
+                                }
+                            }
+                            else {
+                                if (bool || bool == undefined) {
+                                    Child.visible = false;
+                                }
+                                else {
+                                    Child.visible = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                _Node.showExcludedChild2D = showExcludedChild2D;
+                function showExcludedChild3D(node, childNameArr, bool) {
+                    for (let i = 0; i < node.numChildren; i++) {
+                        let Child = node.getChildAt(i);
+                        for (let j = 0; j < childNameArr.length; j++) {
+                            if (Child.name == childNameArr[j]) {
+                                if (bool || bool == undefined) {
+                                    Child.active = true;
+                                }
+                                else {
+                                    Child.active = false;
+                                }
+                            }
+                            else {
+                                if (bool || bool == undefined) {
+                                    Child.active = false;
+                                }
+                                else {
+                                    Child.active = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                _Node.showExcludedChild3D = showExcludedChild3D;
+                function createPrefab(prefab, Parent, point, script, zOrder, name) {
+                    const Sp = Laya.Pool.getItemByCreateFun(name ? name : prefab.json['props']['name'], prefab.create, prefab);
+                    Parent && Parent.addChild(Sp);
+                    point && Sp.pos(point[0], point[1]);
+                    script && Sp.addComponent(script);
+                    NodeAdmin._addProperty(Sp);
+                    if (zOrder)
+                        Sp.zOrder = zOrder;
+                    return Sp;
+                }
+                _Node.createPrefab = createPrefab;
+                function childrenVisible2D(node, bool) {
+                    for (let index = 0; index < node.numChildren; index++) {
+                        const element = node.getChildAt(index);
+                        if (bool) {
+                            element.visible = true;
+                        }
+                        else {
+                            element.visible = false;
+                        }
+                    }
+                }
+                _Node.childrenVisible2D = childrenVisible2D;
+                function childrenVisible3D(node, bool) {
+                    for (let index = 0; index < node.numChildren; index++) {
+                        const element = node.getChildAt(index);
+                        if (bool) {
+                            element.active = true;
+                        }
+                        else {
+                            element.active = false;
+                        }
+                    }
+                }
+                _Node.childrenVisible3D = childrenVisible3D;
+                function findChild3D(parent, name) {
+                    var item = null;
+                    item = parent.getChildByName(name);
+                    if (item != null)
+                        return item;
+                    var go = null;
+                    for (var i = 0; i < parent.numChildren; i++) {
+                        go = findChild3D(parent.getChildAt(i), name);
+                        if (go != null)
+                            return go;
+                    }
+                    return null;
+                }
+                _Node.findChild3D = findChild3D;
+                function findChild2D(parent, name) {
+                    var item = null;
+                    item = parent.getChildByName(name);
+                    if (item != null)
+                        return item;
+                    var go = null;
+                    for (var i = 0; i < parent.numChildren; i++) {
+                        go = findChild2D(parent.getChildAt(i), name);
+                        if (go != null)
+                            return go;
+                    }
+                    return null;
+                }
+                _Node.findChild2D = findChild2D;
+                function findChildByName2D(parent, name) {
+                    let arr = [];
+                    return arr;
+                }
+                _Node.findChildByName2D = findChildByName2D;
+            })(_Node = ToolsAdmin._Node || (ToolsAdmin._Node = {}));
+            let _Number;
+            (function (_Number) {
+                function randomOneHalf() {
+                    let number;
+                    number = Math.floor(Math.random() * 2);
+                    return number;
+                }
+                _Number.randomOneHalf = randomOneHalf;
+                function randomNumerical(numSection, defaultNumSection, randomPlusOrMinus) {
+                    let num = numSection ? ToolsAdmin._Number.randomOneBySection(numSection[0], numSection[1]) : ToolsAdmin._Number.randomOneBySection(defaultNumSection[0], defaultNumSection[1]);
+                    if (randomPlusOrMinus) {
+                        num = ToolsAdmin._Number.randomOneHalf() === 0 ? num : -num;
+                    }
+                    return num;
+                }
+                _Number.randomNumerical = randomNumerical;
+                function randomOneInt(section1, section2) {
+                    if (section2) {
+                        return Math.round(Math.random() * (section2 - section1)) + section1;
+                    }
+                    else {
+                        return Math.round(Math.random() * section1);
+                    }
+                }
+                _Number.randomOneInt = randomOneInt;
+                function randomCountBySection(section1, section2, count, intSet) {
+                    let arr = [];
+                    if (!count) {
+                        count = 1;
+                    }
+                    if (section2) {
+                        while (count > arr.length) {
+                            let num;
+                            if (intSet || intSet == undefined) {
+                                num = Math.round(Math.random() * (section2 - section1)) + section1;
+                            }
+                            else {
+                                num = Math.random() * (section2 - section1) + section1;
+                            }
+                            arr.push(num);
+                            _Array.unique01(arr);
+                        }
+                        ;
+                        return arr;
+                    }
+                    else {
+                        while (count > arr.length) {
+                            let num;
+                            if (intSet || intSet == undefined) {
+                                num = Math.round(Math.random() * section1);
+                            }
+                            else {
+                                num = Math.random() * section1;
+                            }
+                            arr.push(num);
+                            _Array.unique01(arr);
+                        }
+                        return arr;
+                    }
+                }
+                _Number.randomCountBySection = randomCountBySection;
+                function randomOneBySection(section1, section2, intSet) {
+                    let chage;
+                    if (section1 > section2) {
+                        chage = section1;
+                        section1 = section2;
+                        section2 = chage;
+                    }
+                    if (section2) {
+                        let num;
+                        if (intSet) {
+                            num = Math.round(Math.random() * (section2 - section1)) + section1;
+                        }
+                        else {
+                            num = Math.random() * (section2 - section1) + section1;
+                        }
+                        return num;
+                    }
+                    else {
+                        let num;
+                        if (intSet) {
+                            num = Math.round(Math.random() * section1);
+                        }
+                        else {
+                            num = Math.random() * section1;
+                        }
+                        return num;
+                    }
+                }
+                _Number.randomOneBySection = randomOneBySection;
+            })(_Number = ToolsAdmin._Number || (ToolsAdmin._Number = {}));
+            let _Point;
+            (function (_Point) {
+                function getOtherLocal(element, Other) {
+                    let Parent = element.parent;
+                    let gPoint = Parent.localToGlobal(new Laya.Point(element.x, element.y));
+                    return Other.globalToLocal(gPoint);
+                }
+                _Point.getOtherLocal = getOtherLocal;
+                function angleByRadian(angle) {
+                    return Math.PI / 180 * angle;
+                }
+                _Point.angleByRadian = angleByRadian;
+                function pointByAngleOld(x, y) {
+                    const radian = Math.atan2(x, y);
+                    let angle = 90 - radian * (180 / Math.PI);
+                    if (angle <= 0) {
+                        angle = 270 + (90 + angle);
+                    }
+                    return angle - 90;
+                }
+                _Point.pointByAngleOld = pointByAngleOld;
+                ;
+                function pointByAngleNew(x, y) {
+                    const radian = Math.atan2(y, x);
+                    let angle = radian * (180 / Math.PI);
+                    if (angle <= 0) {
+                        angle = 360 + angle;
+                    }
+                    return angle;
+                }
+                _Point.pointByAngleNew = pointByAngleNew;
+                ;
+                function angleByPoint(angle) {
+                    const radian = (90 - angle) / (180 / Math.PI);
+                    const p = new Laya.Point(Math.sin(radian), Math.cos(radian));
+                    p.normalize();
+                    return p;
+                }
+                _Point.angleByPoint = angleByPoint;
+                ;
+                function angleByPointNew(angle) {
+                    const rad = angleByRadian(angle);
+                    const p = new Laya.Point(Math.cos(rad), Math.sin(rad));
+                    p.normalize();
+                    return p;
+                }
+                _Point.angleByPointNew = angleByPointNew;
+                ;
+                function dotRotatePoint(x0, y0, x1, y1, angle) {
+                    let x2 = x0 + (x1 - x0) * Math.cos(angle * Math.PI / 180) - (y1 - y0) * Math.sin(angle * Math.PI / 180);
+                    let y2 = y0 + (x1 - x0) * Math.sin(angle * Math.PI / 180) + (y1 - y0) * Math.cos(angle * Math.PI / 180);
+                    return new Laya.Point(x2, y2);
+                }
+                _Point.dotRotatePoint = dotRotatePoint;
+                function angleAndLenByPoint(angle, len) {
+                    const point = new Laya.Point();
+                    point.x = len * Math.cos(angle * Math.PI / 180);
+                    point.y = len * Math.sin(angle * Math.PI / 180);
+                    return point;
+                }
+                _Point.angleAndLenByPoint = angleAndLenByPoint;
+                function getRoundPosOld(angle, radius, centerPos) {
+                    const radian = angleByRadian(angle);
+                    const X = centerPos.x + Math.sin(radian) * radius;
+                    const Y = centerPos.y - Math.cos(radian) * radius;
+                    return new Laya.Point(X, Y);
+                }
+                _Point.getRoundPosOld = getRoundPosOld;
+                function getRoundPosNew(angle, radius, centerPos) {
+                    const radian = angleByRadian(angle);
+                    const x = centerPos.x + Math.cos(radian) * radius;
+                    const y = centerPos.y + Math.sin(radian) * radius;
+                    return new Laya.Point(x, y);
+                }
+                _Point.getRoundPosNew = getRoundPosNew;
+                function randomPointByCenter(centerPos, radiusX, radiusY, count) {
+                    if (!count) {
+                        count = 1;
+                    }
+                    let arr = [];
+                    for (let index = 0; index < count; index++) {
+                        let x0 = ToolsAdmin._Number.randomCountBySection(0, radiusX, 1, false);
+                        let y0 = ToolsAdmin._Number.randomCountBySection(0, radiusY, 1, false);
+                        let diffX = ToolsAdmin._Number.randomOneHalf() == 0 ? x0[0] : -x0[0];
+                        let diffY = ToolsAdmin._Number.randomOneHalf() == 0 ? y0[0] : -y0[0];
+                        let p = new Laya.Point(centerPos.x + diffX, centerPos.y + diffY);
+                        arr.push(p);
+                    }
+                    return arr;
+                }
+                _Point.randomPointByCenter = randomPointByCenter;
+                function getPArrBetweenTwoP(p1, p2, num) {
+                    let arr = [];
+                    let x0 = p2.x - p1.x;
+                    let y0 = p2.y - p1.y;
+                    for (let index = 0; index < num; index++) {
+                        arr.push(new Laya.Point(p1.x + (x0 / num) * index, p1.y + (y0 / num) * index));
+                    }
+                    if (arr.length >= 1) {
+                        arr.unshift();
+                    }
+                    if (arr.length >= 1) {
+                        arr.pop();
+                    }
+                    return arr;
+                }
+                _Point.getPArrBetweenTwoP = getPArrBetweenTwoP;
+                function reverseVector(Vecoter1, Vecoter2, normalizing) {
+                    let p;
+                    p = new Laya.Point(Vecoter1.x - Vecoter2.x, Vecoter1.y - Vecoter2.y);
+                    if (normalizing) {
+                        p.normalize();
+                    }
+                    return p;
+                }
+                _Point.reverseVector = reverseVector;
+            })(_Point = ToolsAdmin._Point || (ToolsAdmin._Point = {}));
+            let _3D;
+            (function (_3D) {
+                function randomScopeByPosition(sp3D, scopeSize) {
+                    let _pX = ToolsAdmin._Number.randomOneBySection(scopeSize[0][0], scopeSize[1][0]);
+                    let _pY = ToolsAdmin._Number.randomOneBySection(scopeSize[0][1], scopeSize[1][1]);
+                    let _pZ = ToolsAdmin._Number.randomOneBySection(scopeSize[0][2], scopeSize[1][2]);
+                    _pX = ToolsAdmin._Number.randomOneHalf() == 0 ? _pX : -_pX;
+                    _pY = ToolsAdmin._Number.randomOneHalf() == 0 ? _pY : -_pY;
+                    _pZ = ToolsAdmin._Number.randomOneHalf() == 0 ? _pZ : -_pZ;
+                    sp3D.transform.position = new Laya.Vector3(sp3D.transform.position.x + _pX, sp3D.transform.position.y + _pY, sp3D.transform.position.z + _pZ);
+                }
+                _3D.randomScopeByPosition = randomScopeByPosition;
+                function getMeshSize(MSp3D) {
+                    if (MSp3D.meshRenderer) {
+                        let v3;
+                        let extent = MSp3D.meshRenderer.bounds.getExtent();
+                        return v3 = new Laya.Vector3(extent.x * 2, extent.y * 2, extent.z * 2);
+                    }
+                }
+                _3D.getMeshSize = getMeshSize;
+                function getSkinMeshSize(MSp3D) {
+                    if (MSp3D.skinnedMeshRenderer) {
+                        let v3;
+                        let extent = MSp3D.skinnedMeshRenderer.bounds.getExtent();
+                        return v3 = new Laya.Vector3(extent.x * 2, extent.y * 2, extent.z * 2);
+                    }
+                }
+                _3D.getSkinMeshSize = getSkinMeshSize;
+                function twoNodeDistance(obj1, obj2) {
+                    let obj1V3 = obj1.transform.position;
+                    let obj2V3 = obj2.transform.position;
+                    let p = new Laya.Vector3();
+                    Laya.Vector3.subtract(obj1V3, obj2V3, p);
+                    let lenp = Laya.Vector3.scalarLength(p);
+                    return lenp;
+                }
+                _3D.twoNodeDistance = twoNodeDistance;
+                function twoPositionDistance(v1, v2) {
+                    let p = twoSubV3(v1, v2);
+                    let lenp = Laya.Vector3.scalarLength(p);
+                    return lenp;
+                }
+                _3D.twoPositionDistance = twoPositionDistance;
+                function twoSubV3(V31, V32, normalizing) {
+                    let p = new Laya.Vector3();
+                    Laya.Vector3.subtract(V31, V32, p);
+                    if (normalizing) {
+                        let p1 = new Laya.Vector3();
+                        Laya.Vector3.normalize(p, p1);
+                        return p1;
+                    }
+                    else {
+                        return p;
+                    }
+                }
+                _3D.twoSubV3 = twoSubV3;
+                function maximumDistanceLimi(originV3, obj, length) {
+                    let subP = new Laya.Vector3();
+                    let objP = obj.transform.position;
+                    Laya.Vector3.subtract(objP, originV3, subP);
+                    let lenP = Laya.Vector3.scalarLength(subP);
+                    if (lenP >= length) {
+                        let normalizP = new Laya.Vector3();
+                        Laya.Vector3.normalize(subP, normalizP);
+                        let x = originV3.x + normalizP.x * length;
+                        let y = originV3.y + normalizP.y * length;
+                        let z = originV3.z + normalizP.z * length;
+                        let p = new Laya.Vector3(x, y, z);
+                        obj.transform.position = p;
+                        return p;
+                    }
+                }
+                _3D.maximumDistanceLimi = maximumDistanceLimi;
+                function posToScreen(v3, camera) {
+                    let ScreenV4 = new Laya.Vector4();
+                    camera.viewport.project(v3, camera.projectionViewMatrix, ScreenV4);
+                    let point = new Laya.Vector2();
+                    point.x = ScreenV4.x / Laya.stage.clientScaleX;
+                    point.y = ScreenV4.y / Laya.stage.clientScaleY;
+                    return point;
+                }
+                _3D.posToScreen = posToScreen;
+                function reverseVector(Vecoter1, Vecoter2, normalizing) {
+                    let p = new Laya.Vector3(Vecoter1.x - Vecoter2.x, Vecoter1.y - Vecoter2.y, Vecoter1.z - Vecoter2.z);
+                    if (normalizing) {
+                        let returnP = new Laya.Vector3();
+                        Laya.Vector3.normalize(p, returnP);
+                        return returnP;
+                    }
+                    else {
+                        return p;
+                    }
+                }
+                _3D.reverseVector = reverseVector;
+                function rayScanning(camera, scene3D, vector2, filtrateName) {
+                    let _ray = new Laya.Ray(new Laya.Vector3(0, 0, 0), new Laya.Vector3(0, 0, 0));
+                    let outs = new Array();
+                    const _v2 = new Laya.Vector2(Laya.stage.clientScaleX * vector2.x, Laya.stage.clientScaleY * vector2.y);
+                    camera.viewportPointToRay(_v2, _ray);
+                    scene3D.physicsSimulation.rayCastAll(_ray, outs);
+                    if (filtrateName) {
+                        let chek;
+                        for (let i = 0; i < outs.length; i++) {
+                            let Sp3d = outs[i].collider.owner;
+                            if (Sp3d.name == filtrateName) {
+                                chek = outs[i];
+                            }
+                        }
+                        return chek;
+                    }
+                    else {
+                        return outs;
+                    }
+                }
+                _3D.rayScanning = rayScanning;
+                function rayScanningFirst(camera, scene3D, vector2) {
+                    let _ray = new Laya.Ray(new Laya.Vector3(0, 0, 0), new Laya.Vector3(0, 0, 0));
+                    let out = new Laya.HitResult();
+                    const _v2 = new Laya.Vector2(Laya.stage.clientScaleX * vector2.x, Laya.stage.clientScaleY * vector2.y);
+                    camera.viewportPointToRay(_v2, _ray);
+                    scene3D.physicsSimulation.rayCast(_ray, out);
+                    return out;
+                }
+                _3D.rayScanningFirst = rayScanningFirst;
+                function animatorPlay(Sp3D, aniName, normalizedTime, layerIndex) {
+                    let sp3DAni = Sp3D.getComponent(Laya.Animator);
+                    if (!sp3DAni) {
+                        console.log(Sp3D.name, '没有动画组件');
+                        return;
+                    }
+                    if (!layerIndex) {
+                        layerIndex = 0;
+                    }
+                    sp3DAni.play(aniName, layerIndex, normalizedTime);
+                    return sp3DAni;
+                }
+                _3D.animatorPlay = animatorPlay;
+            })(_3D = ToolsAdmin._3D || (ToolsAdmin._3D = {}));
+            let _Skeleton;
+            (function (_Skeleton) {
+                function sk_indexControl(sk, name) {
+                    sk.play(name, true);
+                    sk.player.currentTime = 15 * 1000 / sk.player.cacheFrameRate;
+                }
+                _Skeleton.sk_indexControl = sk_indexControl;
+            })(_Skeleton = ToolsAdmin._Skeleton || (ToolsAdmin._Skeleton = {}));
+            let _Draw;
+            (function (_Draw) {
+                function drawPieMask(parent, startAngle, endAngle) {
+                    parent.cacheAs = "bitmap";
+                    let drawPieSpt = new Laya.Sprite();
+                    drawPieSpt.blendMode = "destination-out";
+                    parent.addChild(drawPieSpt);
+                    let drawPie = drawPieSpt.graphics.drawPie(parent.width / 2, parent.height / 2, parent.width / 2 + 10, startAngle, endAngle, "#000000");
+                    return drawPie;
+                }
+                _Draw.drawPieMask = drawPieMask;
+                function screenshot(Sp, quality) {
+                    const htmlCanvas = Sp.drawToCanvas(Sp.width, Sp.height, Sp.x, Sp.y);
+                    const base64 = htmlCanvas.toBase64("image/png", quality ? quality : 1);
+                    return base64;
+                }
+                _Draw.screenshot = screenshot;
+                _Draw._texArr = [];
+                function cameraToSprite(camera, sprite) {
+                    const _camera = camera.clone();
+                    camera.scene.addChild(_camera);
+                    _camera.transform.position = camera.transform.position;
+                    _camera.transform.localRotationEuler = camera.transform.localRotationEuler;
+                    _camera.renderTarget = new Laya.RenderTexture(sprite.width, sprite.height);
+                    _camera.renderingOrder = -1;
+                    _camera.clearFlag = Laya.CameraClearFlags.Sky;
+                    const ptex = new Laya.Texture(_camera.renderTarget, Laya.Texture.DEF_UV);
+                    sprite.graphics.drawTexture(ptex, sprite.x, sprite.y, sprite.width, sprite.height);
+                    _Draw._texArr.push(ptex);
+                    if (_Draw._texArr.length > 3) {
+                        _Draw._texArr[0].destroy();
+                        _Draw._texArr.shift();
+                    }
+                    TimerAdmin._frameOnce(5, this, () => {
+                        _camera.destroy();
+                    });
+                }
+                _Draw.cameraToSprite = cameraToSprite;
+                function drawToTex(Sp, quality) {
+                    let tex = Sp.drawToTexture(Sp.width, Sp.height, Sp.x, Sp.y);
+                    return tex;
+                }
+                _Draw.drawToTex = drawToTex;
+                function reverseCircleMask(sp, circleArr, eliminate) {
+                    if (eliminate == undefined || eliminate == true) {
+                        _Node.destroyAllChildren(sp);
+                    }
+                    let interactionArea = sp.getChildByName('reverseRoundMask');
+                    if (!interactionArea) {
+                        interactionArea = new Laya.Sprite();
+                        interactionArea.name = 'reverseRoundMask';
+                        interactionArea.blendMode = "destination-out";
+                        sp.addChild(interactionArea);
+                    }
+                    sp.cacheAs = "bitmap";
+                    for (let index = 0; index < circleArr.length; index++) {
+                        interactionArea.graphics.drawCircle(circleArr[index][0], circleArr[index][1], circleArr[index][2], "#000000");
+                    }
+                    interactionArea.pos(0, 0);
+                    return interactionArea;
+                }
+                _Draw.reverseCircleMask = reverseCircleMask;
+                function reverseRoundrectMask(sp, roundrectArr, eliminate) {
+                    if (eliminate == undefined || eliminate == true) {
+                        _Node.removeAllChildren(sp);
+                    }
+                    let interactionArea = sp.getChildByName('reverseRoundrectMask');
+                    if (!interactionArea) {
+                        interactionArea = new Laya.Sprite();
+                        interactionArea.name = 'reverseRoundrectMask';
+                        interactionArea.blendMode = "destination-out";
+                        sp.addChild(interactionArea);
+                    }
+                    if (sp.cacheAs !== "bitmap")
+                        sp.cacheAs = "bitmap";
+                    for (let index = 0; index < roundrectArr.length; index++) {
+                        const element = roundrectArr[index];
+                        element[0] = Math.round(element[0]);
+                        element[1] = Math.round(element[1]);
+                        element[2] = Math.round(element[2]);
+                        element[3] = Math.round(element[3]);
+                        element[4] = Math.round(element[4]);
+                        interactionArea.graphics.drawPath(element[0], element[1], [["moveTo", element[4], 0], ["lineTo", element[2] - element[4], 0], ["arcTo", element[2], 0, element[2], element[4], element[4]], ["lineTo", element[2], element[3] - element[4]], ["arcTo", element[2], element[3], element[2] - element[4], element[3], element[4]], ["lineTo", element[3] - element[4], element[3]], ["arcTo", 0, element[3], 0, element[3] - element[4], element[4]], ["lineTo", 0, element[4]], ["arcTo", 0, 0, element[4], 0, element[4]], ["closePath"]], { fillStyle: "#000000" });
+                        interactionArea.pivotX = element[2] / 2;
+                        interactionArea.pivotY = element[3] / 2;
+                        interactionArea.pos(0, 0);
+                    }
+                }
+                _Draw.reverseRoundrectMask = reverseRoundrectMask;
+            })(_Draw = ToolsAdmin._Draw || (ToolsAdmin._Draw = {}));
+            let _ObjArray;
+            (function (_ObjArray) {
+                function sortByProperty(array, property) {
+                    var compare = function (obj1, obj2) {
+                        var val1 = obj1[property];
+                        var val2 = obj2[property];
+                        if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
+                            val1 = Number(val1);
+                            val2 = Number(val2);
+                        }
+                        if (val1 < val2) {
+                            return -1;
+                        }
+                        else if (val1 > val2) {
+                            return 1;
+                        }
+                        else {
+                            return 0;
+                        }
+                    };
+                    array.sort(compare);
+                    return array;
+                }
+                _ObjArray.sortByProperty = sortByProperty;
+                function diffProByTwo(objArr1, objArr2, property) {
+                    var result = [];
+                    for (var i = 0; i < objArr1.length; i++) {
+                        var obj1 = objArr1[i];
+                        var obj1Name = obj1[property];
+                        var isExist = false;
+                        for (var j = 0; j < objArr2.length; j++) {
+                            var obj2 = objArr2[j];
+                            var obj2Name = obj2[property];
+                            if (obj2Name == obj1Name) {
+                                isExist = true;
+                                break;
+                            }
+                        }
+                        if (!isExist) {
+                            let _obj1 = _ObjArray.objCopy(obj1);
+                            result.push(_obj1);
+                        }
+                    }
+                    return result;
+                }
+                _ObjArray.diffProByTwo = diffProByTwo;
+                function identicalPropertyObjArr(data1, data2, property) {
+                    var result = [];
+                    for (var i = 0; i < data1.length; i++) {
+                        var obj1 = data1[i];
+                        var obj1Name = obj1[property];
+                        var isExist = false;
+                        for (var j = 0; j < data2.length; j++) {
+                            var obj2 = data2[j];
+                            var obj2Name = obj2[property];
+                            if (obj2Name == obj1Name) {
+                                isExist = true;
+                                break;
+                            }
+                        }
+                        if (isExist) {
+                            result.push(obj1);
+                        }
+                    }
+                    return result;
+                }
+                _ObjArray.identicalPropertyObjArr = identicalPropertyObjArr;
+                function objArrUnique(arr, property) {
+                    for (var i = 0, len = arr.length; i < len; i++) {
+                        for (var j = i + 1, len = arr.length; j < len; j++) {
+                            if (arr[i][property] === arr[j][property]) {
+                                arr.splice(j, 1);
+                                j--;
+                                len--;
+                            }
+                        }
+                    }
+                    return arr;
+                }
+                _ObjArray.objArrUnique = objArrUnique;
+                function getArrByValue(objArr, property) {
+                    let arr = [];
+                    for (let i = 0; i < objArr.length; i++) {
+                        if (objArr[i][property]) {
+                            arr.push(objArr[i][property]);
+                        }
+                    }
+                    return arr;
+                }
+                _ObjArray.getArrByValue = getArrByValue;
+                function arrCopy(ObjArray) {
+                    var sourceCopy = ObjArray instanceof Array ? [] : {};
+                    for (var item in ObjArray) {
+                        sourceCopy[item] = typeof ObjArray[item] === 'object' ? objCopy(ObjArray[item]) : ObjArray[item];
+                    }
+                    return sourceCopy;
+                }
+                _ObjArray.arrCopy = arrCopy;
+                function modifyProValue(objArr, pro, value) {
+                    for (const key in objArr) {
+                        if (Object.prototype.hasOwnProperty.call(objArr, key)) {
+                            const element = objArr[key];
+                            if (element[pro]) {
+                                element[pro] = value;
+                            }
+                        }
+                    }
+                    return objArr;
+                }
+                _ObjArray.modifyProValue = modifyProValue;
+                function objCopy(obj) {
+                    var _copyObj = {};
+                    for (const item in obj) {
+                        if (obj.hasOwnProperty(item)) {
+                            const element = obj[item];
+                            if (typeof element === 'object') {
+                                if (Array.isArray(element)) {
+                                    let arr1 = _Array.copy(element);
+                                    _copyObj[item] = arr1;
+                                }
+                                else {
+                                    objCopy(element);
+                                }
+                            }
+                            else {
+                                _copyObj[item] = element;
+                            }
+                        }
+                    }
+                    return _copyObj;
+                }
+                _ObjArray.objCopy = objCopy;
+            })(_ObjArray = ToolsAdmin._ObjArray || (ToolsAdmin._ObjArray = {}));
+            let _Array;
+            (function (_Array) {
+                function addToarray(array1, array2) {
+                    for (let index = 0; index < array2.length; index++) {
+                        const element = array2[index];
+                        array1.push(element);
+                    }
+                    return array1;
+                }
+                _Array.addToarray = addToarray;
+                function inverted(array) {
+                    let arr = [];
+                    for (let index = array.length - 1; index >= 0; index--) {
+                        const element = array[index];
+                        arr.push(element);
+                    }
+                    array = arr;
+                    return array;
+                }
+                _Array.inverted = inverted;
+                function randomGetOut(arr, num) {
+                    if (!num) {
+                        num = 1;
+                    }
+                    let arrCopy = _Array.copy(arr);
+                    let arr0 = [];
+                    if (num > arrCopy.length) {
+                        return '数组长度小于取出的数！';
+                    }
+                    else {
+                        for (let index = 0; index < num; index++) {
+                            let ran = Math.round(Math.random() * (arrCopy.length - 1));
+                            let a1 = arrCopy[ran];
+                            arrCopy.splice(ran, 1);
+                            arr0.push(a1);
+                        }
+                        return arr0;
+                    }
+                }
+                _Array.randomGetOut = randomGetOut;
+                function randomGetOne(arr) {
+                    let arrCopy = copy(arr);
+                    let ran = Math.round(Math.random() * (arrCopy.length - 1));
+                    return arrCopy[ran];
+                }
+                _Array.randomGetOne = randomGetOne;
+                function copy(arr1) {
+                    var arr = [];
+                    for (var i = 0; i < arr1.length; i++) {
+                        arr.push(arr1[i]);
+                    }
+                    return arr;
+                }
+                _Array.copy = copy;
+                function unique01(arr) {
+                    for (var i = 0, len = arr.length; i < len; i++) {
+                        for (var j = i + 1, len = arr.length; j < len; j++) {
+                            if (arr[i] === arr[j]) {
+                                arr.splice(j, 1);
+                                j--;
+                                len--;
+                            }
+                        }
+                    }
+                    return arr;
+                }
+                _Array.unique01 = unique01;
+                function unique02(arr) {
+                    arr = arr.sort();
+                    var arr1 = [arr[0]];
+                    for (var i = 1, len = arr.length; i < len; i++) {
+                        if (arr[i] !== arr[i - 1]) {
+                            arr1.push(arr[i]);
+                        }
+                    }
+                    return arr1;
+                }
+                _Array.unique02 = unique02;
+                function unique03(arr) {
+                    return Array.from(new Set(arr));
+                }
+                _Array.unique03 = unique03;
+                function oneExcludeOtherOne(arr1, arr2) {
+                    let arr1Capy = _Array.copy(arr1);
+                    let arr2Capy = _Array.copy(arr2);
+                    for (let i = 0; i < arr1Capy.length; i++) {
+                        for (let j = 0; j < arr2Capy.length; j++) {
+                            if (arr1Capy[i] == arr2Capy[j]) {
+                                arr1Capy.splice(i, 1);
+                                i--;
+                            }
+                        }
+                    }
+                    return arr1Capy;
+                }
+                _Array.oneExcludeOtherOne = oneExcludeOtherOne;
+                function moreExclude(arrays, exclude) {
+                    let arr0 = [];
+                    for (let i = 0; i < arrays.length; i++) {
+                        for (let j = 0; j < arrays[i].length; j++) {
+                            arr0.push(arrays[i][j]);
+                        }
+                    }
+                    let arr1 = copy(arr0);
+                    let arr2 = copy(arr1);
+                    let arrNum = [];
+                    for (let k = 0; k < arr2.length; k++) {
+                        arrNum.push({
+                            name: arr2[k],
+                            num: 0,
+                        });
+                    }
+                    for (let l = 0; l < arr0.length; l++) {
+                        for (let m = 0; m < arrNum.length; m++) {
+                            if (arr0[l] == arrNum[m]['name']) {
+                                arrNum[m]['num']++;
+                            }
+                        }
+                    }
+                    let arrAllHave = [];
+                    let arrDiffHave = [];
+                    for (let n = 0; n < arrNum.length; n++) {
+                        const element = arrNum[n];
+                        if (arrNum[n]['num'] == arrays.length) {
+                            arrAllHave.push(arrNum[n]['name']);
+                        }
+                        else {
+                            arrDiffHave.push(arrNum[n]['name']);
+                        }
+                    }
+                    if (!exclude) {
+                        return arrAllHave;
+                    }
+                    else {
+                        return arrDiffHave;
+                    }
+                }
+                _Array.moreExclude = moreExclude;
+            })(_Array = ToolsAdmin._Array || (ToolsAdmin._Array = {}));
+        })(ToolsAdmin = Lwg.ToolsAdmin || (Lwg.ToolsAdmin = {}));
+        let PreLoadAdmin;
+        (function (PreLoadAdmin) {
+            let _scene3D = [];
+            let _prefab3D = [];
+            let _mesh3D = [];
+            let _material = [];
+            let _texture = [];
+            let _texture2D = [];
+            let _pic2D = [];
+            let _scene2D = [];
+            let _prefab2D = [];
+            let _json = [];
+            let _skeleton = [];
+            let _effectsTex2D = [];
+            PreLoadAdmin._sumProgress = 0;
+            PreLoadAdmin._loadOrder = [];
+            PreLoadAdmin._loadOrderIndex = 0;
+            PreLoadAdmin._loadType = SceneAdmin._BaseName.PreLoad;
+            let _ListName;
+            (function (_ListName) {
+                _ListName["scene3D"] = "scene3D";
+                _ListName["prefab3D"] = "prefab3D";
+                _ListName["mesh3D"] = "mesh3D";
+                _ListName["material"] = "material";
+                _ListName["texture"] = "texture";
+                _ListName["texture2D"] = "texture2D";
+                _ListName["pic2D"] = "pic2D";
+                _ListName["scene2D"] = "scene2D";
+                _ListName["prefab2D"] = "prefab2D";
+                _ListName["json"] = "json";
+                _ListName["skeleton"] = "skeleton";
+                _ListName["effectTex2D"] = "effectTex2D";
+            })(_ListName = PreLoadAdmin._ListName || (PreLoadAdmin._ListName = {}));
+            PreLoadAdmin._currentProgress = {
+                get value() {
+                    return this['len'] ? this['len'] : 0;
+                },
+                set value(val) {
+                    this['len'] = val;
+                    if (this['len'] >= PreLoadAdmin._sumProgress) {
+                        if (PreLoadAdmin._sumProgress == 0) {
+                            return;
+                        }
+                        console.log('当前进度条进度为:', PreLoadAdmin._currentProgress.value / PreLoadAdmin._sumProgress);
+                        console.log('所有资源加载完成！此时所有资源可通过例如 Laya.loader.getRes("url")获取');
+                        EventAdmin._notify(PreLoadAdmin._Event.complete);
+                    }
+                    else {
+                        let number = 0;
+                        for (let index = 0; index <= PreLoadAdmin._loadOrderIndex; index++) {
+                            number += PreLoadAdmin._loadOrder[index].length;
+                        }
+                        if (this['len'] == number) {
+                            PreLoadAdmin._loadOrderIndex++;
+                        }
+                        EventAdmin._notify(PreLoadAdmin._Event.stepLoding);
+                    }
+                },
+            };
+            let _Event;
+            (function (_Event) {
+                _Event["importList"] = "_PreLoad_importList";
+                _Event["complete"] = "_PreLoad_complete";
+                _Event["stepLoding"] = "_PreLoad_startLoding";
+                _Event["progress"] = "_PreLoad_progress";
+            })(_Event = PreLoadAdmin._Event || (PreLoadAdmin._Event = {}));
+            function _remakeLode() {
+                _scene3D = [];
+                _prefab3D = [];
+                _mesh3D = [];
+                _material = [];
+                _texture2D = [];
+                _pic2D = [];
+                _scene2D = [];
+                _prefab2D = [];
+                _json = [];
+                _skeleton = [];
+                PreLoadAdmin._loadOrder = [];
+                _effectsTex2D = [];
+                PreLoadAdmin._sumProgress = 0;
+                PreLoadAdmin._loadOrderIndex = 0;
+                PreLoadAdmin._currentProgress.value = 0;
+            }
+            PreLoadAdmin._remakeLode = _remakeLode;
+            class _PreLoadScene extends SceneAdmin._SceneBase {
+                moduleOnAwake() {
+                    PreLoadAdmin._remakeLode();
+                }
+                lwgStartLoding(any) {
+                    EventAdmin._notify(PreLoadAdmin._Event.importList, (any));
+                }
+                moduleEvent() {
+                    EventAdmin._registerOnce(_Event.importList, this, (listObj) => {
+                        listObj[_ListName.effectTex2D] = Eff3DAdmin._tex2D;
+                        for (const key in listObj) {
+                            if (Object.prototype.hasOwnProperty.call(listObj, key)) {
+                                for (const key1 in listObj[key]) {
+                                    if (Object.prototype.hasOwnProperty.call(listObj[key], key1)) {
+                                        const element = listObj[key][key1];
+                                        switch (key) {
+                                            case _ListName.json:
+                                                _json.push(element);
+                                                break;
+                                            case _ListName.material:
+                                                _material.push(element);
+                                                break;
+                                            case _ListName.mesh3D:
+                                                _mesh3D.push(element);
+                                                break;
+                                            case _ListName.pic2D:
+                                                _pic2D.push(element);
+                                                break;
+                                            case _ListName.prefab2D:
+                                                _prefab2D.push(element);
+                                                break;
+                                            case _ListName.prefab3D:
+                                                _prefab3D.push(element);
+                                                break;
+                                            case _ListName.scene2D:
+                                                _scene2D.push(element);
+                                                break;
+                                            case _ListName.scene3D:
+                                                _scene3D.push(element);
+                                                break;
+                                            case _ListName.texture2D:
+                                                _texture2D.push(element);
+                                                break;
+                                            case _ListName.skeleton:
+                                                _skeleton.push(element);
+                                                break;
+                                            case _ListName.texture:
+                                                _texture.push(element);
+                                                break;
+                                            case _ListName.effectTex2D:
+                                                _effectsTex2D.push(element);
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        PreLoadAdmin._loadOrder = [_pic2D, _scene2D, _prefab2D, _prefab3D, _json, _texture, _texture2D, _mesh3D, _material, _skeleton, _scene3D, _effectsTex2D];
+                        for (let index = 0; index < PreLoadAdmin._loadOrder.length; index++) {
+                            PreLoadAdmin._sumProgress += PreLoadAdmin._loadOrder[index].length;
+                            if (PreLoadAdmin._loadOrder[index].length <= 0) {
+                                PreLoadAdmin._loadOrder.splice(index, 1);
+                                index--;
+                            }
+                        }
+                        let time = this.lwgOpenAni();
+                        Laya.timer.once(time ? time : 0, this, () => {
+                            EventAdmin._notify(PreLoadAdmin._Event.stepLoding);
+                        });
+                    });
+                    EventAdmin._register(_Event.stepLoding, this, () => { this.startLodingRule(); });
+                    EventAdmin._registerOnce(_Event.complete, this, () => {
+                        Laya.timer.once(this.lwgAllComplete(), this, () => {
+                            LwgScene._SceneControl[PreLoadAdmin._loadType] = this._Owner;
+                            if (PreLoadAdmin._loadType !== LwgScene._BaseName.PreLoad) {
+                                LwgScene._PreLoadCutIn.openName && this._openScene(LwgScene._PreLoadCutIn.openName);
+                            }
+                            else {
+                                AudioAdmin._playMusic();
+                                this._openScene(LwgScene._BaseName.Start, true, false, () => {
+                                    PreLoadAdmin._loadType = LwgScene._BaseName.PreLoadCutIn;
+                                });
+                            }
+                        });
+                    });
+                    EventAdmin._register(_Event.progress, this, () => {
+                        PreLoadAdmin._currentProgress.value++;
+                        if (PreLoadAdmin._currentProgress.value < PreLoadAdmin._sumProgress) {
+                            console.log('当前进度条进度为:', PreLoadAdmin._currentProgress.value / PreLoadAdmin._sumProgress);
+                            this.lwgStepComplete();
+                        }
+                    });
+                }
+                moduleOnEnable() {
+                    PreLoadAdmin._loadOrderIndex = 0;
+                }
+                startLodingRule() {
+                    if (PreLoadAdmin._loadOrder.length <= 0) {
+                        console.log('没有加载项');
+                        EventAdmin._notify(PreLoadAdmin._Event.complete);
+                        return;
+                    }
+                    let alreadyPro = 0;
+                    for (let i = 0; i < PreLoadAdmin._loadOrderIndex; i++) {
+                        alreadyPro += PreLoadAdmin._loadOrder[i].length;
+                    }
+                    let index = PreLoadAdmin._currentProgress.value - alreadyPro;
+                    switch (PreLoadAdmin._loadOrder[PreLoadAdmin._loadOrderIndex]) {
+                        case _pic2D:
+                            Laya.loader.load(_pic2D[index], Laya.Handler.create(this, (any) => {
+                                if (typeof _pic2D[index]['url'] === 'object') {
+                                    console.log(`${_pic2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
+                                }
+                                else {
+                                    if (any == null) {
+                                        console.log('XXXXXXXXXXX2D资源' + _pic2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        console.log('2D图片' + _pic2D[index] + '加载完成！', '数组下标为：', index);
+                                    }
+                                }
+                                EventAdmin._notify(_Event.progress);
+                            }));
+                            break;
+                        case _scene2D:
+                            Laya.loader.load(_scene2D[index], Laya.Handler.create(this, (any) => {
+                                if (typeof _scene2D[index]['url'] === 'object') {
+                                    console.log(`${_scene2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
+                                }
+                                else {
+                                    if (any == null) {
+                                        console.log('XXXXXXXXXXX数据表' + _scene2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        console.log('2D场景' + _scene2D[index] + '加载完成！', '数组下标为：', index);
+                                    }
+                                }
+                                EventAdmin._notify(_Event.progress);
+                            }), null, Laya.Loader.JSON);
+                            break;
+                        case _scene3D:
+                            Laya.Scene3D.load(_scene3D[index]['url'], Laya.Handler.create(this, (Scene) => {
+                                if (typeof _scene3D[index]['url'] === 'object') {
+                                    console.log(`${_scene3D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
+                                }
+                                else {
+                                    if (Scene == null) {
+                                        console.log('XXXXXXXXXXX3D场景' + _scene3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _scene3D[index]['Scene'] = Scene;
+                                        console.log('3D场景' + _scene3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
+                                }
+                                EventAdmin._notify(_Event.progress);
+                            }));
+                            break;
+                        case _prefab3D:
+                            Laya.Sprite3D.load(_prefab3D[index]['url'], Laya.Handler.create(this, (Sp) => {
+                                if (typeof _prefab3D[index]['url'] === 'object') {
+                                    console.log(`${_prefab3D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
+                                }
+                                else {
+                                    if (Sp == null) {
+                                        console.log('XXXXXXXXXXX3D预设体' + _prefab3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _prefab3D[index]['Prefab'] = Sp;
+                                        console.log('3D预制体' + _prefab3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
+                                }
+                                EventAdmin._notify(_Event.progress);
+                            }));
+                            break;
+                        case _mesh3D:
+                            Laya.Mesh.load(_mesh3D[index]['url'], Laya.Handler.create(this, (any) => {
+                                if (typeof _mesh3D[index]['url'] === 'object') {
+                                    console.log(`${_mesh3D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
+                                }
+                                else {
+                                    if (any == null) {
+                                        console.log('XXXXXXXXXXX3D网格' + _mesh3D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        console.log('3D网格' + _mesh3D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
+                                }
+                                EventAdmin._notify(_Event.progress);
+                            }));
+                            break;
+                        case _texture:
+                            Laya.loader.load(_texture[index]['url'], Laya.Handler.create(this, (tex) => {
+                                if (typeof _texture[index]['url'] === 'object') {
+                                    console.log(`${_texture[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
+                                }
+                                else {
+                                    if (tex == null) {
+                                        console.log('XXXXXXXXXXX2D纹理' + _texture[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _texture[index]['texture'] = tex;
+                                        console.log('纹理' + _texture[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
+                                }
+                                EventAdmin._notify(_Event.progress);
+                            }));
+                            break;
+                        case _texture2D:
+                            Laya.Texture2D.load(_texture2D[index]['url'], Laya.Handler.create(this, function (tex) {
+                                if (typeof _texture2D[index]['url'] === 'object') {
+                                    console.log(`${_texture2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
+                                }
+                                else {
+                                    if (tex == null) {
+                                        console.log('XXXXXXXXXXX2D纹理' + _texture2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _texture2D[index]['texture2D'] = tex;
+                                        console.log('3D纹理' + _texture2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
+                                }
+                                EventAdmin._notify(_Event.progress);
+                            }));
+                            break;
+                        case _effectsTex2D:
+                            Laya.Texture2D.load(_effectsTex2D[index]['url'], Laya.Handler.create(this, function (tex) {
+                                if (typeof _effectsTex2D[index]['url'] === 'object') {
+                                    console.log(`${_effectsTex2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
+                                }
+                                else {
+                                    if (tex == null) {
+                                        console.log('XXXXXXXXXXX2D纹理' + _effectsTex2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _effectsTex2D[index]['texture2D'] = tex;
+                                        console.log('3D纹理' + _effectsTex2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
+                                }
+                                EventAdmin._notify(_Event.progress);
+                            }));
+                            break;
+                        case _material:
+                            Laya.Material.load(_material[index]['url'], Laya.Handler.create(this, (any) => {
+                                if (typeof _material[index]['url'] === 'object') {
+                                    console.log(`${_material[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
+                                }
+                                else {
+                                    if (any == null) {
+                                        console.log('XXXXXXXXXXX材质' + _material[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _material[index]['texture2D'] = any;
+                                        console.log('材质' + _material[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
+                                }
+                                EventAdmin._notify(_Event.progress);
+                            }));
+                            break;
+                        case _json:
+                            Laya.loader.load(_json[index]['url'], Laya.Handler.create(this, (data) => {
+                                if (typeof _json[index]['url'] === 'object') {
+                                    console.log(`${_json[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
+                                }
+                                else {
+                                    if (data == null) {
+                                        console.log('XXXXXXXXXXX数据表' + _json[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        _json[index]['dataArr'] = data["RECORDS"];
+                                        console.log('数据表' + _json[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
+                                }
+                                EventAdmin._notify(_Event.progress);
+                            }), null, Laya.Loader.JSON);
+                            break;
+                        case _skeleton:
+                            _skeleton[index]['templet'].on(Laya.Event.ERROR, this, () => {
+                                console.log('XXXXXXXXXXX骨骼动画' + _skeleton[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                EventAdmin._notify(_Event.progress);
+                            });
+                            _skeleton[index]['templet'].on(Laya.Event.COMPLETE, this, () => {
+                                console.log('骨骼动画', _skeleton[index]['templet']['url'], '加载完成！', '数组下标为：', index);
+                                EventAdmin._notify(_Event.progress);
+                            });
+                            _skeleton[index]['templet'].loadAni(_skeleton[index]['url']);
+                            break;
+                        case _prefab2D:
+                            Laya.loader.load(_prefab2D[index]['url'], Laya.Handler.create(this, (prefab) => {
+                                if (typeof _prefab2D[index]['url'] === 'object') {
+                                    console.log(`${_prefab2D[index]}加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
+                                }
+                                else {
+                                    if (prefab == null) {
+                                        console.log('XXXXXXXXXXX数据表' + _prefab2D[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                                    }
+                                    else {
+                                        let _prefab = new Laya.Prefab();
+                                        _prefab.json = prefab;
+                                        _prefab2D[index]['prefab'] = _prefab;
+                                        console.log('2D预制体' + _prefab2D[index]['url'] + '加载完成！', '数组下标为：', index);
+                                    }
+                                }
+                                EventAdmin._notify(_Event.progress);
+                            }));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                lwgStepComplete() { }
+                lwgAllComplete() { return 0; }
+                ;
+            }
+            PreLoadAdmin._PreLoadScene = _PreLoadScene;
+        })(PreLoadAdmin = Lwg.PreLoadAdmin || (Lwg.PreLoadAdmin = {}));
+        let InitAdmin;
+        (function (InitAdmin) {
+            class _InitScene extends SceneAdmin._SceneBase {
+                lwgOpenAni() {
+                    return 100;
+                }
+                moduleOnStart() {
+                    DateAdmin._init();
+                }
+                ;
+            }
+            InitAdmin._InitScene = _InitScene;
+        })(InitAdmin = Lwg.InitAdmin || (Lwg.InitAdmin = {}));
+        let ExecutionAdmin;
+        (function (ExecutionAdmin) {
+            let maxEx = 15;
+            ExecutionAdmin._execution = {
+                get value() {
+                    if (!this['Execution/executionNum']) {
+                        return Laya.LocalStorage.getItem('Execution/executionNum') ? Number(Laya.LocalStorage.getItem('Execution/executionNum')) : maxEx;
+                    }
+                    return this['Execution/executionNum'];
+                },
+                set value(val) {
+                    console.log(val);
+                    this['Execution/executionNum'] = val;
+                    Laya.LocalStorage.setItem('Execution/executionNum', val.toString());
+                }
+            };
+            ExecutionAdmin._addExDate = {
+                get value() {
+                    if (!this['Execution/addExDate']) {
+                        return Laya.LocalStorage.getItem('Execution/addExDate') ? Number(Laya.LocalStorage.getItem('Execution/addExDate')) : (new Date()).getDay();
+                    }
+                    return this['Execution/addExDate'];
+                },
+                set value(val) {
+                    this['Execution/addExDate'] = val;
+                    Laya.LocalStorage.setItem('Execution/addExDate', val.toString());
+                }
+            };
+            ExecutionAdmin._addExHours = {
+                get value() {
+                    if (!this['Execution/addExHours']) {
+                        return Laya.LocalStorage.getItem('Execution/addExHours') ? Number(Laya.LocalStorage.getItem('Execution/addExHours')) : (new Date()).getHours();
+                    }
+                    return this['Execution/addExHours'];
+                },
+                set value(val) {
+                    this['Execution/addExHours'] = val;
+                    Laya.LocalStorage.setItem('Execution/addExHours', val.toString());
+                }
+            };
+            ExecutionAdmin._addMinutes = {
+                get value() {
+                    if (!this['Execution/addMinutes']) {
+                        return Laya.LocalStorage.getItem('Execution/addMinutes') ? Number(Laya.LocalStorage.getItem('Execution/addMinutes')) : (new Date()).getMinutes();
+                    }
+                    return this['Execution/addMinutes'];
+                },
+                set value(val) {
+                    this['Execution/addMinutes'] = val;
+                    Laya.LocalStorage.setItem('Execution/addMinutes', val.toString());
+                }
+            };
+            function _createExecutionNode(parent) {
+                let sp;
+                Laya.loader.load('prefab/ExecutionNum.json', Laya.Handler.create(this, function (prefab) {
+                    let _prefab = new Laya.Prefab();
+                    _prefab.json = prefab;
+                    sp = Laya.Pool.getItemByCreateFun('prefab', _prefab.create, _prefab);
+                    parent.addChild(sp);
+                    let num = sp.getChildByName('Num');
+                    num.value = ExecutionAdmin._execution.value.toString();
+                    sp.pos(297, 90);
+                    sp.zOrder = 50;
+                    ExecutionAdmin._ExecutionNode = sp;
+                    ExecutionAdmin._ExecutionNode.name = '_ExecutionNode';
+                }));
+            }
+            ExecutionAdmin._createExecutionNode = _createExecutionNode;
+            function _addExecution(x, y, func) {
+                let sp;
+                Laya.loader.load('prefab/execution.json', Laya.Handler.create(this, function (prefab) {
+                    let _prefab = new Laya.Prefab();
+                    _prefab.json = prefab;
+                    sp = Laya.Pool.getItemByCreateFun('prefab', _prefab.create, _prefab);
+                    Laya.stage.addChild(sp);
+                    sp.x = Laya.stage.width / 2;
+                    sp.y = Laya.stage.height / 2;
+                    sp.zOrder = 50;
+                    if (ExecutionAdmin._ExecutionNode) {
+                        Ani2DAdmin.move(sp, ExecutionAdmin._ExecutionNode.x, ExecutionAdmin._ExecutionNode.y, 800, () => {
+                            Ani2DAdmin.fadeOut(sp, 1, 0, 200, 0, () => {
+                                Ani2DAdmin.upDwon_Shake(ExecutionAdmin._ExecutionNode, 10, 80, 0, null);
+                                if (func) {
+                                    func();
+                                }
+                            });
+                        }, 100);
+                    }
+                }));
+            }
+            ExecutionAdmin._addExecution = _addExecution;
+            function createConsumeEx(subEx) {
+                let label = Laya.Pool.getItemByClass('label', Laya.Label);
+                label.name = 'label';
+                Laya.stage.addChild(label);
+                label.text = `${subEx}`;
+                label.fontSize = 40;
+                label.bold = true;
+                label.color = '#59245c';
+                label.x = ExecutionAdmin._ExecutionNode.x + 100;
+                label.y = ExecutionAdmin._ExecutionNode.y - label.height / 2 + 4;
+                label.zOrder = 100;
+                Ani2DAdmin.fadeOut(label, 0, 1, 200, 150, () => {
+                    Ani2DAdmin.leftRight_Shake(ExecutionAdmin._ExecutionNode, 15, 60, 0, null);
+                    Ani2DAdmin.fadeOut(label, 1, 0, 600, 400, () => {
+                    });
+                });
+            }
+            ExecutionAdmin.createConsumeEx = createConsumeEx;
+            class ExecutionNode extends SceneAdmin._ObjectBase {
+                constructor() {
+                    super(...arguments);
+                    this.timeSwitch = true;
+                    this.time = 0;
+                    this.countNum = 59;
+                }
+                lwgOnAwake() {
+                    this.Num = this._Owner.getChildByName('Num');
+                    this.CountDown = this._Owner.getChildByName('CountDown');
+                    this.CountDown_Board = this._Owner.getChildByName('CountDown_Board');
+                    this.countNum = 59;
+                    this.CountDown.text = '00:' + this.countNum;
+                    this.CountDown_Board.text = this.CountDown.text;
+                    let d = new Date;
+                    if (d.getDate() !== ExecutionAdmin._addExDate.value) {
+                        ExecutionAdmin._execution.value = maxEx;
+                    }
+                    else {
+                        if (d.getHours() == ExecutionAdmin._addExHours.value) {
+                            console.log(d.getMinutes(), ExecutionAdmin._addMinutes.value);
+                            ExecutionAdmin._execution.value += (d.getMinutes() - ExecutionAdmin._addMinutes.value);
+                            if (ExecutionAdmin._execution.value > maxEx) {
+                                ExecutionAdmin._execution.value = maxEx;
+                            }
+                        }
+                        else {
+                            ExecutionAdmin._execution.value = maxEx;
+                        }
+                    }
+                    this.Num.value = ExecutionAdmin._execution.value.toString();
+                    ExecutionAdmin._addExDate.value = d.getDate();
+                    ExecutionAdmin._addExHours.value = d.getHours();
+                    ExecutionAdmin._addMinutes.value = d.getMinutes();
+                }
+                countDownAddEx() {
+                    this.time++;
+                    if (this.time % 60 == 0) {
+                        this.countNum--;
+                        if (this.countNum < 0) {
+                            this.countNum = 59;
+                            ExecutionAdmin._execution.value += 1;
+                            this.Num.value = ExecutionAdmin._execution.value.toString();
+                            let d = new Date;
+                            ExecutionAdmin._addExHours.value = d.getHours();
+                            ExecutionAdmin._addMinutes.value = d.getMinutes();
+                        }
+                        if (this.countNum >= 10 && this.countNum <= 59) {
+                            this.CountDown.text = '00:' + this.countNum;
+                            this.CountDown_Board.text = this.CountDown.text;
+                        }
+                        else if (this.countNum >= 0 && this.countNum < 10) {
+                            this.CountDown.text = '00:0' + this.countNum;
+                            this.CountDown_Board.text = this.CountDown.text;
+                        }
+                    }
+                }
+                lwgOnStart() {
+                    TimerAdmin._frameLoop(1, this, () => {
+                        if (Number(this.Num.value) >= maxEx) {
+                            if (this.timeSwitch) {
+                                ExecutionAdmin._execution.value = maxEx;
+                                this.Num.value = ExecutionAdmin._execution.value.toString();
+                                this.CountDown.text = '00:00';
+                                this.CountDown_Board.text = this.CountDown.text;
+                                this.countNum = 60;
+                                this.timeSwitch = false;
+                            }
+                        }
+                        else {
+                            this.timeSwitch = true;
+                            this.countDownAddEx();
+                        }
+                    });
+                }
+            }
+            ExecutionAdmin.ExecutionNode = ExecutionNode;
+        })(ExecutionAdmin = Lwg.ExecutionAdmin || (Lwg.ExecutionAdmin = {}));
+    })(Lwg || (Lwg = {}));
+    var Lwg$1 = Lwg;
+    let LwgPlatform = Lwg.PlatformAdmin;
+    let LwgGame = Lwg.GameAdmin;
+    let LwgScene = Lwg.SceneAdmin;
+    let LwgAdaptive = Lwg.AdaptiveAdmin;
+    let LwgSceneAni = Lwg.SceneAniAdmin;
+    let LwgNode = Lwg.NodeAdmin;
+    let LwgDialogue = Lwg.Dialogue;
+    let LwgEvent = Lwg.EventAdmin;
+    let LwgTimer = Lwg.TimerAdmin;
+    let LwgData = Lwg.DataAdmin;
+    let LwgStorage = Lwg.StorageAdmin;
+    let LwgDate = Lwg.DateAdmin;
+    let LwgSet = Lwg.SetAdmin;
+    let LwgAudio = Lwg.AudioAdmin;
+    let LwgClick = Lwg.ClickAdmin;
+    let LwgColor = Lwg.ColorAdmin;
+    let LwgEff2D = Lwg.Eff2DAdmin;
+    let LwgEff3D = Lwg.Eff3DAdmin;
+    let LwgAni2D = Lwg.Ani2DAdmin;
+    let LwgAni3D = Lwg.Ani3DAdmin;
+    let LwgExecution = Lwg.ExecutionAdmin;
+    let LwgGold = Lwg.GoldAdmin;
+    let LwgTools = Lwg.ToolsAdmin;
+    let LwgPreLoad = Lwg.PreLoadAdmin;
+    let LwgAdmin = Lwg.InitAdmin;
+
+    class _Res {
+    }
+    _Res._list = {
+        scene3D: {
+            MakeClothes: {
+                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/_Lwg3D/_Scene/LayaScene_3DDressUp/Conventional/3DDressUp.ls`,
+                Scene: null,
+            },
+        },
+        pic2D: {
+            Effects: "res/atlas/lwg/Effects.png",
+        },
+        prefab2D: {
+            NativeRoot: {
+                url: 'Prefab/NativeRoot.json',
+                prefab: new Laya.Prefab,
+            },
+            BtnAgain: {
+                url: 'Prefab/BtnAGainTow.json',
+                prefab: new Laya.Prefab,
+            },
+            BtnBack: {
+                url: 'Prefab/BtnBack3.json',
+                prefab: new Laya.Prefab,
+            },
+            BtnRollback: {
+                url: 'Prefab/BtnRollback.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_bottom_002_final: {
+                url: 'Prefab/diy_bottom_002_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_bottom_003_final: {
+                url: 'Prefab/diy_bottom_003_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_bottom_004_final: {
+                url: 'Prefab/diy_bottom_004_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_bottom_005_final: {
+                url: 'Prefab/diy_bottom_005_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_bottom_006_final: {
+                url: 'Prefab/diy_bottom_006_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_001_final: {
+                url: 'Prefab/diy_dress_001_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_002_final: {
+                url: 'Prefab/diy_dress_002_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_003_final: {
+                url: 'Prefab/diy_dress_003_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_004_final: {
+                url: 'Prefab/diy_dress_004_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_005_final: {
+                url: 'Prefab/diy_dress_005_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_006_final: {
+                url: 'Prefab/diy_dress_006_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_007_final: {
+                url: 'Prefab/diy_dress_007_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_dress_008_final: {
+                url: 'Prefab/diy_dress_008_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_top_003_final: {
+                url: 'Prefab/diy_top_003_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_top_004_final: {
+                url: 'Prefab/diy_top_004_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_top_005_final: {
+                url: 'Prefab/diy_top_005_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_top_006_final: {
+                url: 'Prefab/diy_top_006_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_top_007_final: {
+                url: 'Prefab/diy_top_007_final.json',
+                prefab: new Laya.Prefab,
+            },
+            diy_top_008_final: {
+                url: 'Prefab/diy_top_008_final.json',
+                prefab: new Laya.Prefab,
+            },
+        },
+        texture: {},
+        texture2D: {
+            bgStart: {
+                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgStart.jpg`,
+                texture2D: null,
+            },
+        },
+        scene2D: {
+            Start: `Scene/${'Start'}.json`,
+            Guide: `Scene/${'Guide'}.json`,
+            PreLoadStep: `Scene/${'PreLoadCutIn'}.json`,
+            MakePattern: `Scene/${'MakePattern'}.json`,
+            MakeTailor: `Scene/${'MakeTailor'}.json`,
+        },
+        json: {
+            GeneralClothes: {
+                url: `_LwgData/_DressingRoom/GeneralClothes.json`,
+                dataArr: new Array,
+            },
+            DIYClothes: {
+                url: `_LwgData/_MakeTailor/DIYClothes.json`,
+                dataArr: new Array,
+            },
+            DIYClothesDiff: {
+                url: `_LwgData/_MakeTailor/DIYClothesDiff.json`,
+                dataArr: new Array,
+            },
+            MakePattern: {
+                url: `_LwgData/_MakePattern/MakePattern.json`,
+                dataArr: new Array,
+            },
+            Ranking: {
+                url: `_LwgData/_Ranking/Ranking.json`,
+                dataArr: new Array,
+            },
+            CheckIn: {
+                url: `_LwgData/_CheckIn/CheckIn.json`,
+                dataArr: new Array,
+            }
+        },
+    };
+    class _CutInRes {
+    }
+    _CutInRes.Start = {
+        texture2D: {
+            bgStart: {
+                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgStart.jpg`,
+                texture2D: null,
+            },
+        }
+    };
+    _CutInRes.MakePattern = {
+        texture2D: {
+            bgMakePattern: {
+                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgMakePattern.jpg`,
+                texture2D: null,
+            },
+            bgPhoto: {
+                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgPhoto.png`,
+                texture2D: null,
+            },
+        }
+    };
+    _CutInRes.DressingRoom = {
+        texture2D: {
+            bgDressingRoom: {
+                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgDressingRoom.jpg`,
+                texture2D: null,
+            },
+        }
+    };
+
+    class _SceneName extends LwgScene._BaseName {
+    }
+    _SceneName.MakeTailor = 'MakeTailor';
+    _SceneName.MakePattern = 'MakePattern';
+    _SceneName.DressingRoom = 'DressingRoom';
+    _SceneName.Tweeting_ChoosePhotos = 'Tweeting_ChoosePhotos';
+    _SceneName.Tweeting_Dynamic = 'Tweeting_Dynamic';
+    _SceneName.Tweeting_GetFans = 'Tweeting_GetFans';
+    _SceneName.Tweeting_Main = 'Tweeting_Main';
+    _SceneName.AdsHint = 'AdsHint';
+    _SceneName.BackHint = 'BackHint';
+    _SceneName.PersonalInfo = 'PersonalInfo';
+
+    class _3DScene {
+        constructor() {
+            this.aniName = {
+                Stand: 'Stand',
+                Pose1: 'Pose1',
+                Pose2: 'Pose2',
+                DispalyCloth: 'DispalyCloth',
+                Walk: 'Walk',
+            };
+        }
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _3DScene();
+                this.ins._Owner = _Res._list.scene3D.MakeClothes.Scene;
+                Laya.stage.addChild(this.ins._Owner);
+                this.ins._Role = this.ins._Owner.getChildByName('Role');
+                this.ins._RoleFPos = new Laya.Vector3(this.ins._Role.transform.position.x, this.ins._Role.transform.position.y, this.ins._Role.transform.position.z);
+                this.ins._Root = this.ins._Role.getChildByName('Root');
+                this.ins._DIY = this.ins._Root.getChildByName('DIY');
+                this.ins._General = this.ins._Root.getChildByName('General');
+                this.ins._DBottoms = this.ins._DIY.getChildByName('Bottoms');
+                this.ins._DTop = this.ins._DIY.getChildByName('Top');
+                this.ins._DDress = this.ins._DIY.getChildByName('Dress');
+                this.ins._GBottoms = this.ins._General.getChildByName('Bottoms');
+                this.ins._GTop = this.ins._General.getChildByName('Top');
+                this.ins._GDress = this.ins._General.getChildByName('Dress');
+                this.ins._RoleAni = this.ins._Role.getComponent(Laya.Animator);
+                this.ins._MainCamara = this.ins._Owner.getChildByName('Main Camera');
+                this.ins._MirrorCamera = this.ins._Owner.getChildByName('MirrorCamera');
+                this.ins._Mirror = this.ins._Owner.getChildByName('Mirror');
+                this.ins._Bg1 = this.ins._Owner.getChildByName('Bg1');
+                this.ins._bg1Mat = this.ins._Bg1.meshRenderer.material;
+                this.ins._Bg2 = this.ins._Owner.getChildByName('Bg2');
+                this.ins._BtnDress = this.ins._Owner.getChildByName('BtnDress');
+                this.ins._BtnTop = this.ins._Owner.getChildByName('BtnTop');
+                this.ins._BtnBottoms = this.ins._Owner.getChildByName('BtnBottoms');
+                this.ins._BtnDressingRoom = this.ins._Owner.getChildByName('BtnDressingRoom');
+                this.ins._DIYHanger = this.ins._Owner.getChildByName('DIYHanger');
+                this.ins.fillLight_Right1 = this.ins._Owner.getChildByName('fillLight_Right1');
+                this.ins.fillLight_Right2 = this.ins._Owner.getChildByName('fillLight_Right2');
+                this.ins.fillLight_Left1 = this.ins._Owner.getChildByName('fillLight_Left1');
+                this.ins.fillLight_Left2 = this.ins._Owner.getChildByName('fillLight_Left2');
+                this.ins.fillLight_Back1 = this.ins._Owner.getChildByName('fillLight_Back1');
+                this.ins.fillLight_Bottom1 = this.ins._Owner.getChildByName('fillLight_Bottom1');
+                this.ins.fillLight_Bottom2 = this.ins._Owner.getChildByName('fillLight_Bottom2');
+                this.ins.fillLight_Left1.intensity = 0.15;
+                this.ins.fillLight_Right1.intensity = 0.15;
+                this.ins.fillLight_Bottom2.active = false;
+                this.ins.fillLight_Left2.intensity = 0.4;
+                this.ins.fillLight_Right2.intensity = 0.4;
+            }
+            return this.ins;
+        }
+        playDispalyAni() {
+            this._RoleAni.play(this.aniName.Stand);
+            this._RoleAni.play(this.aniName.DispalyCloth);
+            Laya.timer.clearAll(this._Role);
+            LwgTimer._once(3200, this._Role, () => {
+                this._RoleAni.crossFade(this.aniName.Stand, 0.3);
+            });
+        }
+        playPoss1Ani() {
+            this._RoleAni.crossFade(this.aniName.Pose1, 0.3);
+            Laya.timer.clearAll(this._Role);
+            LwgTimer._once(3200, this._Role, () => {
+                this._RoleAni.crossFade(this.aniName.Stand, 0.3);
+            });
+        }
+        playPoss2Ani() {
+            this._RoleAni.crossFade(this.aniName.Pose2, 0.3);
+            Laya.timer.clearAll(this._Role);
+            LwgTimer._once(3200, this._Role, () => {
+                this._RoleAni.crossFade(this.aniName.Stand, 0.3);
+            });
+        }
+        playStandAni() {
+            Laya.timer.clearAll(this);
+            Laya.timer.clearAll(this._Role);
+            this._RoleAni.crossFade(this.aniName.Stand, 0.3);
+        }
+        playRandomPose() {
+            LwgTimer._frameLoop(500, this, () => {
+                LwgTools._Number.randomOneHalf() == 0 ? _3DScene._ins().playPoss1Ani() : _3DScene._ins().playPoss2Ani();
+            }, true);
+        }
+        get btnDressPos() {
+            return LwgTools._3D.posToScreen(this._BtnDress.transform.position, this._MainCamara);
+        }
+        get btnTopPos() {
+            return LwgTools._3D.posToScreen(this._BtnTop.transform.position, this._MainCamara);
+        }
+        get btnBottomsPos() {
+            return LwgTools._3D.posToScreen(this._BtnBottoms.transform.position, this._MainCamara);
+        }
+        get btnDressingRoomPos() {
+            return LwgTools._3D.posToScreen(this._BtnDressingRoom.transform.position, this._MainCamara);
+        }
+        cameraToSprite(scene) {
+            _3DScene._ins().mirrorSurface = false;
+            const Sp = new Laya.Sprite;
+            Sp.zOrder = -1;
+            scene.addChild(Sp)['size'](Laya.stage.width, Laya.stage.height);
+            LwgTools._Draw.cameraToSprite(this._MainCamara, Sp);
+            return Sp;
+        }
+        openStartAni(func) {
+            func();
+            this.playRandomPose();
+            this._DIYHanger.active = false;
+            this._Role.active = true;
+            this._MirrorCamera.active = false;
+        }
+        intoStart(whereFrom) {
+            this.playStandAni();
+            this._Owner.active = true;
+            this._DIYHanger.active = false;
+            this.fillLight_Left1.active = false;
+            this.fillLight_Right1.active = false;
+            this._MirrorCamera.active = false;
+            if (whereFrom === _SceneName.PreLoad) {
+                this._bg1Mat.albedoTexture = _Res._list.texture2D.bgStart.texture2D;
+            }
+            else {
+                this._bg1Mat.albedoTexture = _CutInRes.Start.texture2D.bgStart.texture2D;
+            }
+        }
+        intogeDressingRoom() {
+            _3DScene._ins().playStandAni();
+            this._MirrorCamera.active = true;
+            this._bg1Mat.albedoTexture = _CutInRes.DressingRoom.texture2D.bgDressingRoom.texture2D;
+        }
+        get mirrorSurface() {
+            return this['_mirrorSurface'];
+        }
+        ;
+        set mirrorSurface(bool) {
+            this['_mirrorSurface'] = bool;
+        }
+        openMirror(_Sp) {
+            this.mirrorSurface = true;
+            LwgTimer._clearAll([this._Mirror]);
+            LwgTimer._frameLoop(1, this._Mirror, () => {
+                if (this.mirrorSurface) {
+                    this._MirrorCamera.renderTarget = new Laya.RenderTexture(_Sp.width, _Sp.height);
+                    this._MirrorCamera.renderingOrder = -1;
+                    this._MirrorCamera.clearFlag = Laya.CameraClearFlags.Sky;
+                    this.mirrortex && this.mirrortex.destroy();
+                    this.mirrortex = new Laya.Texture(this._MirrorCamera.renderTarget, Laya.Texture.DEF_UV);
+                    _Sp.graphics.drawTexture(this.mirrortex);
+                }
+            });
+        }
+        closeMirror() {
+            this.mirrorSurface = false;
+        }
+        intoMakePattern() {
+            this._Owner.active = true;
+            this.fillLight_Left1.active = true;
+            this.fillLight_Right1.active = true;
+            this._bg1Mat.albedoTexture = _CutInRes.MakePattern.texture2D.bgMakePattern.texture2D;
+        }
+        intoMakeTailor() {
+            _3DScene._ins()._Owner.active = false;
+        }
+        photoBg() {
+            this._bg1Mat.albedoTexture = _CutInRes.MakePattern.texture2D.bgPhoto.texture2D;
+        }
+        displayDress() {
+            this._GBottoms.active = this._GTop.active = this._DBottoms.active = this._DTop.active = false;
+        }
+        displayTopAndBotton() {
+            this._GDress.active = this._DDress.active = false;
+        }
+    }
+    class _3DDIYCloth {
+        constructor() {
+        }
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _3DDIYCloth();
+            }
+            return this.ins;
+        }
+        remake(classify, pitchName) {
+            this.name = pitchName;
+            _3DScene._ins()._DIYHanger.active = true;
+            _3DScene._ins()._Role.active = false;
+            const Classify = _3DScene._ins()._DIYHanger.getChildByName(classify);
+            LwgTools._Node.showExcludedChild3D(_3DScene._ins()._DIYHanger, [Classify.name]);
+            this.Present = Classify.getChildByName(pitchName);
+            LwgTools._Node.showExcludedChild3D(Classify, [this.Present.name]);
+            this.Present.transform.localRotationEulerY = 180;
+            this.Front = this.Present.getChildByName(`${this.Present.name}_0`);
+            this.frontMat = this.Front.meshRenderer.material;
+            this.Reverse = this.Present.getChildByName(`${this.Present.name}_1`);
+            this.reverseMat = this.Reverse.meshRenderer.material;
+            this.ModelTap = this.Present.getChildByName('ModelTap');
+            this.ModelTap.transform.position = new Laya.Vector3(this.Present.transform.position.x, this.ModelTap.transform.position.y, this.Present.transform.position.z);
+            this.hanger = this.Present.getChildByName('hanger');
+            this.hanger.active = true;
+            let center = this.Front.meshRenderer.bounds.getCenter();
+            let extent = this.Front.meshRenderer.bounds.getExtent();
+            let p1 = new Laya.Vector3(center.x, center.y + extent.y, center.z);
+            let p2 = new Laya.Vector3(center.x, center.y - extent.y, center.z);
+            let point1 = LwgTools._3D.posToScreen(p1, _3DScene._ins()._MainCamara);
+            let point2 = LwgTools._3D.posToScreen(p2, _3DScene._ins()._MainCamara);
+            this.texHeight = point2.y - point1.y;
+        }
+        addTexture2D(arr) {
+            this.frontMat.albedoTexture && this.frontMat.albedoTexture.destroy();
+            this.frontMat.albedoTexture = arr[0];
+            this.reverseMat.albedoTexture && this.reverseMat.albedoTexture.destroy();
+            this.reverseMat.albedoTexture = arr[1];
+        }
+        rotate(num) {
+            if (num == 1) {
+                this.Present.transform.localRotationEulerY++;
+            }
+            else {
+                this.Present.transform.localRotationEulerY--;
+            }
+        }
+    }
+
+    var _Ranking;
+    (function (_Ranking) {
+        class _mergePro extends Lwg$1.DataAdmin._BaseProperty {
+            constructor() {
+                super();
+                this.rankNum = 'rankNum';
+                this.fansNum = 'fansNum';
+                this.iconSkin = 'iconSkin';
+            }
+            ;
+        }
+        _Ranking._mergePro = _mergePro;
+        _Ranking._whereFrom = _SceneName.Start;
+        class _Data extends LwgData._Table {
+            constructor() {
+                super(...arguments);
+                this._classify = {
+                    other: 'other',
+                    self: 'self',
+                };
+            }
+            static _ins() {
+                if (!this.ins) {
+                    this.ins = new _Data('RankingData', _Res._list.json.Ranking.dataArr, true);
+                    this.ins._mergePro = new _mergePro();
+                    if (!this.ins._arr[0]['iconSkin']) {
+                        for (let index = 0; index < this.ins._arr.length; index++) {
+                            const element = this.ins._arr[index];
+                            element['iconSkin'] = `Game/UI/Ranking/IconSkin/avatar_${element[this.ins._property.serial]}.png`;
+                        }
+                    }
+                    this.ins._pitchName = '玩家';
+                    this.ins._sortByProperty(this.ins._mergePro.fansNum, this.ins._mergePro.rankNum);
+                }
+                return this.ins;
+            }
+        }
+        _Ranking._Data = _Data;
+    })(_Ranking || (_Ranking = {}));
+    var _Guide;
+    (function (_Guide) {
+        let Event;
+        (function (Event) {
+            Event["closeGuide"] = "GuidecloseGuide";
+            Event["vanishGuide"] = "GuidevanishGuide";
+            Event["StartBtnDress"] = "GuideStartBtnDress";
+            Event["MakeTailorPulldown"] = "GuideMakeTailorPulldown";
+            Event["MakeTailorChangeCloth"] = "GuideMakeTailorChangeCloth";
+            Event["MakeTailorBtnCom"] = "GuideMakeTailorBtnCom";
+            Event["MakeTailorStartTailor"] = "GuideMakeTailorStartTailor";
+            Event["MakeTailorNewTailor"] = "GuideMakeTailorNewTailor";
+            Event["MakeTailorCloseTailor"] = "GuideMakeTailorCloseTailor";
+            Event["MakeTailorOpenTailor"] = "GuideMakeTailorOpenTailor";
+            Event["MakePatternChooseClassify"] = "GuideMakePatternChooseClassify";
+            Event["MakePatternPattern1"] = "GuideMakePatternPattern1";
+            Event["MakePatternFrame1"] = "GuideMakePatternFrame1";
+            Event["MakePatternTurnFace"] = "GuideMakePatternTurnFace";
+            Event["MakePatternFrame2"] = "GuideMakePatternFrame2";
+            Event["MakePatternPattern2"] = "GuideMakePatternPattern2";
+            Event["MakePatternBtnCom"] = "GuideMakePatternBtnCom";
+            Event["TweetingBtnChoosePhoto"] = "GuideTweetingBtnChoosePhoto";
+            Event["TweetingChoosePhoto"] = "GuideTweetingChoosePhoto";
+            Event["TweetingBtnSend"] = "GuideTweetingBtnSend";
+            Event["TweetingBtnDoubleFans"] = "GuideTweetingBtnDoubleFans";
+            Event["RankingCloseBtn"] = "GuideRankingCloseBtn";
+            Event["PersonalInfoBtn"] = "GuidePersonalInfoBtn";
+            Event["PersonalInfoWriteName"] = "GuidePersonalInfoWriteName";
+            Event["PersonalInfoCloseBtn"] = "GuidePersonalInfoCloseBtn";
+            Event["DelayBtnCheckIn"] = "StartDelayBtnCheckIn";
+            Event["BtnCheckIn"] = "GuideBtnCheckIn";
+            Event["CheckInGetReward"] = "GuideCheckInGetReward";
+            Event["CheckInCloseBtn"] = "GuideCheckInBtnClose";
+            Event["StartOtherBtnClick"] = "GuideStartOtherBtnClick";
+        })(Event = _Guide.Event || (_Guide.Event = {}));
+        _Guide._complete = {
+            get value() {
+                return LwgStorage._bool('_Guide_complete').value;
+            },
+            set value(val) {
+                LwgStorage._bool('_Guide_complete').value = val;
+            }
+        };
+        _Guide.MmakeTailorPulldownSwicth = false;
+        _Guide.MmakeTailorBtnComSwicth = false;
+        _Guide.MakePatternState = 'ChooseClassify';
+        _Guide.MakePatternStateType = {
+            ChooseClassify: `ChooseClassify`,
+            Pattern1: 'Pattern1',
+            Frame1: 'Frame1',
+            TurnFace: 'TurnFace',
+            Frame2: 'Frame2',
+            Pattern2: 'Pattern2',
+            BtnCom: 'BtnCom',
+            closeGuide: 'closeGuide',
+        };
+        _Guide.CheckInCloseBtn = false;
+    })(_Guide || (_Guide = {}));
+    var _PersonalInfo;
+    (function (_PersonalInfo) {
+        _PersonalInfo._name = {
+            get value() {
+                return LwgStorage._str('playerName', null, 'You').value;
+            },
+            set value(str) {
+                LwgStorage._str('playerName').value = str;
+            }
+        };
+    })(_PersonalInfo || (_PersonalInfo = {}));
+    var _BackHint;
+    (function (_BackHint) {
+    })(_BackHint || (_BackHint = {}));
+    var _PreLoadCutIn;
+    (function (_PreLoadCutIn) {
+        _PreLoadCutIn._fromBack = false;
+    })(_PreLoadCutIn || (_PreLoadCutIn = {}));
+    var _Start;
+    (function (_Start) {
+        let Event;
+        (function (Event) {
+            Event["photo"] = "Startphoto";
+            Event["updateRanking"] = "StartupdateRanking";
+            Event["BtnPersonalInfo"] = "StartBtnPersonalInfo";
+        })(Event = _Start.Event || (_Start.Event = {}));
+    })(_Start || (_Start = {}));
+    class _AllClothes extends LwgData._Table {
+        constructor() {
+            super(...arguments);
+            this._classify = {
+                DIY: 'DIY',
+                General: 'General',
+            };
+            this._part = {
+                Dress: 'Dress',
+                Top: 'Top',
+                Bottoms: 'Bottoms',
+                FaceMask: 'FaceMask',
+                Accessories: 'Accessories',
+                Shoes: 'Shoes',
+                Hair: 'Hair',
+            };
+            this._otherPro = {
+                putOn: 'putOn',
+                part: 'part'
+            };
+        }
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _AllClothes('ClothesGeneral', _Res._list.json.GeneralClothes.dataArr, true);
+                if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                    this.ins._deleteObjByName('ads');
+                }
+            }
+            return this.ins;
+        }
+        getDIYTexBasicUrl(clothesName) {
+            return `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/DIYTexbasic/${clothesName.substr(0, clothesName.length - 5)}basic.png`;
+        }
+        getGeneralIcon(clothesName) {
+            return `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Icon/General/${clothesName}.png`;
+        }
+        ;
+        collectDIY() {
+            let DIYArr = _DIYClothes._ins()._getArrByNoProperty(_DIYClothes._ins()._otherPro.icon, "");
+            const copyArr = LwgTools._ObjArray.arrCopy(DIYArr);
+            LwgTools._ObjArray.modifyProValue(copyArr, this._property.classify, 'DIY');
+            this._addObjectArr(copyArr);
+            return copyArr;
+        }
+        changeAfterMaking() {
+            this.collectDIY();
+            this.accurateChange(_DIYClothes._ins()._getPitchProperty('part'), _DIYClothes._ins()._pitchName);
+        }
+        changeClass(classify, partArr, playAni, start) {
+            const _classify = _3DScene._ins()._Root.getChildByName(classify);
+            for (let i = 0; i < _classify.numChildren; i++) {
+                const _classifySp = _classify.getChildAt(i);
+                _classifySp.active = false;
+                for (let j = 0; j < partArr.length; j++) {
+                    const obj = partArr[j];
+                    if (obj[this._otherPro.part] === _classifySp.name) {
+                        _classifySp.active = true;
+                        for (let k = 0; k < _classifySp.numChildren; k++) {
+                            const cloth = _classifySp.getChildAt(k);
+                            if (cloth.name === obj[this._property.name]) {
+                                cloth.active = true;
+                                const delay = start ? 40 : 15;
+                                if (classify === 'DIY') {
+                                    const url = this.getDIYTexBasicUrl(cloth.name);
+                                    const fSp = new Laya.Sprite;
+                                    fSp.visible = false;
+                                    Laya.stage.addChild(fSp);
+                                    fSp.zOrder = 1000;
+                                    fSp.size(512, 512);
+                                    fSp.scale(1, -1);
+                                    fSp.pos(0, 512);
+                                    const FImg = new Laya.Image;
+                                    FImg.skin = url;
+                                    fSp.addChild(FImg);
+                                    FImg.size(512, 512);
+                                    FImg.pos(0, 0);
+                                    const ftexData = LwgStorage._array(`${cloth.name}/${_DIYClothes._ins()._otherPro.texF}`).value;
+                                    for (let index = 0; index < ftexData.length; index++) {
+                                        const data = ftexData[index];
+                                        const Img = new Laya.Image;
+                                        fSp.addChild(Img);
+                                        Img.skin = `Pattern/${data['name']}.png`;
+                                        Img.x = data['x'];
+                                        Img.y = data['y'];
+                                        Img.anchorX = data['anchorX'];
+                                        Img.anchorY = data['anchorY'];
+                                        Img.width = data['width'];
+                                        Img.height = data['height'];
+                                        Img.height = data['height'];
+                                        Img.rotation = data['rotation'];
+                                        Img.zOrder = data['zOrder'];
+                                    }
+                                    const front = cloth.getChildByName(`${cloth.name}_0`);
+                                    const matF = front.skinnedMeshRenderer.material;
+                                    LwgTimer._frameOnce(delay, this, () => {
+                                        matF.albedoTexture && matF.albedoTexture.destroy();
+                                        matF.albedoTexture = fSp.drawToTexture(fSp.width, fSp.height, fSp.x, fSp.y + fSp.height);
+                                        fSp.removeSelf();
+                                    });
+                                    const rSp = new Laya.Sprite;
+                                    rSp.visible = false;
+                                    Laya.stage.addChild(rSp);
+                                    rSp.zOrder = 1000;
+                                    rSp.size(512, 512);
+                                    rSp.scale(1, -1);
+                                    const RImg = new Laya.Image;
+                                    RImg.skin = url;
+                                    rSp.addChild(RImg);
+                                    RImg.size(512, 512);
+                                    rSp.pos(512, 0);
+                                    const rtexData = LwgStorage._array(`${cloth.name}/${_DIYClothes._ins()._otherPro.texR}`).value;
+                                    for (let index = 0; index < rtexData.length; index++) {
+                                        const data = rtexData[index];
+                                        const Img = new Laya.Image;
+                                        rSp.addChild(Img);
+                                        Img.skin = `Pattern/${data['name']}.png`;
+                                        Img.x = data['x'];
+                                        Img.y = data['y'];
+                                        Img.anchorX = data['anchorX'];
+                                        Img.anchorY = data['anchorY'];
+                                        Img.width = data['width'];
+                                        Img.height = data['height'];
+                                        Img.height = data['height'];
+                                        Img.rotation = data['rotation'];
+                                        Img.zOrder = data['zOrder'];
+                                    }
+                                    const reverse = cloth.getChildByName(`${cloth.name}_1`);
+                                    const matR = reverse.skinnedMeshRenderer.material;
+                                    LwgTimer._frameOnce(delay, this, () => {
+                                        matR.albedoTexture && matR.albedoTexture.destroy();
+                                        matR.albedoTexture = rSp.drawToTexture(rSp.width, rSp.height, rSp.x, rSp.y + rSp.height);
+                                        rSp.removeSelf();
+                                    });
+                                }
+                            }
+                            else {
+                                cloth.active = false;
+                            }
+                        }
+                    }
+                }
+            }
+            playAni && _3DScene._ins().playDispalyAni();
+        }
+        changeClothStart() {
+            this.collectDIY();
+            const arr = this._getArrByProperty(this._otherPro.putOn, true);
+            this.changeClass(this._classify.DIY, arr, false, true);
+            this.changeClass(this._classify.General, arr, false, true);
+            this.startSpecialSet();
+        }
+        changeCloth() {
+            const arr = this._getArrByProperty(this._otherPro.putOn, true);
+            this.changeClass(this._classify.DIY, arr, true);
+            this.changeClass(this._classify.General, arr, true);
+        }
+        startSpecialSet() {
+            if (LwgStorage._bool('DressState').value) {
+                _3DScene._ins()._GBottoms.active = _3DScene._ins()._GTop.active = _3DScene._ins()._DBottoms.active = _3DScene._ins()._DTop.active = false;
+            }
+            else {
+                _3DScene._ins()._GDress.active = _3DScene._ins()._DDress.active = false;
+            }
+        }
+        specialSet(part) {
+            if (part === this._part.Dress) {
+                LwgStorage._bool('DressState').value = true;
+            }
+            else if (part === this._part.Top || part === this._part.Bottoms) {
+                LwgStorage._bool('DressState').value = false;
+            }
+            if (LwgStorage._bool('DressState').value) {
+                _3DScene._ins().displayDress();
+            }
+            else {
+                _3DScene._ins().displayTopAndBotton();
+            }
+        }
+        accurateChange(partValue, name) {
+            const arr = _AllClothes._ins()._getArrByProperty('part', partValue);
+            for (let index = 0; index < arr.length; index++) {
+                const element = arr[index];
+                if (name === element['name']) {
+                    element['putOn'] = true;
+                }
+                else {
+                    element['putOn'] = false;
+                }
+            }
+            _DIYClothes._ins()._setProperty(_DIYClothes._ins()._pitchName, 'putOn', true);
+            _AllClothes._ins().changeCloth();
+            _AllClothes._ins().specialSet(partValue);
+            _AllClothes._ins()._refreshAndStorage();
+        }
+    }
+    class _DIYClothes extends LwgData._Table {
+        constructor() {
+            super(...arguments);
+            this._classify = {
+                Dress: 'Dress',
+                Top: 'Top',
+                Bottoms: 'Bottoms',
+                ads: 'ads',
+            };
+            this._otherPro = {
+                color: 'color',
+                icon: 'icon',
+                diffX: 'diffX',
+                diffY: 'diffY',
+                texR: 'texR',
+                texF: 'texF',
+            };
+        }
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _DIYClothes('DIYClothes', _Res._list.json.DIYClothes.dataArr, true);
+                if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                    this.ins._deleteObjByName('ads');
+                }
+            }
+            return this.ins;
+        }
+        ;
+        getPitchTexBasicUrl() {
+            return `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/DIYTexbasic/${this._pitchName.substr(0, this._pitchName.length - 5)}basic.png`;
+        }
+        getDIYCutIcon(name) {
+            return `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Icon/DIY/${name.substr(0, name.length - 5)}cut.png`;
+        }
+        getColor() {
+            let obj = this._getPitchObj();
+            return [obj[`${this._otherPro.color}1`], obj[`${this._otherPro.color}2`]];
+        }
+        getClothesArr() {
+            if (!this.ClothesArr) {
+                this.ClothesArr = [];
+                const dataArr = _DIYClothes._ins()._arr;
+                for (let index = 0; index < dataArr.length; index++) {
+                    if (`${dataArr[index]['name']}` !== 'ads') {
+                        let CloBox = this.createClothes(`${dataArr[index]['name']}`);
+                        this.ClothesArr.push(CloBox);
+                    }
+                    else {
+                    }
+                }
+            }
+            return this.ClothesArr;
+        }
+        createClothes(name, Scene) {
+            const Cloth = LwgTools._Node.createPrefab(_Res._list.prefab2D[name]['prefab']);
+            const CloBox = new Laya.Sprite;
+            CloBox.width = Laya.stage.width;
+            CloBox.height = Laya.stage.height;
+            CloBox.pivotX = CloBox.width / 2;
+            CloBox.pivotY = CloBox.height / 2;
+            CloBox.x = Laya.stage.width / 2;
+            CloBox.y = Laya.stage.height / 2;
+            CloBox.addChild(Cloth);
+            CloBox.name = name;
+            if (Scene) {
+                Scene.addChild(CloBox);
+                CloBox.zOrder = 20;
+            }
+            return CloBox;
+        }
+    }
+    var _MakeTailor;
+    (function (_MakeTailor) {
+        let Event;
+        (function (Event) {
+            Event["scissorTrigger"] = "_MakeTailor_scissorTrigger";
+            Event["completeEffcet"] = "_MakeTailor_completeAni";
+            Event["changeClothes"] = "_MakeTailor_changeClothes";
+            Event["scissorAppear"] = "_MakeTailor_scissorAppear";
+            Event["scissorPlay"] = "_MakeTailor_scissorPlay";
+            Event["scissorStop"] = "_MakeTailor_scissorStop";
+            Event["scissorRotation"] = "_MakeTailor_scissorRotation";
+            Event["scissorAgain"] = "_MakeTailor_scissorSitu";
+            Event["scissorRemove"] = "_MakeTailor_scissorRemove";
+        })(Event = _MakeTailor.Event || (_MakeTailor.Event = {}));
+    })(_MakeTailor || (_MakeTailor = {}));
+    var _MakePattern;
+    (function (_MakePattern) {
+        let Event;
+        (function (Event) {
+            Event["close"] = "_MakePattern/close";
+            Event["createImg"] = "_MakePattern/createImg";
+            Event["byteDanceBackStart"] = "_MakePattern/byteDanceBackStart";
+        })(Event = _MakePattern.Event || (_MakePattern.Event = {}));
+        class _Pattern extends LwgData._Table {
+            constructor() {
+                super(...arguments);
+                this._classify = {
+                    newYear: 'newYear',
+                    basic: 'basic',
+                    cat: 'cat',
+                    pink: 'pink',
+                    expression: 'expression',
+                };
+            }
+            static _ins() {
+                if (!this.ins) {
+                    this.ins = new _Pattern('_Pattern', _Res._list.json.MakePattern.dataArr, true);
+                    this.ins._pitchClassify = this.ins._classify.newYear;
+                    if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                        this.ins._deleteObjByName('ads');
+                    }
+                    this.ins.newYearArr = this.ins._getArrByClassify(this.ins._classify.newYear);
+                    this.ins.newYearArr.push({}, {});
+                    this.ins.basicArr = this.ins._getArrByClassify(this.ins._classify.basic);
+                    this.ins.basicArr.push({}, {});
+                    this.ins.catArr = this.ins._getArrByClassify(this.ins._classify.cat);
+                    this.ins.catArr.push({}, {});
+                    this.ins.pinkArr = this.ins._getArrByClassify(this.ins._classify.pink);
+                    this.ins.pinkArr.push({}, {});
+                    this.ins.expressionArr = this.ins._getArrByClassify(this.ins._classify.expression);
+                    this.ins.expressionArr.push({}, {});
+                }
+                return this.ins;
+            }
+        }
+        _MakePattern._Pattern = _Pattern;
+        class _PatternDiff extends LwgData._Table {
+            constructor() {
+                super(...arguments);
+                this._otherPro = {
+                    fDiffX: 'fDiffX',
+                    fDiffY: 'fDiffY',
+                    rDiffX: 'rDiffX',
+                    rDiffY: 'rDiffY',
+                };
+            }
+            static _ins() {
+                if (!this.ins) {
+                    this.ins = new _PatternDiff('_DIYClothesDiff', _Res._list.json.DIYClothesDiff.dataArr, false);
+                }
+                return this.ins;
+            }
+            get fDiffX() {
+                return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'fDiffX');
+            }
+            ;
+            get fDiffY() {
+                return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'fDiffY');
+            }
+            ;
+            get rDiffX() {
+                return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'rDiffX');
+            }
+            ;
+            get rDiffY() {
+                return _PatternDiff._ins()._getProperty(_3DDIYCloth._ins().name, 'rDiffY');
+            }
+            ;
+        }
+        _MakePattern._PatternDiff = _PatternDiff;
+    })(_MakePattern || (_MakePattern = {}));
+    var _DressingRoom;
+    (function (_DressingRoom) {
+        let Event;
+        (function (Event) {
+            Event["byteDanceBackStart"] = "_DressingRoom/byteDanceBackStart";
+        })(Event = _DressingRoom.Event || (_DressingRoom.Event = {}));
+    })(_DressingRoom || (_DressingRoom = {}));
+    var _Tweeting;
+    (function (_Tweeting) {
+        _Tweeting._photo = {
+            arr: [],
+            take: (Scene, index) => {
+                _Tweeting._photo.arr[index] && _Tweeting._photo.arr[index].destroy();
+                _Tweeting._photo.arr[index] = Scene.drawToTexture(Laya.stage.width, Laya.stage.height, 0, 0);
+            },
+            clear: () => {
+                for (let index = 0; index < _Tweeting._photo.arr.length; index++) {
+                    const element = _Tweeting._photo.arr[index];
+                    element && element.destroy();
+                }
+                _Tweeting._photo.arr = [];
+                Laya.Resource.destroyUnusedResources();
+            }
+        };
+        _Tweeting._attentionNum = {
+            get value() {
+                return LwgStorage._num('_MakePattern/attention', null, 180).value;
+            },
+            set value(val) {
+                LwgStorage._num('_MakePattern/attention').value = val;
+            }
+        };
+        _Tweeting._completeNum = {
+            get value() {
+                return LwgStorage._num('_MakePattern/completeNum').value;
+            },
+            set value(val) {
+                LwgStorage._num('_MakePattern/completeNum').value = val;
+            }
+        };
+        _Tweeting._forwardedNum = {
+            get value() {
+                return LwgStorage._num('Tweeting/forwarded', null, LwgTools._Number.randomOneBySection(75, 125, true)).value;
+            },
+            set value(val) {
+                LwgStorage._num('Tweeting/forwarded').value = val;
+            }
+        };
+        _Tweeting._commentNum = {
+            get value() {
+                return LwgStorage._num('Tweeting/Comment', null, LwgTools._Number.randomOneBySection(100, 150, true)).value;
+            },
+            set value(val) {
+                LwgStorage._num('Tweeting/Comment').value = val;
+            }
+        };
+        _Tweeting._likeNum = {
+            get value() {
+                return LwgStorage._num('Tweeting/like', null, LwgTools._Number.randomOneBySection(200, 250, true)).value;
+            },
+            set value(val) {
+                LwgStorage._num('Tweeting/like').value = val;
+            }
+        };
+        _Tweeting._brief = {
+            getThree: () => {
+                return LwgTools._Array.randomGetOut(_Tweeting._brief.all, 3);
+            },
+            getOne: () => {
+                return LwgTools._Array.randomGetOut(_Tweeting._brief.all);
+            },
+            all: [
+                '世界很烦，但我要很可爱',
+                '生活就是见招拆招',
+                '忠于自己，热爱生活',
+                '我很有个性，但我不想签名',
+                'T^T	',
+                '你最怕什么',
+                '宁缺毋滥',
+                '围脖红人',
+                '剪裁大师',
+                '剪裁王',
+            ]
+        };
+        _Tweeting._mainBody = {
+            getOne: () => {
+                _Tweeting._mainBody.present = LwgTools._Array.randomGetOne(_Tweeting._mainBody.all);
+                return _Tweeting._mainBody.present;
+            },
+            present: null,
+            all: [
+                '不管几岁，反正少女心万岁≧▽≦',
+                '此处可爱贩卖机  24小时正常营业	',
+                '欢迎光临我的手工小店，我会制作更多大家喜欢的衣服哦',
+                '现在一定有个很可爱的人，在看我的这句话',
+                '辛辛苦苦做了好久，结果很满意，好喜欢哦',
+                '大家觉得我这套衣服怎么样',
+                '闲来无事，做了一套衣服，感觉还不错',
+                '我觉得吧，这次发挥的一般，下次会更好，敬请期待',
+                '浮游于这个世界所产生的热能 也比不过喜欢你的热忱	',
+                '时间会把对你最好的人留在最后，毕竟喜欢是一阵风，而爱是细水长流',
+                '人生难免遇上些许不如意，翻过这一页就会发现生活处处有美好',
+                '也许，只有制作衣服的时候，才会让自己的心静下来',
+                '讲道理，我觉得我的手艺还不错，我是不是可以考虑开一家店了？',
+                '技术还不太行，需要多多磨炼，再努力做几件衣服吧~',
+                '今天心情好，早早地起来做衣服了，我是可爱的小裁缝~啦啦啦~',
+                '给妈妈做了件衣服，妈妈说好喜欢~',
+                '还有什么可以比做自己喜欢的事更加让人开心的呢~',
+                '一些些自己的小设计，就可以让一件衣服焕发生机',
+                '也许只是一瞬间的灵感，我将会付之于行动来实现它',
+                '对于剪裁和搭配的热情，我不会输给任何人的~',
+                '加油，我会成为最好的设计师的，我会爆火！~',
+                '坚持不懈，认真对待自己的，努力成为最好的设计师！~',
+                '感谢大家的支持，我会努力的',
+            ]
+        };
+        _Tweeting._reply = {
+            getTow: () => {
+                return LwgTools._Array.randomGetOut(_Tweeting._reply.all, 2);
+            },
+            all: [
+                '加油，坚持，我看好你哦',
+                '好好看，我也想要',
+                '那么请问在哪里可以买到呢',
+                '有一说一，真的还可以',
+                '感觉，你做的越来越好了',
+                '我也想和你一样拥有如此灵巧的双手',
+                '真的好看，加油',
+                '我的天，这也太美了吧',
+                'OMG，买他买他！~',
+                '沙发~~',
+                '点赞这条回复，你会好运连连',
+                '求翻牌，你这也太美了吧',
+                '太适合仙女了吧',
+                '我也想学学，能教教我吗',
+                '感觉你能火，坚持，加油',
+                '感觉没有什么可以难倒你',
+                '我想和你一样心灵手巧',
+                '我的天，这是真的太好看了',
+                ' U1S1，是真漂亮~',
+                '我觉得你还可以更优秀~',
+                '不是我杠精，你这个真的，真可以，没的杠',
+                '好看是真好看，难也是真的难',
+                '感觉我学不会，咋办，好美',
+                '仙女穿起来也太好看了吧',
+                '花痴脸~这也太美了',
+                '坚持，我看好你哦，感觉你能火',
+                '天哪，这也太美了吧',
+            ]
+        };
+        _Tweeting._photoIndex = 0;
+    })(_Tweeting || (_Tweeting = {}));
+    var _CheckIn;
+    (function (_CheckIn) {
+        class _Data extends LwgData._Table {
+            constructor() {
+                super(...arguments);
+                this._otherPro = {
+                    checkAddition: 'checkAddition',
+                    otherRewardType: 'otherRewardType',
+                    otherRewardNum: 'otherRewardNum',
+                    otherCompelet: 'otherCompelet',
+                };
+            }
+            static _ins() {
+                if (!this.ins) {
+                    this.ins = new _Data('CheckIn', _Res._list.json.CheckIn.dataArr, true);
+                }
+                return this.ins;
+            }
+        }
+        _CheckIn._Data = _Data;
+        _CheckIn._immediately = {
+            get value() {
+                return LwgStorage._num('_CheckIn/immediately').value;
+            },
+            set value(val) {
+                LwgStorage._num('_CheckIn/immediately').value = val;
+            }
+        };
+        _CheckIn._checkInNum = {
+            get value() {
+                return LwgStorage._num('_CheckIn/checkInNum').value;
+            },
+            set value(val) {
+                LwgStorage._num('_CheckIn/checkInNum').value = val;
+            }
+        };
+        _CheckIn._lastCheckDate = {
+            get value() {
+                return LwgStorage._num('_CheckIn/lastCheckDate').value;
+            },
+            set value(val) {
+                LwgStorage._num('_CheckIn/lastCheckDate').value = val;
+            }
+        };
+        _CheckIn._todayCheckIn = {
+            get value() {
+                return _CheckIn._lastCheckDate.value == LwgDate._date.date ? true : false;
+            },
+        };
+    })(_CheckIn || (_CheckIn = {}));
+    var _Share;
+    (function (_Share) {
+        _Share._whereFrom = 'MakePattern';
+    })(_Share || (_Share = {}));
+
+    class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
+        lwgOpenAniAfter() {
+            let time = 0;
+            LwgTimer._frameNumLoop(1, 30, this, () => {
+                time++;
+                this._LabelVar('Schedule').text = `${time}%`;
+            }, () => {
+                let obj = _CutInRes[LwgScene._PreLoadCutIn.openName];
+                obj = _CutInRes[LwgScene._PreLoadCutIn.openName] ? obj : {};
+                LwgEvent._notify(LwgPreLoad._Event.importList, [obj]);
+            });
+        }
+        lwgAllComplete() {
+            console.log('加载完成！');
+            switch (LwgScene._PreLoadCutIn.openName) {
+                case _SceneName.MakePattern:
+                    _3DDIYCloth._ins().remake(_DIYClothes._ins()._pitchClassify, _DIYClothes._ins()._pitchName);
+                    _3DScene._ins().intoMakePattern();
+                    console.log(_DIYClothes._ins().getPitchTexBasicUrl());
+                    this._ImgVar('Front').loadImage(_DIYClothes._ins().getPitchTexBasicUrl(), Laya.Handler.create(this, () => {
+                        var getTex = () => {
+                            let ImgF = this._ImgVar('Front');
+                            const tex = this._ImgVar('Front').drawToTexture(ImgF.width, ImgF.height, ImgF.x, ImgF.y + ImgF.height);
+                            return [
+                                tex,
+                                tex
+                            ];
+                        };
+                        _3DDIYCloth._ins().addTexture2D(getTex());
+                    }));
+                    break;
+                case _SceneName.MakeTailor:
+                    _DIYClothes._ins().ClothesArr = null;
+                    _3DScene._ins().intoMakeTailor();
+                    _DIYClothes._ins().getClothesArr();
+                    break;
+                case _SceneName.Start:
+                    if (LwgScene._PreLoadCutIn.closeName === _SceneName.MakePattern && !_PreLoadCutIn._fromBack) {
+                        this.iconPhoto();
+                    }
+                    else {
+                        _3DScene._ins().intoStart();
+                    }
+                    break;
+                case _SceneName.DressingRoom:
+                    _3DScene._ins().intogeDressingRoom();
+                default:
+                    break;
+            }
+            LwgTimer._frameOnce(30, this, () => {
+                this._LabelVar('Schedule').text = `100%`;
+            });
+            return 1000;
+        }
+        iconPhoto() {
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
+                _3DScene._ins().intoStart();
+                _DIYClothes._ins()._setPitchProperty(_DIYClothes._ins()._otherPro.icon, 'have');
+                _AllClothes._ins().changeAfterMaking();
+            }
+            else {
+                _3DScene._ins().photoBg();
+                _3DDIYCloth._ins().hanger.active = false;
+                _3DDIYCloth._ins().Present.transform.localRotationEulerY = 180;
+                const sp = new Laya.Sprite;
+                this._Owner.addChild(sp)['size'](126, 146);
+                LwgTools._Draw.cameraToSprite(_3DScene._ins()._MainCamara, sp);
+                LwgTimer._frameOnce(5, this, () => {
+                    const base64Icon = LwgTools._Draw.screenshot(sp, 0.5);
+                    _DIYClothes._ins()._setPitchProperty(_DIYClothes._ins()._otherPro.icon, base64Icon);
+                    _AllClothes._ins().changeAfterMaking();
+                    _3DScene._ins().intoStart();
+                });
+            }
+        }
+        lwgOnDisable() {
+            _PreLoadCutIn._fromBack = false;
+        }
+    }
+
+    class SubPkg {
+        constructor() {
+            this.pkgInfo = [
+                { name: "Game", root: "Game/" },
+                { name: "res", root: "res/" },
+            ];
+        }
+        init() {
+            console.log(`SubPkg  init`);
+            console.log(`SubPkg  oppoGame`);
+            this.pkgFlag = 0;
+            this.loadPkg_OPPO();
+        }
+        loadPkg_wx() {
+            if (this.pkgFlag == this.pkgInfo.length) {
+                console.log("showLoading");
+            }
+            else {
+                let info = this.pkgInfo[this.pkgFlag];
+                let name = info.name;
+                let root = info.root;
+                Laya.Browser.window.wx.loadSubpackage({
+                    name: name,
+                    success: (res) => {
+                        Laya.MiniAdpter.subNativeFiles[name] = root;
+                        Laya.MiniAdpter.nativefiles.push(root);
+                        this.pkgFlag++;
+                        this.loadPkg_wx();
+                    },
+                    fail: (res) => {
+                        console.error(`load ${name} err: `, res);
+                    },
+                });
+            }
+        }
+        loadPkg_sq() {
+            if (this.pkgFlag == this.pkgInfo.length) {
+                console.log("GameInit");
+            }
+            else {
+                let info = this.pkgInfo[this.pkgFlag];
+                let name = info.name;
+                let root = info.root;
+                Laya.Browser.window.qq.loadSubpackage({
+                    name: name,
+                    success: (res) => {
+                        this.pkgFlag++;
+                        this.loadPkg_sq();
+                    },
+                    fail: (res) => {
+                        console.error(`load ${name} err: `, res);
+                    },
+                });
+            }
+        }
+        loadPkg_VIVO() {
+            if (this.pkgFlag == this.pkgInfo.length) {
+                console.log("GameInit");
+            }
+            else {
+                let info = this.pkgInfo[this.pkgFlag];
+                let name = info.name;
+                let root = info.root;
+                Laya.Browser.window.qg.loadSubpackage({
+                    name: name,
+                    success: (res) => {
+                        this.pkgFlag++;
+                        this.loadPkg_VIVO();
+                    },
+                    fail: (res) => {
+                        console.error(`load ${name} err: `, res);
+                    },
+                });
+            }
+        }
+        loadPkg_OPPO() {
+            console.log("loadPkg_OPPOsssssssss");
+            if (this.pkgFlag == this.pkgInfo.length) {
+                LwgScene._openScene('PreLoad');
+                console.log("GameInit");
+            }
+            else {
+                let info = this.pkgInfo[this.pkgFlag];
+                let name = info.name;
+                let root = info.root;
+                let subTask = Laya.Browser.window.qg.loadSubpackage({
+                    name: name,
+                    success: (res) => {
+                        this.pkgFlag++;
+                        this.loadPkg_OPPO();
+                    },
+                    fail: (res) => {
+                        console.log("123123  " + JSON.stringify(res));
+                        console.log(`load ${name} err: ` + JSON.stringify(res));
+                    },
+                });
+            }
+        }
+    }
+
+    class _GameAni {
+        static _dialogOpenPopup(Content, Bg, func) {
+            Content.scene.zOrder = Laya.stage.numChildren - 1;
+            const time = 100;
+            const delay = 100;
+            Content.scale(0.5, 0.5);
+            LwgAni2D.bombs_Appear(Content, 0, 1, 1.2, 0, time * 3, () => {
+                func && func();
+            });
+            if (Bg) {
+                Bg.alpha = 0;
+                LwgAni2D.fadeOut(Bg, 0, 1, 200, delay * 2);
+            }
+            return time * 3;
+        }
+        static _dialogOpenFadeOut(Content, Bg, func) {
+            Bg && LwgAni2D.fadeOut(Bg, 0, 1, 300, 0, () => {
+                func && func();
+            });
+            LwgAni2D.fadeOut(Content, 0, 1, 250, 0, () => {
+                !Bg && func && func();
+            });
+            return 300;
+        }
+        static _dialogCloseFadeOut(Content, Bg, func) {
+            const time = 60;
+            const delay = 100;
+            LwgAni2D.fadeOut(Content, 1, 0, time * 3, delay * 1.5, () => {
+                func && func();
+            });
+            Bg && LwgAni2D.fadeOut(Bg, 1, 0, time * 3);
+            return time * 3 + delay * 1.5;
+        }
+        static _charactersEffect(label, bodyText, func) {
+            for (let index = 0; index < bodyText.length; index++) {
+                const char = bodyText.charAt(index);
+                LwgTimer._frameOnce(10 * index, this, () => {
+                    label.text += char;
+                    if (index == bodyText.length - 1) {
+                        func && func();
+                    }
+                });
+            }
+        }
+        static _scaleHint(Node) {
+            LwgTimer._loop(1000, this, () => {
+                LwgAni2D.swell_shrink(Node, 1, 1.05, 300);
+            });
+        }
+        static _fadeHint(Node) {
+            LwgAni2D.fadeOut(Node, 0, 0.6, 1500, 0, () => {
+                LwgAni2D.fadeOut(Node, 0.6, 0, 800, 0, () => {
+                    LwgTimer._frameOnce(30, this, () => {
+                        this._fadeHint(Node);
+                    });
+                });
+            });
+        }
+    }
+
+    class Guide extends LwgScene._SceneBase {
+        constructor() {
+            super(...arguments);
+            this.btnComX = Laya.stage.width - 250;
+            this.btnComY = 70;
+            this.bgType = {
+                present: 'present',
+                vanish: 'vanish',
+                appear: 'appear',
+            };
+            this._stepTailor = 0;
+            this.posArr = [
+                [Laya.stage.width / 2 + 110, 140],
+                [Laya.stage.width / 2 - 110, Laya.stage.height / 2 - 220],
+                [Laya.stage.width / 2 + 100, Laya.stage.height / 2 - 200],
+                [Laya.stage.width / 2 + 200, Laya.stage.height - 150],
+            ];
+            this.nameArr = ['Line01', 'Line02', 'Line03', 'Line04'];
+            this.presentName = null;
+        }
+        lwgOpenAni() {
+            return 200;
+        }
+        lwgOnAwake() {
+            this._ImgVar('Hand').scale(0, 0);
+            this._ImgVar('Slide').scale(0, 0);
+        }
+        clickEffcet() {
+            LwgEff2D._Aperture._continuous(this._Owner, [this._ImgVar('Hand').x, this._ImgVar('Hand').y + 28], [6, 6], null, null, [LwgEff2D._SkinUrl.圆形小光环], null, this._ImgVar('Hand').zOrder - 1, [1.2, 1.2], [0.6, 0.6], [0.01, 0.01]);
+        }
+        boreholeCircle(arr, handX, handY, func) {
+            for (let index = 0; index < arr.length; index++) {
+                const time = 80 / 8;
+                let radiusBase = 15;
+                const element = arr[index];
+                const speed = (arr[index][2] - radiusBase) / time;
+                LwgTimer._frameNumLoop(1, time, this, () => {
+                    radiusBase += speed;
+                    element[2] = radiusBase;
+                    LwgTools._Draw.reverseCircleMask(this._ImgVar('Background'), arr, true);
+                }, () => {
+                    func && func();
+                }, true);
+            }
+            handX && this._ImgVar('Hand').pos(handX, handY - 30);
+        }
+        boreholeRoundrect(arr, handX, handY, func) {
+            handX && this._ImgVar('Hand').pos(handX, handY);
+            for (let index = 0; index < arr.length; index++) {
+                let widthBase = 0;
+                let heightBase = 0;
+                let radiuBase = 0;
+                const element = arr[index];
+                const time = 20;
+                const speedX = (element[2] - widthBase) / time;
+                const speedY = (element[3] - heightBase) / time;
+                const speedR = (element[4] - radiuBase) / time;
+                LwgTimer._frameNumLoop(1, time, this, () => {
+                    widthBase += speedX;
+                    heightBase += speedY;
+                    radiuBase += speedR;
+                    element[2] = widthBase;
+                    element[3] = heightBase;
+                    element[4] = radiuBase;
+                    LwgTools._Draw.reverseRoundrectMask(this._ImgVar('Background'), arr, true);
+                }, () => {
+                    func && func();
+                }, true);
+            }
+            handX && this._ImgVar('Hand').pos(handX, handY);
+        }
+        handAppear(delay, func) {
+            const time = 200;
+            LwgAni2D.scale(this._ImgVar('Hand'), 0, 0, 1, 1, time, delay ? delay : 0, () => {
+                func && func();
+            });
+            this._ImgVar('HandPic').rotation = -17;
+        }
+        bgAppear(delay, func) {
+            LwgTools._Node.destroyAllChildren(this._ImgVar('Background'));
+            const time = 300;
+            this._ImgVar('HandPic').rotation = -17;
+            LwgAni2D.fadeOut(this._ImgVar('Background'), 0, 1, time, delay ? delay : 0, () => {
+                func && func();
+            });
+        }
+        handVanish(delay, func) {
+            const time = 300;
+            this._ImgVar('HandPic').rotation = -17;
+            LwgAni2D.scale(this._ImgVar('Hand'), 1, 1, 0, 0, time, delay ? delay : 0, () => {
+                func && func();
+            });
+        }
+        bgVanish(delay, func) {
+            const time = 300;
+            LwgAni2D.fadeOut(this._ImgVar('Background'), 1, 0, time, delay ? delay : 0, () => {
+                func && func();
+            });
+        }
+        handMove(x, y, func, bgType) {
+            this.handClear();
+            const _y = y - 30;
+            const point = new Laya.Point(this._ImgVar('Hand').x, this._ImgVar('Hand').y);
+            const time = point.distance(x, _y);
+            LwgAni2D.move(this._ImgVar('Hand'), x, _y, time, () => {
+                func && func();
+            });
+            this._ImgVar('Hand').scale(1, 1);
+            LwgAni2D.move(this._ImgVar('HandPic'), 75, 56, time);
+            switch (bgType) {
+                case this.bgType.vanish:
+                    this.bgVanish();
+                    break;
+                case this.bgType.appear:
+                    this.bgAppear();
+                    break;
+                default:
+                    break;
+            }
+        }
+        handClear() {
+            this.lineStop();
+            LwgTimer._clearAll([this._ImgVar('Hand')]);
+            LwgAni2D._clearAll([this._ImgVar('Hand')]);
+            this._AniVar('Frame').stop();
+            this._AniVar('Click').stop();
+            this._AniVar('ClickOne').stop();
+            this._ImgVar('Hand').visible = true;
+            this._ImgVar('HandPic').scale(1, 1);
+            this._ImgVar('HandPic').rotation = -17;
+            this._ImgVar('Hand').pos(this._ImgVar('HandPic')._lwg.gPoint.x - 75, this._ImgVar('HandPic')._lwg.gPoint.y - 56);
+            this._ImgVar('HandPic').pos(75, 56);
+        }
+        slideUpAppear(x, y, width, height, radius, delay) {
+            this.bgAppear(delay ? delay : 0, () => {
+                this.boreholeRoundrect([[x, y, width, height, radius]], null, null, () => {
+                    this._ImgVar('Hand').scale(0, 0);
+                    this._ImgVar('Slide').scale(1, 1);
+                    this._ImgVar('Slide').pos(x, y);
+                    this._AniVar('SlideUp').play();
+                });
+            });
+        }
+        noMoveRoundrect(x, y, width, height, radius, delay, handX, handY) {
+            this.bgAppear(delay ? delay : 0, () => {
+                this.boreholeRoundrect([[x, y, width, height, radius]], handX ? handX : x, handY ? handY : y - 30, () => {
+                    this.handAppear(null, () => {
+                        this._AniVar('Click').play();
+                    });
+                });
+            });
+        }
+        moveRoundrectNoBg(x, y, width, height, radius) {
+            this.boreholeRoundrect([[x, y, width, height, radius]], null, null, () => {
+                this.handMove(x, y, () => {
+                    this._AniVar('Click').play();
+                });
+            });
+        }
+        noMoveCircle(x, y, radius) {
+            this.bgAppear(0, () => {
+                this.boreholeCircle([[x, y, radius]], x, y, () => {
+                    this.handAppear(200, () => {
+                        this._AniVar('Click').play();
+                    });
+                });
+            });
+        }
+        moveCircleBg(x, y, radius) {
+            this.bgAppear(0, () => {
+                this.boreholeCircle([[x, y, radius]], null, null, () => {
+                    this.handMove(x, y, () => {
+                        this._AniVar('Click').play();
+                    });
+                });
+            });
+        }
+        moveCircleNoBg(x, y, radius) {
+            this.boreholeCircle([[x, y, radius]], null, null, () => {
+                this.handMove(x, y, () => {
+                    this._AniVar('Click').play();
+                });
+            });
+        }
+        getGuideScissorTime(x, y) {
+            const point = LwgTools._Node.getNodeGP(this._Scissor);
+            return point.distance(x, y);
+        }
+        scissorTailor(first) {
+            if (!this._Scissor || this._closeLine)
+                return;
+            this._ImgVar('Hand').pos(this._Scissor.x, this._Scissor.y);
+            const index = Number(this.presentName.substr(4));
+            const pos = this.posArr[index - 1];
+            var func = () => {
+                this._AniVar('Click').play(0, false);
+                LwgAni2D.move(this._ImgVar('Hand'), pos[0], pos[1], this.getGuideScissorTime(pos[0], pos[1]), () => {
+                    this._AniVar(this.presentName).play(0, false);
+                }, 1500);
+            };
+            if (first) {
+                func();
+            }
+            else {
+                LwgTimer._loop(6000, this._ImgVar('Hand'), () => {
+                    this.handAppear(0, () => {
+                        func();
+                    });
+                }, true);
+            }
+        }
+        startScissorTailor(Scissor) {
+            if (Scissor)
+                this._Scissor = Scissor;
+            this.presentName = 'Line01';
+            this._ImgVar('Hand').scale(1, 1);
+            LwgAni2D.move(this._ImgVar('Hand'), this._Scissor.x, this._Scissor.y, this.getGuideScissorTime(this._ImgVar('Hand').x, this._ImgVar('Hand').y), () => {
+                this.scissorTailor(true);
+                LwgTimer._once(5000, this._ImgVar('Hand'), () => {
+                    this.scissorTailor();
+                });
+            });
+        }
+        lineStop() {
+            this._AniVar('Line01').stop();
+            this._AniVar('Line02').stop();
+            this._AniVar('Line03').stop();
+            this._AniVar('Line04').stop();
+        }
+        newScissorTailor(LineName) {
+            this.handClear();
+            if (this.nameArr.length > 1) {
+                for (let index = 0; index < this.nameArr.length; index++) {
+                    const element = this.nameArr[index];
+                    if (LineName === element) {
+                        this.nameArr.splice(index, 1);
+                        break;
+                    }
+                }
+                this.presentName = this.nameArr[0];
+                this.scissorTailor();
+            }
+            else {
+                this.presentName = null;
+                this._ImgVar('Hand').visible = false;
+                this._Owner.close();
+            }
+        }
+        pattenAni(ftx, fty, tx, ty) {
+            this.handMove(ftx, fty, () => {
+                const time = 700;
+                const delay = 1000;
+                LwgTimer._loop(time * 3 + delay, this._ImgVar('Hand'), () => {
+                    this._ImgVar('Hand').scale(1, 1);
+                    LwgTimer._once(200, this._ImgVar('Hand'), () => {
+                        this._AniVar('ClickOne').play(0, false);
+                    });
+                    LwgAni2D.move(this._ImgVar('Hand'), tx, ty, time, () => {
+                        this.handVanish(300, () => {
+                            this._ImgVar('Hand').pos(ftx, fty - 30);
+                        });
+                    }, delay);
+                }, true);
+            });
+        }
+        lwgEvent() {
+            this._AniVar('Click').on(Laya.Event.LABEL, this, (e) => {
+                if (e === 'effect') {
+                    this.clickEffcet();
+                }
+            });
+            this._AniVar('ClickOne').on(Laya.Event.LABEL, this, (e) => {
+                if (e === 'effect') {
+                    this.clickEffcet();
+                }
+            });
+            this._AniVar('Frame').on(Laya.Event.LABEL, this, (e) => {
+                if (e === 'effect') {
+                    this.clickEffcet();
+                }
+            });
+            for (let index = 0; index < 4; index++) {
+                const element = this._AniVar(`Line0${index + 1}`);
+                element.on(Laya.Event.LABEL, this, (e) => {
+                    if (e === 'com') {
+                        this._ImgVar('Hand').pos(this._Scissor.x, this._Scissor.y);
+                        this._ImgVar('Hand').scale(0, 0);
+                        this._ImgVar('HandPic').scale(1, 1);
+                    }
+                });
+            }
+            const radius = 80;
+            this._evReg(_Guide.Event.StartBtnDress, (x, y) => {
+                this.noMoveCircle(x, y, radius);
+            });
+            this._evReg(_Guide.Event.MakeTailorPulldown, () => {
+                const x = Laya.stage.width - 95;
+                const y = Laya.stage.height / 2;
+                this.slideUpAppear(x, y, 165, 450, 20);
+            });
+            this._evReg(_Guide.Event.MakeTailorChangeCloth, () => {
+                this._ImgVar('Hand').pos(this._ImgVar('SlideHand')._lwg.gPoint.x, this._ImgVar('SlideHand')._lwg.gPoint.y);
+                this._ImgVar('Hand').scale(1, 1);
+                this._ImgVar('Slide').scale(0, 0);
+                const x = Laya.stage.width - 95;
+                const y = 370;
+                this.moveCircleNoBg(x, y, radius);
+            });
+            this._evReg(_Guide.Event.MakeTailorBtnCom, (point) => {
+                this._AniVar('Click').stop();
+                this.boreholeCircle([[point.x, point.y, radius], [Laya.stage.width / 2, Laya.stage.height / 2, 350]], null, null, () => {
+                    this.handMove(point.x, point.y, () => {
+                        this._AniVar('Click').play();
+                    });
+                });
+            });
+            this._evReg(_Guide.Event.MakeTailorStartTailor, (Scissor) => {
+                this.bgVanish();
+                this.handClear();
+                this.startScissorTailor(Scissor);
+            });
+            this._evReg(_Guide.Event.MakeTailorNewTailor, (LineName) => {
+                this.newScissorTailor(LineName);
+            });
+            this._evReg(_Guide.Event.MakeTailorCloseTailor, () => {
+                if (!this.presentName)
+                    return;
+                this._closeLine = true;
+                this.handClear();
+                this._ImgVar('Hand').scale(0, 0);
+            });
+            this._evReg(_Guide.Event.MakeTailorOpenTailor, () => {
+                if (!this.presentName)
+                    return;
+                this._closeLine = false;
+                this.handClear();
+                this.scissorTailor();
+            });
+            this._evReg(_Guide.Event.MakePatternChooseClassify, () => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.ChooseClassify;
+                const x = Laya.stage.width - 53;
+                const y = 270;
+                this.noMoveCircle(x, y, 60);
+            });
+            this._evReg(_Guide.Event.MakePatternPattern1, () => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.Pattern1;
+                const x = Laya.stage.width - 152;
+                const y = 310;
+                this.pattenAni(x, y, Laya.stage.width / 2, y);
+                this.bgVanish();
+            });
+            var frameFunc = () => {
+                const WConversion = this._Wireframe.getChildByName('WConversion');
+                const gP = this._Wireframe.localToGlobal(new Laya.Point(WConversion.x, WConversion.y));
+                this.handMove(gP.x, gP.y, () => {
+                    this._AniVar('Frame').play();
+                });
+            };
+            this._AniVar('Frame').on(Laya.Event.LABEL, this, (label) => {
+                if (label === 'com') {
+                    if (this._Wireframe) {
+                        frameFunc();
+                    }
+                }
+            });
+            this._evReg(_Guide.Event.MakePatternFrame1, (Wireframe) => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.Frame1;
+                if (Wireframe)
+                    this._Wireframe = Wireframe;
+                frameFunc();
+            });
+            this._evReg(_Guide.Event.MakePatternTurnFace, (x, y) => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.TurnFace;
+                this.handClear();
+                this.moveCircleBg(x, y, radius);
+            });
+            this._evReg(_Guide.Event.MakePatternPattern2, () => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.Pattern2;
+                const x = Laya.stage.width - 152;
+                const y = 420;
+                this.pattenAni(x, y, Laya.stage.width / 2, y);
+                this.bgVanish();
+            });
+            this._evReg(_Guide.Event.MakePatternFrame2, (Wireframe) => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.Frame2;
+                if (Wireframe)
+                    this._Wireframe = Wireframe;
+                frameFunc();
+            });
+            this._evReg(_Guide.Event.MakePatternBtnCom, (x, y) => {
+                _Guide.MakePatternState = _Guide.MakePatternStateType.BtnCom;
+                this.handClear();
+                this.moveCircleBg(x, y, radius);
+            });
+            this._evReg(_Guide.Event.TweetingBtnChoosePhoto, (x, y, handX, handY) => {
+                this.noMoveRoundrect(x, y, Laya.stage.width - 320 - 260, 290, 20, 500, handX, handY);
+            });
+            this._evReg(_Guide.Event.TweetingChoosePhoto, (x, y) => {
+                this.noMoveRoundrect(x, y, 260, 260, 20);
+            });
+            this._evReg(_Guide.Event.TweetingBtnSend, (x, y) => {
+                this.moveRoundrectNoBg(x, y, 220, 120, 20);
+            });
+            this._evReg(_Guide.Event.TweetingBtnDoubleFans, (x, y) => {
+                this.noMoveRoundrect(x, y, 230, 120, 20);
+            });
+            this._evReg(_Guide.Event.RankingCloseBtn, (x, y) => {
+                this.noMoveCircle(x, y, radius);
+            });
+            this._evReg(_Guide.Event.PersonalInfoBtn, (x, y) => {
+                this.noMoveCircle(x, y, radius);
+            });
+            this._evReg(_Guide.Event.PersonalInfoWriteName, (x, y) => {
+                this.noMoveCircle(x, y, radius);
+            });
+            this._evReg(_Guide.Event.PersonalInfoCloseBtn, (x, y) => {
+                this.noMoveCircle(x, y, radius);
+            });
+            this._evReg(_Guide.Event.BtnCheckIn, (x, y) => {
+                this.noMoveCircle(x, y, radius);
+            });
+            this._evReg(_Guide.Event.CheckInGetReward, (x, y) => {
+                this.noMoveCircle(x, y, radius);
+            });
+            this._evReg(_Guide.Event.CheckInCloseBtn, (x, y) => {
+                this.moveCircleBg(x, y, radius);
+            });
+            this._evReg(_Guide.Event.vanishGuide, () => {
+                this._AniVar('Click').stop();
+                this.handVanish();
+                this.bgVanish();
+            });
+            this._evReg(_Guide.Event.closeGuide, () => {
+                this._closeScene();
+            });
+        }
+        lwgCloseAni() {
+            return _GameAni._dialogCloseFadeOut(this._ImgVar('Hand'), this._ImgVar('Background'));
+        }
+        lwgOnDisable() {
+            this._ImgVar('Background').destroy();
+        }
+    }
+
+    class ADManager {
+        static ShowBanner() {
+            let p = new TJ.ADS.Param();
+            p.place = TJ.ADS.Place.BOTTOM | TJ.ADS.Place.CENTER;
+            TJ.ADS.Api.ShowBanner(p);
+        }
+        static CloseBanner() {
+            let p = new TJ.ADS.Param();
+            p.place = TJ.ADS.Place.BOTTOM | TJ.ADS.Place.CENTER;
+            TJ.ADS.Api.RemoveBanner(p);
+        }
+        static ShowNormal() {
+            TJ.API.AdService.ShowNormal(new TJ.API.AdService.Param());
+        }
+        static showNormal2() {
+            TJ.API.AdService.ShowNormal(new TJ.API.AdService.Param());
+        }
+        static ShowReward(rewardAction, CDTime = 500) {
+            if (LwgPlatform._Ues.value == LwgPlatform._Tpye.WebTest || LwgPlatform._Ues.value == LwgPlatform._Tpye.OPPOTest || LwgPlatform._Ues.value == LwgPlatform._Tpye.Research) {
+                rewardAction();
+                return;
+            }
+            if (ADManager.CanShowCD) {
+                LwgAudio._stopMusic();
+                console.log("?????");
+                let p = new TJ.ADS.Param();
+                p.extraAd = true;
+                let getReward = false;
+                p.cbi.Add(TJ.Define.Event.Reward, () => {
+                    getReward = true;
+                    LwgAudio._playMusic(LwgAudio._voiceUrl.bgm, 0, 1000);
+                    if (rewardAction != null) {
+                        rewardAction();
+                    }
+                });
+                p.cbi.Add(TJ.Define.Event.Close, () => {
+                    if (!getReward) {
+                        LwgAudio._playMusic(LwgAudio._voiceUrl.bgm, 0, 1000);
+                        LwgDialogue._middleHint("观看完整广告才能获取奖励哦！");
+                    }
+                });
+                p.cbi.Add(TJ.Define.Event.NoAds, () => {
+                    LwgAudio._playMusic(LwgAudio._voiceUrl.bgm, 0, 1000);
+                    LwgDialogue._middleHint("暂时没有广告，过会儿再试试吧！");
+                });
+                TJ.ADS.Api.ShowReward(p);
+                ADManager.CanShowCD = false;
+                setTimeout(() => {
+                    ADManager.CanShowCD = true;
+                }, CDTime);
+            }
+            else {
+            }
+        }
+        static Event(param, value) {
+            console.log("Param:>" + param + "Value:>" + value);
+            let p = new TJ.GSA.Param();
+            if (value == null) {
+                p.id = param;
+            }
+            else {
+                p.id = param + value;
+            }
+            console.log(p.id);
+            TJ.GSA.Api.Event(p);
+        }
+        static initShare() {
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.WX_AppRt) {
+                this.wx.onShareAppMessage(() => {
+                    return {
+                        title: this.shareContent,
+                        imageUrl: this.shareImgUrl,
+                        query: ""
+                    };
+                });
+                this.wx.showShareMenu({
+                    withShareTicket: true,
+                    success: null,
+                    fail: null,
+                    complete: null
+                });
+            }
+        }
+        static lureShare() {
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.WX_AppRt) {
+                this.wx.shareAppMessage({
+                    title: this.shareContent,
+                    imageUrl: this.shareImgUrl,
+                    query: ""
+                });
+            }
+        }
+        static VibrateShort() {
+            if (!LwgSet._shake.switch) {
+                return;
+            }
+            TJ.API.Vibrate.Short();
+        }
+        static Vibratelong() {
+            if (!LwgSet._shake.switch) {
+                return;
+            }
+            TJ.API.Vibrate.Long();
+        }
+        static TAPoint(type, name) {
+            let p = new TJ.API.TA.Param();
+            p.id = name;
+            switch (type) {
+                case TaT.BtnShow:
+                    TJ.API.TA.Event_Button_Show(p);
+                    break;
+                case TaT.BtnClick:
+                    TJ.API.TA.Event_Button_Click(p);
+                    break;
+                case TaT.PageShow:
+                    TJ.API.TA.Event_Page_Show(p);
+                    break;
+                case TaT.PageEnter:
+                    TJ.API.TA.Event_Page_Enter(p);
+                    break;
+                case TaT.PageLeave:
+                    TJ.API.TA.Event_Page_Leave(p);
+                    break;
+                case TaT.LevelStart:
+                    TJ.API.TA.Event_Level_Start(p);
+                    console.log('本关开始打点');
+                    break;
+                case TaT.LevelFail:
+                    TJ.API.TA.Event_Level_Fail(p);
+                    console.log('本关失败打点');
+                    break;
+                case TaT.LevelFinish:
+                    TJ.API.TA.Event_Level_Finish(p);
+                    console.log('本关胜利打点');
+                    break;
+            }
+        }
+    }
+    ADManager.CanShowCD = true;
+    ADManager.wx = Laya.Browser.window.wx;
+    ADManager.shareImgUrl = "http://image.tomatojoy.cn/6847506204006681a5d5fa0cd91ce408";
+    ADManager.shareContent = "涂鸦小画手";
+    var TaT;
+    (function (TaT) {
+        TaT[TaT["BtnShow"] = 0] = "BtnShow";
+        TaT[TaT["BtnClick"] = 1] = "BtnClick";
+        TaT[TaT["PageShow"] = 2] = "PageShow";
+        TaT[TaT["PageEnter"] = 3] = "PageEnter";
+        TaT[TaT["PageLeave"] = 4] = "PageLeave";
+        TaT[TaT["LevelStart"] = 5] = "LevelStart";
+        TaT[TaT["LevelFinish"] = 6] = "LevelFinish";
+        TaT[TaT["LevelFail"] = 7] = "LevelFail";
+    })(TaT || (TaT = {}));
+
+    class _GameEffects2D {
+        static _interfacePointJet() {
+            const diff = 100;
+            LwgTimer._frameNumLoop(5, 15, this, () => {
+                for (let index = 0; index < 5; index++) {
+                    LwgEff2D._Particle._downwardSpray(Laya.stage, new Laya.Point(Laya.stage.width * 1 / 4, -diff), [10, 30], [10, 30], [0, 90], [LwgEff2D._SkinUrl.矩形1], null);
+                    LwgEff2D._Particle._downwardSpray(Laya.stage, new Laya.Point(Laya.stage.width * 3 / 4, -diff), [10, 30], [10, 30], [90, 180], [LwgEff2D._SkinUrl.矩形1], null);
+                    LwgEff2D._Particle._downwardSpray(Laya.stage, new Laya.Point(-diff, Laya.stage.height / 4), [10, 30], [10, 30], [0, 90], [LwgEff2D._SkinUrl.矩形1], null);
+                    LwgEff2D._Particle._downwardSpray(Laya.stage, new Laya.Point(Laya.stage.width + diff, Laya.stage.height / 4), [10, 30], [10, 30], [90, 180], [LwgEff2D._SkinUrl.矩形1], null);
+                }
+            });
+        }
+        static _completeCross() {
+            let num = 4;
+            let spcaing = 20;
+            for (let index = 0; index < num; index++) {
+                let moveY = 7 * index + 5;
+                let p1 = new Laya.Point(-200, Laya.stage.height);
+                let _caller = {};
+                let funcL = () => {
+                    p1.x += spcaing;
+                    if (p1.x > Laya.stage.width) {
+                        Laya.timer.clearAll(_caller);
+                    }
+                    p1.y -= moveY;
+                    LwgEff2D._Particle._fallingVertical(Laya.stage, new Laya.Point(p1.x, p1.y), [0, 0], null, null, [0, 360], [LwgEff2D._SkinUrl.花2], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1]);
+                };
+                LwgTimer._frameLoop(1, _caller, () => {
+                    funcL();
+                });
+                let p2 = new Laya.Point(Laya.stage.width + 200, Laya.stage.height);
+                let _callerR = {};
+                let funcR = () => {
+                    p2.x -= spcaing;
+                    if (p2.x < 0) {
+                        Laya.timer.clearAll(_callerR);
+                    }
+                    p2.y -= moveY;
+                    LwgEff2D._Particle._fallingVertical(Laya.stage, new Laya.Point(p2.x, p2.y), [0, 0], null, null, [0, 360], [LwgEff2D._SkinUrl.花2], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1]);
+                };
+                LwgTimer._frameLoop(1, _callerR, () => {
+                    funcR();
+                });
+            }
+        }
+        ;
+        static _completeSidelingCross() {
+            let len = Laya.stage.width;
+            let _height = Laya.stage.height * 2.5;
+            let Img = new Laya.Image;
+            Img.width = 100;
+            Img.height = _height;
+            Img.rotation = 40;
+            LwgTools._Node.changePivot(Img, 0, _height / 2);
+            Img.pos(0, 0);
+            Laya.stage.addChild(Img);
+            Img.zOrder = 1000;
+            let num = 20;
+            let spcaing = 40;
+            for (let index = 0; index < num; index++) {
+                let p1 = new Laya.Point(0, Img.height / num * index);
+                let p2 = new Laya.Point(Laya.stage.width, Img.height / num * index);
+                let _caller = {};
+                let func = () => {
+                    p1.x += spcaing;
+                    if (p1.x > len) {
+                        Laya.timer.clearAll(_caller);
+                    }
+                    p2.x -= spcaing;
+                    if (p2.x > len) {
+                        Laya.timer.clearAll(_caller);
+                    }
+                    if (index % 2 == 0) {
+                        LwgEff2D._Particle._fallingVertical(Img, new Laya.Point(p1.x, p1.y), [0, 0], null, null, [0, 360], [LwgEff2D._SkinUrl.星星8], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1]);
+                    }
+                    else {
+                        LwgEff2D._Particle._fallingVertical_Reverse(Img, new Laya.Point(p2.x, p2.y), [0, 0], null, null, [0, 360], [LwgEff2D._SkinUrl.星星8], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [-100, -200], [-0.8, -1.5], [-0.05, -0.1]);
+                    }
+                };
+                LwgTimer._frameNumLoop(2, 50, _caller, () => {
+                    func();
+                });
+            }
+        }
+        static _fireworksCelebrate(func) {
+            const centerP1 = new Laya.Point(Laya.stage.width / 2, 0);
+            const num1 = 150;
+            LwgTimer._frameNumRandomLoop(1, 3, num1, this, () => {
+                LwgEff2D._Particle._fallingRotate(Laya.stage, centerP1, [Laya.stage.width, 0], [10, 30], [10, 30], [LwgEff2D._SkinUrl.矩形1, LwgEff2D._SkinUrl.矩形2, LwgEff2D._SkinUrl.矩形3], null, [300, Laya.stage.height], [1, 8]);
+            });
+            const num2 = 16;
+            const centerP2 = new Laya.Point(Laya.stage.width / 2, Laya.stage.height / 2 - 50);
+            LwgTimer._frameNumRandomLoop(10, 25, num2, this, () => {
+                const count = LwgTools._Number.randomOneInt(10, 20);
+                const time = 30;
+                const dis = LwgTools._Number.randomOneInt(100, 300);
+                const radomP = LwgTools._Point.randomPointByCenter(centerP2, 500, 150)[0];
+                for (let index = 0; index < count * 2; index++) {
+                    LwgEff2D._Particle._sprayRound(Laya.stage, radomP, null, [20, 40], null, [LwgEff2D._SkinUrl.花4], null, [dis, dis], [time, time]);
+                }
+                for (let index = 0; index < count * 2; index++) {
+                    LwgEff2D._Particle._sprayRound(Laya.stage, radomP, null, [20, 40], null, [LwgEff2D._SkinUrl.花4], null, [50, dis - 20], [time, time]);
+                }
+            }, () => {
+                func && func();
+            });
+        }
+        static _oneFireworks(point) {
+            const count = LwgTools._Number.randomOneInt(10, 20);
+            const time = 30;
+            const dis = LwgTools._Number.randomOneInt(100, 300);
+            for (let index = 0; index < count * 2; index++) {
+                LwgEff2D._Particle._sprayRound(Laya.stage, point, null, [20, 40], null, [LwgEff2D._SkinUrl.花4], null, [dis, dis], [time, time]);
+            }
+            for (let index = 0; index < count * 2; index++) {
+                LwgEff2D._Particle._sprayRound(Laya.stage, point, null, [20, 40], null, [LwgEff2D._SkinUrl.花4], null, [50, dis - 20], [time, time]);
+            }
+        }
+        static _circleFlowe(scene) {
+            const count = 90;
+            const time = 35;
+            const dis = LwgTools._Number.randomOneInt(500, 500);
+            const p = new Laya.Point(Laya.stage.width / 2, Laya.stage.height / 2);
+            for (let index = 0; index < count; index++) {
+                LwgEff2D._Particle._sprayRound(scene, p, null, [20, 40], null, [LwgEff2D._SkinUrl.花4], null, [dis, dis], [time, time], null, null, 5);
+            }
+            for (let index = 0; index < count * 2; index++) {
+                LwgEff2D._Particle._sprayRound(scene, p, null, [20, 40], null, [LwgEff2D._SkinUrl.花4], null, [100, dis - 20], [time, time], null, null, 5);
+            }
+        }
+        static _bothBlinkOnSprite(scene, sprite) {
+            const caller = {};
+            LwgTimer._frameRandomLoop(30, 50, caller, () => {
+                LwgEff2D._Glitter._blinkStar(scene, new Laya.Point(sprite.x - 350, sprite.y), [150, 100], [LwgEff2D._SkinUrl.星星1], null, [80, 80]);
+            }, true);
+            LwgTimer._frameRandomLoop(30, 50, caller, () => {
+                LwgEff2D._Glitter._blinkStar(scene, new Laya.Point(sprite.x + 350, sprite.y), [150, 100], [LwgEff2D._SkinUrl.星星1], null, [80, 80]);
+            }, true);
+            return caller;
+        }
+        static _circleExplode(Parent, p, delay) {
+            LwgTimer._once(delay ? delay : 0, this, () => {
+                const count = 40;
+                const time = 5;
+                const dis = LwgTools._Number.randomOneInt(30, 30);
+                for (let index = 0; index < count; index++) {
+                    LwgEff2D._Particle._sprayRound(Parent, p, null, [20, 40], null, [LwgEff2D._SkinUrl.星星8], null, [dis, dis], [time, time], null, null, 5);
+                }
+                LwgAudio._playSound();
+            });
+        }
+    }
+
+    class PreLoad extends LwgPreLoad._PreLoadScene {
+        constructor() {
+            super(...arguments);
+            this.count = 0;
+        }
+        lwgOnAwake() {
+            ADManager.TAPoint(TaT.PageShow, 'loadpage');
+        }
+        lwgOnStart() {
+            const scale = 1.2;
+            const time = 100;
+            const delay = 100;
+            this._ImgVar('LoGo').scale(0, 0);
+            this._ImgVar('Progress').scale(0, 0);
+            this._ImgVar('Anti').alpha = 0;
+            this._LabelVar('TextTip1').alpha = 0;
+            const startCoefficient = 6;
+            LwgTimer._once(delay * startCoefficient, this, () => {
+                _GameEffects2D._circleFlowe(this._Owner);
+            });
+            LwgTimer._once(delay * startCoefficient, this, () => {
+                LwgColor._changeOnce(this._ImgVar('BG'), [100, 50, 0, 1], time / 3);
+            });
+            LwgTimer._frameLoop(time / 2 * 2, this, () => {
+                LwgTimer._once(delay * 6, this, () => {
+                    LwgColor._changeOnce(this._ImgVar('LoGo'), [5, 40, 10, 1], time / 2);
+                });
+            });
+            LwgAni2D.bombs_Appear(this._ImgVar('LoGo'), 0, 1, scale, 0, time * 5, () => {
+                _GameEffects2D._bothBlinkOnSprite(this._Owner, this._ImgVar('LoGo'));
+                LwgAni2D.bombs_Appear(this._ImgVar('Progress'), 0, 1, scale, 0, time * 1.5, () => {
+                    LwgTimer._frameNumLoop(2, 30, this, () => {
+                        this.count++;
+                        this.progressDisplay();
+                    }, () => {
+                        LwgAni2D.fadeOut(this._LabelVar('TextTip1'), 0, 1, time * 2, 0, () => {
+                            LwgTimer._frameLoop(100, this, () => {
+                                this._LabelVar('TextTip2').text = '';
+                                LwgTimer._frameNumLoop(10, 6, this, () => {
+                                    this._LabelVar('TextTip2').text += '.';
+                                });
+                            }, true);
+                        });
+                        this._evNotify(LwgPreLoad._Event.importList, [_Res._list]);
+                    }, true);
+                    LwgAni2D.fadeOut(this._ImgVar('Anti'), 0, 1, time * 4, 200);
+                }, delay * 4);
+                LwgTimer._once(delay * 4, this, () => {
+                    LwgAudio._playSound(LwgAudio._voiceUrl.btn);
+                });
+            }, delay * startCoefficient);
+        }
+        progressDisplay() {
+            this._ImgVar('ProgressBar').mask.x = -this._ImgVar('ProgressBar').width + this._ImgVar('ProgressBar').width / 100 * this.count;
+        }
+        lwgStepComplete() {
+            this._ImgVar('ProgressBar').mask.x += 5;
+        }
+        lwgAllComplete() {
+            LwgTimer._frameLoop(5, this, () => {
+                if (this._ImgVar('ProgressBar').mask.x < 0) {
+                    this._ImgVar('ProgressBar').mask.x += 40;
+                    if (this._ImgVar('ProgressBar').mask.x > 0) {
+                        this._ImgVar('ProgressBar').mask.x = 0;
+                    }
+                }
+            });
+            _AllClothes._ins().changeClothStart();
+            _3DScene._ins().intoStart(_SceneName.PreLoad);
+            return 2000;
+        }
+        lwgCloseAni() {
+            LwgSceneAni._shutters.Close._paly(LwgSceneAni._shutters.Close._type.randomCroAndVer, this._Owner);
+            return 1500;
+        }
+        lwgOnDisable() {
+            ADManager.TAPoint(TaT.PageLeave, 'loadpage');
+        }
+    }
+
+    class RecordManager {
+        constructor() {
+            this.GRV = null;
+            this.isRecordVideoing = false;
+            this.isVideoRecord = false;
+            this.videoRecordTimer = 0;
+            this.isHasVideoRecord = false;
+        }
+        static Init() {
+            RecordManager.grv = new TJ.Platform.AppRt.DevKit.TT.GameRecorderVideo();
+        }
+        static startAutoRecord() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            if (RecordManager.grv == null)
+                RecordManager.Init();
+            if (RecordManager.recording)
+                return;
+            RecordManager.autoRecording = true;
+            console.log("******************开始录屏");
+            RecordManager._start();
+            RecordManager.lastRecordTime = Date.now();
+        }
+        static stopAutoRecord() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            if (!RecordManager.autoRecording) {
+                console.log("RecordManager.autoRecording", RecordManager.autoRecording);
+                return false;
+            }
+            RecordManager.autoRecording = false;
+            RecordManager._end(false);
+            if (Date.now() - RecordManager.lastRecordTime > 6000) {
+                return true;
+            }
+            if (Date.now() - RecordManager.lastRecordTime < 3000) {
+                console.log("小于3秒");
+                return false;
+            }
+            return true;
+        }
+        static startRecord() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            if (RecordManager.autoRecording) {
+                this.stopAutoRecord();
+            }
+            RecordManager.recording = true;
+            RecordManager._start();
+            RecordManager.lastRecordTime = Date.now();
+        }
+        static stopRecord() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            console.log("time:" + (Date.now() - RecordManager.lastRecordTime));
+            if (Date.now() - RecordManager.lastRecordTime <= 3000) {
+                return false;
+            }
+            RecordManager.recording = false;
+            RecordManager._end(true);
+            return true;
+        }
+        static _start() {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            console.log("******************180s  ？？？？？");
+            RecordManager.grv.Start(180);
+        }
+        static _end(share) {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            console.log("******************180结束 ？？？？？");
+            RecordManager.grv.Stop(share);
+        }
+        static _share(type, successedAc, completedAc = null, failAc = null) {
+            if (TJ.API.AppInfo.Channel() != TJ.Define.Channel.AppRt.ZJTD_AppRt)
+                return;
+            console.log("******************吊起分享 ？？？？？", RecordManager.grv, RecordManager.grv.videoPath);
+            if (RecordManager.grv.videoPath) {
+                let p = new TJ.Platform.AppRt.Extern.TT.ShareAppMessageParam();
+                p.extra.videoTopics = ["女神修炼手册", "番茄小游戏", "抖音小游戏"];
+                p.channel = "video";
+                p.success = () => {
+                    LwgDialogue._middleHint("分享成功!");
+                    successedAc();
+                };
+                p.fail = () => {
+                    if (type === 'noAward') {
+                        LwgDialogue._middleHint("分享失败！");
+                    }
+                    else {
+                        LwgDialogue._middleHint("分享成功后才能获取奖励！");
+                    }
+                    failAc();
+                };
+                RecordManager.grv.Share(p);
+            }
+            else {
+                LwgDialogue._middleHint("暂无视频，玩一局游戏之后分享！");
+            }
+        }
+    }
+    RecordManager.recording = false;
+    RecordManager.autoRecording = false;
+
+    class _UI {
+        constructor(_Scene) {
+            this.time = 100;
+            this.delay = 100;
+            this.scale = 1.4;
+            if (!_Scene) {
+                return;
+            }
+            this.Scene = _Scene;
+            this.Operation = _Scene['Operation'];
+            this.BtnAgain = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnAgain.prefab, _Scene, [200, 79]);
+            LwgClick._on(LwgClick._Use.value, this.BtnAgain, this, null, null, () => {
+                ADManager.TAPoint(TaT.BtnShow, 'next_lose');
+                this.btnAgainClick && this.btnAgainClick();
+            });
+            this.BtnComplete = _Scene['BtnComplete'];
+            LwgClick._on(LwgClick._Use.value, this.BtnComplete, this, null, null, (e) => {
+                e.stopPropagation();
+                this.btnCompleteClick && this.btnCompleteClick();
+            });
+            this.BtnBack = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnBack.prefab, _Scene, [77, 79]);
+            LwgClick._on(LwgClick._Use.value, this.BtnBack, this, null, null, () => {
+                if (!_Guide._complete)
+                    return;
+                if (_3DScene._ins()._Owner.active) {
+                    _BackHint._3dToSp = _3DScene._ins().cameraToSprite(this.Scene);
+                }
+                ADManager.TAPoint(TaT.BtnShow, 'back_main');
+                if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                    _BackHint._whereScene = this.Scene;
+                    LwgScene._openScene(_SceneName.BackHint);
+                }
+                else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                    _PreLoadCutIn._fromBack = true;
+                    LwgTimer._frameOnce(10, this, () => {
+                        this.Scene[this.Scene.name]._openScene(_SceneName.Start, true, true);
+                    });
+                }
+            });
+            this.BtnRollback = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnRollback.prefab, _Scene, [200, 79]);
+            LwgClick._on(LwgClick._Use.value, this.BtnRollback, this, null, null, () => {
+                if (!_Guide._complete)
+                    return;
+                this.btnRollbackClick && this.btnRollbackClick();
+            });
+            this.Operation.pos(Laya.stage.width + 500, 20);
+            this.BtnComplete.scale(0, 0);
+            this.BtnBack.scale(0, 0);
+            this.BtnAgain.scale(0, 0);
+            this.BtnRollback.scale(0, 0);
+            ADManager.TAPoint(TaT.BtnShow, 'back_main');
+            ADManager.TAPoint(TaT.BtnShow, 'next_lose');
+            this.BtnTurnFace = this.Scene['BtnTurnFace'];
+            if (this.BtnTurnFace) {
+                ADManager.TAPoint(TaT.BtnShow, 'Amian');
+                ADManager.TAPoint(TaT.BtnShow, 'Bmian');
+                this.BtnTurnFace.scale(0, 0);
+            }
+            this.BtnRollback.zOrder = this.BtnAgain.zOrder = this.BtnBack.zOrder = this.BtnComplete.zOrder = this.Operation.zOrder = 45;
+            this.moveTargetX = Laya.stage.width - this.Operation.width + 50;
+        }
+        btnRollbackAppear(func, delay) {
+            LwgAni2D.bombs_Appear(this.BtnRollback, 0, 1, this.scale, 0, this.time * 2, () => {
+                func && func();
+            }, delay ? delay : 0);
+        }
+        ;
+        btnRollbackVinish(func, delay) {
+            LwgAni2D.bombs_Vanish(this.BtnRollback, 0, 0, 0, this.time * 4, () => {
+                func && func();
+            }, delay ? delay : 0);
+        }
+        ;
+        btnAgainAppear(func, delay) {
+            LwgAni2D.bombs_Appear(this.BtnAgain, 0, 1, this.scale, 0, this.time * 2, () => {
+                func && func();
+            }, delay ? delay : 0);
+        }
+        ;
+        btnAgainVinish(func, delay) {
+            LwgAni2D.bombs_Vanish(this.BtnAgain, 0, 0, 0, this.time * 4, () => {
+                func && func();
+            }, delay ? delay : 0);
+        }
+        ;
+        btnBackAppear(func, delay) {
+            LwgAni2D.bombs_Appear(this.BtnBack, 0, 1, this.scale, 0, this.time * 2, () => {
+                func && func();
+            }, delay ? delay : 0);
+        }
+        ;
+        btnBackVinish(func, delay) {
+            LwgAni2D.bombs_Vanish(this.BtnBack, 0, 0, 0, this.time * 4, () => {
+                func && func();
+            }, delay ? delay : 0);
+        }
+        ;
+        btnCompleteAppear(func, delay) {
+            _GameEffects2D._circleExplode(this.Operation, new Laya.Point(this.BtnComplete.x, this.BtnComplete.y), delay);
+            LwgAni2D.bombs_Appear(this.BtnComplete, 0, 1, this.scale, 0, this.time * 2, () => {
+                func && func();
+            }, delay ? delay : 0);
+        }
+        btnCompleteVinish(func, delay) {
+            LwgAni2D.bombs_Vanish(this.BtnComplete, 0, 0, 0, this.time * 4, () => {
+                func && func();
+            }, delay ? delay : 0);
+        }
+        ;
+        btnTurnFaceAppear(func, delay) {
+            if (this.BtnTurnFace) {
+                _GameEffects2D._circleExplode(this.Operation, new Laya.Point(this.BtnTurnFace.x, this.BtnTurnFace.y), delay);
+                LwgAni2D.bombs_Appear(this.BtnTurnFace, 0, 1, this.scale, 0, this.time * 2, () => {
+                    func && func();
+                });
+            }
+        }
+        btnTurnFaceVinish(func, delay) {
+            if (this.BtnTurnFace) {
+                LwgAni2D.bombs_Vanish(this.BtnTurnFace, 0, 0, 0, this.time * 4, () => {
+                    func && func();
+                }, delay ? delay : 0);
+            }
+        }
+        operationAppear(func, delay) {
+            if (this.Scene.name === 'MakeTailor') {
+                LwgAni2D.fadeOut(this.Scene['BG2'], this.Scene['BG2'].alpha, 1, 500);
+            }
+            LwgAni2D.move(this.Operation, this.moveTargetX - 40, this.Operation.y, this.time * 4, () => {
+                LwgAni2D.move(this.Operation, this.moveTargetX, this.Operation.y, this.time, () => {
+                    func && func();
+                });
+            }, delay ? delay : 0);
+        }
+        ;
+        operationVinish(func, delay) {
+            if (this.Scene.name === 'MakeTailor') {
+                LwgAni2D.fadeOut(this.Scene['BG2'], this.Scene['BG2'].alpha, 0, 500);
+            }
+            LwgAni2D.bombs_Vanish(this.BtnComplete, 0, 0, 0, this.time * 4, () => {
+                LwgAni2D.move(this.Operation, this.moveTargetX - 40, this.Operation.y, this.time, () => {
+                    LwgAni2D.move(this.Operation, Laya.stage.width + 500, this.Operation.y, this.time * 4, () => {
+                        func && func();
+                    });
+                });
+            }, delay ? delay : 0);
+        }
+    }
+
+    class _TaskClothes extends LwgData._Table {
+        constructor() {
+            super(...arguments);
+            this.moveTime = 600;
+        }
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _TaskClothes('DIY_Task');
+            }
+            return this.ins;
+        }
+        again(Scene) {
+            const clothesArr = _DIYClothes._ins().getClothesArr();
+            const name = _DIYClothes._ins()._pitchName ? _DIYClothes._ins()._pitchName : clothesArr[0]['name'];
+            for (let index = 0; index < clothesArr.length; index++) {
+                const element = clothesArr[index];
+                if (element.name === name) {
+                    this.LastClothes = element;
+                    clothesArr[index] = this.Clothes = _DIYClothes._ins().createClothes(name, Scene);
+                    this.LineParent = this.Clothes.getChildAt(0).getChildByName('LineParent');
+                    this.setData();
+                }
+            }
+            this.clothesMove();
+            LwgAni2D.move_rotate(this.LastClothes, 45, new Laya.Point(Laya.stage.width * 1.5, Laya.stage.height * 1.5), this.moveTime, 0, () => {
+                this.LastClothes.removeSelf();
+            });
+        }
+        clothesMove() {
+            const time = 700;
+            this.Clothes.pos(0, -Laya.stage.height * 1.5);
+            this.Clothes.rotation = 45;
+            LwgAni2D.move_rotate(this.Clothes, 0, new Laya.Point(Laya.stage.width / 2, Laya.stage.height / 2), time);
+        }
+        changeClothes(Scene) {
+            const clothesArr = _DIYClothes._ins().getClothesArr();
+            const name = _DIYClothes._ins()._pitchName ? _DIYClothes._ins()._pitchName : clothesArr[0]['name'];
+            const lastName = _DIYClothes._ins()._lastPitchName;
+            for (let index = 0; index < clothesArr.length; index++) {
+                const element = clothesArr[index];
+                if (element.name == name) {
+                    element.removeSelf();
+                    this.Clothes = clothesArr[index] = _DIYClothes._ins().createClothes(name, Scene);
+                    this.LineParent = this.Clothes.getChildAt(0).getChildByName('LineParent');
+                    this.setData();
+                }
+                else if (element.name == lastName) {
+                    this.LastClothes = element;
+                }
+                else {
+                    element.removeSelf();
+                }
+            }
+            this.clothesMove();
+            this.LastClothes && LwgAni2D.move_rotate(this.LastClothes, -45, new Laya.Point(Laya.stage.width * 1.5, -Laya.stage.height * 1.5), this.moveTime, 0, () => {
+                this.LastClothes.removeSelf();
+            });
+        }
+        setData() {
+            this._arr = [];
+            for (let index = 0; index < this.LineParent.numChildren; index++) {
+                const Line = this.LineParent.getChildAt(index);
+                if (Line.numChildren > 0) {
+                    let data = {};
+                    data['Line'] = Line;
+                    data[this._property.name] = Line.name;
+                    data[this._property.conditionNum] = Line.numChildren;
+                    data[this._property.degreeNum] = 0;
+                    this._arr.push(data);
+                }
+            }
+        }
+    }
+    class _Scissor extends LwgScene._ObjectBase {
+        constructor() {
+            super(...arguments);
+            this.Ani = {
+                vanishP: new Laya.Point(Laya.stage.width + 500, 0),
+                shearSpeed: 3,
+                range: 40,
+                dir: 'up',
+                dirType: {
+                    up: 'up',
+                    down: 'down',
+                },
+                paly: () => {
+                    LwgTimer._clearAll([this.Ani]);
+                    LwgAni2D._clearAll([this.Ani]);
+                    LwgTimer._frameLoop(1, this.Ani, () => {
+                        if (this._SceneImg('S2').rotation > this.Ani.range) {
+                            this.Ani.dir = 'up';
+                        }
+                        else if (this._SceneImg('S2').rotation <= 0) {
+                            this.Ani.dir = 'down';
+                        }
+                        if (this.Ani.dir == 'up') {
+                            this._SceneImg('S1').rotation += this.Ani.shearSpeed * 4;
+                            this._SceneImg('S2').rotation -= this.Ani.shearSpeed * 4;
+                        }
+                        else if (this.Ani.dir == 'down') {
+                            this._SceneImg('S1').rotation -= this.Ani.shearSpeed;
+                            this._SceneImg('S2').rotation += this.Ani.shearSpeed;
+                        }
+                    });
+                },
+                stop: () => {
+                    LwgTimer._frameOnce(30, this.Ani, () => {
+                        let time = 100;
+                        LwgTimer._clearAll([this.Ani]);
+                        LwgAni2D._clearAll([this.Ani]);
+                        LwgAni2D.rotate(this._SceneImg('S1'), -this.Ani.range / 3, time);
+                        LwgAni2D.rotate(this._SceneImg('S2'), this.Ani.range / 3, time);
+                    });
+                },
+                event: () => {
+                    this._evReg(_MakeTailor.Event.scissorAppear, () => {
+                        let time = 800;
+                        LwgAni2D.move_rotate(this._Owner, this._Owner._lwg.fRotation + 360, this._Owner._lwg.fGPoint, time, 0, () => {
+                            this._Owner.rotation = this._Owner._lwg.fRotation;
+                            this.Move.switch = true;
+                            if (!_Guide._complete.value)
+                                this._evNotify(_Guide.Event.MakeTailorStartTailor, [this._Owner]);
+                        });
+                    });
+                    this._evReg(_MakeTailor.Event.scissorPlay, () => {
+                        this.Ani.paly();
+                    });
+                    this._evReg(_MakeTailor.Event.scissorStop, () => {
+                        this.Ani.stop();
+                    });
+                    this._evReg(_MakeTailor.Event.scissorRemove, (func) => {
+                        this.Move.switch = false;
+                        let disX = 1500;
+                        let disY = -600;
+                        let time = 600;
+                        let delay = 100;
+                        LwgAni2D.move_rotate(this._Owner, this._Owner.rotation + 360, new Laya.Point(Laya.stage.width / 2, Laya.stage.height / 2), time / 2, delay, () => {
+                            this._Owner.rotation = 0;
+                            LwgAni2D.move_rotate(this._Owner, -30, new Laya.Point(this._Owner.x - disX / 6, this._Owner.y - disY / 5), time / 2, delay * 1.5, () => {
+                                LwgAni2D.move_rotate(this._Owner, LwgTools._Number.randomOneHalf() == 0 ? 720 : -720, new Laya.Point(this._Owner.x + disX, this._Owner.y + disY), time, delay, () => {
+                                    func && func();
+                                    this._Owner.rotation = 0;
+                                    this._Owner.pos(this.Ani.vanishP.x, this.Ani.vanishP.y);
+                                });
+                            });
+                        });
+                    });
+                    this._evReg(_MakeTailor.Event.scissorAgain, () => {
+                        LwgAni2D.move_rotate(this._Owner, this._Owner._lwg.fRotation, this._Owner._lwg.fGPoint, 600, 100, () => {
+                            _TaskClothes._ins().again(this._Scene);
+                        });
+                    });
+                    this._evReg(_MakeTailor.Event.scissorRotation, (rotate) => {
+                        LwgTimer._clearAll([this._Owner]);
+                        const time = 10;
+                        let angle;
+                        if (Math.abs(rotate - this._Owner.rotation) < 180) {
+                            angle = rotate - this._Owner.rotation;
+                        }
+                        else {
+                            angle = -(360 - (rotate - this._Owner.rotation));
+                        }
+                        let unit = angle / time;
+                        LwgTimer._frameNumLoop(1, time, this._Owner, () => {
+                            this._Owner.rotation += unit;
+                        });
+                    });
+                },
+                effcts: () => {
+                    const num = LwgTools._Number.randomOneInt(3, 6);
+                    const color1 = _DIYClothes._ins().getColor()[0];
+                    const color2 = _DIYClothes._ins().getColor()[1];
+                    for (let index = 0; index < num; index++) {
+                        LwgEff2D._Particle._spray(this._Scene, this._point, [10, 30], null, [0, 360], [LwgEff2D._SkinUrl.三角形1], [color1, color2], [20, 90], null, null, [1, 3], [0.1, 0.2], this._Owner.zOrder - 1);
+                    }
+                }
+            };
+            this.Move = {
+                switch: false,
+                touchP: null,
+                diffP: null,
+            };
+        }
+        lwgOnAwake() {
+            this._Owner.pos(this.Ani.vanishP.x, this.Ani.vanishP.y);
+        }
+        lwgEvent() {
+            this.Ani.event();
+        }
+        lwgButton() {
+            this._btnFour(Laya.stage, (e) => {
+                if (this.Move.switch) {
+                    this._evNotify(_MakeTailor.Event.scissorPlay);
+                    this.Move.touchP = new Laya.Point(e.stageX, e.stageY);
+                    if (!_Guide._complete.value)
+                        this._evNotify(_Guide.Event.MakeTailorCloseTailor, [this._Owner]);
+                }
+            }, (e) => {
+                if (this.Move.touchP && this.Move.switch) {
+                    this.Move.diffP = new Laya.Point(e.stageX - this.Move.touchP.x, e.stageY - this.Move.touchP.y);
+                    this._Owner.x += this.Move.diffP.x;
+                    this._Owner.y += this.Move.diffP.y;
+                    LwgTools._Node.tieByStage(this._Owner);
+                    this.Move.touchP = new Laya.Point(e.stageX, e.stageY);
+                    this._evNotify(_MakeTailor.Event.scissorPlay);
+                }
+            }, () => {
+                this._evNotify(_MakeTailor.Event.scissorStop);
+                this.Move.touchP = null;
+                if (!_Guide._complete.value) {
+                    this._evNotify(_Guide.Event.MakeTailorOpenTailor, [this._Owner]);
+                }
+            });
+        }
+        onTriggerEnter(other, _Owner) {
+            if (!other['cut'] && this.Move.switch) {
+                other['cut'] = true;
+                this._evNotify(_MakeTailor.Event.scissorPlay);
+                this._evNotify(_MakeTailor.Event.scissorStop);
+                LwgEvent._notify(_MakeTailor.Event.scissorTrigger, [other.owner]);
+                this.Ani.effcts();
+                ADManager.VibrateShort();
+            }
+        }
+    }
+    class _Item extends LwgData._Item {
+        $awake() { }
+        ;
+        $button() {
+            this._btnUp(this._Owner, () => {
+                if (!_Guide._complete.value && this.$data.name !== 'diy_dress_002_final')
+                    return;
+                if (this.$data.name === 'ads') {
+                    return;
+                }
+                if (this.$data.complete) {
+                    if (this.$data.name !== _DIYClothes._ins()._pitchName) {
+                        _DIYClothes._ins()._setPitch(this.$data.name);
+                        this._evNotify(_MakeTailor.Event.changeClothes);
+                    }
+                }
+                else {
+                    switch (this.$data.unlockWay) {
+                        case this.$unlockWayType.check:
+                            LwgDialogue._middleHint('请前往签到页面获取');
+                            break;
+                        case this.$unlockWayType.customs:
+                            LwgDialogue._middleHint(`制作${this.$data.conditionNum}件才能衣服获取哦！`);
+                            break;
+                        case this.$unlockWayType.ads:
+                            ADManager.ShowReward(() => {
+                                if (_DIYClothes._ins()._checkCondition(this.$data.name)) {
+                                    LwgDialogue._middleHint('恭喜获得一件新服装！');
+                                    _DIYClothes._ins()._setPitch(this.$data.name);
+                                    this._evNotify(_MakeTailor.Event.changeClothes);
+                                }
+                            });
+                            break;
+                        case this.$unlockWayType.free:
+                            LwgDialogue._middleHint(`免费获得`);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                if (!_Guide._complete.value && this.$data.name == 'diy_dress_002_final') {
+                    _Guide.MmakeTailorBtnComSwicth = true;
+                    this._evNotify(_Guide.Event.MakeTailorBtnCom, [this._SceneImg('BtnComplete')._lwg.gPoint]);
+                }
+                ;
+            });
+        }
+        $render() {
+            this._LableChild('UnlockWayNum').visible = false;
+            if (this.$data.name == 'ads') {
+                if (!this._BoxChild('NativeRoot')) {
+                    LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
+                }
+                this._ImgChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
+            }
+            else {
+                if (!this.$data.complete) {
+                    if (this.$data.unlockWay === _DIYClothes._ins()._unlockWay.ads) {
+                        this._ImgChild('AdsSign').visible = true;
+                        this._LableChild('UnlockWay').visible = false;
+                        this._ImgChild('Mask').visible = false;
+                    }
+                    else {
+                        this._ImgChild('AdsSign').visible = false;
+                        this._LableChild('UnlockWay').visible = true;
+                        switch (this.$data.unlockWay) {
+                            case _DIYClothes._ins()._unlockWay.check:
+                                this._LableChild('UnlockWay').text = '签到';
+                                this._LableChild('UnlockWay').fontSize = 30;
+                                this._LableChild('UnlockWayNum').visible = false;
+                                break;
+                            case _DIYClothes._ins()._unlockWay.customs:
+                                this._LableChild('UnlockWay').text = `制作衣服`;
+                                this._LableChild('UnlockWay').fontSize = 25;
+                                this._LableChild('UnlockWayNum').visible = true;
+                                this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum.value} /${this.$data.conditionNum})`;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    this._ImgChild('Mask').visible = true;
+                }
+                else {
+                    this._ImgChild('Mask').visible = this._ImgChild('AdsSign').visible = this._LableChild('UnlockWay').visible = false;
+                }
+                this._ImgChild('Icon').gray = !this.$data.complete;
+                if (this._BoxChild('NativeRoot'))
+                    this._BoxChild('NativeRoot').destroy();
+                this._ImgChild('Icon').visible = this._ImgChild('Board').visible = true;
+                this._ImgChild('Icon').skin = _DIYClothes._ins().getDIYCutIcon(this.$data.name);
+                this._ImgChild('Board').skin = `Lwg/UI/ui_orthogon_green.png`;
+                if (this.$data.pitch) {
+                    this._ImgChild('Board').skin = `Game/UI/Common/xuanzhong.png`;
+                }
+                else {
+                    this._ImgChild('Board').skin = null;
+                }
+            }
+        }
+    }
+    class MakeTailor extends LwgScene._SceneBase {
+        lwgOnAwake() {
+            RecordManager.startAutoRecord();
+            ADManager.TAPoint(TaT.PageShow, 'jiancaipage');
+            this._ImgVar('BG1').skin = `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/MakeTailorBG1.png`;
+            this._ImgVar('BG2').skin = `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/MakeTailorBG2.png`;
+            this._ImgVar('Scissor').addComponent(_Scissor);
+            _DIYClothes._ins()._listRenderScript = _Item;
+            _DIYClothes._ins()._List = this._ListVar('List');
+            const arr = _DIYClothes._ins()._getArrByPitchClassify();
+            _DIYClothes._ins()._listArray = arr;
+            _DIYClothes._ins()._setPitch(arr[0][_DIYClothes._ins()._property.name]);
+            if (!_Guide._complete.value)
+                _DIYClothes._ins()._List.scrollBar.touchScrollEnable = false;
+        }
+        lwgOnStart() {
+            this.UI = new _UI(this._Owner);
+            LwgTimer._frameOnce(40, this, () => {
+                this.UI.operationAppear(() => {
+                    this.UI.btnAgainVinish(null, 200);
+                    this.UI.btnCompleteAppear(null, 400);
+                });
+                this.UI.btnBackAppear(() => {
+                    !_Guide._complete.value && this._openScene(_SceneName.Guide, false, false, () => {
+                        _Guide.MmakeTailorPulldownSwicth = true;
+                        this._evNotify(_Guide.Event.MakeTailorPulldown);
+                    });
+                });
+            });
+            this.UI.BtnRollback.visible = false;
+            LwgTimer._frameOnce(20, this, () => {
+                _TaskClothes._ins().changeClothes(this._Owner);
+            });
+        }
+        lwgAdaptive() {
+            if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                this._ImgVar('BtnComplete').y += 80;
+            }
+        }
+        lwgButton() {
+            this.UI.btnCompleteClick = () => {
+                if (!_Guide._complete.value) {
+                    if (!_Guide.MmakeTailorBtnComSwicth) {
+                        return;
+                    }
+                }
+                this.UI.operationVinish(() => {
+                    this.UI.btnAgainAppear();
+                }, 200);
+                LwgTimer._frameOnce(30, this, () => {
+                    this._evNotify(_MakeTailor.Event.scissorAppear);
+                });
+            };
+            if (!_Guide._complete.value) {
+                this._btnFour(_DIYClothes._ins()._List, () => {
+                    if (_Guide.MmakeTailorPulldownSwicth) {
+                        if (!this['Pulldown']) {
+                            this['Pulldown'] = 1;
+                        }
+                    }
+                }, () => {
+                    if (this['Pulldown'])
+                        this['Pulldown']++;
+                }, () => {
+                    if (_Guide.MmakeTailorPulldownSwicth && this['Pulldown'] && this['Pulldown'] > 2) {
+                        let index;
+                        if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                            index = 3;
+                        }
+                        else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                            index = 4;
+                        }
+                        _DIYClothes._ins()._List.tweenTo(index, 200, Laya.Handler.create(this, () => {
+                            _Guide.MmakeTailorPulldownSwicth = false;
+                            this._evNotify(_Guide.Event.MakeTailorChangeCloth);
+                        }));
+                    }
+                    this['Pulldown'] = 1;
+                }, null);
+                return;
+            }
+            this.UI.btnAgainClick = () => {
+                this._evNotify(_MakeTailor.Event.scissorRemove, [() => {
+                        _TaskClothes._ins().again(this._Owner);
+                    }]);
+                LwgClick._switch = false;
+                LwgTimer._frameOnce(60, this, () => {
+                    this.UI.operationAppear(() => {
+                        this.UI.btnAgainVinish(null, 200);
+                        this.UI.btnCompleteAppear();
+                    });
+                    LwgClick._switch = true;
+                });
+            };
+        }
+        lwgEvent() {
+            this._evReg(_MakeTailor.Event.changeClothes, () => {
+                _TaskClothes._ins().changeClothes(this._Owner);
+            });
+            this._evReg(_MakeTailor.Event.scissorTrigger, (Dotted) => {
+                const Parent = Dotted.parent;
+                const value = _TaskClothes._ins()._checkCondition(Parent.name);
+                Dotted.visible = false;
+                let Eraser = Parent.getChildByName('Eraser');
+                if (!Eraser) {
+                    Eraser = new Laya.Sprite;
+                    Parent.addChild(Eraser);
+                }
+                if (Eraser.blendMode !== "destination-out")
+                    Eraser.blendMode = "destination-out";
+                if (Parent.cacheAs !== "bitmap")
+                    Parent.cacheAs = "bitmap";
+                Eraser.graphics.drawCircle(Dotted.x, Dotted.y, 15, '#000000');
+                if (value) {
+                    if (!_Guide._complete.value)
+                        this._evNotify(_Guide.Event.MakeTailorNewTailor, [Parent.name]);
+                    for (let index = 0; index < _TaskClothes._ins().Clothes.getChildAt(0).numChildren; index++) {
+                        const element = _TaskClothes._ins().Clothes.getChildAt(0).getChildAt(index);
+                        if (element.name.substr(5, 2) == Dotted.parent.name.substr(4, 2)) {
+                            let time = 1500;
+                            let disX = LwgTools._Number.randomOneInt(1000) + 1000;
+                            let disY = LwgTools._Number.randomOneInt(1000) + 1000;
+                            switch (element.name.substr(8)) {
+                                case 'U':
+                                    disX = 0;
+                                    disY = -disY;
+                                    break;
+                                case 'LU':
+                                    disX = -disX;
+                                    disY = -disY;
+                                    break;
+                                case 'L':
+                                    disX = -disX;
+                                    disY = 0;
+                                    break;
+                                case 'R':
+                                    disX = disX;
+                                    disY = 0;
+                                    break;
+                                case 'RU':
+                                    disY = -disY;
+                                    break;
+                                case 'D':
+                                    disX = 0;
+                                    break;
+                                case 'RD':
+                                    break;
+                                case 'LD':
+                                    disX = -disX;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            LwgAni2D.move_rotate(element, 0, new Laya.Point(element.x + disX / 30, element.y + disY / 30), time / 6, 0, () => {
+                                let rotate1 = LwgTools._Number.randomOneBySection(180);
+                                let rotate2 = LwgTools._Number.randomOneBySection(-180);
+                                LwgAni2D.move_rotate(element, LwgTools._Number.randomOneHalf() == 0 ? rotate1 : rotate2, new Laya.Point(element.x + disX, element.y + disY), time, 0, () => {
+                                    LwgAni2D.fadeOut(element, 1, 0, 200);
+                                });
+                            });
+                        }
+                    }
+                    if (_TaskClothes._ins()._checkAllCompelet()) {
+                        LwgTools._Node.removeAllChildren(_TaskClothes._ins().LineParent);
+                        this._evNotify(_MakeTailor.Event.scissorRemove);
+                        LwgTimer._frameOnce(80, this, () => {
+                            this._evNotify(_MakeTailor.Event.completeEffcet);
+                        });
+                        LwgTimer._frameOnce(280, this, () => {
+                            _Tweeting._photo.take(this._Owner, 0);
+                            this._openScene(_SceneName.MakePattern, true, true);
+                        });
+                    }
+                }
+                const gPos = Dotted.parent.localToGlobal(new Laya.Point(Dotted.x, Dotted.y));
+                if (Dotted.name == 'A') {
+                    if (this._ImgVar('Scissor').x <= gPos.x) {
+                        this._evNotify(_MakeTailor.Event.scissorRotation, [Dotted.rotation]);
+                    }
+                    else {
+                        this._evNotify(_MakeTailor.Event.scissorRotation, [180 + Dotted.rotation]);
+                    }
+                }
+                else {
+                    if (this._ImgVar('Scissor').y >= gPos.y) {
+                        this._evNotify(_MakeTailor.Event.scissorRotation, [Dotted.rotation]);
+                    }
+                    else {
+                        this._evNotify(_MakeTailor.Event.scissorRotation, [180 + Dotted.rotation]);
+                    }
+                }
+            });
+            this._evReg(_MakeTailor.Event.completeEffcet, () => {
+                this.UI.btnBackVinish();
+                this.UI.btnAgainVinish();
+                LwgAudio._playVictorySound(null, null, null, 0.5);
+                const index = LwgTools._Array.randomGetOne([0, 1, 2]);
+                switch (index) {
+                    case 0:
+                        this.heartShapedPathEffcet();
+                        break;
+                    case 1:
+                        _GameEffects2D._completeCross();
+                        break;
+                    case 2:
+                        _GameEffects2D._completeSidelingCross();
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+        lwgOnDisable() {
+            ADManager.TAPoint(TaT.PageLeave, 'jiancaipage');
+        }
+        heartShapedPathEffcet() {
+            this._AniVar('complete').play(0, false);
+            let _caller = {};
+            LwgTimer._frameLoop(1, _caller, () => {
+                let gP = this._ImgVar('EFlower').parent.localToGlobal(new Laya.Point(this._ImgVar('EFlower').x, this._ImgVar('EFlower').y));
+                LwgEff2D._Particle._fallingVertical(this._Owner, new Laya.Point(gP.x, gP.y - 40), [0, 0], null, null, [0, 360], [LwgEff2D._SkinUrl.花2], [[255, 222, 0, 1], [255, 222, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1]);
+                LwgEff2D._Particle._fallingVertical(this._Owner, new Laya.Point(gP.x, gP.y), [0, 0], null, null, [0, 360], [LwgEff2D._SkinUrl.花2], [[255, 222, 0, 1], [255, 24, 0, 1]], null, [100, 200], [0.8, 1.5], [0.05, 0.1]);
+            });
+            this._AniVar('complete').on(Laya.Event.COMPLETE, this, () => {
+                LwgTimer._clearAll([_caller]);
+            });
+        }
+    }
+
+    class Start extends LwgScene._SceneBase {
+        lwgOnAwake() {
+            ADManager.TAPoint(TaT.PageShow, 'mainpage');
+            ADManager.TAPoint(TaT.BtnShow, 'symaker');
+            ADManager.TAPoint(TaT.BtnShow, 'lyqmaker');
+            ADManager.TAPoint(TaT.BtnShow, 'xzmaker');
+            ADManager.TAPoint(TaT.BtnShow, 'change');
+            LwgTools._Node.childrenVisible2D(this._ImgVar('BtnParent'), false);
+            _3DScene._ins().openStartAni(() => {
+                this._ImgVar('BtnTop').pos(_3DScene._ins().btnTopPos.x, _3DScene._ins().btnTopPos.y);
+                this._ImgVar('BtnDress').pos(_3DScene._ins().btnDressPos.x, _3DScene._ins().btnDressPos.y);
+                this._ImgVar('BtnBottoms').pos(_3DScene._ins().btnBottomsPos.x, _3DScene._ins().btnBottomsPos.y);
+                this._ImgVar('BtnDressingRoom').pos(_3DScene._ins().btnDressingRoomPos.x, _3DScene._ins().btnDressingRoomPos.y);
+                for (let index = 0; index < this._ImgVar('BtnParent').numChildren; index++) {
+                    const element = this._ImgVar('BtnParent').getChildAt(index);
+                    element.visible = false;
+                }
+            });
+        }
+        lwgOpenAniAfter() {
+            LwgClick._absoluteSwitch = false;
+            for (let index = 0; index < this._ImgVar('BtnParent').numChildren; index++) {
+                const element = this._ImgVar('BtnParent').getChildAt(index);
+                element.visible = true;
+                const delay = 200 * index;
+                LwgAni2D.bombs_Appear(element, 0, 1, 1.2, 0, 200, () => {
+                    if (index === this._ImgVar('BtnParent').numChildren - 1) {
+                        LwgTimer._once(500, this, () => {
+                            LwgClick._absoluteSwitch = true;
+                            if (_Start._whereFrom === _SceneName.MakePattern) {
+                                this._evNotify(_Start.Event.photo);
+                                _Start._whereFrom = null;
+                            }
+                            else {
+                                if (!_Guide._complete.value) {
+                                    this._openScene('Guide', false, false, () => {
+                                        this.BtnDressClick();
+                                        this._evNotify(_Guide.Event.StartBtnDress, [this._ImgVar('BtnDress').x, this._ImgVar('BtnDress').y]);
+                                    });
+                                }
+                                else {
+                                    !_CheckIn._todayCheckIn.value && this._openScene(_SceneName.CheckIn, false);
+                                }
+                            }
+                        });
+                    }
+                }, delay);
+                _GameEffects2D._circleExplode(this._Owner, new Laya.Point(element.x, element.y), delay);
+            }
+        }
+        lwgOnStart() {
+            this._evNotify(_Start.Event.updateRanking);
+        }
+        lwgEvent() {
+            this._evReg(_Guide.Event.DelayBtnCheckIn, () => {
+                this.BtnCheckIn();
+                this._evNotify(_Guide.Event.BtnCheckIn, [this._ImgVar('BtnCheckIn').x, this._ImgVar('BtnCheckIn').y]);
+            });
+            this._evReg(_Guide.Event.StartOtherBtnClick, () => {
+                this.lwgButton();
+            });
+            this._evReg(_Start.Event.updateRanking, () => {
+                let obj = _Ranking._Data._ins()._getPitchObj();
+                this._LabelVar('RankNum').text = `${obj[_Ranking._Data._ins()._mergePro.rankNum]}/50`;
+            });
+            this._evReg(_Start.Event.photo, () => {
+                LwgClick._absoluteSwitch = false;
+                const sp = _3DScene._ins().cameraToSprite(this._Owner);
+                LwgTimer._frameOnce(10, this, () => {
+                    _Tweeting._photo.take(this._Owner, 2);
+                    sp.destroy();
+                    LwgTimer._frameOnce(10, this, () => {
+                        this._openScene(_SceneName.Tweeting_Main, false);
+                    });
+                });
+            });
+            this._evReg(_Start.Event.BtnPersonalInfo, () => {
+                LwgTimer._once(1000, this, () => {
+                    this._openScene(_SceneName.Guide, false, false, () => {
+                        this.BtnPersonalInfoClick();
+                        this._evNotify(_Guide.Event.PersonalInfoBtn, [this._ImgVar('BtnPersonalInfo').x, this._ImgVar('BtnPersonalInfo').y]);
+                    });
+                });
+            });
+        }
+        BtnDressClick() {
+            this._btnUp(this._ImgVar('BtnDress'), () => {
+                this._evNotify(_Guide.Event.closeGuide);
+                let time = 0;
+                if (_Guide._complete.value) {
+                    time = 300;
+                }
+                LwgTimer._once(time, this, () => {
+                    this.openMakeTailor('Dress');
+                });
+                ADManager.TAPoint(TaT.BtnClick, 'lyqmaker');
+            });
+        }
+        BtnPersonalInfoClick() {
+            this._btnUp(this._ImgVar('BtnPersonalInfo'), () => {
+                !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
+                this._openScene(_SceneName.PersonalInfo, false);
+            });
+        }
+        BtnCheckIn() {
+            this._btnUp(this._ImgVar('BtnCheckIn'), () => {
+                !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
+                this._openScene(_SceneName.CheckIn, false);
+            });
+        }
+        openMakeTailor(_classify) {
+            _DIYClothes._ins()._pitchClassify = _classify;
+            _3DScene._ins().cameraToSprite(this._Owner);
+            this._openScene(_SceneName.MakeTailor, true, true);
+        }
+        lwgButton() {
+            if (!_Guide._complete.value)
+                return;
+            this.BtnDressClick();
+            const Clothes = _DIYClothes._ins();
+            this._btnUp(this._ImgVar('BtnTop'), () => {
+                Clothes._pitchClassify = Clothes._classify.Top;
+                this.openMakeTailor('Top');
+                ADManager.TAPoint(TaT.BtnClick, 'symaker');
+            });
+            this._btnUp(this._ImgVar('BtnBottoms'), () => {
+                Clothes._pitchClassify = Clothes._classify.Bottoms;
+                this.openMakeTailor('Bottoms');
+                ADManager.TAPoint(TaT.BtnClick, 'xzmaker');
+            });
+            this.BtnPersonalInfoClick();
+            this._btnUp(this._ImgVar('BtnRanking'), () => {
+                _Ranking._whereFrom = _SceneName.Start;
+                this._openScene(_SceneName.Ranking, false);
+            });
+            this._btnUp(this._ImgVar('BtnDressingRoom'), () => {
+                ADManager.TAPoint(TaT.BtnClick, 'change');
+                _3DScene._ins().cameraToSprite(this._Owner);
+                this._openScene(_SceneName.DressingRoom, true, true);
+            });
+            this.BtnCheckIn();
+        }
+        lwgOnDisable() {
+            ADManager.TAPoint(TaT.PageLeave, 'mainpage');
+        }
+    }
+
+    var LwgOPPO;
+    (function (LwgOPPO) {
+        function _screenShootByRatio(func, startXRatio, startYRatio, endXRatio, endYRatio, fileType, quality) {
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
+                const _startXRatio = startXRatio ? startXRatio * window['__canvas'].width : 0;
+                const _startYRatio = startYRatio ? startYRatio * window['__canvas'].height : 0;
+                window['__canvas'].toTempFilePath({
+                    x: _startXRatio,
+                    y: _startYRatio,
+                    width: endXRatio ? endXRatio * window['__canvas'].width - _startXRatio : window['__canvas'].width,
+                    height: endYRatio ? endYRatio * window['__canvas'].height - _startYRatio : window['__canvas'].height,
+                    fileType: fileType ? fileType : 'png',
+                    quality: quality ? quality : 1,
+                    success: (data) => {
+                        func && func(data);
+                        console.log('.............................截图成功', data['tempFilePath']);
+                    },
+                    fail: (data) => {
+                        console.log('？？？？？？？？？？？？？？？？', data['number']);
+                        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxx', data['errMsg']);
+                    },
+                    complete: () => { },
+                });
+            }
+        }
+        LwgOPPO._screenShootByRatio = _screenShootByRatio;
+        function _screenShoot(func, x, y, width, height, fileType, quality) {
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
+                const _x = x * Laya.stage.clientScaleX;
+                const _y = y * Laya.stage.clientScaleY;
+                const _width = width * Laya.stage.clientScaleX;
+                const _height = height * Laya.stage.clientScaleY;
+                window['__canvas'].toTempFilePath({
+                    x: _x,
+                    y: _y,
+                    width: _width,
+                    height: _height,
+                    fileType: fileType ? fileType : 'png',
+                    quality: quality ? quality : 1,
+                    success: (data) => {
+                        func && func(data);
+                        console.log('.............................截图成功', data['tempFilePath']);
+                    },
+                    fail: (data) => {
+                        console.log('？？？？？？？？？？？？？？？？', data['number']);
+                        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxx', data['errMsg']);
+                    },
+                    complete: () => { },
+                });
+            }
+        }
+        LwgOPPO._screenShoot = _screenShoot;
+        function _picSave(tempFilePath, name, func) {
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
+                var FileSystemManager = Laya.Browser.window.qg.getFileSystemManager();
+                let data = LwgStorage._array(name, null, [1, `${name}.png`]).value;
+                let savedFilePath = Laya.Browser.window.qg.env.USER_DATA_PATH
+                    + data[0] + data[1];
+                let _savedFilePath = Laya.Browser.window.qg.env.USER_DATA_PATH
+                    + (data[0] + 1) + data[1];
+                var save = () => {
+                    FileSystemManager.saveFile({
+                        tempFilePath: tempFilePath,
+                        filePath: _savedFilePath,
+                        success: function (res) {
+                            console.log('-------------------------图片保存成功', res['savedFilePath']);
+                            LwgStorage._array(name).value = [data[0] + 1, data[1]];
+                            func && func(res);
+                        },
+                        fail: function () {
+                            console.log('xxxxxxxxxxxxxxxxxxxxxxxxx保存图片失败');
+                        },
+                        complete: function () { }
+                    });
+                };
+                FileSystemManager.access({
+                    path: savedFilePath,
+                    success: () => {
+                        FileSystemManager.removeSavedFile({
+                            filePath: savedFilePath,
+                            success: () => {
+                                console.log('---------------------------删除保存的图片成功！');
+                                save();
+                            },
+                        });
+                    },
+                    fail: () => {
+                        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxx没有保存这个文件！');
+                        save();
+                    },
+                    complete: () => { },
+                });
+            }
+        }
+        LwgOPPO._picSave = _picSave;
+        function _getStoragePic(name) {
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
+                let data = LwgStorage._array(name).value;
+                if (data.length > 0) {
+                    return Laya.Browser.window.qg.env.USER_DATA_PATH + data[0] + data[1];
+                }
+                ;
+            }
+        }
+        LwgOPPO._getStoragePic = _getStoragePic;
+    })(LwgOPPO || (LwgOPPO = {}));
+
+    class _Item$1 extends LwgData._Item {
+        constructor() {
+            super(...arguments);
+            this.diffX = 0;
+            this.create = false;
+        }
+        $button() {
+            this._btnFour(this._ImgChild('Icon'), (e) => {
+                if (!this.$data.complete) {
+                    switch (this.$data.unlockWay) {
+                        case this.$unlockWayType.check:
+                            LwgDialogue._middleHint('请前往签到页面获取');
+                            break;
+                        case this.$unlockWayType.customs:
+                            LwgDialogue._middleHint(`制作${this.$data.conditionNum}件衣服才能获取！`);
+                            break;
+                        case this.$unlockWayType.ads:
+                            ADManager.ShowReward(() => {
+                                if (_MakePattern._Pattern._ins()._checkCondition(this.$data.name)) {
+                                    LwgDialogue._middleHint('恭喜获得新贴图！');
+                                    _MakePattern._Pattern._ins()._setProperty(this.$data.name, _MakePattern._Pattern._ins()._property.complete, true);
+                                }
+                            });
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                if (this.$data.name === 'ads' || !this.$data.name || !this.$data.complete) {
+                    this['Cancal'] = true;
+                    return;
+                }
+                else {
+                    this['Cancal'] = false;
+                }
+                this.create = false;
+                this.diffX = 0;
+                this.fX = e.stageX;
+                this._evNotify(_MakePattern.Event.close);
+            }, (e) => {
+                if (this['Cancal']) {
+                    return;
+                }
+                if (!this.create) {
+                    this.diffX = this.fX - e.stageX;
+                    if (this.diffX >= 5) {
+                        this._evNotify(_MakePattern.Event.createImg, [this.$data.name, this._Owner._lwg.gPoint]);
+                        this.create = true;
+                    }
+                }
+            }, () => {
+                if (this['Cancal']) {
+                    return;
+                }
+                this.create = true;
+                this._evNotify(_MakePattern.Event.close);
+            }, () => {
+                if (this['Cancal']) {
+                    return;
+                }
+                this.create = true;
+            });
+        }
+        $render() {
+            this._LableChild('UnlockWayNum').visible = false;
+            if (this.$data.name === 'ads') {
+                !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
+                this._LableChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = false;
+            }
+            else {
+                if (!this.$data.complete) {
+                    if (this.$data.unlockWay === _MakePattern._Pattern._ins()._unlockWay.ads) {
+                        this._ImgChild('AdsSign').visible = true;
+                        this._LableChild('UnlockWay').visible = false;
+                    }
+                    else {
+                        this._LableChild('AdsSign').visible = false;
+                        this._LableChild('UnlockWay').visible = true;
+                        switch (this.$data.unlockWay) {
+                            case _DIYClothes._ins()._unlockWay.check:
+                                this._LableChild('UnlockWay').text = '签到';
+                                this._LableChild('UnlockWay').fontSize = 30;
+                                this._LableChild('UnlockWayNum').visible = false;
+                                break;
+                            case _DIYClothes._ins()._unlockWay.customs:
+                                this._LableChild('UnlockWay').text = `制作衣服`;
+                                this._LableChild('UnlockWay').fontSize = 25;
+                                this._LableChild('UnlockWayNum').visible = true;
+                                this._LableChild('UnlockWayNum').text = `(${_Tweeting._completeNum.value} /${this.$data.conditionNum})`;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    this._LableChild('Mask').visible = true;
+                }
+                else {
+                    this._LableChild('Mask').visible = this._ImgChild('AdsSign').visible = this._LableChild('UnlockWay').visible = false;
+                }
+                this._ImgChild('Icon').visible = true;
+                this._ImgChild('Icon').gray = !this.$data.complete;
+                if (this._BoxChild('NativeRoot'))
+                    this._BoxChild('NativeRoot').destroy();
+                if (this.$data.name) {
+                    this._ImgChild('Icon').skin = `Pattern/${this.$data.name}.png`;
+                }
+                else {
+                    this._LableChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = false;
+                    this._ImgChild('Icon').skin = null;
+                }
+            }
+        }
+    }
+    class MakePattern extends LwgScene._SceneBase {
+        constructor() {
+            super(...arguments);
+            this.Tex = {
+                Img: null,
+                DisImg: null,
+                imgSize: [128, 128],
+                wireframeSize: [120, 150],
+                touchP: null,
+                diffP: null,
+                dir: 'Front',
+                dirType: {
+                    Front: 'Front',
+                    Reverse: 'Reverse',
+                },
+                state: 'none',
+                stateType: {
+                    none: 'none',
+                    move: 'move',
+                    scale: 'scale',
+                    rotate: 'rotate',
+                    addTex: 'addTex',
+                },
+                zOderindex: 0,
+                createImg: (name, gPoint) => {
+                    this.Tex.DisImg && this.Tex.DisImg.destroy();
+                    this.Tex.DisImg = new Laya.Image;
+                    this.Tex.Img = new Laya.Image;
+                    let lPoint = this._SpriteVar('Ultimately').globalToLocal(gPoint);
+                    this.Tex.Img.skin = this.Tex.DisImg.skin = `Pattern/${name}.png`;
+                    this.Tex.Img.x = this.Tex.DisImg.x = lPoint.x;
+                    this.Tex.Img.y = this.Tex.DisImg.y = lPoint.y;
+                    this.Tex.Img.name = name;
+                    this.Tex.Img.width = this.Tex.DisImg.width = this.Tex.imgSize[0];
+                    this.Tex.Img.height = this.Tex.DisImg.height = this.Tex.imgSize[1];
+                    this.Tex.Img.anchorX = this.Tex.Img.anchorY = this.Tex.DisImg.anchorX = this.Tex.DisImg.anchorY = 0.5;
+                    this._SpriteVar('Dispaly').addChild(this.Tex.DisImg);
+                    this._SpriteVar('Dispaly').visible = true;
+                    this.Tex.zOderindex++;
+                    this.Tex.Img.zOrder = this.Tex.zOderindex;
+                },
+                getTex: () => {
+                    let ImgF = this._ImgVar(this.Tex.dirType.Front);
+                    let ImgR = this._ImgVar(this.Tex.dirType.Reverse);
+                    let arr = [
+                        ImgF.drawToTexture(ImgF.width, ImgF.height, ImgF.x, ImgF.y + ImgF.height),
+                        ImgR.drawToTexture(ImgR.width, ImgR.height, ImgR.x, ImgR.y + ImgR.height)
+                    ];
+                    return arr;
+                },
+                fDiffX: 0,
+                fDiffY: 0,
+                rDiffX: 0,
+                rDiffY: 0,
+                setImgPos: () => {
+                    let posArr = this.Tex.setPosArr();
+                    let indexArr = [];
+                    let outArr = [];
+                    for (let index = 0; index < posArr.length; index++) {
+                        const out = LwgTools._3D.rayScanning(_3DScene._ins()._MainCamara, _3DScene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
+                        if (out) {
+                            outArr.push(out);
+                            indexArr.push(posArr[index]);
+                        }
+                    }
+                    if (indexArr.length !== 0) {
+                        const out = outArr[outArr.length - 1];
+                        this._SpriteVar(this.Tex.dir).addChild(this.Tex.Img);
+                        let _width = this._ImgVar(this.Tex.dir).width;
+                        let _height = this._ImgVar(this.Tex.dir).height;
+                        let angleXZ = LwgTools._Point.pointByAngleOld(_3DDIYCloth._ins().ModelTap.transform.position.x - out.point.x, _3DDIYCloth._ins().ModelTap.transform.position.z - out.point.z);
+                        if (this.Tex.dir == this.Tex.dirType.Front) {
+                            this.Tex.Img.x = _width - _width / 180 * (angleXZ + 90);
+                        }
+                        else {
+                            this.Tex.Img.x = -_width / 180 * (angleXZ - 90);
+                        }
+                        let pH = out.point.y - _3DDIYCloth._ins().ModelTap.transform.position.y;
+                        let _DirHeight = LwgTools._3D.getMeshSize(this.Tex.dir === this.Tex.dirType.Front ? _3DDIYCloth._ins().Front : _3DDIYCloth._ins().Reverse).y;
+                        let ratio = 1 - pH / _DirHeight;
+                        this.Tex.Img.y = ratio * _height;
+                        if (this.Tex.dir === this.Tex.dirType.Front) {
+                            this.Tex.Img.x += this.Tex.fDiffX;
+                            this.Tex.Img.y += this.Tex.fDiffY;
+                        }
+                        else {
+                            this.Tex.Img.x += this.Tex.rDiffX;
+                            this.Tex.Img.y += this.Tex.rDiffY;
+                        }
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                },
+                setPosArr: () => {
+                    let x = this._ImgVar('Wireframe').x;
+                    let y = this._ImgVar('Wireframe').y;
+                    return [
+                        new Laya.Point(x, y),
+                    ];
+                },
+                checkInside: () => {
+                    let posArr = this.Tex.setPosArr();
+                    let bool = false;
+                    for (let index = 0; index < posArr.length; index++) {
+                        const _out = LwgTools._3D.rayScanning(_3DScene._ins()._MainCamara, _3DScene._ins()._Owner, new Laya.Vector2(posArr[index].x, posArr[index].y), 'model');
+                        if (_out) {
+                            bool = true;
+                        }
+                    }
+                    return bool;
+                },
+                getDisGP: () => {
+                    return this.Tex.DisImg ? this._SpriteVar('Dispaly').localToGlobal(new Laya.Point(this.Tex.DisImg.x, this.Tex.DisImg.y)) : null;
+                },
+                disMove: () => {
+                    this.Tex.DisImg.x += this.Tex.diffP.x;
+                    this.Tex.DisImg.y += this.Tex.diffP.y;
+                    let gPoint = this.Tex.getDisGP();
+                    this._ImgVar('Wireframe').pos(gPoint.x, gPoint.y);
+                },
+                move: () => {
+                    this.Tex.disMove();
+                    this._ImgVar('Wireframe').visible = false;
+                    if (this.Tex.checkInside()) {
+                        this.Tex.setImgPos();
+                        this._ImgVar('Wireframe').visible = true;
+                        this.Tex.state = this.Tex.stateType.addTex;
+                        this._SpriteVar('Dispaly').visible = false;
+                    }
+                },
+                addTex: () => {
+                    this.Tex.disMove();
+                    let out = this.Tex.setImgPos();
+                    if (!out) {
+                        this._ImgVar('Wireframe').visible = false;
+                        this.Tex.state = this.Tex.stateType.move;
+                        this.Tex.Img.x = Laya.stage.width;
+                        this._SpriteVar('Dispaly').visible = true;
+                    }
+                    _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
+                },
+                scale: (e) => {
+                    if (!this.Tex.Img) {
+                        return;
+                    }
+                    const lPoint = this._ImgVar('Wireframe').globalToLocal(new Laya.Point(e.stageX, e.stageY));
+                    this._ImgVar('Wireframe').width = this._ImgVar('WConversion').x = lPoint.x;
+                    this._ImgVar('Wireframe').height = this._ImgVar('WConversion').y = lPoint.y;
+                    const gPoint = this._Owner.localToGlobal(new Laya.Point(this._ImgVar('Wireframe').x, this._ImgVar('Wireframe').y));
+                    this.Tex.Img.rotation = this.Tex.DisImg.rotation = this._ImgVar('Wireframe').rotation = LwgTools._Point.pointByAngleOld(e.stageX - gPoint.x, e.stageY - gPoint.y) + 45;
+                    const scaleWidth = this._ImgVar('Wireframe').width - this.Tex.wireframeSize[0];
+                    const scaleheight = this._ImgVar('Wireframe').height - this.Tex.wireframeSize[1];
+                    this.Tex.DisImg.width = this.Tex.Img.width = this.Tex.imgSize[0] + scaleWidth;
+                    this.Tex.DisImg.height = this.Tex.Img.height = this.Tex.imgSize[1] + scaleheight;
+                    _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
+                },
+                rotate: () => {
+                    if (!_Guide._complete.value)
+                        return;
+                    if (this.Tex.diffP.x > 0) {
+                        _3DDIYCloth._ins().rotate(1);
+                    }
+                    else {
+                        _3DDIYCloth._ins().rotate(0);
+                    }
+                },
+                again: () => {
+                    LwgTools._Node.removeAllChildren(this._SpriteVar('Front'));
+                    LwgTools._Node.removeAllChildren(this._SpriteVar('Reverse'));
+                    this.Tex.turnFace();
+                    _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
+                },
+                none: () => {
+                    return;
+                },
+                operation: (e) => {
+                    if (this.Tex.touchP) {
+                        this.Tex.diffP = new Laya.Point(e.stageX - this.Tex.touchP.x, e.stageY - this.Tex.touchP.y);
+                        this.Tex[this.Tex.state](e);
+                        this.Tex.touchP = new Laya.Point(e.stageX, e.stageY);
+                    }
+                },
+                frameRestore: () => {
+                    this._ImgVar('Wireframe').rotation = 0;
+                    this._ImgVar('Wireframe').visible = false;
+                    this._ImgVar('Wireframe').width = this.Tex.wireframeSize[0];
+                    this._ImgVar('Wireframe').height = this.Tex.wireframeSize[1];
+                    this._ImgVar('WConversion').x = this._ImgVar('Wireframe').width;
+                    this._ImgVar('WConversion').y = this._ImgVar('Wireframe').height;
+                    this.Tex.Img = null;
+                },
+                close: () => {
+                    this.Tex.frameRestore();
+                    this.Tex.DisImg && this.Tex.DisImg.destroy();
+                    this.Tex.Img = null;
+                    this.Tex.Img && this.Tex.Img.destroy();
+                    this.Tex.Img = null;
+                    this.Tex.state = this.Tex.stateType.none;
+                    this.Tex.touchP = null;
+                    _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
+                },
+                turnFace: (func) => {
+                    let time;
+                    let angle;
+                    if (this.Tex.dir == this.Tex.dirType.Front) {
+                        time = Math.abs(_3DDIYCloth._ins().Present.transform.localRotationEulerY - 180) * 2;
+                        angle = 180;
+                    }
+                    else {
+                        time = Math.abs(_3DDIYCloth._ins().Present.transform.localRotationEulerY) * 2;
+                        angle = 0;
+                    }
+                    LwgAni3D.rotateTo(_3DDIYCloth._ins().Present, new Laya.Vector3(0, angle, 0), time, this, null, () => {
+                        func && func();
+                    });
+                },
+                btn: () => {
+                    this._btnFour(this._ImgVar('WConversion'), (e) => {
+                        e.stopPropagation();
+                        this.Tex.state = this.Tex.stateType.scale;
+                    }, null, (e) => {
+                        e.stopPropagation();
+                        this.Tex.state = this.Tex.stateType.addTex;
+                        if (!_Guide._complete.value) {
+                            if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame1) {
+                                this._evNotify(_Guide.Event.MakePatternTurnFace, [this._ImgVar('BtnTurnFace')._lwg.gPoint.x, this._ImgVar('BtnTurnFace')._lwg.gPoint.y]);
+                            }
+                            else if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame2) {
+                                this._evNotify(_Guide.Event.MakePatternBtnCom, [this._ImgVar('BtnComplete')._lwg.gPoint.x, this._ImgVar('BtnComplete')._lwg.gPoint.y]);
+                            }
+                        }
+                    });
+                    this._btnUp(this._ImgVar('BtnTurnFace'), (e) => {
+                        if (!_Guide._complete.value) {
+                            if (_Guide.MakePatternState === _Guide.MakePatternStateType.TurnFace) {
+                                this._evNotify(_Guide.Event.MakePatternPattern2);
+                            }
+                            else {
+                                return;
+                            }
+                        }
+                        e.stopPropagation();
+                        this.Tex.frameRestore();
+                        if (this.Tex.dir === this.Tex.dirType.Front) {
+                            this.Tex.dir = this.Tex.dirType.Reverse;
+                            this._ImgVar('BtnTurnFace').skin = 'Game/UI/MakePattern/fan.png';
+                            ADManager.TAPoint(TaT.BtnClick, 'Amian');
+                        }
+                        else {
+                            this.Tex.dir = this.Tex.dirType.Front;
+                            this._ImgVar('BtnTurnFace').skin = 'Game/UI/MakePattern/zheng.png';
+                            ADManager.TAPoint(TaT.BtnClick, 'Bmian');
+                        }
+                        this.Tex.turnFace();
+                        this._ImgVar('Wireframe').visible = false;
+                        this.Tex.state = this.Tex.stateType.rotate;
+                    });
+                    if (!_Guide._complete.value)
+                        return;
+                    this._btnUp(this._ImgVar('WClose'), (e) => {
+                        e.stopPropagation();
+                        this.Tex.close();
+                    });
+                    this._btnFour(this._ImgVar('BtnL'), () => {
+                        this.Tex.frameRestore();
+                        this.Tex.state = this.Tex.stateType.rotate;
+                        LwgTimer._frameLoop(1, this._ImgVar('BtnL'), () => {
+                            _3DDIYCloth._ins().rotate(0);
+                        });
+                    }, null, () => {
+                        Laya.timer.clearAll(this._ImgVar('BtnL'));
+                    }, () => {
+                        Laya.timer.clearAll(this._ImgVar('BtnL'));
+                    });
+                    this._btnFour(this._ImgVar('BtnR'), () => {
+                        this.Tex.frameRestore();
+                        this.Tex.state = this.Tex.stateType.rotate;
+                        LwgTimer._frameLoop(1, this._ImgVar('BtnR'), () => {
+                            _3DDIYCloth._ins().rotate(1);
+                        });
+                    }, null, () => {
+                        Laya.timer.clearAll(this._ImgVar('BtnR'));
+                    }, () => {
+                        Laya.timer.clearAll(this._ImgVar('BtnR'));
+                    });
+                }
+            };
+        }
+        lwgOnAwake() {
+            ADManager.TAPoint(TaT.PageShow, 'tiehuapage');
+            ADManager.TAPoint(TaT.LevelStart, `level_${_3DDIYCloth._ins().Present.name}`);
+            _MakePattern._Pattern._ins()._List = this._ListVar('List');
+            if (_MakePattern._Pattern._ins()._getProperty('newYear1', _MakePattern._Pattern._ins()._property.complete) || !_Guide._complete.value) {
+                this.switchClassify('newYear');
+                _MakePattern._Pattern._ins()._listArray = _MakePattern._Pattern._ins().newYearArr;
+            }
+            else {
+                this.switchClassify('basic');
+                _MakePattern._Pattern._ins()._listArray = _MakePattern._Pattern._ins().basicArr;
+            }
+            _MakePattern._Pattern._ins()._List.scrollBar.touchScrollEnable = false;
+            _MakePattern._Pattern._ins()._listRenderScript = _Item$1;
+            this.Tex.fDiffX = _MakePattern._PatternDiff._ins().fDiffX;
+            this.Tex.fDiffY = _MakePattern._PatternDiff._ins().fDiffY;
+            this.Tex.rDiffX = _MakePattern._PatternDiff._ins().rDiffX;
+            this.Tex.rDiffY = _MakePattern._PatternDiff._ins().rDiffY;
+        }
+        lwgOpenAniAfter() {
+            LwgTimer._frameOnce(60, this, () => {
+                !_Guide._complete.value && this._openScene(_SceneName.Guide, false, false, () => {
+                    this._evNotify(_Guide.Event.MakePatternChooseClassify);
+                });
+            });
+        }
+        lwgAdaptive() {
+            if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                this._ImgVar('BtnComplete').y += 80;
+                this._ImgVar('BtnTurnFace').y += 80;
+            }
+            this._adaWidth([this._ImgVar('BtnR'), this._ImgVar('BtnL')]);
+        }
+        lwgOnStart() {
+            const url = _DIYClothes._ins().getPitchTexBasicUrl();
+            this._ImgVar('Front').loadImage(url, Laya.Handler.create(this, () => {
+                this._ImgVar('Reverse').loadImage(url, Laya.Handler.create(this, () => {
+                    _3DDIYCloth._ins().addTexture2D(this.Tex.getTex());
+                }));
+            }));
+            LwgAni2D.fadeOut(this._ImgVar('BtnL'), 0, 1, 200, 200);
+            LwgAni2D.fadeOut(this._ImgVar('BtnR'), 0, 1, 200, 200);
+            this.UI = new _UI(this._Owner);
+            this.UI.BtnAgain.pos(86, 630);
+            LwgTimer._frameOnce(10, this, () => {
+                this.UI.operationAppear(() => {
+                    this.UI.btnCompleteAppear(null, 400);
+                    this.UI.btnTurnFaceAppear(null, 200);
+                });
+                this.UI.btnBackAppear(null, 200);
+                this.UI.btnRollbackAppear(null, 600);
+                this.UI.btnAgainAppear(null, 800);
+            });
+            this._SpriteVar('Front').y = this._ImgVar('Reverse').y = this._SpriteVar('Front').height = this._ImgVar('Reverse').height = _3DDIYCloth._ins().texHeight;
+        }
+        switchClassify(_name) {
+            if (!_Guide._complete.value && _name !== 'basic') {
+                return;
+            }
+            for (let index = 0; index < this._ImgVar('Part').numChildren; index++) {
+                const element = this._ImgVar('Part').getChildAt(index);
+                const name = element.getChildAt(0);
+                if (_name === element.name) {
+                    if (!_Guide._complete.value) {
+                        if (_Guide.MakePatternState === _Guide.MakePatternStateType.ChooseClassify) {
+                            this._evNotify(_Guide.Event.MakePatternPattern1);
+                        }
+                    }
+                    element.scale(1.1, 1.1);
+                    _MakePattern._Pattern._ins()._listArray = _MakePattern._Pattern._ins()[`${element.name}Arr`];
+                    _MakePattern._Pattern._ins()._pitchClassify = element.name;
+                    element.skin = `Game/UI/Common/kuang_fen.png`;
+                    name.color = '#fdfff4';
+                    name.stroke = 5;
+                }
+                else {
+                    element.skin = `Game/UI/Common/kuang_bai.png`;
+                    element.scale(1, 1);
+                    name.color = '#a84f47';
+                    name.stroke = 0;
+                }
+            }
+        }
+        lwgButton() {
+            for (let index = 0; index < this._ImgVar('Part').numChildren; index++) {
+                const _element = this._ImgVar('Part').getChildAt(index);
+                this._btnUp(_element, () => {
+                    this.switchClassify(_element.name);
+                }, 'no');
+            }
+            this.Tex.btn();
+            this.UI.btnCompleteClick = () => {
+                if (!_Guide._complete.value) {
+                    if (_Guide.MakePatternState === _Guide.MakePatternStateType.BtnCom) {
+                        this._evNotify(_Guide.Event.closeGuide);
+                    }
+                    else {
+                        return;
+                    }
+                }
+                if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                    this.operationHidden(() => {
+                        RecordManager.stopAutoRecord();
+                        _Share._whereFrom = _SceneName.MakePattern;
+                        this._openScene(_SceneName.Share, false);
+                    });
+                }
+                else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                    this.operationHidden();
+                    this.backStart();
+                }
+            };
+            if (!_Guide._complete.value)
+                return;
+            this.UI.btnRollbackClick = () => {
+                _3DScene._ins().cameraToSprite(this._Owner);
+                this._openScene(_SceneName.MakeTailor, true, true);
+            };
+            this.UI.btnAgainClick = () => {
+                this.Tex.again();
+            };
+        }
+        operationHidden(func) {
+            this.Tex.frameRestore();
+            this.Tex.dir = this.Tex.dirType.Front;
+            this.Tex.turnFace(() => {
+                LwgAni2D.fadeOut(this._ImgVar('BtnL'), 1, 0, 200);
+                LwgAni2D.fadeOut(this._ImgVar('BtnR'), 1, 0, 200, 0, () => {
+                    func && func();
+                });
+            });
+        }
+        backStart() {
+            _3DScene._ins().cameraToSprite(this._Owner);
+            LwgTimer._frameOnce(5, this, () => {
+                _Tweeting._photo.take(this._Owner, 1);
+            });
+            this.texStorage();
+            this.UI.operationVinish(() => {
+                this.UI.btnBackVinish(null, 200);
+                this.UI.btnBackVinish();
+                this.UI.btnRollbackVinish();
+                this.UI.btnAgainVinish(() => {
+                });
+                var close = () => {
+                    _3DScene._ins().cameraToSprite(this._Owner);
+                    _Start._whereFrom = _SceneName.MakePattern;
+                    this._openScene(_SceneName.Start, true, true);
+                };
+                if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
+                    LwgOPPO._screenShootByRatio((data) => {
+                        LwgOPPO._picSave(data['tempFilePath'], _3DDIYCloth._ins().name);
+                        close();
+                    }, 0.28, null, 0.72, null, null, 0.1);
+                }
+                else {
+                    close();
+                }
+            }, 200);
+        }
+        lwgEvent() {
+            this._evReg(_MakePattern.Event.createImg, (name, gPoint) => {
+                this.Tex.state = this.Tex.stateType.move;
+                this.Tex.createImg(name, gPoint);
+                this.Tex.turnFace();
+            });
+            this._evReg(_MakePattern.Event.close, () => {
+                if (!_Guide._complete.value)
+                    return;
+                this.Tex.close();
+                this.Tex.state = this.Tex.stateType.none;
+            });
+            this._evReg(_MakePattern.Event.byteDanceBackStart, () => {
+                this.backStart();
+            });
+        }
+        texStorage() {
+            const fArr = [];
+            var obj = (element) => {
+                return {
+                    name: element.name,
+                    x: element.x,
+                    y: element.y,
+                    width: element.width,
+                    height: element.height,
+                    rotation: element.rotation,
+                    anchorX: element.anchorX,
+                    anchorY: element.anchorY,
+                    zOrder: element.zOrder,
+                };
+            };
+            for (let index = 0; index < this._SpriteVar('Front').numChildren; index++) {
+                if (index > 20) {
+                    break;
+                }
+                const element = this._SpriteVar('Front').getChildAt(index);
+                fArr.push(obj(element));
+            }
+            const rArr = [];
+            for (let index = 0; index < this._SpriteVar('Reverse').numChildren; index++) {
+                if (index < 20) {
+                    break;
+                }
+                const element = this._SpriteVar('Reverse').getChildAt(index);
+                rArr.push(obj(element));
+            }
+            LwgStorage._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texF}`).value = fArr;
+            LwgStorage._array(`${_3DDIYCloth._ins().name}/${_DIYClothes._ins()._otherPro.texR}`).value = rArr;
+            _Ranking._whereFrom = _SceneName.Tweeting_GetFans;
+        }
+        lwgOnStageDown(e) {
+            this.Tex.touchP = new Laya.Point(e.stageX, e.stageY);
+            if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
+                this['slideFY'] = e.stageY;
+            }
+            else {
+                if (!_Guide._complete.value) {
+                    return;
+                }
+                const point = new Laya.Point(e.stageX, e.stageY);
+                if (point.distance(this._ImgVar('Wireframe').x, this._ImgVar('Wireframe').y) > this._ImgVar('Wireframe').width / 2 + 50) {
+                    this._ImgVar('Wireframe').visible = false;
+                }
+                else {
+                    if (!this.Tex.Img) {
+                        this._ImgVar('Wireframe').visible = false;
+                    }
+                    else {
+                        this._ImgVar('Wireframe').visible = true;
+                    }
+                }
+            }
+        }
+        lwgOnStageMove(e) {
+            this.Tex.operation(e);
+            if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
+                if (!_Guide._complete.value)
+                    return;
+                if (this['slideFY']) {
+                    let diffY = this['slideFY'] - e.stageY;
+                    let index = _MakePattern._Pattern._ins()._List.startIndex;
+                    if (Math.abs(diffY) > 25) {
+                        if (diffY > 0) {
+                            _MakePattern._Pattern._ins()._List.tweenTo(index + 1, 100);
+                        }
+                        if (diffY < 0) {
+                            _MakePattern._Pattern._ins()._List.tweenTo(index - 1, 100);
+                        }
+                        this['slideFY'] = null;
+                    }
+                }
+            }
+            else {
+                this['slideFY'] = null;
+            }
+        }
+        lwgOnStageUp(e) {
+            this['slideFY'] = null;
+            if (e.stageX > Laya.stage.width - this.UI.Operation.width) {
+                this._evNotify(_MakePattern.Event.close);
+            }
+            else {
+                if (!this.Tex.checkInside()) {
+                    this.Tex.close();
+                }
+                else {
+                    if (!_Guide._complete.value) {
+                        if (_Guide.MakePatternState === _Guide.MakePatternStateType.Pattern1) {
+                            this._evNotify(_Guide.Event.MakePatternFrame1, [this._ImgVar('Wireframe')]);
+                        }
+                        else if (_Guide.MakePatternState === _Guide.MakePatternStateType.Pattern2) {
+                            this._evNotify(_Guide.Event.MakePatternFrame2, [this._ImgVar('Wireframe')]);
+                        }
+                    }
+                    ;
+                }
+            }
+        }
+        lwgOnDisable() {
+            ADManager.TAPoint(TaT.PageLeave, 'tiehuapage');
+            ADManager.TAPoint(TaT.LevelFinish, `level_${_3DDIYCloth._ins().Present.name}`);
+        }
+    }
+
+    class _GameEffects3D {
+        static _showCloth(Scene3D) {
+            const _changeEffectParent = this['_showClothParent'];
+            if (_changeEffectParent) {
+                _changeEffectParent.destroy();
+            }
+            var func = () => {
+                let dis = 1.3;
+                const interval = 5;
+                const _position = [0, 0.1, 0.8];
+                const _speedY = [0.015, 0.015];
+                const _size = [[0.06, 0.06, 0], [0.06, 0.06, 0]];
+                const _parent = new Laya.Sprite3D;
+                let _angelspeed = 10;
+                Scene3D.addChild(_parent);
+                LwgTimer._frameNumLoop(interval, 1, this, () => {
+                    for (let index = 0; index < 2; index++) {
+                        let angelspeed = index === 1 ? _angelspeed : -_angelspeed;
+                        const caller = LwgEff3D._Particle._spiral(_parent, _position, _size, null, null, null, [dis, dis], _speedY, [angelspeed, angelspeed]);
+                        caller.frame.func = () => {
+                            LwgEff3D._Particle._fade(_parent, [caller.box.transform.position.x, caller.box.transform.position.y, caller.box.transform.position.z], null, 10, 0.03, 0.03);
+                        };
+                    }
+                });
+                LwgTimer._frameNumLoop(1, 15, this, () => {
+                    for (let index = 0; index < 1; index++) {
+                        LwgEff3D._Particle._starsShine(_3DScene._ins()._Owner, [0, 0.5, 0.8], [[0, 0, 0], [0.4, 0.6, 0.4]]);
+                    }
+                });
+                return _parent;
+            };
+            this['_showClothParent'] = func();
+        }
+    }
+
+    class _Item$2 extends LwgData._Item {
+        $button() {
+            this._btnUp(this._Owner, (e) => {
+                if (this.$data.name === 'ads') {
+                    return;
+                }
+                if (_AllClothes._ins()._getProperty(this.$data.name, _AllClothes._ins()._property.complete)) {
+                    _AllClothes._ins().accurateChange(this.$data['part'], this.$data.name);
+                    _GameEffects3D._showCloth(_3DScene._ins()._Owner);
+                }
+                else {
+                    ADManager.ShowReward(() => {
+                        if (_AllClothes._ins()._checkCondition(this.$data.name)) {
+                            LwgDialogue.createHint_Middle('恭喜获得新服装！');
+                            _AllClothes._ins().accurateChange(this.$data['part'], this.$data.name);
+                        }
+                    });
+                }
+            }, null);
+        }
+        $render() {
+            if (this.$data.name === 'ads') {
+                !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
+                this._ImgChild('Mask').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
+            }
+            else {
+                this._BoxChild('NativeRoot') && this._BoxChild('NativeRoot').destroy();
+                this._ImgChild('Icon').visible = this._ImgChild('Board').visible = true;
+                if (this.$data.putOn) {
+                    this._ImgChild('Board').skin = `Game/UI/Common/xuanzhong.png`;
+                }
+                else {
+                    this._ImgChild('Board').skin = null;
+                }
+                if (this.$data.classify === _AllClothes._ins()._classify.DIY) {
+                    if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
+                        this._ImgChild('Icon').skin = LwgOPPO._getStoragePic(this.$data.name);
+                        this._ImgChild('Icon').size(110, 130);
+                        this._ImgChild('Icon').scale(1, 1);
+                    }
+                    else {
+                        this._ImgChild('Icon').skin = this.$data.icon;
+                    }
+                }
+                else {
+                    this._ImgChild('Icon').size(null, null);
+                    this._ImgChild('Icon').scale(0.9, 0.9);
+                    this._ImgChild('Icon').skin = _AllClothes._ins().getGeneralIcon(this.$data.name);
+                }
+            }
+            if (this.$data.complete) {
+                this._ImgChild('Mask').visible = this._ImgChild('AdsSign').visible = false;
+            }
+            else {
+                this._ImgChild('Mask').visible = this._ImgChild('AdsSign').visible = true;
+            }
+        }
+    }
+    class DressingRoom extends LwgScene._SceneBase {
+        lwgOnAwake() {
+            RecordManager.startAutoRecord();
+            ADManager.TAPoint(TaT.PageShow, 'changepage');
+            _3DScene._ins().openMirror(this._ImgVar('MirrorSurface'));
+            const copyDIYArr = _AllClothes._ins().collectDIY();
+            _AllClothes._ins()._List = this._ListVar('List');
+            _AllClothes._ins()._listRenderScript = _Item$2;
+            _AllClothes._ins()._listArray = _AllClothes._ins()._getArrByClassify(_AllClothes._ins()._classify.DIY);
+            if (copyDIYArr.length > 0) {
+                this.switchClassify(this._ImgVar('DIY'));
+            }
+            else {
+                this.switchClassify(this._ImgVar('Dress'));
+            }
+        }
+        lwgAdaptive() {
+            if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                this._ImgVar('BtnComplete').y += 80;
+            }
+            this._SpriteVar('Mirror').x = Laya.stage.width * 0.234;
+        }
+        lwgOnStart() {
+            _AllClothes._ins()._List.refresh();
+            this.UI = new _UI(this._Owner);
+            LwgTimer._frameOnce(10, this, () => {
+                this.UI.operationAppear(() => {
+                    this.UI.btnCompleteAppear(null, 400);
+                });
+                this.UI.btnBackAppear(null, 200);
+            });
+            this.UI.btnCompleteClick = () => {
+                _3DScene._ins().closeMirror();
+                _3DScene._ins().cameraToSprite(this._Owner);
+                if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                    LwgTimer._frameOnce(10, this, () => {
+                        RecordManager.stopAutoRecord();
+                        _Tweeting._photo.take(this._Owner, 3);
+                        _Share._whereFrom = _SceneName.DressingRoom;
+                        this._openScene(_SceneName.Share, false);
+                    });
+                }
+                else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                    this.backStart();
+                }
+            };
+        }
+        backStart() {
+            this.UI.operationVinish(() => {
+                Laya.Resource.destroyUnusedResources();
+                this._openScene(_SceneName.Start, true, true);
+                this.UI.btnBackVinish();
+            }, 200);
+        }
+        switchClassify(_element) {
+            let arr = [];
+            for (let index = 0; index < this._ImgVar('Part').numChildren; index++) {
+                const element = this._ImgVar('Part').getChildAt(index);
+                const Icon = element.getChildAt(0);
+                if (_element === element) {
+                    element.skin = `Game/UI/Common/kuang_fen.png`;
+                    Icon.skin = `Game/UI/DressingRoom/PartIcon/${element.name}_s.png`;
+                    if (_element.name === 'DIY') {
+                        arr = _AllClothes._ins()._getArrByClassify(_element.name);
+                    }
+                    else {
+                        let _arr = _AllClothes._ins()._getArrByClassify(_AllClothes._ins()._classify.General);
+                        for (let index = 0; index < _arr.length; index++) {
+                            const obj = _arr[index];
+                            if (obj[_AllClothes._ins()._otherPro.part] === _element.name) {
+                                arr.push(obj);
+                            }
+                        }
+                    }
+                }
+                else {
+                    element.skin = `Game/UI/Common/kuang_bai.png`;
+                    Icon.skin = `Game/UI/DressingRoom/PartIcon/${element.name}.png`;
+                }
+                _AllClothes._ins()._listArray = arr;
+            }
+        }
+        lwgButton() {
+            for (let index = 0; index < this._ImgVar('Part').numChildren; index++) {
+                const _element = this._ImgVar('Part').getChildAt(index);
+                this._btnUp(_element, () => {
+                    this.switchClassify(_element);
+                }, 'no');
+            }
+        }
+        lwgEvent() {
+            this._evReg(_DressingRoom.Event.byteDanceBackStart, () => {
+                this.backStart();
+            });
+        }
+        lwgOnDisable() {
+            ADManager.TAPoint(TaT.PageLeave, 'changepage');
+        }
+    }
+
+    class PersonalInfo extends LwgScene._SceneBase {
+        lwgOnAwake() {
+            ADManager.TAPoint(TaT.BtnShow, 'changename');
+            this._TextInputVar('NameValue').text = _PersonalInfo._name.value;
+            const obj = _Ranking._Data._ins()._getPitchObj();
+            this._LabelVar('RankValue').text = obj[_Ranking._Data._ins()._mergePro.rankNum];
+            this._LabelVar('FansValue').text = obj[_Ranking._Data._ins()._mergePro.fansNum];
+        }
+        lwgOpenAni() {
+            return _GameAni._dialogOpenFadeOut(this._ImgVar('Background'), this._ImgVar('Content'), () => {
+                !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                    const gP = this._ImgVar('Name').localToGlobal(new Laya.Point(this._ImgVar('NameValue').x, this._ImgVar('NameValue').y));
+                    this._evNotify(_Guide.Event.PersonalInfoWriteName, [gP.x, gP.y]);
+                }, this._Owner.zOrder + 1);
+                LwgTimer._frameLoop(200, this, () => {
+                    this._AniVar('ani1').play(0, false);
+                    this._AniVar('ani1').on(Laya.Event.LABEL, this, (e) => {
+                        if (e === 'comp') {
+                            LwgColor._changeOnce(this._ImgVar('Head'), [50, 10, 10, 1], 40);
+                        }
+                    });
+                }, true);
+            });
+        }
+        BtnCloseClick() {
+            this._btnUp(this._ImgVar('BtnClose'), () => {
+                !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
+                this._closeScene();
+            });
+        }
+        lwgButton() {
+            this._btnFour(this._ImgVar('NameValue'), () => {
+                this._ImgVar('BtnWrite').scale(0.85, 0.85);
+            }, () => {
+                this._ImgVar('BtnWrite').scale(0.85, 0.85);
+            }, () => {
+                this._ImgVar('BtnWrite').scale(1, 1);
+            }, () => {
+                this._ImgVar('BtnWrite').scale(1, 1);
+            });
+            this._TextInputVar('NameValue').on(Laya.Event.FOCUS, this, () => {
+                !_Guide._complete.value && this._evNotify(_Guide.Event.vanishGuide);
+            });
+            this._TextInputVar('NameValue').on(Laya.Event.INPUT, this, () => {
+            });
+            this._TextInputVar('NameValue').on(Laya.Event.BLUR, this, () => {
+                if (this._TextInputVar('NameValue').text.length <= 5) {
+                    this._TextInputVar('NameValue').fontSize = 30;
+                }
+                else if (this._TextInputVar('NameValue').text.length === 6) {
+                    this._TextInputVar('NameValue').fontSize = 27;
+                }
+                else {
+                    this._TextInputVar('NameValue').fontSize = 24;
+                }
+                _PersonalInfo._name.value = this._TextInputVar('NameValue').text;
+                if (!_Guide._complete.value) {
+                    this.BtnCloseClick();
+                    const gP = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnClose').x, this._ImgVar('BtnClose').y));
+                    this._evNotify(_Guide.Event.PersonalInfoCloseBtn, [gP.x, gP.y]);
+                }
+            });
+            if (!_Guide._complete.value)
+                return;
+            this.BtnCloseClick();
+        }
+        lwgCloseAni() {
+            return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
+                !_Guide._complete.value && this._evNotify(_Guide.Event.DelayBtnCheckIn);
+            });
+        }
+        lwgOnDisable() {
+            ADManager.TAPoint(TaT.BtnClick, 'changename');
+        }
+    }
+
+    class RankingItem extends LwgData._Item {
+        $render() {
+            if (this.$data.classify === _Ranking._Data._ins()._classify.self) {
+                this._ImgChild('Board').skin = `Game/UI/Ranking/x_di.png`;
+                this._LableChild('Name').text = _PersonalInfo._name.value;
+            }
+            else {
+                this._ImgChild('Board').skin = `Game/UI/Ranking/w_di.png`;
+                this._LableChild('Name').text = this.$data[_Ranking._Data._ins()._property.name];
+            }
+            this._LableChild('RankNum').text = String(this.$data.rankNum);
+            this._LableChild('FansNum').text = String(this.$data.fansNum);
+            const IconPic = this._LableChild('Icon').getChildAt(0);
+            IconPic.skin = this.$data.iconSkin;
+        }
+    }
+    class Ranking extends LwgScene._SceneBase {
+        lwgOnAwake() {
+            ADManager.TAPoint(TaT.PageShow, 'rankpage');
+            _Ranking._Data._ins()._List = this._ListVar('List');
+            if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
+                _Ranking._Data._ins()._addProValueForAll(_Ranking._Data._ins()._mergePro.fansNum, () => {
+                    return LwgTools._Number.randomOneInt(100, 150);
+                });
+            }
+            this._evNotify(_Start.Event.updateRanking);
+            _Ranking._Data._ins()._listRenderScript = RankingItem;
+        }
+        lwgOpenAni() {
+            if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
+                _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('Background'));
+            }
+            else {
+                _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
+            }
+            return 200;
+        }
+        lwgOpenAniAfter() {
+            if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
+                _GameEffects2D._fireworksCelebrate(() => {
+                    !_Guide._complete.value && this._openScene(_SceneName.Guide, false, false, () => {
+                        this.BtnCloseClick();
+                        const gP = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnClose').x, this._ImgVar('BtnClose').y));
+                        this._evNotify(_Guide.Event.RankingCloseBtn, [gP.x, gP.y]);
+                    }, this._Owner.zOrder + 1);
+                });
+                _Ranking._whereFrom = _SceneName.Start;
+            }
+        }
+        lwgOnStart() {
+            if (_Ranking._Data._ins()._getProperty(_Ranking._Data._ins()._pitchName, _Ranking._Data._ins()._mergePro.rankNum) === 1) {
+                _Ranking._Data._ins()._List.scrollTo(0);
+            }
+            else {
+                if (_Ranking._whereFrom === _SceneName.Tweeting_GetFans) {
+                    _Ranking._Data._ins()._listScrollToFirstByLast();
+                    _Ranking._Data._ins()._listTweenToDiffIndexByPitch(-1, 1500);
+                }
+                else {
+                    _Ranking._Data._ins()._listScrollToFirstByLast();
+                    _Ranking._Data._ins()._listTweenToDiffIndexByPitch(-1, 600);
+                }
+            }
+        }
+        BtnCloseClick() {
+            this._btnUp(this._ImgVar('BtnClose'), () => {
+                this._closeScene();
+                if (!_Guide._complete.value) {
+                    this._evNotify(_Guide.Event.closeGuide);
+                    this._evNotify(_Start.Event.BtnPersonalInfo);
+                }
+            });
+        }
+        lwgButton() {
+            if (!_Guide._complete.value)
+                return;
+            this.BtnCloseClick();
+        }
+        lwgCloseAni() {
+            return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
+        }
+        lwgOnDisable() {
+            ADManager.TAPoint(TaT.PageLeave, 'rankpage');
+        }
+    }
+
+    class Tweeting_Main extends LwgScene._SceneBase {
+        lwgOnAwake() {
+            ADManager.TAPoint(TaT.PageShow, 'weibopage');
+            ADManager.TAPoint(TaT.BtnShow, 'photo_choose');
+            this._LabelVar('BodyText').text = _Tweeting._mainBody.getOne();
+            this._LabelVar('PlayerName').text = _PersonalInfo._name.value;
+            this._ImgVar('IconPic').skin = `Game/UI/Ranking/IconSkin/Ava.png`;
+            _Tweeting._attentionNum.value += LwgTools._Number.randomOneInt(50, 100);
+            this._LabelVar('AttentionNum').text = _Tweeting._attentionNum.value.toString();
+            this._LabelVar('FansNum').text = _Ranking._Data._ins()._getPitchProperty(_Ranking._Data._ins()._mergePro.fansNum);
+            _Tweeting._completeNum.value++;
+            _DIYClothes._ins()._checkConditionUnlockWay(_DIYClothes._ins()._unlockWay.customs, 1);
+            this._LabelVar('CompleteNum').text = _Tweeting._completeNum.value.toString();
+            const heatArr = LwgTools._Number.randomCountBySection(20, 50, 3);
+            heatArr.sort();
+            const briefArr = _Tweeting._brief.getThree();
+            const iconArr = LwgTools._Number.randomCountBySection(1, 20, 3);
+            for (let index = 0; index < 3; index++) {
+                const Rank = this._ImgVar('Hot').getChildByName(`Rank${index + 1}`);
+                const Name = Rank.getChildByName('Name');
+                const Tag = Rank.getChildByName('Tag');
+                const Brief = Rank.getChildByName('Brief');
+                const Heat = Rank.getChildByName('Heat');
+                const Icon = Rank.getChildByName('HeadIcon').getChildByName('Icon');
+                const data = _Ranking._Data._ins()._arr[index];
+                Name.text = data[_Ranking._Data._ins()._property.name];
+                Tag.skin = `Game/UI/Tweeting/Main/${index + 1}.png`;
+                Brief.text = briefArr[index];
+                Heat.text = `本周热度 ${heatArr[index]}万`;
+                Icon.skin = `Game/UI/Tweeting/Head/${iconArr[index]}.jpg`;
+            }
+            for (let index = 0; index < 3; index++) {
+                const element = this._ImgVar('BtnChoosePhotos').getChildByName(`Photo${index + 1}`).getChildAt(0);
+                if (_Tweeting._photo.arr[index]) {
+                    element.texture = _Tweeting._photo.arr[index];
+                }
+            }
+            for (let index = 0; index < this._ImgVar('Content').numChildren; index++) {
+                const element = this._ImgVar('Content').getChildAt(index);
+                element.scale(0, 0);
+            }
+        }
+        lwgAdaptive() {
+            this._ImgVar('Head').pos(this._Owner.width - (this._ImgVar('Head').width + 57), this._ImgVar('Head').y);
+            this._ImgVar('Hot').pos(this._Owner.width - (this._ImgVar('Hot').width + 41), this._ImgVar('Hot').y);
+            this._ImgVar('BtnChoosePhotos').size(this._Owner.width - this._ImgVar('BtnChoosePhotos').x - (this._Owner.width - this._ImgVar('Hot').x) - 30, this._ImgVar('BtnChoosePhotos').height);
+            if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
+                this._ImgVar('PhotoAds').destroy();
+                this._ImgVar('Photo1').centerX = -(20 + this._ImgVar('Photo1').width);
+                this._ImgVar('Photo2').centerX = 0;
+                this._ImgVar('Photo3').centerX = 20 + this._ImgVar('Photo3').width;
+            }
+            else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPO || LwgPlatform._Ues.value === LwgPlatform._Tpye.OPPOTest) {
+                this._ImgVar('PhotoAds').x = this._ImgVar('BtnChoosePhotos').width / 2 - 130 * 2 - 30;
+                this._ImgVar('Photo1').x = this._ImgVar('BtnChoosePhotos').width / 2 - 130 - 10;
+                this._ImgVar('Photo2').x = this._ImgVar('BtnChoosePhotos').width / 2 + 10;
+                this._ImgVar('Photo3').x = this._ImgVar('BtnChoosePhotos').width / 2 + 130 + 30;
+            }
+            this._ImgVar('Body').size(this._Owner.width - this._ImgVar('BtnChoosePhotos').x - (this._Owner.width - this._ImgVar('Hot').x) - 50, this._ImgVar('Body').height);
+            this._ImgVar('BtnChoosePhotos').scale(0, 0);
+            this._ImgVar('BtnSet').size(0, 0);
+            this._ImgVar('Top').size(this._Owner.width - 100, this._ImgVar('Top').height);
+        }
+        lwgOpenAni() {
+            const baseTime = 150;
+            const baseDelay = 200;
+            _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
+                LwgClick._absoluteSwitch = true;
+                LwgAni2D.scale(this._ImgVar('Top'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 1);
+                LwgAni2D.scale(this._ImgVar('BtnSet'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 2);
+                LwgAni2D.scale(this._ImgVar('Body'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 3);
+                LwgAni2D.scale(this._ImgVar('Head'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 4);
+                LwgAni2D.scale(this._ImgVar('Hot'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 5);
+                LwgTools._Node.changePivot(this._ImgVar('BtnChoosePhotos'), this._ImgVar('BtnChoosePhotos').width / 2, this._ImgVar('BtnChoosePhotos').height / 2);
+                LwgAni2D.bombs_Appear(this._ImgVar('BtnChoosePhotos'), 0, 1, 1.08, 0, baseTime * 2, () => {
+                    LwgTimer._once(300, this, () => {
+                        this.BtnChoosePhotosClick();
+                        !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                            this._evNotify(_Guide.Event.TweetingBtnChoosePhoto, [this._ImgVar('BtnChoosePhotos')._lwg.gPoint.x, this._ImgVar('BtnChoosePhotos')._lwg.gPoint.y, this._ImgVar('Photo2')._lwg.gPoint.x + 65, this._ImgVar('Photo2')._lwg.gPoint.y + 65]);
+                        });
+                    });
+                    _GameAni._fadeHint(this._ImgVar('BtnChoosePhotos').getChildByName('HintPic'));
+                }, baseDelay * 7);
+            });
+            return baseDelay * 7 + baseTime * 1.5;
+        }
+        BtnChoosePhotosClick() {
+            this._btnUp(this._ImgVar('BtnChoosePhotos'), () => {
+                ADManager.TAPoint(TaT.BtnClick, 'photo_choose');
+                this._openScene(_SceneName.Tweeting_ChoosePhotos, false);
+            }, 'null');
+        }
+        lwgButton() {
+        }
+        lwgCloseAni() {
+            return 100;
+        }
+        lwgOnDisable() {
+            ADManager.TAPoint(TaT.PageLeave, 'weibopage');
+        }
+    }
+
+    class Tweeting_ChoosePhotos extends LwgScene._SceneBase {
+        lwgOnAwake() {
+            this.photoArr = [this._ImgVar('Photo1'), this._ImgVar('Photo2'), this._ImgVar('Photo3')];
+            for (let index = 0; index < this.photoArr.length; index++) {
+                const Pic = this.photoArr[index].getChildByName('Pic');
+                if (_Tweeting._photo.arr[index]) {
+                    Pic.texture = _Tweeting._photo.arr[index];
+                }
+            }
+        }
+        lwgOpenAni() {
+            return _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
+                !_Guide._complete.value && this._openScene('Guide', false, false, () => {
+                    this._evNotify(_Guide.Event.TweetingChoosePhoto, [this._ImgVar('Photo1')._lwg.gPoint.x, this._ImgVar('Photo1')._lwg.gPoint.y]);
+                });
+            });
+        }
+        lwgButton() {
+            for (let index = 0; index < this.photoArr.length; index++) {
+                const element = this.photoArr[index];
+                this._btnUp(element, () => {
+                    for (let index = 0; index < this.photoArr.length; index++) {
+                        const _element = this.photoArr[index];
+                        const Tick = _element.getChildByName('Tick');
+                        if (element == _element) {
+                            _element.scale(1.05, 1.05);
+                            _Tweeting._photoIndex = index;
+                            Tick.visible = true;
+                            const gPBtnSend = this._ImgVar('Content').localToGlobal(new Laya.Point(this._ImgVar('BtnSend').x, this._ImgVar('BtnSend').y));
+                            !_Guide._complete.value && this._evNotify(_Guide.Event.TweetingBtnSend, [gPBtnSend.x, gPBtnSend.y]);
+                        }
+                        else {
+                            _element.scale(1, 1);
+                            Tick.visible = false;
+                        }
+                    }
+                    this._ImgVar('BtnSend').skin = 'Game/UI/Tweeting/ChoosePhotos/anniu_fasong.png';
+                }, 'null');
+            }
+            ;
+            this._btnUp(this._ImgVar('BtnSend'), () => {
+                if (this._ImgVar('BtnSend').skin == 'Game/UI/Tweeting/ChoosePhotos/anniu_fasong.png') {
+                    !_Guide._complete.value && this._evNotify(_Guide.Event.closeGuide);
+                    this._closeScene();
+                }
+                else {
+                    LwgDialogue._middleHint('还未选择照片哦！');
+                }
+            });
+        }
+        lwgCloseAni() {
+            return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
+                this._openScene(_SceneName.Tweeting_Dynamic, false);
+            });
+        }
+        lwgOnDisable() {
+        }
+    }
+
+    class Tweeting_Dynamic extends LwgScene._SceneBase {
+        constructor() {
+            super(...arguments);
+            this.baseTime = 150;
+            this.baseDelay = 200;
+        }
+        lwgOpenAni() {
+            this._ImgVar('Photo').texture = _Tweeting._photo.arr[_Tweeting._photoIndex];
+            _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), null, () => {
+                LwgAni2D.scale(this._ImgVar('Head'), 0, 0, 1, 1, this.baseTime * 2, this.baseDelay * 1.5, () => {
+                    this._closeScene(_SceneName.Tweeting_Main);
+                    this.bodyTextAppear(() => {
+                        LwgAni2D.scale(this._ImgVar('Middle'), 0, 0, 1, 1, this.baseTime * 2, this.baseDelay * 1.5, () => {
+                            LwgAni2D.scale(this._ImgVar('Bottom'), 0, 0, 1, 1, this.baseTime * 2, this.baseDelay * 1.5, () => {
+                                this.replyAppear();
+                            });
+                        });
+                    });
+                });
+            });
+            return this.baseTime * 2 + this.baseDelay;
+        }
+        bodyTextAppear(func) {
+            const Body = this._ImgVar('Head').getChildByName('Body');
+            _GameAni._charactersEffect(Body, _Tweeting._mainBody.present, () => {
+                func();
+            });
+        }
+        ;
+        replyAppear() {
+            const twoReply = _Tweeting._reply.getTow();
+            const time = 500;
+            LwgAni2D.move(this._ImgVar('Reply1'), this._ImgVar('Reply1').x, this._ImgVar('Reply1').y - 500, time, () => {
+                _GameAni._charactersEffect(this._LabelVar('Reply1Body'), twoReply[0], () => {
+                    const LikeNum1 = this._ImgVar('Reply1').getChildByName('Like').getChildByName('Num');
+                    const time1 = 80;
+                    const unit1 = Math.round(LwgTools._Number.randomOneBySection(200, 5000, true) / time);
+                    let textNum1 = 0;
+                    LwgTimer._frameNumLoop(1, time1, this, () => {
+                        textNum1 += unit1;
+                        LikeNum1.text = textNum1.toString();
+                    });
+                    LwgAni2D.move(this._LabelVar('Reply2'), this._LabelVar('Reply2').x, this._LabelVar('Reply2').y - 500, time1, () => {
+                        _GameAni._charactersEffect(this._LabelVar('Reply2Body'), twoReply[1], () => {
+                            const LikeNum2 = this._LabelVar('Reply2').getChildByName('Like').getChildByName('Num');
+                            const unit2 = Math.round(LwgTools._Number.randomOneBySection(200, 5000, true) / time1);
+                            let textNum1 = 0;
+                            LwgTimer._frameNumLoop(1, time1, this, () => {
+                                textNum1 += unit2;
+                                LikeNum2.text = textNum1.toString();
+                            }, () => {
+                                LwgTimer._frameOnce(60, this, () => {
+                                    this._openScene(_SceneName.Tweeting_GetFans, false);
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        }
+        ;
+        lwgOnAwake() {
+            this._ImgVar('Head').width = this._Owner.width - 160;
+            const Icon = this._ImgVar('Head').getChildByName('HeadIcon').getChildAt(0);
+            Icon.skin = `Game/UI/Ranking/IconSkin/Ava.png`;
+            this._LabelVar('Brief').text = _Tweeting._brief.getOne()[0].toString();
+            this._LabelVar('PlayerName').text = _PersonalInfo._name.value;
+            const left = 120;
+            this._ImgVar('Middle').width = this._Owner.width - 160;
+            this._ImgVar('Collect').x = (this._ImgVar('Middle').width - left * 2) * 0 / 4 + left;
+            _Tweeting._forwardedNum.value += 50;
+            this._ImgVar('Forwarded').getChildAt(0).text = _Tweeting._forwardedNum.value.toString();
+            this._ImgVar('Forwarded').x = (this._ImgVar('Middle').width - left * 2) * 1 / 4 + left;
+            _Tweeting._commentNum.value += 50;
+            this._ImgVar('Comment').getChildAt(0).text = _Tweeting._commentNum.value.toString();
+            this._ImgVar('Comment').x = (this._ImgVar('Middle').width - left * 2) * 2 / 4 + left;
+            _Tweeting._likeNum.value += 100;
+            this._ImgVar('Like').getChildAt(0).text = _Tweeting._likeNum.value.toString();
+            this._ImgVar('Like').x = (this._ImgVar('Middle').width - left * 2) * 3 / 4 + left;
+            this._ImgVar('Bottom').width = this._Owner.width - 160;
+            const iconArr = LwgTools._Number.randomCountBySection(1, 20, 2);
+            const twoObj = _Ranking._Data._ins()._randomCountObj(2);
+            for (let index = 0; index < 2; index++) {
+                const Reply = this._ImgVar(`Reply${index + 1}`);
+                const Icon1 = Reply.getChildByName('HeadIcon').getChildAt(0);
+                Icon1.skin = `Game/UI/Tweeting/Head/${iconArr[index]}.jpg`;
+                Reply.y += 500;
+                const Body = this._LabelVar(`Reply${index + 1}Body`);
+                const Time = Reply.getChildByName('Time');
+                if (index == 0) {
+                    Body.text = `${twoObj[0]['name']}: `;
+                    Time.text = `${LwgDate._date.month}月${LwgDate._date.date}日    ${LwgDate._date.hours}:${LwgDate._date.minutes - 1 > 0 ? 0 : LwgDate._date.minutes - 1}`;
+                }
+                else {
+                    Time.text = `${LwgDate._date.month}月${LwgDate._date.date}日    ${LwgDate._date.hours}:${LwgDate._date.minutes}`;
+                    Body.text = `${twoObj[1]['name']}: `;
+                }
+            }
+            this._ImgVar('Head').scale(0, 0);
+            this._ImgVar('Middle').scale(0, 0);
+            this._ImgVar('Bottom').scale(0, 0);
+        }
+        lwgButton() {
+            this._btnUp(this._ImgVar('Content'), () => {
+                console.log('防止穿透！');
+            }, 'null');
+        }
+        lwgCloseAni() {
+            return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'));
+        }
+        lwgOnDisable() {
+        }
+    }
+
+    class Tweeting_GetFans extends LwgScene._SceneBase {
+        constructor() {
+            super(...arguments);
+            this.fansNum = 0;
+        }
+        lwgOnAwake() {
+            ADManager.TAPoint(TaT.BtnShow, 'ADrank');
+            this.pitchObj = _Ranking._Data._ins()._getPitchObj();
+            this.fansNum = LwgTools._Number.randomOneInt(115, 383);
+            this.pitchObj['fansNum'] += this.fansNum;
+            this._FontClipVar('FansNum').value = this.fansNum.toString();
+        }
+        lwgOpenAni() {
+            _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
+                _GameEffects2D._interfacePointJet();
+                !_Guide._complete.value && this._openScene(_SceneName.Guide, false, false, () => {
+                    this._evNotify(_Guide.Event.TweetingBtnDoubleFans, [this._ImgVar('BtnOk')._lwg.gPoint.x, this._ImgVar('BtnOk')._lwg.gPoint.y]);
+                });
+                LwgTimer._loop(2000, this, () => {
+                    LwgAni2D.bomb_LeftRight(this._ImgVar('BtnDouble'), 1.1, 250);
+                }, true);
+            });
+            return 300;
+        }
+        lwgButton() {
+            var closeBefore = () => {
+                _Ranking._whereFrom = _SceneName.Tweeting_GetFans;
+                _Tweeting._photo.clear();
+                this._closeScene(_SceneName.Tweeting_Dynamic);
+                this._closeScene();
+                !_Guide._complete.value && this._evNotify(_Guide.Event.closeGuide);
+            };
+            this._btnUp(this._ImgVar('BtnOk'), () => {
+                closeBefore();
+            });
+            this._btnUp(this._ImgVar('BtnDouble'), () => {
+                if (!_Guide._complete.value)
+                    return;
+                ADManager.TAPoint(TaT.BtnClick, 'ADrank');
+                ADManager.ShowReward(() => {
+                    this.pitchObj['fansNum'] += this.fansNum;
+                    LwgDialogue._middleHint('太厉害了，涨粉翻倍了！');
+                    closeBefore();
+                });
+            });
+        }
+        lwgCloseAni() {
+            return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('BackGround'), () => {
+                this._openScene(_SceneName.Ranking, false);
+            });
+        }
+        lwgOnDisable() {
+        }
+    }
+
+    class AdsHint extends LwgScene._SceneBase {
+        setCallBack(_adAction) {
+            this.adAction = _adAction;
+        }
+        lwgOpenAni() {
+            _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
+            return 200;
+        }
+        lwgButton() {
+            this._btnUp(this._ImgVar('BtnClose'), () => {
+                this._closeScene();
+            });
+            this._btnUp(this._ImgVar('BtnConfirm'), () => {
+                ADManager.ShowReward(this.adAction, null);
+                this._closeScene();
+            });
+        }
+        lwgCloseAni() {
+            _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
+            return 200;
+        }
+    }
+
+    class _Item$3 extends LwgData._Item {
+        $button() {
+            this._btnUp(this._ImgChild('Reward'), (e) => {
+                if (!_CheckIn._todayCheckIn.value) {
+                    if (_CheckIn._checkInNum.value + 1 === this.$data.serial) {
+                        _CheckIn._lastCheckDate.value = LwgDate._date.date;
+                        console.log(_CheckIn._lastCheckDate.value, _CheckIn._todayCheckIn.value);
+                        _CheckIn._Data._ins()._setCompleteName(this.$data.name);
+                        _CheckIn._checkInNum.value++;
+                        if (this.$data.rewardType.substr(0, 3) === 'diy') {
+                            _DIYClothes._ins()._setCompleteByName(this.$data.rewardType);
+                            LwgDialogue._middleHint('恭喜获得新的裁剪服装');
+                            _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
+                        }
+                        else if (this.$data.rewardType === 'cat') {
+                            _MakePattern._Pattern._ins()._setCompleteByClassify(this.$data.rewardType);
+                            LwgDialogue._middleHint('恭喜获得猫咪贴图一套');
+                            _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
+                        }
+                        if (!_Guide._complete.value) {
+                            _Guide.CheckInCloseBtn = true;
+                            this._evNotify(_Guide.Event.CheckInCloseBtn, [this._SceneImg('BtnClose')._lwg.gPoint.x, this._SceneImg('BtnClose')._lwg.gPoint.y]);
+                        }
+                    }
+                }
+                else {
+                    LwgDialogue._middleHint('日期不对哦！');
+                }
+            });
+            var func = (e) => {
+                ADManager.ShowReward(() => {
+                    _CheckIn._Data._ins()._setOtherCompleteName(this.$data.name);
+                    if (this.$data.otherRewardType.substr(0, 3) === 'diy') {
+                        _DIYClothes._ins()._setCompleteByName(this.$data.otherRewardType);
+                        LwgDialogue._middleHint('恭喜获得新的裁剪服装');
+                    }
+                    else if (this.$data.otherRewardType === 'newYear') {
+                        _MakePattern._Pattern._ins()._setCompleteByClassify(this.$data.otherRewardType);
+                        LwgDialogue._middleHint('恭喜获得新年贴图一套');
+                    }
+                    _GameEffects2D._oneFireworks(new Laya.Point(e.stageX, e.stageY));
+                });
+            };
+            var adsClick = (e) => {
+                if (!this.$data.otherComplete) {
+                    if (!_CheckIn._todayCheckIn.value) {
+                        if (_CheckIn._checkInNum.value + 1 >= this.$data.serial) {
+                            func(e);
+                        }
+                    }
+                    else {
+                        if (_CheckIn._checkInNum.value >= this.$data.serial) {
+                            func(e);
+                        }
+                    }
+                }
+                else {
+                    LwgDialogue._middleHint('日期不对哦！');
+                }
+            };
+            this._btnUp(this._ImgChild('AdsReward'), adsClick);
+            this._btnUp(this._ImgChild('BtnAdsReward'), adsClick);
+        }
+        $render() {
+            this._LableChild('DayNum').text = this.$data.name;
+            const Already = this._ImgChild('Reward').getChildByName('Already');
+            const Icon = this._ImgChild('Reward').getChildByName('Icon');
+            if (this.$data.rewardType.substr(0, 3) === 'diy') {
+                Icon.skin = _DIYClothes._ins().getDIYCutIcon(this.$data.rewardType);
+                Icon.scale(0.55, 0.55);
+            }
+            else if (this.$data.rewardType === 'cat') {
+                Icon.skin = `Pattern/${this.$data.rewardType}1.png`;
+                Icon.scale(0.18, 0.18);
+            }
+            Already.visible = this.$data.complete;
+            if (!this.$data.complete) {
+                if (_CheckIn._checkInNum.value + 1 === this.$data.serial) {
+                    if (_CheckIn._todayCheckIn.value) {
+                        this._ImgChild('Reward').skin = 'Game/UI/ChekIn/k_nei.png';
+                    }
+                    else {
+                        this._ImgChild('Reward').skin = 'Game/UI/ChekIn/k_nei1.png';
+                    }
+                }
+                else {
+                    this._ImgChild('Reward').skin = 'Game/UI/ChekIn/k_nei.png';
+                }
+            }
+            else {
+                this._ImgChild('Reward').skin = 'Game/UI/ChekIn/k_nei.png';
+            }
+            const AdsAlready = this._ImgChild('AdsReward').getChildByName('Already');
+            const AdsIcon = this._ImgChild('AdsReward').getChildByName('Icon');
+            if (this.$data.otherRewardType.substr(0, 3) === 'diy') {
+                AdsIcon.skin = _DIYClothes._ins().getDIYCutIcon(this.$data.otherRewardType);
+                AdsIcon.scale(0.55, 0.55);
+            }
+            else if (this.$data.otherRewardType === 'newYear') {
+                AdsIcon.skin = `Pattern/${this.$data.otherRewardType}1.png`;
+                AdsIcon.scale(0.16, 0.16);
+            }
+            AdsAlready.visible = this.$data.otherComplete;
+            if (!this.$data.otherComplete) {
+                if (!_CheckIn._todayCheckIn.value) {
+                    if (_CheckIn._checkInNum.value + 1 >= this.$data.serial) {
+                        this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
+                        this._ImgChild('BtnAdsReward').gray = false;
+                    }
+                    else {
+                        this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei.png';
+                        this._ImgChild('BtnAdsReward').gray = true;
+                    }
+                }
+                else {
+                    if (_CheckIn._checkInNum.value >= this.$data.serial) {
+                        this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei1.png';
+                        this._ImgChild('BtnAdsReward').gray = false;
+                    }
+                    else {
+                        this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei.png';
+                        this._ImgChild('BtnAdsReward').gray = true;
+                    }
+                }
+            }
+            else {
+                this._ImgChild('AdsReward').skin = 'Game/UI/ChekIn/k_nei.png';
+                this._ImgChild('BtnAdsReward').visible = false;
+            }
+        }
+    }
+    class CheckIn extends LwgScene._SceneBase {
+        lwgOnAwake() {
+            _CheckIn._Data._ins()._List = this._ListVar('List');
+            _CheckIn._Data._ins()._listRenderScript = _Item$3;
+            _CheckIn._Data._ins()._List.scrollBar.touchScrollEnable = false;
+            this._LabelVar('ImmediatelyNum').text = `(${_CheckIn._immediately.value} / 4)`;
+            if (_CheckIn._immediately.value >= 4 || _CheckIn._checkInNum.value >= 4) {
+                this._ImgVar('BtnImmediately').visible = false;
+                this._LabelVar('Tip').text = `奖励已经全部领取！`;
+            }
+        }
+        lwgOpenAni() {
+            return _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
+                this._openScene(_SceneName.Guide, false, false, () => {
+                    this.BtnCloseClick();
+                    !_Guide._complete.value && this._evNotify(_Guide.Event.CheckInGetReward, [this._ImgVar('GuideTab1')._lwg.gPoint.x, this._ImgVar('GuideTab1')._lwg.gPoint.y]);
+                });
+            });
+        }
+        BtnCloseClick() {
+            this._btnUp(this._ImgVar('BtnClose'), () => {
+                if (!_Guide._complete.value && _Guide.CheckInCloseBtn) {
+                    _Guide._complete.value = true;
+                    LwgDialogue._middleHint('开启你的女神之路吧!');
+                    this._evNotify(_Guide.Event.closeGuide);
+                    this._evNotify(_Guide.Event.StartOtherBtnClick);
+                }
+                this._closeScene();
+            });
+        }
+        lwgButton() {
+            if (!_Guide._complete.value)
+                return;
+            this.BtnCloseClick();
+            this._btnUp(this._ImgVar('BtnImmediately'), () => {
+                if (_CheckIn._immediately.value < 4) {
+                    ADManager.ShowReward(() => {
+                        _CheckIn._immediately.value++;
+                        this._LabelVar('ImmediatelyNum').text = `(${_CheckIn._immediately.value} / 4()`;
+                        if (_CheckIn._immediately.value >= 4) {
+                            this._ImgVar('BtnImmediately').visible = false;
+                            const gP1 = this._ImgVar('GuideTab1')._lwg.gPoint;
+                            _CheckIn._Data._ins()._setAllCompleteDelay(300, (com) => {
+                                const copyP1 = new Laya.Point(gP1.x, gP1.y);
+                                if (!com) {
+                                    _GameEffects2D._oneFireworks(copyP1);
+                                }
+                                gP1.x += 165;
+                            }, null, null);
+                            const gP2 = this._ImgVar('GuideTab2')._lwg.gPoint;
+                            _CheckIn._Data._ins()._setAllOtherCompleteDelay(300, (com) => {
+                                const copyP2 = new Laya.Point(gP2.x, gP2.y);
+                                if (!com) {
+                                    _GameEffects2D._oneFireworks(copyP2);
+                                }
+                                gP2.x += 165;
+                            }, null, () => {
+                                LwgDialogue._middleHint('奖励已经全部获得，快去制作服装吧！');
+                            });
+                            _DIYClothes._ins()._setCompleteByNameArr(['diy_dress_003_final', 'diy_dress_007_final', 'diy_top_004_final', 'diy_bottom_005_final', 'diy_dress_006_final', 'diy_bottom_006_final']);
+                            _MakePattern._Pattern._ins()._setCompleteByClassify('cat');
+                            _MakePattern._Pattern._ins()._setCompleteByClassify('newYear');
+                        }
+                    });
+                }
+                else {
+                    LwgDialogue._middleHint('奖励已经全部获得，无需在看广告o.o！');
+                }
+            });
+        }
+        lwgCloseAni() {
+            return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
+        }
+    }
+
+    class Share extends LwgScene._SceneBase {
+        lwgOnAwake() {
+            LwgClick._stageSwitch = false;
+            if (_Share._whereFrom === _SceneName.MakePattern) {
+                this._SpriteVar('Photo').texture = _Tweeting._photo.arr[0];
+            }
+            else if (_Share._whereFrom === _SceneName.DressingRoom) {
+                this._SpriteVar('Photo').texture = _Tweeting._photo.arr[3];
+            }
+        }
+        lwgOpenAni() {
+            this._ImgVar('BtnShare').visible = false;
+            return _GameAni._dialogOpenPopup(this._ImgVar('Content'), this._ImgVar('Background'), () => {
+                this._ImgVar('BtnShare').visible = true;
+                _GameAni._dialogOpenPopup(this._ImgVar('BtnShare'));
+            });
+        }
+        closeFunc() {
+            if (_Share._whereFrom === _SceneName.MakePattern) {
+                this._evNotify(_MakePattern.Event.byteDanceBackStart);
+            }
+            else if (_Share._whereFrom === _SceneName.DressingRoom) {
+                this._evNotify(_DressingRoom.Event.byteDanceBackStart);
+            }
+        }
+        lwgButton() {
+            var func = () => {
+                RecordManager._share('noAward', () => {
+                    this._closeScene();
+                });
+            };
+            this._btnUp(this._ImgVar('BtnShare'), () => {
+                func();
+            });
+            this._btnUp(this._ImgVar('BtnBoard'), () => {
+                func();
+            }, 'null');
+            this._btnUp(this._ImgVar('BtnClose'), () => {
+                this._closeScene();
+            });
+        }
+        lwgCloseAni() {
+            return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
+                this.closeFunc();
+                LwgClick._stageSwitch = true;
+            });
+        }
+    }
+
+    class BackHint extends LwgScene._SceneBase {
+        constructor() {
+            super(...arguments);
+            this.closeAniType = null;
+        }
+        lwgOpenAni() {
+            return _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
+        }
+        lwgButton() {
+            this._btnUp(this._ImgVar('BtnLeave'), () => {
+                _PreLoadCutIn._fromBack = true;
+                _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
+                    this._Owner.close();
+                    _BackHint._whereScene[_BackHint._whereScene.name]._openScene(_SceneName.Start, true, true);
+                });
+            });
+            var close = () => {
+                this.closeAniType = 100;
+                _BackHint._3dToSp && _BackHint._3dToSp.destroy();
+                _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
+                    this._Owner.close();
+                });
+            };
+            this._btnUp(this._ImgVar('BtnContinue'), () => {
+                close();
+            });
+            this._btnUp(this._ImgVar('BtnClose'), () => {
+                close();
+            });
+        }
+        lwgCloseAni() {
+            return this.closeAniType;
+        }
+    }
+
+    class LwgInit extends LwgAdmin._InitScene {
+        lwgOnAwake() {
+            LwgPlatform._Ues.value = LwgPlatform._Tpye.Bytedance;
+            Laya.MouseManager.multiTouchEnabled = false;
+            LwgSceneAni._closeSwitch.value = true;
+            LwgSceneAni._Use.value = {
+                class: LwgSceneAni._shutters.Close,
+                type: LwgSceneAni._shutters.Close._type.random,
+            };
+            LwgClick._Use.value = LwgClick._Type.reduce;
+            LwgAdaptive._Use.value = [1280, 720];
+            LwgScene._SceneScript = {
+                PreLoad: PreLoad,
+                PreLoadCutIn: PreLoadCutIn,
+                Guide: Guide,
+                Start: Start,
+                MakeTailor: MakeTailor,
+                MakePattern: MakePattern,
+                DressingRoom: DressingRoom,
+                PersonalInfo: PersonalInfo,
+                Ranking: Ranking,
+                BackHint: BackHint,
+                Tweeting_Main: Tweeting_Main,
+                Tweeting_ChoosePhotos: Tweeting_ChoosePhotos,
+                Tweeting_Dynamic: Tweeting_Dynamic,
+                Tweeting_GetFans: Tweeting_GetFans,
+                AdsHint: AdsHint,
+                CheckIn: CheckIn,
+                Share: Share,
+            };
+        }
+        lwgOnStart() {
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
+                let subPkg = new SubPkg();
+                subPkg.init();
+                this._Owner.close();
+            }
+            else {
+                this._openScene('PreLoad');
+            }
+        }
+    }
+
+    class P402 extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.scroll = null;
+            this.layout = null;
+            this.mouseDown = false;
+            this.lastStageX = 0;
+            this.lastStageY = 0;
+            this.targetX = 0;
+            this.cd = 0;
+        }
+        get node() {
+            return this.owner;
+        }
+        async OnAwake() {
+            this.shield = TJ.Develop.Yun.Location.shield;
+            this.scroll = this.owner.getChildByName("scroll");
+            this.layout = this.scroll.getChildByName("layout");
+            TJ.Develop.Yun.Promo.Data.ReportAwake(P402.style);
+            this.layoutS = this.layout.addComponent(P402Layout);
+            this.active = false;
+            let list = await TJ.Develop.Yun.Promo.List.Get();
+            if (list != null && list.count > 0) {
+                if (this.layoutS != null) {
+                    if (this.shield) {
+                        for (let i = 0; i < Math.min(list.count, 9); i++) {
+                            this.layoutS.datas.push(list.Load());
+                        }
+                    }
+                    else {
+                        for (let i = 0; i < list.count; i++) {
+                            this.layoutS.datas.push(list.Load());
+                        }
+                    }
+                    this.layoutS.Init(this.scroll.width, this.scroll.height, this.shield);
+                    this.active = true;
+                    TJ.Develop.Yun.Promo.Data.ReportStart(P402.style);
+                    this.targetX = this.layout.x;
+                }
+                else {
+                }
+            }
+            else {
+            }
+        }
+        async OnDisable() {
+            if (!this.shield)
+                return;
+            let list = await TJ.Develop.Yun.Promo.List.Get();
+            if (list != null && list.count > 0) {
+                this.layoutS.datas = [];
+                for (let i = 0; i < Math.min(list.count, 9); i++) {
+                    this.layoutS.datas.push(list.Load());
+                }
+                this.layoutS.Redata();
+            }
+        }
+        OnStart() {
+            if (this.shield)
+                return;
+            let checkPos = () => {
+                let d = this.layout.x - this.targetX;
+                if (d > 0 && d > this.layoutS.pageSpace / 2) {
+                    this.targetX += this.layoutS.pageSpace;
+                }
+                else if (d < 0 && d < -this.layoutS.pageSpace / 2) {
+                    this.targetX -= this.layoutS.pageSpace;
+                }
+            };
+            this.scroll.on(Laya.Event.MOUSE_DOWN, null, (event) => {
+                this.mouseDown = true;
+                this.lastStageX = event.stageX;
+                this.lastStageY = event.stageY;
+            });
+            this.scroll.on(Laya.Event.MOUSE_OUT, null, (event) => {
+                this.mouseDown = false;
+                checkPos();
+            });
+            this.scroll.on(Laya.Event.MOUSE_UP, null, (event) => {
+                this.mouseDown = false;
+                checkPos();
+            });
+            this.scroll.on(Laya.Event.MOUSE_MOVE, null, (event) => {
+                if (this.mouseDown) {
+                    let dx = event.stageX - this.lastStageX;
+                    let dy = event.stageY - this.lastStageY;
+                    this.lastStageX = event.stageX;
+                    this.lastStageY = event.stageY;
+                    let tx = this.layoutS.node.x + dx;
+                    this.layoutS.node.x = tx;
+                }
+            });
+        }
+        OnUpdate() {
+            if (this.shield)
+                return;
+            if (this.mouseDown) {
+                this.cd = 0;
+            }
+            else {
+                let dt = Laya.timer.delta / 1000;
+                this.cd += dt;
+                if (this.cd >= 3) {
+                    this.cd -= 3;
+                    this.targetX -= this.layoutS.pageSpace;
+                }
+                if (this.layout.x != this.targetX) {
+                    let d = this.targetX - this.layout.x;
+                    let s = 20;
+                    if (d > 0) {
+                        d = Math.min(this.layout.x + s, this.targetX);
+                    }
+                    else {
+                        d = Math.max(this.layout.x - s, this.targetX);
+                    }
+                    this.layout.x = d;
+                }
+            }
+            this.layoutS.Repos(this.layout.x);
+        }
+    }
+    P402.style = "P402";
+    class P402Layout extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.datas = [];
+            this.items = [];
+            this.prefab = null;
+            this.line = 0;
+            this.column = 0;
+            this.spacingX = 15;
+            this.spacingY = 15;
+            this.pageSpace = 0;
+        }
+        get node() {
+            return this.owner;
+        }
+        OnAwake() {
+            this.prefab = this.node.getChildAt(0);
+            this.prefab.active = this.prefab.visible = false;
+        }
+        Init(width, height, shield) {
+            this.node.x = this.prefab.width / 2;
+            while (width >= this.prefab.width) {
+                width = width - this.prefab.width - this.spacingX;
+                this.column++;
+            }
+            while (height >= this.prefab.height) {
+                height = height - this.prefab.height - this.spacingY;
+                this.line++;
+            }
+            this.pageSpace = (this.prefab.width + this.spacingX) * this.column;
+            if (shield) {
+                let uw = this.prefab.width;
+                let uh = this.prefab.height;
+                let spaceX = uw + this.spacingX;
+                let spaceY = uh + this.spacingY;
+                for (let y = 0; y < this.line; y++) {
+                    for (let x = 0; x < this.column; x++) {
+                        if (this.items.length < this.datas.length) {
+                            let item = GO.Instantiate(this.prefab).getComponent(PromoItem);
+                            this.node.addChild(item.owner);
+                            item.owner.active = item.owner.visible = true;
+                            this.items.push(item);
+                            item.owner.x = x * spaceX;
+                            item.owner.y = spaceY * y + uh / 2;
+                            item.onAwake();
+                        }
+                    }
+                }
+                this.Redata();
+            }
+            else {
+                this.datas.sort((a, b) => b.weight - a.weight);
+                this.column += 2;
+                for (let x = 0; x < this.column; x++) {
+                    for (let y = 0; y < this.line; y++) {
+                        let item = GO.Instantiate(this.prefab).getComponent(PromoItem);
+                        this.node.addChild(item.owner);
+                        item.owner.active = item.owner.visible = true;
+                        this.items.push(item);
+                        item.onAwake();
+                    }
+                }
+            }
+        }
+        Redata() {
+            for (let i = 0; i < this.items.length; i++) {
+                let item = this.items[i];
+                item.data = this.datas[i];
+                item.data.Load();
+                item.DoLoad();
+            }
+        }
+        Repos(posX) {
+            let ic = this.items.length;
+            let dc = this.datas.length;
+            if (ic < 1)
+                return;
+            if (dc < 1)
+                return;
+            let uw = this.prefab.width;
+            let uh = this.prefab.height;
+            let spaceX = uw + this.spacingX;
+            let spaceY = uh + this.spacingY;
+            let k = -posX / spaceX;
+            k = Math.floor(k);
+            let k1 = Math.floor(k / this.column) * this.column, k2 = k < 0 ? (this.column + k % this.column) % this.column : (k % this.column);
+            let checkPos = (item, b, l, c) => {
+                let pid = (b + c) * this.line + l;
+                if (item.posId != pid) {
+                    item.posId = pid;
+                    item.owner.x = (b + c) * spaceX;
+                    item.owner.y = spaceY * l + uh / 2;
+                    let did = pid < 0 ? (dc + pid % dc) % dc : (pid % dc);
+                    if (item.dataId != did) {
+                        item.dataId = did;
+                        item.data = this.datas[did];
+                        item.data.Load();
+                        item.DoLoad();
+                    }
+                }
+            };
+            for (let c = 0; c < k2; c++) {
+                for (let l = 0; l < this.line; l++) {
+                    checkPos(this.items[c * this.line + l], k1 + this.column, l, c);
+                }
+            }
+            for (let c = k2; c < this.column; c++) {
+                for (let l = 0; l < this.line; l++) {
+                    checkPos(this.items[c * this.line + l], k1, l, c);
+                }
+            }
+        }
+    }
+
+    class nativeAd extends Laya.Script {
+        constructor() {
+            super(...arguments);
+            this.icon = null;
+            this.image = null;
+            this.logo = null;
+            this.title = null;
+            this.desc = null;
+        }
+        onStart() {
+            this.ShowNext();
+        }
+        ShowNext() {
+            this.data = TJ.API.AdService.LoadNative(new TJ.API.AdService.Param());
+            if (this.data != null) {
+                this.data.OnShow();
+                this.title.text = this.data.title;
+                this.desc.text = this.data.desc;
+                this.icon.skin = this.data.iconUrl;
+                this.image.skin = this.data.imgUrl;
+                this.logo.skin = this.data.logoUrl;
+            }
+        }
+        onClick() {
+            if (this.data != null) {
+                this.data.OnClick();
+            }
+            setTimeout(() => {
+                this.ShowNext();
+            }, 1000);
+        }
+    }
+
+    class test extends Laya.Script {
+        onAwake() {
+            let pay1 = this.owner.getChildByName("pay1");
+            let pay2 = this.owner.getChildByName("pay2");
+            let pay3 = this.owner.getChildByName("pay3");
+            let restore = this.owner.getChildByName("restore");
+            let review = this.owner.getChildByName("review");
+            let banner = this.owner.getChildByName("banner");
+            let normal = this.owner.getChildByName("normal");
+            let reward = this.owner.getChildByName("reward");
+            let vibrateShort = this.owner.getChildByName("vibrateShort");
+            let vibrateLong = this.owner.getChildByName("vibrateLong");
+            let userAgreement = this.owner.getChildByName("userAgreement");
+            let privacyPolicy = this.owner.getChildByName("privacyPolicy");
+            pay1.clickHandler = new Laya.Handler(null, () => { this.Pay1(); });
+            pay2.clickHandler = new Laya.Handler(null, () => { this.Pay2(); });
+            pay3.clickHandler = new Laya.Handler(null, () => { this.Pay3(); });
+            restore.clickHandler = new Laya.Handler(null, () => { this.Restore(); });
+            review.clickHandler = new Laya.Handler(null, () => { this.Review(); });
+            banner.clickHandler = new Laya.Handler(null, () => { this.Banner(); });
+            normal.clickHandler = new Laya.Handler(null, () => { this.Normal(); });
+            reward.clickHandler = new Laya.Handler(null, () => { this.Reward(); });
+            vibrateShort.clickHandler = new Laya.Handler(null, () => { this.VibrateShort(); });
+            vibrateLong.clickHandler = new Laya.Handler(null, () => { this.VibrateLong(); });
+            userAgreement.clickHandler = new Laya.Handler(null, () => { this.UserAgreement(); });
+            privacyPolicy.clickHandler = new Laya.Handler(null, () => { this.PrivacyPolicy(); });
+        }
+        onStart() {
+            if (window["conch"] != null) {
+                window["conch"].setOnBackPressedFunction(() => {
+                    TJ.API.AppCtl.Quit();
+                });
+            }
+            console.log(TJ.API.AppInfo.ProductName());
+            console.log(TJ.API.AppInfo.PackageName());
+            console.log(TJ.API.AppInfo.VersionName());
+            console.log(TJ.API.AppInfo.VersionCode());
+            console.log(TJ.API.AppInfo.Channel());
+            console.log(TJ.API.Billing.Exist());
+            console.log(TJ.API.AdService.Exist());
+            switch (TJ.Engine.RuntimeInfo.platform) {
+                case TJ.Define.Platform.Android:
+                    break;
+                case TJ.Define.Platform.iOS:
+                    break;
+                case TJ.Define.Platform.AppRt:
+                    break;
+            }
+            switch (TJ.API.AppInfo.Channel()) {
+                case TJ.Define.Channel.Android.oppo:
+                    break;
+                case TJ.Define.Channel.AppRt.ZJTD_AppRt:
+                    break;
+            }
+            this.Event();
+        }
+        Event() {
+            let p = new TJ.API.Analytics.Param();
+            p.id = "eventName";
+            p.dic["extraParam1"] = 1;
+            p.dic["extraParam2"] = "2";
+            TJ.API.Analytics.Event(p);
+        }
+        Pay1() {
+            let p = new TJ.API.Billing.Param();
+            p.product.price = .01;
+            p.product.name = "测试计费点1分";
+            p.product.description = "这是一个一分钱的测试计费点";
+            p.cbi.Add(TJ.Define.Event.Reward, () => {
+                console.log("支付成功");
+            });
+            p.cbi.Add(TJ.Define.Event.NoReward, () => {
+                console.log("支付失败");
+            });
+            TJ.API.Billing.Purchase(p);
+        }
+        Pay2() {
+            let p = new TJ.API.Billing.Param();
+            p.product.price = .1;
+            p.product.name = "测试计费点1角";
+            p.product.description = "这是一个一角钱的测试计费点";
+            p.cbi.Add(TJ.Define.Event.Reward, () => {
+                console.log("支付成功");
+            });
+            p.cbi.Add(TJ.Define.Event.NoReward, () => {
+                console.log("支付失败");
+            });
+            TJ.API.Billing.Purchase(p);
+        }
+        Pay3() {
+            let p = new TJ.API.Billing.Param();
+            p.product.price = 1.;
+            p.product.name = "测试计费点1元";
+            p.product.description = "这是一个一元钱的测试计费点";
+            p.cbi.Add(TJ.Define.Event.Reward, () => {
+                console.log("支付成功");
+            });
+            p.cbi.Add(TJ.Define.Event.NoReward, () => {
+                console.log("支付失败");
+            });
+            TJ.API.Billing.Purchase(p);
+        }
+        Restore() {
+            let param = new TJ.API.Billing.Param();
+            param.cbi.Add(TJ.Define.Event.Complete, (list) => {
+                for (let item of list) {
+                    console.log("restore = " + item.product.name + " = " + item.product.id);
+                    TJ.API.Billing.Consume(item);
+                }
+            });
+            TJ.API.Billing.QueryAll(param);
+        }
+        Review() {
+            TJ.API.AppCtl.Review();
+        }
+        VibrateShort() {
+            TJ.API.Vibrate.Short();
+        }
+        VibrateLong() {
+            TJ.API.Vibrate.Long();
+        }
+        Vibrate() {
+            TJ.API.Vibrate.Time(0.1);
+        }
+        UserAgreement() {
+            TJ.API.AppCtl.UserAgreement();
+        }
+        PrivacyPolicy() {
+            TJ.API.AppCtl.PrivacyPolicy();
+        }
+        AppCtl() {
+            TJ.API.AppCtl.Quit();
+        }
+        Banner() {
+            let p = new TJ.API.AdService.Param();
+            p.place = TJ.API.AdService.Place.BOTTOM | TJ.API.AdService.Place.CENTER;
+            TJ.API.AdService.ShowBanner(p);
+        }
+        Normal() {
+            let p = new TJ.API.AdService.Param();
+            TJ.API.AdService.ShowNormal(p);
+        }
+        Reward() {
+            let p = new TJ.API.AdService.Param();
+            p.extraAd = true;
+            p.cbi.Add(TJ.Define.Event.Reward, () => {
+                console.log("发放奖励");
+            });
+            p.cbi.Add(TJ.Define.Event.NoAds, () => {
+                console.log("没有广告");
+            });
+            TJ.API.AdService.ShowReward(p);
+        }
+        Native() {
+            let nad = TJ.API.AdService.LoadNative(new TJ.API.AdService.Param());
+            if (nad != null) {
+                nad.title;
+                nad.desc;
+                nad.iconUrl;
+                nad.imgUrl;
+                nad.logoUrl;
+                nad.OnShow();
+                nad.OnClick();
+            }
+        }
+    }
+
+    class PromoOpen extends Laya.Script {
+        constructor() {
+            super(...arguments);
+            this.target = null;
+        }
+        onClick() {
+            this.target.active = this.target.visible = true;
+        }
+    }
+
+    class P202 extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.promoList = null;
+            this.itemList = [];
+            this.scroll = null;
+            this.layout = null;
+            this.prefab = null;
+            this.paddingTop = 10;
+            this.paddingBottom = 10;
+            this.line = 0;
+            this.column = 0;
+            this.toTop = false;
+            this.showing = [];
+        }
+        async OnAwake() {
+            this.scroll = this.owner.getChildByName("scroll");
+            this.layout = this.scroll.getChildByName("layout");
+            this.prefab = this.layout.getCell(0);
+            let w = this.owner.width - this.paddingTop - this.paddingBottom;
+            while (w >= this.prefab.width) {
+                w = w - this.prefab.width - this.layout.spaceX;
+                this.column++;
+            }
+            TJ.Develop.Yun.Promo.Data.ReportAwake(P202.style);
+            this.active = false;
+            this.promoList = await TJ.Develop.Yun.Promo.List.Get(P202.style);
+            if (this.promoList.count > 0) {
+                TJ.Develop.Yun.Promo.Data.ReportStart(P202.style);
+                this.line = Math.ceil(this.promoList.count / this.column);
+                this.layout.repeatX = this.column;
+                this.layout.repeatY = this.line;
+                for (let i = 0; i < this.layout.cells.length; i++) {
+                    let node = this.layout.getCell(i);
+                    if (i < this.promoList.count) {
+                        let item = node.getComponent(PromoItem);
+                        if (item != null) {
+                            this.itemList.push(item);
+                            item.style = P202.style;
+                            item.onAwake();
+                        }
+                        Behaviour.SetActive(node, true);
+                    }
+                    else {
+                        Behaviour.SetActive(node, false);
+                    }
+                }
+                this.line = Math.ceil(this.itemList.length / this.column);
+                let h = this.paddingTop + this.paddingBottom;
+                h += this.prefab.height * this.line + this.layout.spaceY * (this.line - 1);
+                this.layout.height = h;
+                if (this.scroll.height < this.layout.height) {
+                    this.scroll.vScrollBarSkin = "";
+                    this.scroll.vScrollBar.rollRatio = 0;
+                }
+                for (let item of this.itemList) {
+                    this.LoadIcon(item);
+                }
+                this.active = true;
+            }
+            else {
+                this.owner.destroy();
+            }
+        }
+        async OnDisable() {
+            this.promoList = await TJ.Develop.Yun.Promo.List.Get(P202.style);
+            for (let item of this.itemList) {
+                this.LoadIcon(item);
+            }
+        }
+        get maxTop() {
+            return 0;
+        }
+        get maxBottom() {
+            let y = this.paddingTop + this.paddingBottom;
+            y += this.prefab.height * this.line + this.layout.spaceY * (this.line - 1) - this.scroll.height;
+            return y;
+        }
+        get scrollValue() {
+            if (this.scroll.vScrollBar != null) {
+                return this.scroll.vScrollBar.value;
+            }
+            return 0;
+        }
+        set scrollValue(v) {
+            if (this.scroll.vScrollBar != null) {
+                this.scroll.vScrollBar.value = v;
+            }
+        }
+        OnUpdate() {
+            let deltaTime = Laya.timer.delta / 1000;
+            if (this.scroll.height < this.layout.height) {
+                if (this.scrollValue <= this.maxTop) {
+                    this.toTop = false;
+                }
+                else if (this.scrollValue >= this.maxBottom) {
+                    this.toTop = true;
+                }
+                if (this.toTop) {
+                    this.scrollValue -= 50 * deltaTime;
+                }
+                else {
+                    this.scrollValue += 50 * deltaTime;
+                }
+            }
+            else {
+                this.scrollValue = this.maxTop;
+            }
+            this.CheckShow();
+        }
+        LoadIcon(promoItem) {
+            let data = this.promoList.Load();
+            if (data != null) {
+                this.promoList.Unload(promoItem.data);
+                promoItem.data = data;
+                promoItem.onClick_ = (item) => { this.LoadAndShowIcon(item); };
+                promoItem.DoLoad();
+                promoItem.infoText.text = 1 + Math.floor(Math.random() * 40) / 10 + "w人在玩";
+            }
+            return data;
+        }
+        LoadAndShowIcon(promoItem) {
+            if (this.LoadIcon(promoItem) != null) {
+                promoItem.OnShow();
+            }
+        }
+        CheckShow() {
+            for (let item of this.itemList) {
+                let i = this.showing.indexOf(item);
+                let node = item.owner;
+                let d = Math.abs(-node.y - this.paddingTop - this.prefab.height / 2 + this.scrollValue + this.scroll.height / 2);
+                if (d < this.scroll.height / 2) {
+                    if (i < 0) {
+                        this.showing.push(item);
+                        item.OnShow();
+                    }
+                }
+                else {
+                    if (i >= 0) {
+                        this.showing.splice(i, 1);
+                    }
+                }
+            }
+        }
+    }
+    P202.style = "P202";
+
+    class P103 extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.promoList = null;
+            this.itemList = [];
+            this.layout = null;
+        }
+        async OnAwake() {
+            this.layout = this.owner.getChildByName("layout");
+            let close = this.owner.getChildByName("close");
+            close.clickHandler = new Laya.Handler(null, () => { this.OnClose(); });
+            TJ.Develop.Yun.Promo.Data.ReportAwake(P103.style);
+            this.active = false;
+            this.promoList = await TJ.Develop.Yun.Promo.List.Get(P103.style);
+            if (this.promoList.count > 0) {
+                TJ.Develop.Yun.Promo.Data.ReportStart(P103.style);
+                for (let i = 0; i < this.layout.cells.length; i++) {
+                    let node = this.layout.getCell(i);
+                    if (i < this.promoList.count) {
+                        let item = node.getComponent(PromoItem);
+                        if (item != null) {
+                            this.itemList.push(item);
+                            item.style = P103.style;
+                            item.onAwake();
+                        }
+                        node.active = node.visible = true;
+                    }
+                    else {
+                        node.active = node.visible = false;
+                    }
+                }
+                for (let item of this.itemList) {
+                    this.LoadIcon(item);
+                }
+                this.active = true;
+            }
+            else {
+                this.owner.destroy();
+            }
+        }
+        OnEnable() {
+            for (let item of this.itemList) {
+                item.OnShow();
+            }
+        }
+        async OnDisable() {
+            this.promoList = await TJ.Develop.Yun.Promo.List.Get(P103.style);
+            for (let item of this.itemList) {
+                this.LoadIcon(item);
+            }
+        }
+        LoadIcon(promoItem) {
+            let data = this.promoList.Load();
+            if (data != null) {
+                this.promoList.Unload(promoItem.data);
+                promoItem.data = data;
+                promoItem.onClick_ = (item) => { this.LoadAndShowIcon(item); };
+                promoItem.DoLoad();
+            }
+            return data;
+        }
+        LoadAndShowIcon(promoItem) {
+            if (this.LoadIcon(promoItem) != null) {
+                promoItem.OnShow();
+            }
+        }
+        OnClose() {
+            let node = this.owner;
+            node.active = node.visible = false;
+        }
+    }
+    P103.style = "P103";
+
+    class P204 extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.promoList = null;
+            this.itemList = [];
+            this.scroll = null;
+            this.layout = null;
+            this.prefab = null;
+            this.paddingLeft = 20;
+            this.paddingRight = 20;
+            this.toLeft = false;
+            this.showing = [];
+        }
+        async OnAwake() {
+            this.scroll = this.owner.getChildByName("scroll");
+            this.layout = this.scroll.getChildByName("layout");
+            this.prefab = this.layout.getCell(0);
+            TJ.Develop.Yun.Promo.Data.ReportAwake(P204.style);
+            this.active = false;
+            let list = await TJ.Develop.Yun.Promo.List.Get(P204.style);
+            if (this.promoList == null)
+                this.promoList = list;
+            if (this.promoList.count > 0) {
+                TJ.Develop.Yun.Promo.Data.ReportStart(P204.style);
+                this.layout.repeatX = this.promoList.count;
+                for (let i = 0; i < this.layout.cells.length; i++) {
+                    let node = this.layout.getCell(i);
+                    if (i < this.promoList.count) {
+                        let item = node.getComponent(PromoItem);
+                        if (item != null) {
+                            this.itemList.push(item);
+                            item.style = P204.style;
+                            item.onAwake();
+                        }
+                        node.active = node.visible = true;
+                    }
+                    else {
+                        node.active = node.visible = false;
+                    }
+                }
+                let w = this.paddingLeft + this.paddingRight;
+                w += this.prefab.width * this.itemList.length + this.layout.spaceX * (this.itemList.length - 1);
+                this.layout.width = w;
+                if (this.scroll.width < this.layout.width) {
+                    this.scroll.hScrollBarSkin = "";
+                    this.scroll.hScrollBar.rollRatio = 0;
+                }
+                this.layout.width = w;
+                for (let item of this.itemList) {
+                    this.LoadIcon(item);
+                }
+                this.active = true;
+            }
+            else {
+                this.owner.destroy();
+            }
+        }
+        get maxLeft() {
+            let x = 0;
+            return x;
+        }
+        get maxRight() {
+            let x = this.scroll.hScrollBar.max;
+            return x;
+        }
+        get scrollValue() {
+            if (this.scroll.hScrollBar != null) {
+                return this.scroll.hScrollBar.value;
+            }
+            return 0;
+        }
+        set scrollValue(v) {
+            if (this.scroll.hScrollBar != null) {
+                this.scroll.hScrollBar.value = v;
+            }
+        }
+        OnUpdate() {
+            let deltaTime = Laya.timer.delta / 1000;
+            if (this.scroll.width < this.layout.width) {
+                if (this.scrollValue >= this.maxRight) {
+                    this.toLeft = true;
+                }
+                else if (this.scrollValue <= this.maxLeft) {
+                    this.toLeft = false;
+                }
+                if (this.toLeft) {
+                    this.scrollValue -= 50 * deltaTime;
+                }
+                else {
+                    this.scrollValue += 50 * deltaTime;
+                }
+            }
+            else {
+                this.layout.x = this.maxLeft;
+            }
+            this.CheckShow();
+        }
+        LoadIcon(promoItem) {
+            let data = this.promoList.Load();
+            if (data != null) {
+                this.promoList.Unload(promoItem.data);
+                promoItem.data = data;
+                promoItem.onClick_ = (item) => { this.LoadIcon(item); };
+                promoItem.DoLoad();
+                let i = this.showing.indexOf(promoItem);
+                if (i >= 0) {
+                    this.showing.splice(i, 1);
+                }
+            }
+            return data;
+        }
+        CheckShow() {
+            let a = 0;
+            for (let item of this.itemList) {
+                let node = item.owner;
+                let d = Math.abs(node.x - this.scrollValue - this.scroll.width / 2 + node.width / 2 + this.layout.spaceX);
+                let i = this.showing.indexOf(item);
+                if (d < this.scroll.width / 2) {
+                    if (i < 0) {
+                        this.showing.push(item);
+                        item.OnShow();
+                    }
+                }
+                else {
+                    if (i >= 0) {
+                        this.showing.splice(i, 1);
+                    }
+                }
+            }
+        }
+    }
+    P204.style = "P204";
+
+    class P205 extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.promoList = null;
+            this.itemList = [];
+            this.scroll = null;
+            this.layout = null;
+            this.prefab = null;
+            this.paddingTop = 10;
+            this.paddingBottom = 10;
+            this.move = null;
+            this.show = null;
+            this.hide = null;
+            this.maxX = 620;
+            this.line = 0;
+            this.column = 0;
+            this.targetX = 0;
+            this.showing = [];
+        }
+        async OnAwake() {
+            this.move = this.owner.getChildByName("move");
+            let button = this.move.getChildByName("button");
+            this.show = button.getChildByName("show");
+            this.hide = button.getChildByName("hide");
+            let board = this.move.getChildByName("board");
+            this.scroll = board.getChildByName("scroll");
+            this.layout = this.scroll.getChildByName("layout");
+            this.prefab = this.layout.getCell(0);
+            this.show.clickHandler = new Laya.Handler(null, () => { this.Show(); });
+            this.hide.clickHandler = new Laya.Handler(null, () => { this.Hide(); });
+            let w = this.scroll.width - this.paddingTop - this.paddingBottom;
+            while (w >= this.prefab.width) {
+                w = w - this.prefab.width - this.layout.spaceX;
+                this.column++;
+            }
+            TJ.Develop.Yun.Promo.Data.ReportAwake(P205.style);
+            if (this.show.parent.scaleX < 0)
+                this.maxX = -this.maxX;
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.ZJTD_AppRt) {
+                return;
+            }
+            this.active = false;
+            this.promoList = await TJ.Develop.Yun.Promo.List.Get(P205.style);
+            if (this.promoList.count > 0) {
+                TJ.Develop.Yun.Promo.Data.ReportStart(P205.style);
+                this.line = Math.ceil(this.promoList.count / this.column);
+                this.layout.repeatX = this.column;
+                this.layout.repeatY = this.line;
+                for (let i = 0; i < this.layout.cells.length; i++) {
+                    let node = this.layout.getCell(i);
+                    if (i < this.promoList.count) {
+                        let item = node.getComponent(PromoItem);
+                        if (item != null) {
+                            this.itemList.push(item);
+                            item.style = P205.style;
+                            item.onAwake();
+                        }
+                        node.active = node.visible = true;
+                    }
+                    else {
+                        node.active = node.visible = false;
+                    }
+                }
+                this.line = Math.ceil(this.itemList.length / this.column);
+                let h = this.paddingTop + this.paddingBottom;
+                h += this.prefab.height * this.line + this.layout.spaceY * (this.line - 1);
+                this.layout.height = h;
+                if (this.scroll.height < this.layout.height) {
+                    this.scroll.vScrollBarSkin = "";
+                    this.scroll.vScrollBar.rollRatio = 0;
+                }
+                for (let item of this.itemList) {
+                    this.LoadIcon(item);
+                }
+                this.active = true;
+            }
+            else {
+                this.owner.destroy();
+            }
+        }
+        get scrollValue() {
+            if (this.scroll.vScrollBar != null) {
+                return this.scroll.vScrollBar.value;
+            }
+            return 0;
+        }
+        set scrollValue(v) {
+            if (this.scroll.vScrollBar != null) {
+                this.scroll.vScrollBar.value = v;
+            }
+        }
+        LoadIcon(promoItem) {
+            let data = this.promoList.Load();
+            if (data != null) {
+                this.promoList.Unload(promoItem.data);
+                promoItem.data = data;
+                promoItem.onClick_ = (item) => { this.LoadAndShowIcon(item); };
+                promoItem.DoLoad();
+            }
+            return data;
+        }
+        LoadAndShowIcon(promoItem) {
+            if (this.LoadIcon(promoItem) != null) {
+                promoItem.OnShow();
+            }
+        }
+        Show() {
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.ZJTD_AppRt) {
+                let param = new TJ.API.Promo.Param();
+                param.extraData = { "TJ_App": TJ.API.AppInfo.AppGuid() };
+                TJ.API.Promo.Pop(param);
+                return;
+            }
+            this.targetX = this.maxX;
+            this.show.active = this.show.visible = false;
+            this.hide.active = this.hide.visible = true;
+            this.scrollValue = 0;
+        }
+        Hide() {
+            this.targetX = 0;
+            this.showing = [];
+        }
+        OnUpdate() {
+            let deltaTime = Laya.timer.delta / 1000;
+            if (this.move.centerX != this.targetX) {
+                let d = this.targetX - this.move.centerX;
+                let s = 3000 * deltaTime;
+                if (d > 0) {
+                    d = Math.min(this.move.centerX + s, this.targetX);
+                }
+                else {
+                    d = Math.max(this.move.centerX - s, this.targetX);
+                }
+                this.move.centerX = d;
+                if (this.move.centerX == 0) {
+                    this.show.active = this.show.visible = true;
+                    this.hide.active = this.hide.visible = false;
+                    window.setTimeout(async () => {
+                        this.promoList = await TJ.Develop.Yun.Promo.List.Get(P205.style);
+                        for (let item of this.itemList) {
+                            this.LoadIcon(item);
+                        }
+                    }, 0);
+                }
+            }
+            else {
+                if (this.move.centerX == this.maxX) {
+                    this.CheckShow();
+                }
+            }
+        }
+        CheckShow() {
+            for (let item of this.itemList) {
+                let i = this.showing.indexOf(item);
+                let node = item.owner;
+                let d = Math.abs(-node.y - this.paddingTop - this.prefab.height / 2 + this.scrollValue + this.scroll.height / 2);
+                if (d < this.scroll.height / 2) {
+                    if (i < 0) {
+                        this.showing.push(item);
+                        item.OnShow();
+                    }
+                }
+                else {
+                    if (i >= 0) {
+                        this.showing.splice(i, 1);
+                    }
+                }
+            }
+        }
+    }
+    P205.style = "P205";
+
+    class P106 extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.promoList = null;
+            this.itemList = [];
+            this.layout = null;
+            this.showing = [];
+        }
+        async OnAwake() {
+            this.scrollView = this.owner.getChildByName("scroll");
+            this.layout = this.scrollView.getChildByName("layout");
+            this.scrollView.vScrollBarSkin = "";
+            let close = this.owner.getChildByName("close");
+            close.clickHandler = new Laya.Handler(null, () => { this.OnClose(); });
+            TJ.Develop.Yun.Promo.Data.ReportAwake(P106.style);
+            this.active = false;
+            let list = await TJ.Develop.Yun.Promo.List.Get(P106.style);
+            if (this.promoList == null)
+                this.promoList = list;
+            if (this.promoList.count > 0) {
+                TJ.Develop.Yun.Promo.Data.ReportStart(P106.style);
+                this.layout.repeatY = this.promoList.count;
+                let h = 0;
+                for (let i = 0; i < this.layout.cells.length; i++) {
+                    let node = this.layout.getCell(i);
+                    if (i < this.promoList.count) {
+                        let item = node.getComponent(PromoItem);
+                        if (item != null) {
+                            this.itemList.push(item);
+                            item.style = P106.style;
+                            item.onAwake();
+                        }
+                        Behaviour.SetActive(node, true);
+                    }
+                    else {
+                        Behaviour.SetActive(node, false);
+                    }
+                    if (i > 0) {
+                        h += this.layout.spaceY;
+                    }
+                    h += node.height;
+                }
+                this.layout.height = h;
+                for (let item of this.itemList) {
+                    this.LoadIcon(item);
+                }
+                this.active = true;
+            }
+            else {
+                this.owner.destroy();
+            }
+        }
+        OnEnable() {
+            this.scrollValue = 0;
+        }
+        async OnDisable() {
+            this.promoList = await TJ.Develop.Yun.Promo.List.Get(P106.style);
+            for (let item of this.itemList) {
+                this.LoadIcon(item);
+            }
+        }
+        OnUpdate() {
+            this.CheckShow();
+        }
+        LoadIcon(promoItem) {
+            let data = this.promoList.Load();
+            if (data != null) {
+                this.promoList.Unload(promoItem.data);
+                promoItem.data = data;
+                promoItem.onClick_ = (item) => { this.LoadIcon(item); };
+                promoItem.DoLoad();
+                let i = this.showing.indexOf(promoItem);
+                if (i >= 0) {
+                    this.showing.splice(i, 1);
+                }
+            }
+            return data;
+        }
+        get scrollValue() {
+            if (this.scrollView.vScrollBar != null) {
+                return this.scrollView.vScrollBar.value;
+            }
+            return 0;
+        }
+        set scrollValue(v) {
+            if (this.scrollView.vScrollBar != null) {
+                this.scrollView.vScrollBar.value = v;
+            }
+        }
+        CheckShow() {
+            for (let item of this.itemList) {
+                let node = item.owner;
+                let d = Math.abs(node.y - this.scrollValue - this.scrollView.height / 2 + node.height / 2 + this.layout.spaceY);
+                let i = this.showing.indexOf(item);
+                if (d < this.scrollView.height / 2) {
+                    if (i < 0) {
+                        this.showing.push(item);
+                        item.OnShow();
+                    }
+                }
+                else {
+                    if (i >= 0) {
+                        this.showing.splice(i, 1);
+                    }
+                }
+            }
+        }
+        OnClose() {
+            let node = this.owner;
+            node.active = node.visible = false;
+        }
+    }
+    P106.style = "P106";
+
+    class P302 extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.layoutsNode = null;
+            this.layouts = [];
+        }
+        get node() {
+            return this.owner;
+        }
+        async OnAwake() {
+            this.layoutsNode = this.node.getChildByName("lines");
+            TJ.Develop.Yun.Promo.Data.ReportAwake(P302.style);
+            for (let i = 0; i < this.layoutsNode.numChildren; i++) {
+                this.layouts.push(this.layoutsNode.getChildAt(i).addComponent(P302Layout));
+            }
+            this.active = false;
+            let list = await TJ.Develop.Yun.Promo.Data.LoadList();
+            if (list != null && list.length > 0) {
+                let www = new TJ.Common.WWW("http://h5.tomatojoy.cn/res/659827d1-d6a0-8248-c5ec-849bda0841a5/promo/cftest.json");
+                await www.Send();
+                if (www.text != null) {
+                    let dic = JSON.parse(www.text);
+                    for (let l = 0; l < this.layouts.length; l++) {
+                        if (l < dic.P302.length) {
+                            for (let i = 0; i < dic.P302[l].length; i++) {
+                                let data = list.find((item) => item.promoGuid == dic.P302[l][i]);
+                            }
+                            this.layouts[l].Init(this.node.width);
+                        }
+                        else {
+                            this.layouts[l].node.active = false;
+                        }
+                    }
+                    this.active = true;
+                    TJ.Develop.Yun.Promo.Data.ReportStart(P302.style);
+                }
+                else {
+                    this.owner.destroy();
+                }
+            }
+            else {
+                this.owner.destroy();
+            }
+        }
+        OnUpdate() {
+            this.layoutsNode.x -= .8;
+            for (let layout of this.layouts) {
+                if (layout.node.active) {
+                    layout.Refresh(this.layoutsNode.x);
+                }
+            }
+        }
+    }
+    P302.style = "P302";
+    class P302Layout extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.datas = [];
+            this.items = [];
+            this.prefab = null;
+        }
+        get node() {
+            return this.owner;
+        }
+        OnAwake() {
+            this.prefab = this.node.getChildAt(0);
+            this.prefab.active = this.prefab.visible = false;
+        }
+        Init(width) {
+            let mx = width / (this.prefab.width + 13);
+            mx = Math.ceil(mx) + 3;
+            let column = 0;
+            while (width >= this.prefab.width) {
+                width = width - this.prefab.width - 13;
+                column++;
+            }
+            column += 3;
+            for (let i = 0; i < column; i++) {
+                let item = GO.Instantiate(this.prefab).getComponent(PromoItem);
+                this.node.addChild(item.owner);
+                item.owner.active = item.owner.visible = true;
+                this.items.push(item);
+                item.onAwake();
+            }
+        }
+        Refresh(posX) {
+            let ic = this.items.length;
+            let dc = this.datas.length;
+            if (ic < 1)
+                return;
+            if (dc < 1)
+                return;
+            let space = this.prefab.width + 13;
+            let k = -posX / space;
+            k = Math.floor(k);
+            let k1 = Math.floor(k / ic) * ic, k2 = k < 0 ? (ic + k % ic) % ic : (k % ic);
+            let checkPos = (item, pid) => {
+                if (item.posId != pid) {
+                    item.posId = pid;
+                    item.owner.x = pid * space - this.prefab.width / 2;
+                    pid -= 1;
+                    let did = pid < 0 ? (dc + pid % dc) % dc : (pid % dc);
+                    if (item.dataId != did) {
+                        item.dataId = did;
+                        item.data = this.datas[did];
+                        item.data.Load();
+                        item.DoLoad();
+                    }
+                }
+            };
+            for (let i = 0; i < k2; i++) {
+                checkPos(this.items[i], k1 + ic + i);
+            }
+            for (let i = k2; i < ic; i++) {
+                checkPos(this.items[i], k1 + i);
+            }
+        }
+    }
+
+    class P305 extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.promoList = null;
+            this.scroll = null;
+            this.layout = null;
+            this.paddingTop = 10;
+            this.paddingBottom = 10;
+            this.move = null;
+            this.show = null;
+            this.hide = null;
+            this.maxX = 580;
+            this.mouseDown = false;
+            this.lastStageX = 0;
+            this.lastStageY = 0;
+            this.targetX = 0;
+            this.showing = [];
+        }
+        async OnAwake() {
+            this.move = this.owner.getChildByName("move");
+            let button = this.move.getChildByName("button");
+            this.show = button.getChildByName("show");
+            this.hide = button.getChildByName("hide");
+            let board = this.move.getChildByName("board");
+            this.scroll = board.getChildByName("scroll");
+            this.layout = this.scroll.getChildByName("layout");
+            TJ.Develop.Yun.Promo.Data.ReportAwake(P305.style);
+            this.show.clickHandler = new Laya.Handler(null, () => { this.Show(); });
+            this.hide.clickHandler = new Laya.Handler(null, () => { this.Hide(); });
+            this.layoutS = this.layout.addComponent(P305Layout);
+            if (this.show.parent.scaleX < 0)
+                this.maxX = -this.maxX;
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.ZJTD_AppRt) {
+                return;
+            }
+            this.active = false;
+            this.promoList = await TJ.Develop.Yun.Promo.List.Get();
+            if (this.promoList.count > 0) {
+                if (this.layoutS != null) {
+                    for (let i = 0; i < this.promoList.count; i++) {
+                        this.layoutS.datas.push(this.promoList.Load());
+                    }
+                    this.layoutS.Init(this.scroll.width, this.scroll.height);
+                    this.active = true;
+                    TJ.Develop.Yun.Promo.Data.ReportStart(P305.style);
+                }
+                else {
+                    this.owner.destroy();
+                }
+            }
+            else {
+                this.owner.destroy();
+            }
+        }
+        OnStart() {
+            this.scroll.on(Laya.Event.MOUSE_DOWN, null, (event) => {
+                this.mouseDown = true;
+                this.lastStageX = event.stageX;
+                this.lastStageY = event.stageY;
+            });
+            this.scroll.on(Laya.Event.MOUSE_OUT, null, (event) => {
+                this.mouseDown = false;
+            });
+            this.scroll.on(Laya.Event.MOUSE_UP, null, (event) => {
+                this.mouseDown = false;
+            });
+            this.scroll.on(Laya.Event.MOUSE_MOVE, null, (event) => {
+                if (this.mouseDown) {
+                    let dx = event.stageX - this.lastStageX;
+                    let dy = event.stageY - this.lastStageY;
+                    this.lastStageX = event.stageX;
+                    this.lastStageY = event.stageY;
+                    let ty = this.layoutS.node.y + dy;
+                    this.layoutS.node.y = ty;
+                }
+            });
+        }
+        Show() {
+            if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.ZJTD_AppRt) {
+                let param = new TJ.API.Promo.Param();
+                param.extraData = { "TJ_App": TJ.API.AppInfo.AppGuid() };
+                TJ.API.Promo.Pop(param);
+                return;
+            }
+            this.targetX = this.maxX;
+            this.show.active = this.show.visible = false;
+            this.hide.active = this.hide.visible = true;
+            this.layout.y = 0;
+        }
+        Hide() {
+            this.targetX = 0;
+            this.showing = [];
+        }
+        OnUpdate() {
+            let deltaTime = Laya.timer.delta / 1000;
+            if (this.move.centerX != this.targetX) {
+                let d = this.targetX - this.move.centerX;
+                let s = 3000 * deltaTime;
+                if (d > 0) {
+                    d = Math.min(this.move.centerX + s, this.targetX);
+                }
+                else {
+                    d = Math.max(this.move.centerX - s, this.targetX);
+                }
+                this.move.centerX = d;
+                if (this.move.centerX == 0) {
+                    this.show.active = this.show.visible = true;
+                    this.hide.active = this.hide.visible = false;
+                }
+            }
+            else {
+                if (this.move.centerX == this.maxX) {
+                    this.layout.y -= 0.8;
+                }
+            }
+            this.layoutS.Refresh(this.layout.y);
+        }
+    }
+    P305.style = "P305";
+    class P305Layout extends Behaviour {
+        constructor() {
+            super(...arguments);
+            this.datas = [];
+            this.items = [];
+            this.prefab = null;
+            this.line = 0;
+            this.column = 0;
+        }
+        get node() {
+            return this.owner;
+        }
+        OnAwake() {
+            this.prefab = this.node.getChildAt(0);
+            this.prefab.active = this.prefab.visible = false;
+        }
+        Init(width, height) {
+            while (width >= this.prefab.width) {
+                width = width - this.prefab.width - 15;
+                this.column++;
+            }
+            while (height >= this.prefab.height) {
+                height = height - this.prefab.height - 10;
+                this.line++;
+            }
+            this.line += 2;
+            for (let y = 0; y < this.line; y++) {
+                for (let x = 0; x < this.column; x++) {
+                    let item = GO.Instantiate(this.prefab).getComponent(PromoItem);
+                    this.node.addChild(item.owner);
+                    item.owner.active = item.owner.visible = true;
+                    this.items.push(item);
+                    item.onAwake();
+                }
+            }
+        }
+        Refresh(posY) {
+            let ic = this.items.length;
+            let dc = this.datas.length;
+            if (ic < 1)
+                return;
+            if (dc < 1)
+                return;
+            let uh = this.prefab.height;
+            let spaceY = uh + 10;
+            let spaceX = this.prefab.width + 15;
+            let k = -posY / spaceY;
+            k = Math.floor(k);
+            let k1 = Math.floor(k / this.line) * this.line, k2 = k < 0 ? (this.line + k % this.line) % this.line : (k % this.line);
+            let checkPos = (item, b, l, c) => {
+                let pid = b + l * this.column + c;
+                if (item.posId != pid) {
+                    item.posId = pid;
+                    item.owner.x = spaceX * c + this.prefab.width / 2;
+                    item.owner.y = (b + l) * spaceY + this.prefab.height / 2;
+                    let did = pid < 0 ? (dc + pid % dc) % dc : (pid % dc);
+                    if (item.dataId != did) {
+                        item.dataId = did;
+                        item.data = this.datas[did];
+                        item.data.Load();
+                        item.DoLoad();
+                    }
+                }
+            };
+            for (let l = 0; l < k2; l++) {
+                for (let c = 0; c < this.column; c++) {
+                    checkPos(this.items[l * this.column + c], k1 + this.line, l, c);
+                }
+            }
+            for (let l = k2; l < this.line; l++) {
+                for (let c = 0; c < this.column; c++) {
+                    checkPos(this.items[l * this.column + c], k1, l, c);
+                }
+            }
+        }
+    }
+
+    var Scene = Laya.Scene;
+    var REG = Laya.ClassUtils.regClass;
+    var ui;
+    (function (ui) {
+        var test;
+        (function (test) {
+            class TestSceneUI extends Scene {
+                constructor() { super(); }
+                createChildren() {
+                    super.createChildren();
+                    this.loadScene("test/TestScene");
+                }
+            }
+            test.TestSceneUI = TestSceneUI;
+            REG("ui.test.TestSceneUI", TestSceneUI);
+        })(test = ui.test || (ui.test = {}));
+    })(ui || (ui = {}));
+
+    class GameUI extends ui.test.TestSceneUI {
+        constructor() {
+            super();
+            this.newScene = Laya.stage.addChild(new Laya.Scene3D());
+            var camera = this.newScene.addChild(new Laya.Camera(0, 0.1, 100));
+            camera.transform.translate(new Laya.Vector3(0, 6, 9.5));
+            camera.transform.rotate(new Laya.Vector3(-15, 0, 0), true, false);
+            var directionLight = new Laya.DirectionLight();
+            this.newScene.addChild(directionLight);
+            directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
+            var mat = directionLight.transform.worldMatrix;
+            mat.setForward(new Laya.Vector3(-1.0, -1.0, -1.0));
+            directionLight.transform.worldMatrix = mat;
+            var plane = this.newScene.addChild(new Laya.MeshSprite3D(Laya.PrimitiveMesh.createPlane(10, 10, 10, 10)));
+            var planeMat = new Laya.BlinnPhongMaterial();
+            Laya.Texture2D.load("res/grass.png", Laya.Handler.create(this, function (tex) {
+                planeMat.albedoTexture = tex;
+            }));
+            var tilingOffset = planeMat.tilingOffset;
+            tilingOffset.setValue(5, 5, 0, 0);
+            planeMat.tilingOffset = tilingOffset;
+            plane.meshRenderer.material = planeMat;
+            var planeStaticCollider = plane.addComponent(Laya.PhysicsCollider);
+            var planeShape = new Laya.BoxColliderShape(10, 0, 10);
+            planeStaticCollider.colliderShape = planeShape;
+            planeStaticCollider.friction = 2;
+            planeStaticCollider.restitution = 0.3;
+            this.mat1 = new Laya.BlinnPhongMaterial();
+            Laya.Texture2D.load("res/wood.jpg", Laya.Handler.create(this, function (tex) {
+                this.mat1.albedoTexture = tex;
+                Laya.timer.once(100, this, function () {
+                    this.addBox();
+                });
+            }));
+        }
+        addBox() {
+            var box = this.newScene.addChild(new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(0.75, 0.5, 0.5)));
+            box.meshRenderer.material = this.mat1;
+            var transform = box.transform;
+            var pos = transform.position;
+            pos.setValue(0, 10, 0);
+            transform.position = pos;
+            var rigidBody = box.addComponent(Laya.Rigidbody3D);
+            var boxShape = new Laya.BoxColliderShape(0.75, 0.5, 0.5);
+            rigidBody.colliderShape = boxShape;
+            rigidBody.mass = 10;
+        }
+    }
+
+    class GameConfig {
+        constructor() {
+        }
+        static init() {
+            var reg = Laya.ClassUtils.regClass;
+            reg("TJ/NativeAd.ts", NativeAd);
+            reg("TJ/Promo/script/ButtonScale.ts", ButtonScale);
+            reg("TJ/Promo/script/PromoItem.ts", PromoItem);
+            reg("TJ/Promo/script/P405.ts", P405);
+            reg("TJ/Promo/script/P201.ts", P201);
+            reg("script/Lwg/LwgInit.ts", LwgInit);
+            reg("TJ/Promo/script/P402.ts", P402);
+            reg("nativeAd.ts", nativeAd);
+            reg("demo.ts", test);
+            reg("TJ/Promo/script/PromoOpen.ts", PromoOpen);
+            reg("TJ/Promo/script/P202.ts", P202);
+            reg("TJ/Promo/script/P103.ts", P103);
+            reg("TJ/Promo/script/P204.ts", P204);
+            reg("TJ/Promo/script/P205.ts", P205);
+            reg("TJ/Promo/script/P106.ts", P106);
+            reg("TJ/Promo/script/P302.ts", P302);
+            reg("TJ/Promo/script/P305.ts", P305);
+            reg("script/GameUI.ts", GameUI);
+        }
+    }
+    GameConfig.width = 1280;
+    GameConfig.height = 720;
+    GameConfig.scaleMode = "fixedheight";
+    GameConfig.screenMode = "horizontal";
+    GameConfig.alignV = "top";
+    GameConfig.alignH = "left";
+    GameConfig.startScene = "Scene/LwgInit.scene";
+    GameConfig.sceneRoot = "";
+    GameConfig.debug = false;
+    GameConfig.stat = false;
+    GameConfig.physicsDebug = false;
+    GameConfig.exportSceneToJson = true;
+    GameConfig.init();
+
+    class Main {
+        constructor() {
+            if (window["Laya3D"])
+                Laya3D.init(GameConfig.width, GameConfig.height);
+            else
+                Laya.init(GameConfig.width, GameConfig.height, Laya["WebGL"]);
+            Laya["Physics"] && Laya["Physics"].enable();
+            Laya["DebugPanel"] && Laya["DebugPanel"].enable();
+            Laya.stage.scaleMode = GameConfig.scaleMode;
+            Laya.stage.screenMode = GameConfig.screenMode;
+            Laya.stage.alignV = GameConfig.alignV;
+            Laya.stage.alignH = GameConfig.alignH;
+            Laya.URL.exportSceneToJson = GameConfig.exportSceneToJson;
+            if (GameConfig.debug || Laya.Utils.getQueryString("debug") == "true")
+                Laya.enableDebugPanel();
+            if (GameConfig.physicsDebug && Laya["PhysicsDebugDraw"])
+                Laya["PhysicsDebugDraw"].enable();
+            if (GameConfig.stat)
+                Laya.Stat.show();
+            Laya.alertGlobalError = true;
+            Laya.ResourceVersion.enable("version.json", Laya.Handler.create(this, this.onVersionLoaded), Laya.ResourceVersion.FILENAME_VERSION);
+        }
+        onVersionLoaded() {
+            Laya.AtlasInfoManager.enable("fileconfig.json", Laya.Handler.create(this, this.onConfigLoaded));
+        }
+        onConfigLoaded() {
+            GameConfig.startScene && Laya.Scene.open(GameConfig.startScene);
+        }
+    }
+    new Main();
+
+}());

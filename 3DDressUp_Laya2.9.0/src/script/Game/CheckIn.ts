@@ -132,7 +132,7 @@ export default class CheckIn extends LwgScene._SceneBase {
         _CheckIn._Data._ins()._List = this._ListVar('List');
         _CheckIn._Data._ins()._listRenderScript = _Item;
         _CheckIn._Data._ins()._List.scrollBar.touchScrollEnable = false;
-        this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately.value} / 4`;
+        this._LabelVar('ImmediatelyNum').text = `(${_CheckIn._immediately.value} / 4)`;
         if (_CheckIn._immediately.value >= 4 || _CheckIn._checkInNum.value >= 4) {
             this._ImgVar('BtnImmediately').visible = false;
             this._LabelVar('Tip').text = `奖励已经全部领取！`;
@@ -166,7 +166,7 @@ export default class CheckIn extends LwgScene._SceneBase {
             if (_CheckIn._immediately.value < 4) {
                 ADManager.ShowReward(() => {
                     _CheckIn._immediately.value++;
-                    this._LabelVar('ImmediatelyNum').text = `${_CheckIn._immediately.value} / 4 `;
+                    this._LabelVar('ImmediatelyNum').text = `(${_CheckIn._immediately.value} / 4)`;
                     if (_CheckIn._immediately.value >= 4) {
                         this._ImgVar('BtnImmediately').visible = false;
                         const gP1 = this._ImgVar('GuideTab1')._lwg.gPoint;

@@ -34,7 +34,7 @@ export default class Share extends LwgScene._SceneBase {
     lwgButton(): void {
         var func = () => {
             RecordManager._share('noAward', () => {
-                this.closeFunc();
+                this._closeScene();
             });
         }
         this._btnUp(this._ImgVar('BtnShare'), () => {
