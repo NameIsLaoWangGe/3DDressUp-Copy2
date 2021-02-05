@@ -1,7 +1,7 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
 import lwg, { LwgScene, LwgData, LwgDialogue, LwgTimer, LwgTools, LwgPlatform } from "../Lwg/Lwg";
 import { LwgOPPO } from "../Lwg/LwgOPPO";
-import { _AllClothes, _DressingRoom, _Share, _Tweeting } from "./_GameData";
+import { _AllClothes, _DressingRoom, _mergeProAllClothes, _Share, _Tweeting } from "./_GameData";
 import { _GameEffects3D } from "./_GameEffects3D";
 import { _Res } from "./_Res";
 import { _UI } from "./_UI";
@@ -9,27 +9,22 @@ import { _3DScene } from "./_3D";
 import { _SceneName } from "./_SceneName";
 import RecordManager from "../../TJ/RecordManager";
 
-/**表格中的其他类型*/
-export type _otherPro = {
-    icon: any;
-    putOn: any;
-} & lwg.DataAdmin._BaseProperty;
 
 class _Item extends LwgData._Item {
-    $data: _otherPro;
+    $data: _mergeProAllClothes;
     $button(): void {
         this._btnUp(this._Owner, (e: Laya.Event) => {
             if (this.$data.name === 'ads') {
                 return;
             }
-            if (_AllClothes._ins()._getProperty(this.$data.name, _AllClothes._ins()._property.complete)) {
-                _AllClothes._ins().accurateChange(this.$data['part'], this.$data.name);
+            if (this.$data.complete) {
+                _AllClothes._ins().accurateChange(this.$data.part, this.$data.name);
                 _GameEffects3D._showCloth(_3DScene._ins()._Owner);
             } else {
                 ADManager.ShowReward(() => {
                     if (_AllClothes._ins()._checkCondition(this.$data.name)) {
                         LwgDialogue._middleHint('恭喜获得新服装！');
-                        _AllClothes._ins().accurateChange(this.$data['part'], this.$data.name);
+                        _AllClothes._ins().accurateChange(this.$data.part, this.$data.name);
                     }
                 })
             }
@@ -38,7 +33,7 @@ class _Item extends LwgData._Item {
     $render(): void {
         if (!this.$data) return;
         if (this.$data.name === 'ads') {
-            !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
+            !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._ins().$prefab2D.NativeRoot.prefab, this._Owner);
             this._ImgChild('Mask').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
         } else {
             this._BoxChild('NativeRoot') && this._BoxChild('NativeRoot').destroy();
@@ -52,7 +47,7 @@ class _Item extends LwgData._Item {
             }
             // 如果是OPPO，直接获取图片，如果不是则获取表格中的图片数据
             if (this.$data.classify === _AllClothes._ins()._classify.DIY) {
-                if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
+                if (TJ.API.AppInfo.Channel() === TJ.Define.Channel.AppRt.OPPO_AppRt) {
                     this._ImgChild('Icon').skin = LwgOPPO._getStoragePic(this.$data.name);
                     this._ImgChild('Icon').size(110, 130);
                     this._ImgChild('Icon').scale(1, 1);
@@ -74,7 +69,6 @@ class _Item extends LwgData._Item {
 }
 
 export default class DressingRoom extends LwgScene._SceneBase {
-
     lwgOnAwake(): void {
         RecordManager.startAutoRecord();
         ADManager.TAPoint(TaT.PageShow, 'changepage');
@@ -148,7 +142,7 @@ export default class DressingRoom extends LwgScene._SceneBase {
                     // 非DIY分部位
                     for (let index = 0; index < _arr.length; index++) {
                         const obj = _arr[index];
-                        if (obj[_AllClothes._ins()._otherPro.part] === _element.name) {
+                        if (obj[_AllClothes._ins()._mergePro.part] === _element.name) {
                             arr.push(obj);
                         }
                     }

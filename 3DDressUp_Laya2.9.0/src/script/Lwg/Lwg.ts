@@ -144,8 +144,6 @@ export module Lwg {
         export const _PreLoadCutIn = {
             openName: null as string,
             closeName: null as string,
-            func: null as Function,
-            zOrder: null as number,
         }
         /**
          *预加载后打开场景，预加载内容将在预加载界面按照界面名称执行
@@ -155,11 +153,9 @@ export module Lwg {
          * @param {number} [zOrder] 指定层级，默认为最上层
          */
         export function _preLoadOpenScene(openName: string, closeName: string, func?: Function, zOrder?: number) {
-            _openScene(_BaseName.PreLoadCutIn, closeName, func);
             _PreLoadCutIn.openName = openName;
             _PreLoadCutIn.closeName = closeName;
-            _PreLoadCutIn.func = func;
-            _PreLoadCutIn.zOrder = zOrder;
+            _openScene(_BaseName.PreLoadCutIn, closeName, func, zOrder);
         }
         /**场景转换站，控制场景打开和关闭的一些事宜*/
         export class _SceneServe {
@@ -168,7 +164,7 @@ export module Lwg {
             static _openFunc: Function = null;
             static _closeSceneArr: Array<Laya.Scene> = [];
             static _closeZOder: number = 0;
-            //场景数量，和层级有关
+            //场景数量
             static _sceneNum: number = 1;
             /**当前打开场景放在最上面*/
             static _openZOderUp(): void {
@@ -2686,7 +2682,6 @@ export module Lwg {
     export module DataAdmin {
         /**双用，一作声明，而作属性值*/
         export class _BaseProperty {
-            constructor() { }
             /**名称是必须有的属性，可以是数字,不可以重名*/
             name?: any = 'name';
             /**用于排序或者是某些资源的索引关联*/
@@ -8941,31 +8936,29 @@ export module Lwg {
 
     export module PreLoadAdmin {
         /**3D场景的加载，其他3D物体，贴图，Mesh详见：  https://ldc2.layabox.com/doc/?nav=zh-ts-4-3-1   */
-        let _scene3D: Array<any> = [];
+        let _scene3D: Array<{ url: string, scene: Laya.Scene3D }> = [];
         /**3D预设的加载，其他3D物体，贴图，Mesh详见：  https://ldc2.layabox.com/doc/?nav=zh-ts-4-3-1   */
-        let _prefab3D: Array<any> = [];
+        let _prefab3D: Array<{ url: string, prefab3D: Laya.Sprite3D }> = [];
         /**模型网格详见：  https://ldc2.layabox.com/doc/?nav=zh-ts-4-3-1   */
-        let _mesh3D: Array<any> = [];
+        let _mesh3D: Array<{ url: string, mesh3D: Laya.Mesh }> = [];
         /**材质详见：  https://ldc2.layabox.com/doc/?nav=zh-ts-4-3-1   */
-        let _material: Array<any> = [];
+        let _material: Array<{ url: string, material: Laya.Material }> = [];
         /**2D纹理*/
-        let _texture: Array<any> = [];
+        let _texture: Array<{ url: string, texture: Laya.Texture }> = [];
         /**3D纹理加载详见：  https://ldc2.layabox.com/doc/?nav=zh-ts-4-3-1   */
-        let _texture2D: Array<any> = [];
-
+        let _texture2D: Array<{ url: string, texture2D: Laya.Texture2D }> = [];
         /**需要加载的图片资源列表,一般是界面的图片*/
-        let _pic2D: Array<any> = [];
+        let _pic2D: Array<string> = [];
         /**2D场景*/
-        let _scene2D: Array<any> = [];
+        let _scene2D: Array<string> = [];
         /**2D预制体*/
-        let _prefab2D: Array<string> = [];
-
+        let _prefab2D: Array<{ url: string, prefab2D: Laya.Prefab }> = [];
         /**数据表、场景和预制体的加载，在框架中，json数据表为必须加载的项目*/
-        let _json: Array<string> = [];
+        let _json: Array<{ url: string, dataArr: Array<any> }> = [];
         /**数据表、场景和预制体的加载，在框架中，json数据表为必须加载的项目*/
-        let _skeleton: Array<any> = [];
+        let _skeleton: Array<{ url: string, templet: Laya.Templet }> = [];
         /**特效列表中的tex2d*/
-        let _effectsTex2D: Array<any> = [];
+        let _effectsTex2D: Array<{ url: string, texture2D: Laya.Texture2D }> = [];
 
         /**进度条总长度,长度为以上三个加载资源类型的数组总长度*/
         export let _sumProgress: number = 0;
@@ -8976,19 +8969,36 @@ export module Lwg {
 
         /**两种类型，页面前加载还是初始化前*/
         export let _loadType: string = SceneAdmin._BaseName.PreLoad;
-        export enum _ListName {
-            scene3D = 'scene3D',
-            prefab3D = 'prefab3D',
-            mesh3D = 'mesh3D',
-            material = 'material',
-            texture = 'texture',
-            texture2D = 'texture2D',
-            pic2D = 'pic2D',
-            scene2D = 'scene2D',
-            prefab2D = 'prefab2D',
-            json = 'json',
-            skeleton = 'skeleton',
-            effectTex2D = 'effectTex2D',
+
+        /**如果需要加载一组数据,[url1.url2,...]，则可以将需要加载的数组进行遍历赋值给相对应的对象的url，直接加载整个数组也是成立的,只不过加载后，只能通过Laya.loader.getRes(url)获取*/
+        export type _ResType = {
+            $scene3D?: any;
+            $prefab3D?: any;
+            $mesh3D?: any;
+            $material?: any;
+            $texture?: any;
+            /**图片需要设置成不打包*/
+            $texture2D?: any;
+            $pic2D?: any;
+            $scene2D?: any;
+            $prefab2D?: any;
+            $json?: any;
+            $skeleton?: any;
+            $effectTex2D?: any;
+        }
+        export const _ListName: _ResType = {
+            $scene3D: '$scene3D',
+            $prefab3D: '$prefab3D',
+            $mesh3D: '$mesh3D',
+            $material: '$material',
+            $texture: '$texture',
+            $texture2D: '$texture2D',
+            $pic2D: '$pic2D',
+            $scene2D: '$scene2D',
+            $prefab2D: '$prefab2D',
+            $json: '$json',
+            $skeleton: '$skeleton',
+            $effectTex2D: '$effectTex2D',
         }
         /**当前进度条进度,起始位0，每加载成功1个资源，则加1,_currentProgress.value / _sumProgress为进度百分比*/
         export let _currentProgress = {
@@ -9050,54 +9060,50 @@ export module Lwg {
             moduleOnAwake(): void {
                 PreLoadAdmin._remakeLode();
             }
-            /**载入加载项*/
-            lwgStartLoding(any: any): void {
-                EventAdmin._notify(PreLoadAdmin._Event.importList, (any));
-            }
             moduleEvent(): void {
                 EventAdmin._registerOnce(_Event.importList, this, (listObj: {}) => {
-                    listObj[_ListName.effectTex2D] = Eff3DAdmin._tex2D;
+                    listObj[_ListName.$effectTex2D] = Eff3DAdmin._tex2D;
                     for (const key in listObj) {
                         if (Object.prototype.hasOwnProperty.call(listObj, key)) {
                             for (const key1 in listObj[key]) {
                                 if (Object.prototype.hasOwnProperty.call(listObj[key], key1)) {
-                                    const element = listObj[key][key1];
+                                    const obj = listObj[key][key1];
                                     switch (key) {
-                                        case _ListName.json:
-                                            _json.push(element);
+                                        case _ListName.$json:
+                                            _json.push(obj);
                                             break;
-                                        case _ListName.material:
-                                            _material.push(element);
+                                        case _ListName.$material:
+                                            _material.push(obj);
                                             break;
-                                        case _ListName.mesh3D:
-                                            _mesh3D.push(element);
+                                        case _ListName.$mesh3D:
+                                            _mesh3D.push(obj);
                                             break;
-                                        case _ListName.pic2D:
-                                            _pic2D.push(element);
+                                        case _ListName.$pic2D:
+                                            _pic2D.push(obj);
                                             break;
-                                        case _ListName.prefab2D:
-                                            _prefab2D.push(element);
+                                        case _ListName.$prefab2D:
+                                            _prefab2D.push(obj);
                                             break;
-                                        case _ListName.prefab3D:
-                                            _prefab3D.push(element);
+                                        case _ListName.$prefab3D:
+                                            _prefab3D.push(obj);
                                             break;
-                                        case _ListName.scene2D:
-                                            _scene2D.push(element);
+                                        case _ListName.$scene2D:
+                                            _scene2D.push(obj);
                                             break;
-                                        case _ListName.scene3D:
-                                            _scene3D.push(element);
+                                        case _ListName.$scene3D:
+                                            _scene3D.push(obj);
                                             break;
-                                        case _ListName.texture2D:
-                                            _texture2D.push(element);
+                                        case _ListName.$texture2D:
+                                            _texture2D.push(obj);
                                             break;
-                                        case _ListName.skeleton:
-                                            _skeleton.push(element);
+                                        case _ListName.$skeleton:
+                                            _skeleton.push(obj);
                                             break;
-                                        case _ListName.texture:
-                                            _texture.push(element);
+                                        case _ListName.$texture:
+                                            _texture.push(obj);
                                             break;
-                                        case _ListName.effectTex2D:
-                                            _effectsTex2D.push(element);
+                                        case _ListName.$effectTex2D:
+                                            _effectsTex2D.push(obj);
                                             break;
                                         default:
                                             break;
@@ -9119,24 +9125,20 @@ export module Lwg {
                         EventAdmin._notify(PreLoadAdmin._Event.stepLoding);
                     })
                 });
-                EventAdmin._register(_Event.stepLoding, this, () => { this.startLodingRule() });
+                EventAdmin._register(_Event.stepLoding, this, () => { this.start() });
                 EventAdmin._registerOnce(_Event.complete, this, () => {
                     Laya.timer.once(this.lwgAllComplete(), this, () => {
-                        LwgScene._SceneControl[_loadType] = this._Owner;
                         // 页面前
                         if (_loadType !== LwgScene._BaseName.PreLoad) {
-                            LwgScene._PreLoadCutIn.openName && this._openScene(LwgScene._PreLoadCutIn.openName);
-                            // console.log('预加载完毕开始打开界面！')
+                            this._openScene(LwgScene._PreLoadCutIn.openName);
                         } else {
                             AudioAdmin._playMusic();
-                            // 页面前
                             this._openScene(LwgScene._BaseName.Start, true, false, () => {
                                 _loadType = LwgScene._BaseName.PreLoadCutIn;
                             })
                         }
                     })
                 });
-
                 EventAdmin._register(_Event.progress, this, () => {
                     _currentProgress.value++;
                     if (_currentProgress.value < _sumProgress) {
@@ -9145,11 +9147,15 @@ export module Lwg {
                     }
                 });
             }
-            moduleOnEnable(): void {
-                _loadOrderIndex = 0;
+            moduleOnStart(): void {
+                LwgScene._SceneControl[_loadType] = this._Owner;
+            }
+            /**载入加载项*/
+            lwgStartLoding(any: any): void {
+                EventAdmin._notify(PreLoadAdmin._Event.importList, (any));
             }
             /**根据加载顺序依次加载,第一次加载将会在openAni动画结束之后*/
-            private startLodingRule(): void {
+            private start(): void {
                 if (_loadOrder.length <= 0) {
                     console.log('没有加载项');
                     EventAdmin._notify(PreLoadAdmin._Event.complete);
@@ -9179,6 +9185,7 @@ export module Lwg {
                         break;
 
                     case _scene2D:
+
                         Laya.loader.load(_scene2D[index], Laya.Handler.create(this, (any) => {
                             // 如果是数组则不会赋值,只能从getRes中获取
                             if (typeof _scene2D[index]['url'] === 'object') {
@@ -9253,7 +9260,7 @@ export module Lwg {
                                 if (tex == null) {
                                     console.log('XXXXXXXXXXX2D纹理' + _texture[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                 } else {
-                                    _texture[index]['texture'] = tex;
+                                    _texture[index].texture = tex;
                                     console.log('纹理' + _texture[index]['url'] + '加载完成！', '数组下标为：', index);
                                 }
                             }
@@ -9366,10 +9373,25 @@ export module Lwg {
                         break;
                 }
             }
+            private complete(): void {
+                AudioAdmin._playMusic();
+                this._openScene(LwgScene._BaseName.Start, true);
+            }
             /**每单个资源加载成功后，进度条每次增加后的回调，第一次加载将会在openAni动画结束之后*/
             lwgStepComplete(): void { }
             /**资源全部加载完成回调,每个游戏不一样,此方法执行后，自动进入init界面，也可以延时进入*/
             lwgAllComplete(): number { return 0 };
+        }
+
+        /**页面前的预加载*/
+        export class _PreLoadCutInScene extends _PreLoadScene {
+            $openName: string;
+            $closeName: string;
+            moduleOnAwake(): void {
+                PreLoadAdmin._remakeLode();
+                this.$openName = SceneAdmin._PreLoadCutIn.openName;
+                this.$closeName = SceneAdmin._PreLoadCutIn.closeName;
+            }
         }
     }
     /**配置模块，拉去资源，分包等*/

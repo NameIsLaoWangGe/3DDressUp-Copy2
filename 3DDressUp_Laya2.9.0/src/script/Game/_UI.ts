@@ -15,7 +15,7 @@ export class _UI {
         this.Scene = _Scene;
         this.Operation = _Scene['Operation'];
 
-        this.BtnAgain = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnAgain.prefab, _Scene, [200, 79]) as Laya.Image;
+        this.BtnAgain = LwgTools._Node.createPrefab(_Res._ins().$prefab2D.BtnAgain.prefab, _Scene, [200, 79]) as Laya.Image;
         LwgClick._on(LwgClick._Use.value, this.BtnAgain, this, null, null, () => {
             ADManager.TAPoint(TaT.BtnShow, 'next_lose');
             this.btnAgainClick && this.btnAgainClick();
@@ -27,7 +27,7 @@ export class _UI {
             this.btnCompleteClick && this.btnCompleteClick();
         })
 
-        this.BtnBack = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnBack.prefab, _Scene, [77, 79]) as Laya.Image;
+        this.BtnBack = LwgTools._Node.createPrefab(_Res._ins().$prefab2D.BtnBack.prefab, _Scene, [77, 79]) as Laya.Image;
         LwgClick._on(LwgClick._Use.value, this.BtnBack, this, null, null, () => {
             if (!_Guide._complete) return;
 
@@ -46,7 +46,7 @@ export class _UI {
             }
         })
 
-        this.BtnRollback = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnRollback.prefab, _Scene, [200, 79]) as Laya.Image;
+        this.BtnRollback = LwgTools._Node.createPrefab(_Res._ins().$prefab2D.BtnRollback.prefab, _Scene, [200, 79]) as Laya.Image;
         LwgClick._on(LwgClick._Use.value, this.BtnRollback, this, null, null, () => {
             if (!_Guide._complete) return;
             this.btnRollbackClick && this.btnRollbackClick();

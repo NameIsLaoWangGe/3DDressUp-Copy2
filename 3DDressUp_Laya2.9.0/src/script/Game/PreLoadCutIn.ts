@@ -4,21 +4,22 @@ import { _GameAni } from "./_GameAni";
 import { _AllClothes, _DIYClothes, _PreLoadCutIn } from "./_GameData";
 import { _CutInRes } from "./_Res";
 import { _SceneName } from "./_SceneName";
-export default class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
+export default class PreLoadCutIn extends LwgPreLoad._PreLoadCutInScene {
     lwgOpenAniAfter(): void {
         let time = 0;
         LwgTimer._frameNumLoop(1, 30, this, () => {
             time++;
             this._LabelVar('Schedule').text = `${time}%`;
         }, () => {
-            let obj = _CutInRes[LwgScene._PreLoadCutIn.openName];
-            obj = _CutInRes[LwgScene._PreLoadCutIn.openName] ? obj : {};
-            LwgEvent._notify(LwgPreLoad._Event.importList, [obj]);
+            let obj = _CutInRes[this.$openName];
+            obj = _CutInRes[this.$openName] ? obj : {};
+            this.lwgStartLoding(obj);
         })
+
     }
     lwgAllComplete(): number {
-        console.log('加载完成！')
-        switch (LwgScene._PreLoadCutIn.openName) {
+        console.log('加载完成！');
+        switch (this.$openName) {
             case _SceneName.MakePattern:
                 _3DDIYCloth._ins().remake(_DIYClothes._ins()._pitchClassify, _DIYClothes._ins()._pitchName);
                 _3DScene._ins().intoMakePattern();
@@ -42,7 +43,7 @@ export default class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
                 _DIYClothes._ins().getClothesArr();
                 break;
             case _SceneName.Start:
-                if (LwgScene._PreLoadCutIn.closeName === _SceneName.MakePattern && !_PreLoadCutIn._fromBack) {
+                if (this.$closeName === _SceneName.MakePattern && !_PreLoadCutIn._fromBack) {
                     this.iconPhoto();
                 } else {
                     _3DScene._ins().intoStart();

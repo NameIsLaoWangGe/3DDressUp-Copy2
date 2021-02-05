@@ -1237,15 +1237,11 @@
             SceneAdmin._PreLoadCutIn = {
                 openName: null,
                 closeName: null,
-                func: null,
-                zOrder: null,
             };
             function _preLoadOpenScene(openName, closeName, func, zOrder) {
-                _openScene(_BaseName.PreLoadCutIn, closeName, func);
                 SceneAdmin._PreLoadCutIn.openName = openName;
                 SceneAdmin._PreLoadCutIn.closeName = closeName;
-                SceneAdmin._PreLoadCutIn.func = func;
-                SceneAdmin._PreLoadCutIn.zOrder = zOrder;
+                _openScene(_BaseName.PreLoadCutIn, closeName, func, zOrder);
             }
             SceneAdmin._preLoadOpenScene = _preLoadOpenScene;
             class _SceneServe {
@@ -7738,26 +7734,27 @@
             let _prefab2D = [];
             let _json = [];
             let _skeleton = [];
+            ;
             let _effectsTex2D = [];
+            ;
             PreLoadAdmin._sumProgress = 0;
             PreLoadAdmin._loadOrder = [];
             PreLoadAdmin._loadOrderIndex = 0;
             PreLoadAdmin._loadType = SceneAdmin._BaseName.PreLoad;
-            let _ListName;
-            (function (_ListName) {
-                _ListName["scene3D"] = "scene3D";
-                _ListName["prefab3D"] = "prefab3D";
-                _ListName["mesh3D"] = "mesh3D";
-                _ListName["material"] = "material";
-                _ListName["texture"] = "texture";
-                _ListName["texture2D"] = "texture2D";
-                _ListName["pic2D"] = "pic2D";
-                _ListName["scene2D"] = "scene2D";
-                _ListName["prefab2D"] = "prefab2D";
-                _ListName["json"] = "json";
-                _ListName["skeleton"] = "skeleton";
-                _ListName["effectTex2D"] = "effectTex2D";
-            })(_ListName = PreLoadAdmin._ListName || (PreLoadAdmin._ListName = {}));
+            PreLoadAdmin._ListName = {
+                $scene3D: '$scene3D',
+                $prefab3D: '$prefab3D',
+                $mesh3D: '$mesh3D',
+                $material: '$material',
+                $texture: '$texture',
+                $texture2D: '$texture2D',
+                $pic2D: '$pic2D',
+                $scene2D: '$scene2D',
+                $prefab2D: '$prefab2D',
+                $json: '$json',
+                $skeleton: '$skeleton',
+                $effectTex2D: '$effectTex2D',
+            };
             PreLoadAdmin._currentProgress = {
                 get value() {
                     return this['len'] ? this['len'] : 0;
@@ -7813,53 +7810,50 @@
                 moduleOnAwake() {
                     PreLoadAdmin._remakeLode();
                 }
-                lwgStartLoding(any) {
-                    EventAdmin._notify(PreLoadAdmin._Event.importList, (any));
-                }
                 moduleEvent() {
                     EventAdmin._registerOnce(_Event.importList, this, (listObj) => {
-                        listObj[_ListName.effectTex2D] = Eff3DAdmin._tex2D;
+                        listObj[PreLoadAdmin._ListName.$effectTex2D] = Eff3DAdmin._tex2D;
                         for (const key in listObj) {
                             if (Object.prototype.hasOwnProperty.call(listObj, key)) {
                                 for (const key1 in listObj[key]) {
                                     if (Object.prototype.hasOwnProperty.call(listObj[key], key1)) {
-                                        const element = listObj[key][key1];
+                                        const obj = listObj[key][key1];
                                         switch (key) {
-                                            case _ListName.json:
-                                                _json.push(element);
+                                            case PreLoadAdmin._ListName.$json:
+                                                _json.push(obj);
                                                 break;
-                                            case _ListName.material:
-                                                _material.push(element);
+                                            case PreLoadAdmin._ListName.$material:
+                                                _material.push(obj);
                                                 break;
-                                            case _ListName.mesh3D:
-                                                _mesh3D.push(element);
+                                            case PreLoadAdmin._ListName.$mesh3D:
+                                                _mesh3D.push(obj);
                                                 break;
-                                            case _ListName.pic2D:
-                                                _pic2D.push(element);
+                                            case PreLoadAdmin._ListName.$pic2D:
+                                                _pic2D.push(obj);
                                                 break;
-                                            case _ListName.prefab2D:
-                                                _prefab2D.push(element);
+                                            case PreLoadAdmin._ListName.$prefab2D:
+                                                _prefab2D.push(obj);
                                                 break;
-                                            case _ListName.prefab3D:
-                                                _prefab3D.push(element);
+                                            case PreLoadAdmin._ListName.$prefab3D:
+                                                _prefab3D.push(obj);
                                                 break;
-                                            case _ListName.scene2D:
-                                                _scene2D.push(element);
+                                            case PreLoadAdmin._ListName.$scene2D:
+                                                _scene2D.push(obj);
                                                 break;
-                                            case _ListName.scene3D:
-                                                _scene3D.push(element);
+                                            case PreLoadAdmin._ListName.$scene3D:
+                                                _scene3D.push(obj);
                                                 break;
-                                            case _ListName.texture2D:
-                                                _texture2D.push(element);
+                                            case PreLoadAdmin._ListName.$texture2D:
+                                                _texture2D.push(obj);
                                                 break;
-                                            case _ListName.skeleton:
-                                                _skeleton.push(element);
+                                            case PreLoadAdmin._ListName.$skeleton:
+                                                _skeleton.push(obj);
                                                 break;
-                                            case _ListName.texture:
-                                                _texture.push(element);
+                                            case PreLoadAdmin._ListName.$texture:
+                                                _texture.push(obj);
                                                 break;
-                                            case _ListName.effectTex2D:
-                                                _effectsTex2D.push(element);
+                                            case PreLoadAdmin._ListName.$effectTex2D:
+                                                _effectsTex2D.push(obj);
                                                 break;
                                             default:
                                                 break;
@@ -7881,12 +7875,11 @@
                             EventAdmin._notify(PreLoadAdmin._Event.stepLoding);
                         });
                     });
-                    EventAdmin._register(_Event.stepLoding, this, () => { this.startLodingRule(); });
+                    EventAdmin._register(_Event.stepLoding, this, () => { this.start(); });
                     EventAdmin._registerOnce(_Event.complete, this, () => {
                         Laya.timer.once(this.lwgAllComplete(), this, () => {
-                            LwgScene._SceneControl[PreLoadAdmin._loadType] = this._Owner;
                             if (PreLoadAdmin._loadType !== LwgScene._BaseName.PreLoad) {
-                                LwgScene._PreLoadCutIn.openName && this._openScene(LwgScene._PreLoadCutIn.openName);
+                                this._openScene(LwgScene._PreLoadCutIn.openName);
                             }
                             else {
                                 AudioAdmin._playMusic();
@@ -7904,10 +7897,13 @@
                         }
                     });
                 }
-                moduleOnEnable() {
-                    PreLoadAdmin._loadOrderIndex = 0;
+                moduleOnStart() {
+                    LwgScene._SceneControl[PreLoadAdmin._loadType] = this._Owner;
                 }
-                startLodingRule() {
+                lwgStartLoding(any) {
+                    EventAdmin._notify(PreLoadAdmin._Event.importList, (any));
+                }
+                start() {
                     if (PreLoadAdmin._loadOrder.length <= 0) {
                         console.log('没有加载项');
                         EventAdmin._notify(PreLoadAdmin._Event.complete);
@@ -8011,7 +8007,7 @@
                                         console.log('XXXXXXXXXXX2D纹理' + _texture[index]['url'] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                     }
                                     else {
-                                        _texture[index]['texture'] = tex;
+                                        _texture[index].texture = tex;
                                         console.log('纹理' + _texture[index]['url'] + '加载完成！', '数组下标为：', index);
                                     }
                                 }
@@ -8120,11 +8116,23 @@
                             break;
                     }
                 }
+                complete() {
+                    AudioAdmin._playMusic();
+                    this._openScene(LwgScene._BaseName.Start, true);
+                }
                 lwgStepComplete() { }
                 lwgAllComplete() { return 0; }
                 ;
             }
             PreLoadAdmin._PreLoadScene = _PreLoadScene;
+            class _PreLoadCutInScene extends _PreLoadScene {
+                moduleOnAwake() {
+                    PreLoadAdmin._remakeLode();
+                    this.$openName = SceneAdmin._PreLoadCutIn.openName;
+                    this.$closeName = SceneAdmin._PreLoadCutIn.closeName;
+                }
+            }
+            PreLoadAdmin._PreLoadCutInScene = _PreLoadCutInScene;
         })(PreLoadAdmin = Lwg.PreLoadAdmin || (Lwg.PreLoadAdmin = {}));
         let InitAdmin;
         (function (InitAdmin) {
@@ -8355,156 +8363,160 @@
     let LwgAdmin = Lwg.InitAdmin;
 
     class _Res {
-    }
-    _Res._list = {
-        scene3D: {
-            MakeClothes: {
-                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/_Lwg3D/_Scene/LayaScene_3DDressUp/Conventional/3DDressUp.ls`,
-                Scene: null,
-            },
-        },
-        pic2D: {
-            Effects: "res/atlas/lwg/Effects.png",
-        },
-        prefab2D: {
-            NativeRoot: {
-                url: 'Prefab/NativeRoot.json',
-                prefab: new Laya.Prefab,
-            },
-            BtnAgain: {
-                url: 'Prefab/BtnAGainTow.json',
-                prefab: new Laya.Prefab,
-            },
-            BtnBack: {
-                url: 'Prefab/BtnBack3.json',
-                prefab: new Laya.Prefab,
-            },
-            BtnRollback: {
-                url: 'Prefab/BtnRollback.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_bottom_002_final: {
-                url: 'Prefab/diy_bottom_002_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_bottom_003_final: {
-                url: 'Prefab/diy_bottom_003_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_bottom_004_final: {
-                url: 'Prefab/diy_bottom_004_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_bottom_005_final: {
-                url: 'Prefab/diy_bottom_005_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_bottom_006_final: {
-                url: 'Prefab/diy_bottom_006_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_dress_001_final: {
-                url: 'Prefab/diy_dress_001_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_dress_002_final: {
-                url: 'Prefab/diy_dress_002_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_dress_003_final: {
-                url: 'Prefab/diy_dress_003_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_dress_004_final: {
-                url: 'Prefab/diy_dress_004_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_dress_005_final: {
-                url: 'Prefab/diy_dress_005_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_dress_006_final: {
-                url: 'Prefab/diy_dress_006_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_dress_007_final: {
-                url: 'Prefab/diy_dress_007_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_dress_008_final: {
-                url: 'Prefab/diy_dress_008_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_top_003_final: {
-                url: 'Prefab/diy_top_003_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_top_004_final: {
-                url: 'Prefab/diy_top_004_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_top_005_final: {
-                url: 'Prefab/diy_top_005_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_top_006_final: {
-                url: 'Prefab/diy_top_006_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_top_007_final: {
-                url: 'Prefab/diy_top_007_final.json',
-                prefab: new Laya.Prefab,
-            },
-            diy_top_008_final: {
-                url: 'Prefab/diy_top_008_final.json',
-                prefab: new Laya.Prefab,
-            },
-        },
-        texture: {},
-        texture2D: {
-            bgStart: {
-                url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgStart.jpg`,
-                texture2D: null,
-            },
-        },
-        scene2D: {
-            Start: `Scene/${'Start'}.json`,
-            Guide: `Scene/${'Guide'}.json`,
-            PreLoadStep: `Scene/${'PreLoadCutIn'}.json`,
-            MakePattern: `Scene/${'MakePattern'}.json`,
-            MakeTailor: `Scene/${'MakeTailor'}.json`,
-        },
-        json: {
-            GeneralClothes: {
-                url: `_LwgData/_DressingRoom/GeneralClothes.json`,
-                dataArr: new Array,
-            },
-            DIYClothes: {
-                url: `_LwgData/_MakeTailor/DIYClothes.json`,
-                dataArr: new Array,
-            },
-            DIYClothesDiff: {
-                url: `_LwgData/_MakeTailor/DIYClothesDiff.json`,
-                dataArr: new Array,
-            },
-            MakePattern: {
-                url: `_LwgData/_MakePattern/MakePattern.json`,
-                dataArr: new Array,
-            },
-            Ranking: {
-                url: `_LwgData/_Ranking/Ranking.json`,
-                dataArr: new Array,
-            },
-            CheckIn: {
-                url: `_LwgData/_CheckIn/CheckIn.json`,
-                dataArr: new Array,
+        constructor() {
+            this.$scene3D = {
+                MakeClothes: {
+                    url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/_Lwg3D/_Scene/LayaScene_3DDressUp/Conventional/3DDressUp.ls`,
+                    Scene: null,
+                },
+            };
+            this.$texture2D = {
+                bgStart: {
+                    url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgStart.jpg`,
+                    texture2D: null,
+                },
+            };
+            this.$scene2D = {
+                Start: `Scene/${'Start'}.json`,
+                Guide: `Scene/${'Guide'}.json`,
+                PreLoadStep: `Scene/${'PreLoadCutIn'}.json`,
+                MakePattern: `Scene/${'MakePattern'}.json`,
+                MakeTailor: `Scene/${'MakeTailor'}.json`,
+            };
+            this.$prefab2D = {
+                NativeRoot: {
+                    url: 'Prefab/NativeRoot.json',
+                    prefab: new Laya.Prefab,
+                },
+                BtnAgain: {
+                    url: 'Prefab/BtnAGainTow.json',
+                    prefab: new Laya.Prefab,
+                },
+                BtnBack: {
+                    url: 'Prefab/BtnBack3.json',
+                    prefab: new Laya.Prefab,
+                },
+                BtnRollback: {
+                    url: 'Prefab/BtnRollback.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_bottom_002_final: {
+                    url: 'Prefab/diy_bottom_002_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_bottom_003_final: {
+                    url: 'Prefab/diy_bottom_003_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_bottom_004_final: {
+                    url: 'Prefab/diy_bottom_004_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_bottom_005_final: {
+                    url: 'Prefab/diy_bottom_005_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_bottom_006_final: {
+                    url: 'Prefab/diy_bottom_006_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_dress_001_final: {
+                    url: 'Prefab/diy_dress_001_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_dress_002_final: {
+                    url: 'Prefab/diy_dress_002_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_dress_003_final: {
+                    url: 'Prefab/diy_dress_003_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_dress_004_final: {
+                    url: 'Prefab/diy_dress_004_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_dress_005_final: {
+                    url: 'Prefab/diy_dress_005_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_dress_006_final: {
+                    url: 'Prefab/diy_dress_006_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_dress_007_final: {
+                    url: 'Prefab/diy_dress_007_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_dress_008_final: {
+                    url: 'Prefab/diy_dress_008_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_top_003_final: {
+                    url: 'Prefab/diy_top_003_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_top_004_final: {
+                    url: 'Prefab/diy_top_004_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_top_005_final: {
+                    url: 'Prefab/diy_top_005_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_top_006_final: {
+                    url: 'Prefab/diy_top_006_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_top_007_final: {
+                    url: 'Prefab/diy_top_007_final.json',
+                    prefab: new Laya.Prefab,
+                },
+                diy_top_008_final: {
+                    url: 'Prefab/diy_top_008_final.json',
+                    prefab: new Laya.Prefab,
+                },
+            };
+            this.$json = {
+                GeneralClothes: {
+                    url: `_LwgData/_DressingRoom/GeneralClothes.json`,
+                    dataArr: new Array,
+                },
+                DIYClothes: {
+                    url: `_LwgData/_MakeTailor/DIYClothes.json`,
+                    dataArr: new Array,
+                },
+                DIYClothesDiff: {
+                    url: `_LwgData/_MakeTailor/DIYClothesDiff.json`,
+                    dataArr: new Array,
+                },
+                MakePattern: {
+                    url: `_LwgData/_MakePattern/MakePattern.json`,
+                    dataArr: new Array,
+                },
+                Ranking: {
+                    url: `_LwgData/_Ranking/Ranking.json`,
+                    dataArr: new Array,
+                },
+                CheckIn: {
+                    url: `_LwgData/_CheckIn/CheckIn.json`,
+                    dataArr: new Array,
+                }
+            };
+        }
+        static _ins() {
+            if (!this.ins) {
+                this.ins = new _Res();
             }
-        },
-    };
+            return this.ins;
+        }
+        ;
+        ;
+    }
     class _CutInRes {
     }
     _CutInRes.Start = {
-        texture2D: {
+        $texture2D: {
             bgStart: {
                 url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgStart.jpg`,
                 texture2D: null,
@@ -8512,7 +8524,7 @@
         }
     };
     _CutInRes.MakePattern = {
-        texture2D: {
+        $texture2D: {
             bgMakePattern: {
                 url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgMakePattern.jpg`,
                 texture2D: null,
@@ -8524,7 +8536,7 @@
         }
     };
     _CutInRes.DressingRoom = {
-        texture2D: {
+        $texture2D: {
             bgDressingRoom: {
                 url: `https://h5.tomatojoy.cn/res/ark/3d04671eec61b1e12a6c02e54c1e7320/1.0.0/3DDressUp/Bg/bgDressingRoom.jpg`,
                 texture2D: null,
@@ -8558,7 +8570,7 @@
         static _ins() {
             if (!this.ins) {
                 this.ins = new _3DScene();
-                this.ins._Owner = _Res._list.scene3D.MakeClothes.Scene;
+                this.ins._Owner = _Res._ins().$scene3D.MakeClothes.Scene;
                 Laya.stage.addChild(this.ins._Owner);
                 this.ins._Role = this.ins._Owner.getChildByName('Role');
                 this.ins._RoleFPos = new Laya.Vector3(this.ins._Role.transform.position.x, this.ins._Role.transform.position.y, this.ins._Role.transform.position.z);
@@ -8665,16 +8677,16 @@
             this.fillLight_Right1.active = false;
             this._MirrorCamera.active = false;
             if (whereFrom === _SceneName.PreLoad) {
-                this._bg1Mat.albedoTexture = _Res._list.texture2D.bgStart.texture2D;
+                this._bg1Mat.albedoTexture = _Res._ins().$texture2D.bgStart.texture2D;
             }
             else {
-                this._bg1Mat.albedoTexture = _CutInRes.Start.texture2D.bgStart.texture2D;
+                this._bg1Mat.albedoTexture = _CutInRes.Start.$texture2D.bgStart.texture2D;
             }
         }
         intogeDressingRoom() {
             _3DScene._ins().playStandAni();
             this._MirrorCamera.active = true;
-            this._bg1Mat.albedoTexture = _CutInRes.DressingRoom.texture2D.bgDressingRoom.texture2D;
+            this._bg1Mat.albedoTexture = _CutInRes.DressingRoom.$texture2D.bgDressingRoom.texture2D;
         }
         get mirrorSurface() {
             return this['_mirrorSurface'];
@@ -8704,13 +8716,13 @@
             this._Owner.active = true;
             this.fillLight_Left1.active = true;
             this.fillLight_Right1.active = true;
-            this._bg1Mat.albedoTexture = _CutInRes.MakePattern.texture2D.bgMakePattern.texture2D;
+            this._bg1Mat.albedoTexture = _CutInRes.MakePattern.$texture2D.bgMakePattern.texture2D;
         }
         intoMakeTailor() {
             _3DScene._ins()._Owner.active = false;
         }
         photoBg() {
-            this._bg1Mat.albedoTexture = _CutInRes.MakePattern.texture2D.bgPhoto.texture2D;
+            this._bg1Mat.albedoTexture = _CutInRes.MakePattern.$texture2D.bgPhoto.texture2D;
         }
         displayDress() {
             this._GBottoms.active = this._GTop.active = this._DBottoms.active = this._DTop.active = false;
@@ -8773,12 +8785,11 @@
     (function (_Ranking) {
         class _mergePro extends Lwg$1.DataAdmin._BaseProperty {
             constructor() {
-                super();
+                super(...arguments);
                 this.rankNum = 'rankNum';
                 this.fansNum = 'fansNum';
                 this.iconSkin = 'iconSkin';
             }
-            ;
         }
         _Ranking._mergePro = _mergePro;
         _Ranking._whereFrom = _SceneName.Start;
@@ -8792,7 +8803,7 @@
             }
             static _ins() {
                 if (!this.ins) {
-                    this.ins = new _Data('RankingData', _Res._list.json.Ranking.dataArr, true);
+                    this.ins = new _Data('RankingData', _Res._ins().$json.Ranking.dataArr, true);
                     this.ins._mergePro = new _mergePro();
                     if (!this.ins._arr[0]['iconSkin']) {
                         for (let index = 0; index < this.ins._arr.length; index++) {
@@ -8893,6 +8904,14 @@
             Event["BtnPersonalInfo"] = "StartBtnPersonalInfo";
         })(Event = _Start.Event || (_Start.Event = {}));
     })(_Start || (_Start = {}));
+    class _mergeProAllClothes extends Lwg$1.DataAdmin._BaseProperty {
+        constructor() {
+            super(...arguments);
+            this.icon = 'icon';
+            this.putOn = 'putOn';
+            this.part = 'part';
+        }
+    }
     class _AllClothes extends LwgData._Table {
         constructor() {
             super(...arguments);
@@ -8909,14 +8928,11 @@
                 Shoes: 'Shoes',
                 Hair: 'Hair',
             };
-            this._otherPro = {
-                putOn: 'putOn',
-                part: 'part'
-            };
         }
         static _ins() {
             if (!this.ins) {
-                this.ins = new _AllClothes('ClothesGeneral', _Res._list.json.GeneralClothes.dataArr, true);
+                this.ins = new _AllClothes('ClothesGeneral', _Res._ins().$json.GeneralClothes.dataArr, true);
+                this.ins._mergePro = new _mergeProAllClothes();
                 if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
                     this.ins._deleteObjByName('ads');
                 }
@@ -8948,7 +8964,7 @@
                 _classifySp.active = false;
                 for (let j = 0; j < partArr.length; j++) {
                     const obj = partArr[j];
-                    if (obj[this._otherPro.part] === _classifySp.name) {
+                    if (obj[this._mergePro.part] === _classifySp.name) {
                         _classifySp.active = true;
                         for (let k = 0; k < _classifySp.numChildren; k++) {
                             const cloth = _classifySp.getChildAt(k);
@@ -9039,13 +9055,13 @@
         }
         changeClothStart() {
             this.collectDIY();
-            const arr = this._getArrByProperty(this._otherPro.putOn, true);
+            const arr = this._getArrByProperty(this._mergePro.putOn, true);
             this.changeClass(this._classify.DIY, arr, false, true);
             this.changeClass(this._classify.General, arr, false, true);
             this.startSpecialSet();
         }
         changeCloth() {
-            const arr = this._getArrByProperty(this._otherPro.putOn, true);
+            const arr = this._getArrByProperty(this._mergePro.putOn, true);
             this.changeClass(this._classify.DIY, arr, true);
             this.changeClass(this._classify.General, arr, true);
         }
@@ -9108,7 +9124,7 @@
         }
         static _ins() {
             if (!this.ins) {
-                this.ins = new _DIYClothes('DIYClothes', _Res._list.json.DIYClothes.dataArr, true);
+                this.ins = new _DIYClothes('DIYClothes', _Res._ins().$json.DIYClothes.dataArr, true);
                 if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
                     this.ins._deleteObjByName('ads');
                 }
@@ -9142,7 +9158,7 @@
             return this.ClothesArr;
         }
         createClothes(name, Scene) {
-            const Cloth = LwgTools._Node.createPrefab(_Res._list.prefab2D[name]['prefab']);
+            const Cloth = LwgTools._Node.createPrefab(_Res._ins().$prefab2D[name]['prefab']);
             const CloBox = new Laya.Sprite;
             CloBox.width = Laya.stage.width;
             CloBox.height = Laya.stage.height;
@@ -9195,7 +9211,7 @@
             }
             static _ins() {
                 if (!this.ins) {
-                    this.ins = new _Pattern('_Pattern', _Res._list.json.MakePattern.dataArr, true);
+                    this.ins = new _Pattern('_Pattern', _Res._ins().$json.MakePattern.dataArr, true);
                     this.ins._pitchClassify = this.ins._classify.newYear;
                     if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
                         this.ins._deleteObjByName('ads');
@@ -9227,7 +9243,7 @@
             }
             static _ins() {
                 if (!this.ins) {
-                    this.ins = new _PatternDiff('_DIYClothesDiff', _Res._list.json.DIYClothesDiff.dataArr, false);
+                    this.ins = new _PatternDiff('_DIYClothesDiff', _Res._ins().$json.DIYClothesDiff.dataArr, false);
                 }
                 return this.ins;
             }
@@ -9416,7 +9432,7 @@
             }
             static _ins() {
                 if (!this.ins) {
-                    this.ins = new _Data('CheckIn', _Res._list.json.CheckIn.dataArr, true);
+                    this.ins = new _Data('CheckIn', _Res._ins().$json.CheckIn.dataArr, true);
                 }
                 return this.ins;
             }
@@ -9457,21 +9473,21 @@
         _Share._whereFrom = 'MakePattern';
     })(_Share || (_Share = {}));
 
-    class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
+    class PreLoadCutIn extends LwgPreLoad._PreLoadCutInScene {
         lwgOpenAniAfter() {
             let time = 0;
             LwgTimer._frameNumLoop(1, 30, this, () => {
                 time++;
                 this._LabelVar('Schedule').text = `${time}%`;
             }, () => {
-                let obj = _CutInRes[LwgScene._PreLoadCutIn.openName];
-                obj = _CutInRes[LwgScene._PreLoadCutIn.openName] ? obj : {};
-                LwgEvent._notify(LwgPreLoad._Event.importList, [obj]);
+                let obj = _CutInRes[this.$openName];
+                obj = _CutInRes[this.$openName] ? obj : {};
+                this.lwgStartLoding(obj);
             });
         }
         lwgAllComplete() {
             console.log('加载完成！');
-            switch (LwgScene._PreLoadCutIn.openName) {
+            switch (this.$openName) {
                 case _SceneName.MakePattern:
                     _3DDIYCloth._ins().remake(_DIYClothes._ins()._pitchClassify, _DIYClothes._ins()._pitchName);
                     _3DScene._ins().intoMakePattern();
@@ -9494,7 +9510,7 @@
                     _DIYClothes._ins().getClothesArr();
                     break;
                 case _SceneName.Start:
-                    if (LwgScene._PreLoadCutIn.closeName === _SceneName.MakePattern && !_PreLoadCutIn._fromBack) {
+                    if (this.$closeName === _SceneName.MakePattern && !_PreLoadCutIn._fromBack) {
                         this.iconPhoto();
                     }
                     else {
@@ -10492,7 +10508,7 @@
                                 });
                             }, true);
                         });
-                        this._evNotify(LwgPreLoad._Event.importList, [_Res._list]);
+                        this.lwgStartLoding(_Res._ins());
                     }, true);
                     LwgAni2D.fadeOut(this._ImgVar('Anti'), 0, 1, time * 4, 200);
                 }, delay * 4);
@@ -10644,7 +10660,7 @@
             }
             this.Scene = _Scene;
             this.Operation = _Scene['Operation'];
-            this.BtnAgain = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnAgain.prefab, _Scene, [200, 79]);
+            this.BtnAgain = LwgTools._Node.createPrefab(_Res._ins().$prefab2D.BtnAgain.prefab, _Scene, [200, 79]);
             LwgClick._on(LwgClick._Use.value, this.BtnAgain, this, null, null, () => {
                 ADManager.TAPoint(TaT.BtnShow, 'next_lose');
                 this.btnAgainClick && this.btnAgainClick();
@@ -10654,7 +10670,7 @@
                 e.stopPropagation();
                 this.btnCompleteClick && this.btnCompleteClick();
             });
-            this.BtnBack = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnBack.prefab, _Scene, [77, 79]);
+            this.BtnBack = LwgTools._Node.createPrefab(_Res._ins().$prefab2D.BtnBack.prefab, _Scene, [77, 79]);
             LwgClick._on(LwgClick._Use.value, this.BtnBack, this, null, null, () => {
                 if (!_Guide._complete)
                     return;
@@ -10673,7 +10689,7 @@
                     });
                 }
             });
-            this.BtnRollback = LwgTools._Node.createPrefab(_Res._list.prefab2D.BtnRollback.prefab, _Scene, [200, 79]);
+            this.BtnRollback = LwgTools._Node.createPrefab(_Res._ins().$prefab2D.BtnRollback.prefab, _Scene, [200, 79]);
             LwgClick._on(LwgClick._Use.value, this.BtnRollback, this, null, null, () => {
                 if (!_Guide._complete)
                     return;
@@ -11059,7 +11075,7 @@
             this._LableChild('UnlockWayNum').visible = false;
             if (this.$data.name == 'ads') {
                 if (!this._BoxChild('NativeRoot')) {
-                    LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
+                    LwgTools._Node.createPrefab(_Res._ins().$prefab2D.NativeRoot.prefab, this._Owner);
                 }
                 this._ImgChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
             }
@@ -11658,7 +11674,7 @@
         $render() {
             this._LableChild('UnlockWayNum').visible = false;
             if (this.$data.name === 'ads') {
-                !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
+                !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._ins().$prefab2D.NativeRoot.prefab, this._Owner);
                 this._LableChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = false;
             }
             else {
@@ -12320,15 +12336,15 @@
                 if (this.$data.name === 'ads') {
                     return;
                 }
-                if (_AllClothes._ins()._getProperty(this.$data.name, _AllClothes._ins()._property.complete)) {
-                    _AllClothes._ins().accurateChange(this.$data['part'], this.$data.name);
+                if (this.$data.complete) {
+                    _AllClothes._ins().accurateChange(this.$data.part, this.$data.name);
                     _GameEffects3D._showCloth(_3DScene._ins()._Owner);
                 }
                 else {
                     ADManager.ShowReward(() => {
                         if (_AllClothes._ins()._checkCondition(this.$data.name)) {
                             LwgDialogue._middleHint('恭喜获得新服装！');
-                            _AllClothes._ins().accurateChange(this.$data['part'], this.$data.name);
+                            _AllClothes._ins().accurateChange(this.$data.part, this.$data.name);
                         }
                     });
                 }
@@ -12338,7 +12354,7 @@
             if (!this.$data)
                 return;
             if (this.$data.name === 'ads') {
-                !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
+                !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._ins().$prefab2D.NativeRoot.prefab, this._Owner);
                 this._ImgChild('Mask').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
             }
             else {
@@ -12351,7 +12367,7 @@
                     this._ImgChild('Board').skin = null;
                 }
                 if (this.$data.classify === _AllClothes._ins()._classify.DIY) {
-                    if (TJ.API.AppInfo.Channel() == TJ.Define.Channel.AppRt.OPPO_AppRt) {
+                    if (TJ.API.AppInfo.Channel() === TJ.Define.Channel.AppRt.OPPO_AppRt) {
                         this._ImgChild('Icon').skin = LwgOPPO._getStoragePic(this.$data.name);
                         this._ImgChild('Icon').size(110, 130);
                         this._ImgChild('Icon').scale(1, 1);
@@ -12443,7 +12459,7 @@
                         let _arr = _AllClothes._ins()._getArrByClassify(_AllClothes._ins()._classify.General);
                         for (let index = 0; index < _arr.length; index++) {
                             const obj = _arr[index];
-                            if (obj[_AllClothes._ins()._otherPro.part] === _element.name) {
+                            if (obj[_AllClothes._ins()._mergePro.part] === _element.name) {
                                 arr.push(obj);
                             }
                         }

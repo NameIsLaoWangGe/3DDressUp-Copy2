@@ -13,7 +13,7 @@ export class _3DScene {
     static _ins() {
         if (!this.ins) {
             this.ins = new _3DScene();
-            this.ins._Owner = _Res._list.scene3D.MakeClothes.Scene;
+            this.ins._Owner = _Res._ins().$scene3D.MakeClothes.Scene;
             Laya.stage.addChild(this.ins._Owner);
 
             this.ins._Role = this.ins._Owner.getChildByName('Role') as Laya.MeshSprite3D;
@@ -207,15 +207,15 @@ export class _3DScene {
         this.fillLight_Right1.active = false;
         this._MirrorCamera.active = false;
         if (whereFrom === _SceneName.PreLoad) {
-            this._bg1Mat.albedoTexture = _Res._list.texture2D.bgStart.texture2D;
+            this._bg1Mat.albedoTexture = _Res._ins().$texture2D.bgStart.texture2D;
         } else {
-            this._bg1Mat.albedoTexture = _CutInRes.Start.texture2D.bgStart.texture2D;
+            this._bg1Mat.albedoTexture = _CutInRes.Start.$texture2D.bgStart.texture2D;
         }
     }
     intogeDressingRoom(): void {
         _3DScene._ins().playStandAni();
         this._MirrorCamera.active = true;
-        this._bg1Mat.albedoTexture = _CutInRes.DressingRoom.texture2D.bgDressingRoom.texture2D;
+        this._bg1Mat.albedoTexture = _CutInRes.DressingRoom.$texture2D.bgDressingRoom.texture2D;
     }
     /**镜子的渲染的开关*/
     get mirrorSurface(): boolean {
@@ -254,13 +254,13 @@ export class _3DScene {
         this._Owner.active = true;
         this.fillLight_Left1.active = true;
         this.fillLight_Right1.active = true;
-        this._bg1Mat.albedoTexture = _CutInRes.MakePattern.texture2D.bgMakePattern.texture2D;
+        this._bg1Mat.albedoTexture = _CutInRes.MakePattern.$texture2D.bgMakePattern.texture2D;
     }
     intoMakeTailor(): void {
         _3DScene._ins()._Owner.active = false;
     }
     photoBg(): void {
-        this._bg1Mat.albedoTexture = _CutInRes.MakePattern.texture2D.bgPhoto.texture2D;
+        this._bg1Mat.albedoTexture = _CutInRes.MakePattern.$texture2D.bgPhoto.texture2D;
     }
 
     displayDress(): void {

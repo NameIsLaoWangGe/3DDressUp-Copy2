@@ -5,7 +5,6 @@ import { _AllClothes } from "./_GameData";
 import { _GameEffects2D } from "./_GameEffects2D";
 import { _Res } from "./_Res";
 import { _SceneName } from "./_SceneName";
-
 export default class PreLoad extends LwgPreLoad._PreLoadScene {
     lwgOnAwake(): void {
         ADManager.TAPoint(TaT.PageShow, 'loadpage');
@@ -55,7 +54,7 @@ export default class PreLoad extends LwgPreLoad._PreLoadScene {
                             })
                         }, true)
                     })
-                    this._evNotify(LwgPreLoad._Event.importList, [_Res._list]);
+                    this.lwgStartLoding(_Res._ins());
                 }, true)
                 LwgAni2D.fadeOut(this._ImgVar('Anti'), 0, 1, time * 4, 200)
             }, delay * 4);
