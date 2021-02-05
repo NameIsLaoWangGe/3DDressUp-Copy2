@@ -1154,12 +1154,12 @@
                     if (bool) {
                         GameAdmin._switch = false;
                         TimerAdmin._switch = false;
-                        LwgClick._switch = true;
+                        LwgClick._aniSwitch = true;
                     }
                     else {
                         GameAdmin._switch = true;
                         TimerAdmin._switch = true;
-                        LwgClick._switch = false;
+                        LwgClick._aniSwitch = false;
                     }
                 }
             };
@@ -1346,7 +1346,7 @@
             _SceneServe._sceneNum = 1;
             SceneAdmin._SceneServe = _SceneServe;
             function _openScene(openName, closeName, func, zOrder) {
-                LwgClick._switch = false;
+                LwgClick._aniSwitch = false;
                 Laya.Scene.load('Scene/' + openName + '.json', Laya.Handler.create(this, function (scene) {
                     const openScene = ToolsAdmin._Node.checkChildren(Laya.stage, openName);
                     if (openScene) {
@@ -1371,7 +1371,7 @@
                 }
                 var closef = () => {
                     func && func();
-                    LwgClick._switch = true;
+                    LwgClick._aniSwitch = true;
                     SceneAdmin._SceneControl[closeName].close();
                 };
                 if (!SceneAniAdmin._closeSwitch.value) {
@@ -1381,14 +1381,14 @@
                     _SceneServe._closeZOderUP(LwgScene._SceneControl[closeName]);
                     const script = SceneAdmin._SceneControl[closeName][closeName];
                     if (script) {
-                        LwgClick._switch = false;
+                        LwgClick._aniSwitch = false;
                         let time0 = script.lwgCloseAni();
                         if (time0 !== null) {
                             SceneAniAdmin._closeAniDelay = time0;
                             script.lwgBeforeCloseAni();
                             Laya.timer.once(time0, this, () => {
                                 closef();
-                                LwgClick._switch = true;
+                                LwgClick._aniSwitch = true;
                             });
                         }
                         else {
@@ -1411,6 +1411,7 @@
                     if (!this[`_Scene${type}${name}`]) {
                         let Node = ToolsAdmin._Node.findChild2D(this.owner.scene, name);
                         if (Node) {
+                            NodeAdmin._addProperty(Node);
                             return this[`_Scene${type}${name}`] = Node;
                         }
                         else {
@@ -1473,7 +1474,7 @@
                 _btnDown(target, down, effect) {
                     LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, (e) => {
                         var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._switch && down && down(e);
+                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && down && down(e);
                         };
                         if (ClickAdmin._assign.length > 0) {
                             ClickAdmin._checkAssign(target.name) && func();
@@ -1486,7 +1487,7 @@
                 _btnMove(target, move, effect) {
                     LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, (e) => {
                         var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._switch && move && move(e);
+                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && move && move(e);
                         };
                         if (ClickAdmin._assign.length > 0) {
                             ClickAdmin._checkAssign(target.name) && func();
@@ -1499,7 +1500,7 @@
                 _btnUp(target, up, effect) {
                     LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, (e) => {
                         var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._switch && up && up(e);
+                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && up && up(e);
                         };
                         if (ClickAdmin._assign.length > 0) {
                             ClickAdmin._checkAssign(target.name) && func();
@@ -1512,7 +1513,7 @@
                 _btnOut(target, out, effect) {
                     LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, null, (e) => {
                         var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._switch && out && out(e);
+                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && out && out(e);
                         };
                         if (ClickAdmin._assign.length > 0) {
                             ClickAdmin._checkAssign(target.name) && func();
@@ -1525,7 +1526,7 @@
                 _btnFour(target, down, move, up, out, effect) {
                     LwgClick._on(effect == null ? effect : LwgClick._Use.value, target, this, (e) => {
                         var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._switch && down && down(e);
+                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && down && down(e);
                         };
                         if (ClickAdmin._assign.length > 0) {
                             ClickAdmin._checkAssign(target.name) && func();
@@ -1535,7 +1536,7 @@
                         }
                     }, (e) => {
                         var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._switch && move && move(e);
+                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && move && move(e);
                         };
                         if (ClickAdmin._assign.length > 0) {
                             ClickAdmin._checkAssign(target.name) && func();
@@ -1545,7 +1546,7 @@
                         }
                     }, (e) => {
                         var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._switch && up && up(e);
+                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && up && up(e);
                         };
                         if (ClickAdmin._assign.length > 0) {
                             ClickAdmin._checkAssign(target.name) && func();
@@ -1555,7 +1556,7 @@
                         }
                     }, (e) => {
                         var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._switch && out && out(e);
+                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && out && out(e);
                         };
                         if (ClickAdmin._assign.length > 0) {
                             ClickAdmin._checkAssign(target.name) && func();
@@ -1584,11 +1585,11 @@
                 ;
                 lwgOnDisable() { }
                 ;
-                onStageMouseDown(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageDown(e); }
+                onStageMouseDown(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._aniSwitch && this.lwgOnStageDown(e); }
                 ;
-                onStageMouseMove(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageMove(e); }
+                onStageMouseMove(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._aniSwitch && this.lwgOnStageMove(e); }
                 ;
-                onStageMouseUp(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._switch && this.lwgOnStageUp(e); }
+                onStageMouseUp(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._aniSwitch && this.lwgOnStageUp(e); }
                 ;
                 lwgOnStageDown(e) { }
                 ;
@@ -1698,7 +1699,7 @@
                     let time = this.lwgOpenAni();
                     if (time !== null) {
                         Laya.timer.once(time, this, () => {
-                            LwgClick._switch = true;
+                            LwgClick._aniSwitch = true;
                             this.lwgOpenAniAfter();
                             this.lwgButton();
                             _SceneServe._close();
@@ -2694,7 +2695,7 @@
             function _commonOpenAni(Scene) {
                 var afterAni = () => {
                     LwgScene._SceneServe._close();
-                    LwgClick._switch = true;
+                    LwgClick._aniSwitch = true;
                     if (Scene[Scene.name]) {
                         Scene[Scene.name].lwgOpenAniAfter();
                         Scene[Scene.name].lwgButton();
@@ -3058,7 +3059,7 @@
             StorageAdmin._Object = _Object;
             function _num(name, _func, initial) {
                 if (!this[`_num${name}`]) {
-                    this[`_num${name}`] = {
+                    const obj = {
                         get value() {
                             if (Laya.LocalStorage.getItem(name)) {
                                 return Number(Laya.LocalStorage.getItem(name));
@@ -3080,6 +3081,7 @@
                             this['_func'] && this['_func']();
                         }
                     };
+                    this[`_num${name}`] = obj;
                 }
                 if (_func) {
                     this[`_num${name}`]['_func'] = _func;
@@ -3108,7 +3110,7 @@
                             Laya.LocalStorage.removeItem(name);
                         },
                         func() {
-                            _func && _func();
+                            this['_func'] && this['_func']();
                         }
                     };
                 }
@@ -5633,9 +5635,11 @@
         })(Eff2DAdmin = Lwg.Eff2DAdmin || (Lwg.Eff2DAdmin = {}));
         let ClickAdmin;
         (function (ClickAdmin) {
-            ClickAdmin._switch = true;
+            ClickAdmin._aniSwitch = true;
             ClickAdmin._absoluteSwitch = true;
             ClickAdmin._assign = [];
+            ClickAdmin._assignIncludeStage = [];
+            ClickAdmin._assignExcludeStage = [];
             ClickAdmin._stageSwitch = true;
             function _checkAssign(name) {
                 let assign = false;
@@ -5708,9 +5712,13 @@
             ClickAdmin._off = _off;
             class _NoEffect {
                 down() { }
+                ;
                 move() { }
+                ;
                 up() { }
+                ;
                 out() { }
+                ;
             }
             ClickAdmin._NoEffect = _NoEffect;
             class _Largen {
@@ -5719,6 +5727,7 @@
                     AudioAdmin._playSound(LwgClick._audioUrl);
                 }
                 move() { }
+                ;
                 up(event) {
                     event.currentTarget.scale(1, 1);
                 }
@@ -5733,6 +5742,7 @@
                     AudioAdmin._playSound(LwgClick._audioUrl);
                 }
                 move() { }
+                ;
                 up(event) {
                     event.currentTarget.scale(1, 1);
                 }
@@ -5901,7 +5911,7 @@
                     delayed = 0;
                 }
                 if (!click) {
-                    LwgClick._switch = false;
+                    LwgClick._aniSwitch = false;
                 }
                 Laya.Tween.to(node, { x: node.x - range }, time, null, Laya.Handler.create(this, function () {
                     Laya.Tween.to(node, { x: node.x + range * 2 }, time, null, Laya.Handler.create(this, function () {
@@ -5910,7 +5920,7 @@
                                 func();
                             }
                             if (!click) {
-                                LwgClick._switch = true;
+                                LwgClick._aniSwitch = true;
                             }
                         }));
                     }));
@@ -5968,14 +5978,14 @@
             function fadeOut(node, alpha1, alpha2, time, delayed, func, stageClick) {
                 node.alpha = alpha1;
                 if (stageClick) {
-                    LwgClick._switch = false;
+                    LwgClick._aniSwitch = false;
                 }
                 Laya.Tween.to(node, { alpha: alpha2 }, time, null, Laya.Handler.create(this, function () {
                     if (func) {
                         func();
                     }
                     if (stageClick) {
-                        LwgClick._switch = true;
+                        LwgClick._aniSwitch = true;
                     }
                 }), delayed ? delayed : 0);
             }
@@ -9516,7 +9526,8 @@
                 LwgTools._Draw.cameraToSprite(_3DScene._ins()._MainCamara, sp);
                 LwgTimer._frameOnce(5, this, () => {
                     const base64Icon = LwgTools._Draw.screenshot(sp, 0.5);
-                    _DIYClothes._ins()._setPitchProperty(_DIYClothes._ins()._otherPro.icon, base64Icon);
+                    Laya.LocalStorage.setItem(`${_DIYClothes._ins()._pitchName}/icon`, base64Icon);
+                    _DIYClothes._ins()._setPitchProperty(_DIYClothes._ins()._otherPro.icon, 'have');
                     _AllClothes._ins().changeAfterMaking();
                     _3DScene._ins().intoStart();
                 });
@@ -11183,13 +11194,13 @@
                 this._evNotify(_MakeTailor.Event.scissorRemove, [() => {
                         _TaskClothes._ins().again(this._Owner);
                     }]);
-                LwgClick._switch = false;
+                LwgClick._aniSwitch = false;
                 LwgTimer._frameOnce(60, this, () => {
                     this.UI.operationAppear(() => {
                         this.UI.btnAgainVinish(null, 200);
                         this.UI.btnCompleteAppear();
                     });
-                    LwgClick._switch = true;
+                    LwgClick._aniSwitch = true;
                 });
             };
         }
@@ -12316,7 +12327,7 @@
                 else {
                     ADManager.ShowReward(() => {
                         if (_AllClothes._ins()._checkCondition(this.$data.name)) {
-                            LwgDialogue.createHint_Middle('恭喜获得新服装！');
+                            LwgDialogue._middleHint('恭喜获得新服装！');
                             _AllClothes._ins().accurateChange(this.$data['part'], this.$data.name);
                         }
                     });
@@ -12324,6 +12335,8 @@
             }, null);
         }
         $render() {
+            if (!this.$data)
+                return;
             if (this.$data.name === 'ads') {
                 !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
                 this._ImgChild('Mask').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
@@ -12344,7 +12357,7 @@
                         this._ImgChild('Icon').scale(1, 1);
                     }
                     else {
-                        this._ImgChild('Icon').skin = this.$data.icon;
+                        this._ImgChild('Icon').skin = Laya.LocalStorage.getItem(`${this.$data.name}/icon`);
                     }
                 }
                 else {
@@ -12381,7 +12394,7 @@
             if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
                 this._ImgVar('BtnComplete').y += 80;
             }
-            this._SpriteVar('Mirror').x = Laya.stage.width * 0.234;
+            this._SpriteVar('Mirror').x = Laya.stage.width / 2 - 450;
         }
         lwgOnStart() {
             _AllClothes._ins()._List.refresh();
@@ -13145,7 +13158,7 @@
                 if (_CheckIn._immediately.value < 4) {
                     ADManager.ShowReward(() => {
                         _CheckIn._immediately.value++;
-                        this._LabelVar('ImmediatelyNum').text = `(${_CheckIn._immediately.value} / 4()`;
+                        this._LabelVar('ImmediatelyNum').text = `(${_CheckIn._immediately.value} / 4)`;
                         if (_CheckIn._immediately.value >= 4) {
                             this._ImgVar('BtnImmediately').visible = false;
                             const gP1 = this._ImgVar('GuideTab1')._lwg.gPoint;

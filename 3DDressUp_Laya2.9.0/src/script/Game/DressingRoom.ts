@@ -28,7 +28,7 @@ class _Item extends LwgData._Item {
             } else {
                 ADManager.ShowReward(() => {
                     if (_AllClothes._ins()._checkCondition(this.$data.name)) {
-                        LwgDialogue.createHint_Middle('恭喜获得新服装！');
+                        LwgDialogue._middleHint('恭喜获得新服装！');
                         _AllClothes._ins().accurateChange(this.$data['part'], this.$data.name);
                     }
                 })
@@ -36,6 +36,7 @@ class _Item extends LwgData._Item {
         }, null)
     }
     $render(): void {
+        if (!this.$data) return;
         if (this.$data.name === 'ads') {
             !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._list.prefab2D.NativeRoot.prefab, this._Owner);
             this._ImgChild('Mask').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
@@ -56,7 +57,7 @@ class _Item extends LwgData._Item {
                     this._ImgChild('Icon').size(110, 130);
                     this._ImgChild('Icon').scale(1, 1);
                 } else {
-                    this._ImgChild('Icon').skin = this.$data.icon;
+                    this._ImgChild('Icon').skin = Laya.LocalStorage.getItem(`${this.$data.name}/icon`);
                 }
             } else {
                 this._ImgChild('Icon').size(null, null);
@@ -93,7 +94,7 @@ export default class DressingRoom extends LwgScene._SceneBase {
         if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
             this._ImgVar('BtnComplete').y += 80;
         }
-        this._SpriteVar('Mirror').x = Laya.stage.width * 0.234;
+        this._SpriteVar('Mirror').x = Laya.stage.width / 2 - 450;
     }
 
     UI: _UI;

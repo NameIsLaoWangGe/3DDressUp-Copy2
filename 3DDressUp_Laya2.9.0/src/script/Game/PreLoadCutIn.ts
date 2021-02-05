@@ -74,7 +74,8 @@ export default class PreLoadCutIn extends LwgPreLoad._PreLoadScene {
             // 少许延迟防止绘制失败
             LwgTimer._frameOnce(5, this, () => {
                 const base64Icon = LwgTools._Draw.screenshot(sp, 0.5);
-                _DIYClothes._ins()._setPitchProperty(_DIYClothes._ins()._otherPro.icon, base64Icon);
+                Laya.LocalStorage.setItem(`${_DIYClothes._ins()._pitchName}/icon`, base64Icon);
+                _DIYClothes._ins()._setPitchProperty(_DIYClothes._ins()._otherPro.icon, 'have');
                 _AllClothes._ins().changeAfterMaking();
                 _3DScene._ins().intoStart();
             })

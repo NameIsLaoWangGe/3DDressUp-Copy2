@@ -2840,7 +2840,7 @@ export module Lwg {
             /**表格中的Tap*/
             _Tap: Laya.List;
             /**
-             * 注意，长字符串，例如图片信息不要存在表格中，表格中只有短值，否则可能会超出单条存储大小，并且不易于版本更新
+             * 注意，长字符串，例如图片信息不要存在表格中，表格中只有短值，否则可能会超出单条存储大小，并且导致加载延迟，数据无法第一时间加载完成，并且不易于版本更新
              * @param {string} tableName 名称,本地存储也是这个名字
              * @param {Array<any>} tableArr 数据表数组
              * @param localStorage 是否存储在本地
@@ -5815,14 +5815,35 @@ export module Lwg {
 
     /**点击事件模块 */
     export module ClickAdmin {
-        /**点击事件开关，主要是场景切换控制按钮的点击*/
+        /**点击事件开关，主要是场景切换动画中控制按钮的点击*/
         export let _aniSwitch = true;
         /**点击事件绝对开关，不到不得已不要用，优先级高于_aniSwitch*/
         export let _absoluteSwitch = true;
         /**记录当前可以点击的按钮，其他按钮，包括舞台都不可以点击，可用于新手引导,用过之后一定要记得变为[],长度变为0*/
         export let _assign: string[] = [];
+        /**记录当前可以点击的按钮，其他按钮，包括舞台都不可以点击，可用于新手引导,用过之后一定要记得变为[],长度变为0*/
+        export let _assignIncludeStage: string[] = [];
+        /**记录当前可以点击的按钮，其他按钮，包括舞台都不可以点击，可用于新手引导,用过之后一定要记得变为[],长度变为0*/
+        export let _assignExcludeStage: string[] = [];
         /**单独控制lwgStage点击开关*/
         export let _stageSwitch = true;
+
+        // /**筛选*/
+        // export let _filter = {
+        //     get value(): string {
+        //         return this['ClickAdmin/filter'] ? this['ClickAdmin/filter'] : 'all';
+        //     },
+        //     set value(val: string) {
+        //         this['ClickAdmin/filter'] = val;
+        //     }
+        // }
+        // export let filterType = {
+        //     all: 'all',
+        //     none: 'none',
+        //     stage: 'stage',
+        //     button: 'button',
+        //     assign: 'assign',
+        // }
 
         /**
          * @export 通过一个按钮名称检测其是否没有被屏蔽，返回true是没有被屏蔽，false为屏蔽
@@ -5862,7 +5883,7 @@ export module Lwg {
         }
 
         /**
-         * @export 根据点击效果返回控制对象
+         * @export 根据点击效果类型返回效果控制对象
          * @param {string} effectType 类型
          * @return {*}  {*}
          */
@@ -5932,10 +5953,10 @@ export module Lwg {
          * 没有效果的点击事件，有时候用于防止界面的事件穿透
          */
         export class _NoEffect {
-            down(): void { }
-            move(): void { }
-            up(): void { }
-            out(): void { }
+            down(): void { };
+            move(): void { };
+            up(): void { };
+            out(): void { };
         }
         /**
          * 点击放大的按钮点击效果,每个类是一种效果，和点击的声音一一对应
@@ -5945,7 +5966,7 @@ export module Lwg {
                 event.currentTarget.scale(1.1, 1.1);
                 AudioAdmin._playSound(LwgClick._audioUrl);
             }
-            move(): void { }
+            move(): void { };
             up(event: Laya.Event): void {
                 event.currentTarget.scale(1, 1);
             }
@@ -5961,9 +5982,8 @@ export module Lwg {
             down(event: Laya.Event): void {
                 event.currentTarget.scale(0.9, 0.9);
                 AudioAdmin._playSound(LwgClick._audioUrl);
-
             }
-            move(): void { }
+            move(): void { };
             up(event: Laya.Event): void {
                 event.currentTarget.scale(1, 1);
             }

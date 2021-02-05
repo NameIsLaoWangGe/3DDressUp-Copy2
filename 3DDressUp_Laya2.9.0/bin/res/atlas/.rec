@@ -58,7 +58,7 @@ P FB43F5CB expression4.png
 P 5CB5A533 expression5.png
 P C0421F62 newYear1.png
 P ADDC603F newYear2.png
-P DBD4FE1E newYear3.png
+P 8DBB4AB0 newYear3.png
 P A065CBCA newYear4.png
 P 2658F7DF newYear5.png
 P EAA982D1 pink1.png
@@ -278,17 +278,14 @@ P 7882721D Shoes_s.png
 P 4B7FF19A Top.png
 P 3B711D8D Top_s.png
 D Game/UI/MakeTailor/diy_bottom_002_final
-P EBA39A10 diy_bottom_002_cut.png
 P 9F8E6ED4 q1.png
 R ED53CF9E s1.png
 P B78AB826 x1.png
 D Game/UI/MakeTailor/diy_bottom_003_final
-P F56A3981 diy_bottom_003_cut.png
 R DEFC7498 q1.png
 R 9AC29CEE s1.png
 R DD26E45A x1.png
 D Game/UI/MakeTailor/diy_bottom_004_final
-P B6550C73 diy_bottom_004_cut.png
 R B07CCF13 q1.png
 P 1014DFBD s1.png
 R 11D28AB4 s2.png
@@ -297,7 +294,6 @@ P 3C8E9C85 x1.png
 P EB950705 x2.png
 P D1483E9E x3.png
 D Game/UI/MakeTailor/diy_bottom_005_final
-P F0183338 diy_bottom_005_cut.png
 R C9BAB552 p1.png
 P FB40ED01 s1.png
 P 0B4DCB81 s2.png
@@ -308,7 +304,6 @@ P 576C2B53 x2.png
 P 7A276611 x3.png
 P 22756F44 x4.png
 D Game/UI/MakeTailor/diy_bottom_006_final
-P 70121EF0 diy_bottom_006_cut.png
 R 5F3A0686 q1.png
 P A6FAA430 s1.png
 P 56FF22C7 s2.png
@@ -316,7 +311,6 @@ P 47942BB5 x1.png
 P EF967B41 x2.png
 D Game/UI/MakeTailor/diy_dress_001_final
 R 97A8E227 1.png
-P 1C497BAA diy_dress_001_cut.png
 P E0B7B0FC s1.png
 P 75A99747 s2.png
 P 0CA17FF2 s3.png
@@ -324,7 +318,6 @@ P 63204EB8 x1.png
 P 86FE1C66 x2.png
 P A9B958BA x3.png
 D Game/UI/MakeTailor/diy_dress_002_final
-P F0595826 diy_dress_002_cut.png
 P 8A286FA4 q1.png
 P EA585B36 s1.png
 P 7033F485 s2.png
@@ -335,7 +328,6 @@ P 590D685E x2.png
 P ED605963 x3.png
 P 7F5AC52B x4.png
 D Game/UI/MakeTailor/diy_dress_003_final
-P 7B168678 diy_dress_003_cut.png
 R B8FF0F17 p1.png
 P A5AF9920 s1.png
 P B0B99934 s2.png
@@ -356,7 +348,6 @@ P 5B2F15DC x7.png
 P 49DCAD2B x8.png
 P 5F901462 x9.png
 D Game/UI/MakeTailor/diy_dress_004_final
-P 3BF6D2C7 diy_dress_004_cut.png
 R 4818D513 q1.png
 P 52338252 s1.png
 P 0667AEC4 s2.png
@@ -367,7 +358,6 @@ P DF1FB882 x2.png
 P 48566B6D x3.png
 P 5B6A53D0 x4.png
 D Game/UI/MakeTailor/diy_dress_005_final
-P D94A2FD7 diy_dress_005_cut.png
 P A3B84275 q1.png
 P 9C41EADF s1.png
 P AAD3CD0F s2.png
@@ -376,7 +366,6 @@ P 200E2BD0 x1.png
 P 248FD4EC x2.png
 P 2CA725E6 x3.png
 D Game/UI/MakeTailor/diy_dress_006_final
-P 30BE361E diy_dress_006_cut.png
 R 18E5162A q1.png
 P 97AC2CE1 s1.png
 P 059C0CD2 s2.png
@@ -387,7 +376,6 @@ P C35D2659 x2.png
 P 06162A1F x3.png
 P DBE7BBA4 x4.png
 D Game/UI/MakeTailor/diy_dress_007_final
-P E4727AAC diy_dress_007_cut.png
 R B09B549F q1.png
 P 2D5EB6EB s1.png
 P 5A43F4AB s2.png
@@ -400,7 +388,6 @@ P AAED44FB x3 .png
 P 90452E74 x4 .png
 P B7868144 x5 .png
 D Game/UI/MakeTailor/diy_dress_008_final
-P 2AFA90F8 diy_dress_008_cut.png
 R 53584E6D p1.png
 P A62240D1 s1.png
 P 1152966E s2.png
@@ -415,8 +402,7 @@ P FCBD56F6 x4.png
 P 9C7A824C x5.png
 P 112C87C0 x6.png
 D Game/UI/MakeTailor/diy_top_003_final
-P BA13CFBE diy_top_003_cut.png
-P 4F4F4811 q1.png
+P CD432C9E q1.png
 P 4C431B93 s1.png
 P 43F59F26 s2.png
 P AABEB318 s3.png
@@ -434,7 +420,6 @@ P 25280DEC x6.png
 P 2B355B62 x7.png
 P F19A7425 x8.png
 D Game/UI/MakeTailor/diy_top_004_final
-P 8E2F2DEF diy_top_004_cut.png
 P A0DB0B4B q1.png
 P A737CAE2 s1.png
 P BBD6CD26 s2.png
@@ -449,7 +434,6 @@ P 162F293C x4.png
 P B7A26201 x5.png
 P 573FFC1F x6.png
 D Game/UI/MakeTailor/diy_top_005_final
-P 45F64995 diy_top_005_cut.png
 R 00E7E591 q1.png
 P BB2E2225 s1.png
 P FDE8869D s3.png
@@ -462,7 +446,6 @@ P FA458C73 x3.png
 P B17D8C66 x4.png
 P 70B20960 x5.png
 D Game/UI/MakeTailor/diy_top_006_final
-P D6F65BA4 diy_top_006_cut.png
 R BE4C108B q1.png
 P 7327C033 s1.png
 P 880448D4 s2.png
@@ -473,7 +456,6 @@ P 3B7503D6 x2.png
 P 7F60E245 x3.png
 P 219742AE x4.png
 D Game/UI/MakeTailor/diy_top_007_final
-P 4C882DAB diy_top_007_cut.png
 R 9AA529FA p1.png
 P 563FD49B s1.png
 P F5BBCAB0 s2.png
@@ -488,7 +470,6 @@ P 5222D989 x4.png
 P A9AF380E x5.png
 P 343BD2C8 x6.png
 D Game/UI/MakeTailor/diy_top_008_final
-P 378635B3 diy_top_008_cut.png
 R 2D14BD59 q1.png
 P 580E7A49 s1.png
 P 997AAFAD s2.png
