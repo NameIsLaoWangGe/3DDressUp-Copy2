@@ -1,0 +1,10 @@
+[
+  {
+    "flatMessage": "Cannot find module './_SceneName'.",
+    "formatted": "\u001b[96m../../../../Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/BackHint.ts\u001b[0m:\u001b[93m4\u001b[0m:\u001b[93m28\u001b[0m - \u001b[91merror\u001b[0m\u001b[90m TS2307: \u001b[0mCannot find module './_SceneName'.\r\n\r\n\u001b[7m4\u001b[0m import { _SceneName } from \"./_SceneName\";\r\n\u001b[7m \u001b[0m \u001b[91m                           ~~~~~~~~~~~~~~\u001b[0m\r\n",
+    "category": 1,
+    "code": 2307,
+    "type": "semantic",
+    "fileLine": "D:/Game/project/3DDressUp/Copy2/3DDressUp_Laya2.9.0/src/script/Game/BackHint.ts(4,28)"
+  }
+]

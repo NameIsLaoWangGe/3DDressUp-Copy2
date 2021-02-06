@@ -292,7 +292,7 @@ class _Item extends LwgData._Item {
         this._LableChild('UnlockWayNum').visible = false;
         if (this.$data.name == 'ads') {
             if (!this._BoxChild('NativeRoot')) {
-                LwgTools._Node.createPrefab(_Res._ins().$prefab2D.NativeRoot.prefab, this._Owner);
+                LwgTools._Node.createPrefab(  _Res.$prefab2D.NativeRoot.prefab2D, this._Owner);
             }
             this._ImgChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
         } else {

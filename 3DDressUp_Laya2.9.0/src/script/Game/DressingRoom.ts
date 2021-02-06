@@ -33,7 +33,7 @@ class _Item extends LwgData._Item {
     $render(): void {
         if (!this.$data) return;
         if (this.$data.name === 'ads') {
-            !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(_Res._ins().$prefab2D.NativeRoot.prefab, this._Owner);
+            !this._BoxChild('NativeRoot') && LwgTools._Node.createPrefab(  _Res.$prefab2D.NativeRoot.prefab2D, this._Owner);
             this._ImgChild('Mask').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
         } else {
             this._BoxChild('NativeRoot') && this._BoxChild('NativeRoot').destroy();

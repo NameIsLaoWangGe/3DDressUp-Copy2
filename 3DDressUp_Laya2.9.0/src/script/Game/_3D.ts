@@ -13,7 +13,7 @@ export class _3DScene {
     static _ins() {
         if (!this.ins) {
             this.ins = new _3DScene();
-            this.ins._Owner = _Res._ins().$scene3D.MakeClothes.Scene;
+            this.ins._Owner = _Res.$scene3D.MakeClothes.scene3D;
             Laya.stage.addChild(this.ins._Owner);
 
             this.ins._Role = this.ins._Owner.getChildByName('Role') as Laya.MeshSprite3D;
@@ -207,7 +207,7 @@ export class _3DScene {
         this.fillLight_Right1.active = false;
         this._MirrorCamera.active = false;
         if (whereFrom === _SceneName.PreLoad) {
-            this._bg1Mat.albedoTexture = _Res._ins().$texture2D.bgStart.texture2D;
+            this._bg1Mat.albedoTexture =  _Res.$texture2D.bgStart.texture2D;
         } else {
             this._bg1Mat.albedoTexture = _CutInRes.Start.$texture2D.bgStart.texture2D;
         }

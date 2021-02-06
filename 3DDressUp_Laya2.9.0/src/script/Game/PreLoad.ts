@@ -54,7 +54,7 @@ export default class PreLoad extends LwgPreLoad._PreLoadScene {
                             })
                         }, true)
                     })
-                    this.lwgStartLoding(_Res._ins());
+                    this.lwgStartLoding(_Res);
                 }, true)
                 LwgAni2D.fadeOut(this._ImgVar('Anti'), 0, 1, time * 4, 200)
             }, delay * 4);

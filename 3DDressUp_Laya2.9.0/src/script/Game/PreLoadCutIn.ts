@@ -15,10 +15,8 @@ export default class PreLoadCutIn extends LwgPreLoad._PreLoadCutInScene {
             obj = _CutInRes[this.$openName] ? obj : {};
             this.lwgStartLoding(obj);
         })
-
     }
     lwgAllComplete(): number {
-        console.log('加载完成！');
         switch (this.$openName) {
             case _SceneName.MakePattern:
                 _3DDIYCloth._ins().remake(_DIYClothes._ins()._pitchClassify, _DIYClothes._ins()._pitchName);

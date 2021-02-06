@@ -15,7 +15,7 @@ export module _Ranking {
         private static ins: _Data;
         static _ins() {
             if (!this.ins) {
-                this.ins = new _Data('RankingData', _Res._ins().$json.Ranking.dataArr, true);
+                this.ins = new _Data('RankingData', _Res.$json.Ranking.dataArr, true);
                 this.ins._mergePro = new _mergePro();
                 if (!this.ins._arr[0]['iconSkin']) {
                     for (let index = 0; index < this.ins._arr.length; index++) {
@@ -138,7 +138,7 @@ export class _AllClothes extends LwgData._Table {
     private static ins: _AllClothes;
     static _ins() {
         if (!this.ins) {
-            this.ins = new _AllClothes('ClothesGeneral', _Res._ins().$json.GeneralClothes.dataArr, true);
+            this.ins = new _AllClothes('ClothesGeneral', _Res.$json.GeneralClothes.dataArr, true);
             this.ins._mergePro = new _mergeProAllClothes();
             if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
                 this.ins._deleteObjByName('ads');
@@ -347,7 +347,7 @@ export class _DIYClothes extends LwgData._Table {
     private static ins: _DIYClothes;
     static _ins() {
         if (!this.ins) {
-            this.ins = new _DIYClothes('DIYClothes', _Res._ins().$json.DIYClothes.dataArr, true);
+            this.ins = new _DIYClothes('DIYClothes', _Res.$json.DIYClothes.dataArr, true);
             if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
                 this.ins._deleteObjByName('ads');
             }
@@ -403,7 +403,7 @@ export class _DIYClothes extends LwgData._Table {
     }
     /**创建一件衣服*/
     createClothes(name: string, Scene?: Laya.Scene): Laya.Sprite {
-        const Cloth = LwgTools._Node.createPrefab(_Res._ins().$prefab2D[name]['prefab']);
+        const Cloth = LwgTools._Node.createPrefab(_Res.$prefab2D[name]['prefab2D']);
         // 增加一个和舞台一样大小的父节点方便移动
         const CloBox = new Laya.Sprite;
         CloBox.width = Laya.stage.width;
@@ -444,7 +444,7 @@ export module _MakePattern {
         private static ins: _Pattern;
         static _ins(): _Pattern {
             if (!this.ins) {
-                this.ins = new _Pattern('_Pattern', _Res._ins().$json.MakePattern.dataArr, true);
+                this.ins = new _Pattern('_Pattern', _Res.$json.MakePattern.dataArr, true);
                 this.ins._pitchClassify = this.ins._classify.newYear;
                 if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
                     this.ins._deleteObjByName('ads');
@@ -485,7 +485,7 @@ export module _MakePattern {
         private static ins: _PatternDiff;
         static _ins(): _PatternDiff {
             if (!this.ins) {
-                this.ins = new _PatternDiff('_DIYClothesDiff', _Res._ins().$json.DIYClothesDiff.dataArr, false);
+                this.ins = new _PatternDiff('_DIYClothesDiff', _Res.$json.DIYClothesDiff.dataArr, false);
             }
             return this.ins;
         }
@@ -681,7 +681,7 @@ export module _CheckIn {
         private static ins: _Data;
         static _ins(): _Data {
             if (!this.ins) {
-                this.ins = new _Data('CheckIn', _Res._ins().$json.CheckIn.dataArr, true);
+                this.ins = new _Data('CheckIn', _Res.$json.CheckIn.dataArr, true);
             }
             return this.ins;
         }
