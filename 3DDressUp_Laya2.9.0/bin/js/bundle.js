@@ -1467,99 +1467,50 @@
                 lwgOnStart() { }
                 lwgButton() { }
                 ;
+                checkBtnClick(target, clickFunc, e) {
+                    if (!LwgClick._aniSwitch) {
+                        return;
+                    }
+                    switch (ClickAdmin._filter.value) {
+                        case ClickAdmin._filterType.all || ClickAdmin._filterType.button:
+                            clickFunc && clickFunc(e);
+                            break;
+                        case ClickAdmin._filterType.someBtnIncludeStage || ClickAdmin._filterType.someBtnExcludeStage:
+                            ClickAdmin._checkTarget(target.name) && clickFunc && clickFunc(e);
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 _btnDown(target, down, effect) {
                     LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, (e) => {
-                        var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && down && down(e);
-                        };
-                        if (ClickAdmin._assign.length > 0) {
-                            ClickAdmin._checkAssign(target.name) && func();
-                        }
-                        else {
-                            func();
-                        }
+                        this.checkBtnClick(target, down, e);
                     }, null, null, null);
                 }
                 _btnMove(target, move, effect) {
                     LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, (e) => {
-                        var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && move && move(e);
-                        };
-                        if (ClickAdmin._assign.length > 0) {
-                            ClickAdmin._checkAssign(target.name) && func();
-                        }
-                        else {
-                            func();
-                        }
+                        this.checkBtnClick(target, move, e);
                     }, null, null);
                 }
                 _btnUp(target, up, effect) {
                     LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, (e) => {
-                        var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && up && up(e);
-                        };
-                        if (ClickAdmin._assign.length > 0) {
-                            ClickAdmin._checkAssign(target.name) && func();
-                        }
-                        else {
-                            func();
-                        }
+                        this.checkBtnClick(target, up, e);
                     }, null);
                 }
                 _btnOut(target, out, effect) {
                     LwgClick._on(effect == undefined ? LwgClick._Use.value : effect, target, this, null, null, null, (e) => {
-                        var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && out && out(e);
-                        };
-                        if (ClickAdmin._assign.length > 0) {
-                            ClickAdmin._checkAssign(target.name) && func();
-                        }
-                        else {
-                            func();
-                        }
+                        this.checkBtnClick(target, out, e);
                     });
                 }
                 _btnFour(target, down, move, up, out, effect) {
                     LwgClick._on(effect == null ? effect : LwgClick._Use.value, target, this, (e) => {
-                        var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && down && down(e);
-                        };
-                        if (ClickAdmin._assign.length > 0) {
-                            ClickAdmin._checkAssign(target.name) && func();
-                        }
-                        else {
-                            func();
-                        }
+                        this.checkBtnClick(target, down, e);
                     }, (e) => {
-                        var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && move && move(e);
-                        };
-                        if (ClickAdmin._assign.length > 0) {
-                            ClickAdmin._checkAssign(target.name) && func();
-                        }
-                        else {
-                            func();
-                        }
+                        this.checkBtnClick(target, move, e);
                     }, (e) => {
-                        var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && up && up(e);
-                        };
-                        if (ClickAdmin._assign.length > 0) {
-                            ClickAdmin._checkAssign(target.name) && func();
-                        }
-                        else {
-                            func();
-                        }
+                        this.checkBtnClick(target, up, e);
                     }, (e) => {
-                        var func = () => {
-                            ClickAdmin._absoluteSwitch && LwgClick._aniSwitch && out && out(e);
-                        };
-                        if (ClickAdmin._assign.length > 0) {
-                            ClickAdmin._checkAssign(target.name) && func();
-                        }
-                        else {
-                            func();
-                        }
+                        this.checkBtnClick(target, out, e);
                     });
                 }
                 _openScene(openName, closeSelf, preLoadCutIn, func, zOrder) {
@@ -1581,11 +1532,11 @@
                 ;
                 lwgOnDisable() { }
                 ;
-                onStageMouseDown(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._aniSwitch && this.lwgOnStageDown(e); }
+                onStageMouseDown(e) { ClickAdmin._checkStage() && this.lwgOnStageDown(e); }
                 ;
-                onStageMouseMove(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._aniSwitch && this.lwgOnStageMove(e); }
+                onStageMouseMove(e) { ClickAdmin._checkStage() && this.lwgOnStageMove(e); }
                 ;
-                onStageMouseUp(e) { ClickAdmin._stageSwitch && ClickAdmin._assign.length === 0 && LwgClick._aniSwitch && this.lwgOnStageUp(e); }
+                onStageMouseUp(e) { ClickAdmin._checkStage() && this.lwgOnStageUp(e); }
                 ;
                 lwgOnStageDown(e) { }
                 ;
@@ -5634,24 +5585,53 @@
         let ClickAdmin;
         (function (ClickAdmin) {
             ClickAdmin._aniSwitch = true;
-            ClickAdmin._absoluteSwitch = true;
-            ClickAdmin._assign = [];
-            ClickAdmin._assignIncludeStage = [];
-            ClickAdmin._assignExcludeStage = [];
-            ClickAdmin._stageSwitch = true;
-            function _checkAssign(name) {
-                let assign = false;
-                if (LwgClick._assign.length > 0) {
-                    for (let index = 0; index < LwgClick._assign.length; index++) {
-                        const _name = LwgClick._assign[index];
-                        if (_name === name) {
-                            assign = true;
+            ClickAdmin._nodeSelection = [];
+            ClickAdmin._filterType = {
+                all: 'all',
+                none: 'none',
+                stage: 'stage',
+                button: 'button',
+                someBtnIncludeStage: 'someBtnIncludeStage',
+                someBtnExcludeStage: 'someBtnExcludeStage',
+            };
+            ClickAdmin._filter = {
+                get value() {
+                    return this['ClickAdmin/filter'] ? this['ClickAdmin/filter'] : 'all';
+                },
+                set value(val) {
+                    this['ClickAdmin/filter'] = val;
+                    switch (val) {
+                        case ClickAdmin._filterType.all || ClickAdmin._filterType.none || ClickAdmin._filterType.stage:
+                            ClickAdmin._nodeSelection = [];
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            };
+            function _checkTarget(targetName) {
+                let targetClick = false;
+                if (LwgClick._nodeSelection.length > 0) {
+                    for (let index = 0; index < LwgClick._nodeSelection.length; index++) {
+                        const _name = LwgClick._nodeSelection[index];
+                        if (_name === targetName) {
+                            targetClick = true;
                         }
                     }
                 }
-                return assign;
+                return targetClick;
             }
-            ClickAdmin._checkAssign = _checkAssign;
+            ClickAdmin._checkTarget = _checkTarget;
+            function _checkStage() {
+                let stageClick = false;
+                if (LwgClick._aniSwitch) {
+                    if (ClickAdmin._filter.value === ClickAdmin._filterType.all || ClickAdmin._filter.value === ClickAdmin._filterType.stage || ClickAdmin._filter.value === ClickAdmin._filterType.someBtnIncludeStage) {
+                        stageClick = true;
+                    }
+                }
+                return stageClick;
+            }
+            ClickAdmin._checkStage = _checkStage;
             ClickAdmin._Type = {
                 no: 'no',
                 largen: 'largen',
@@ -7733,27 +7713,6 @@
         })(ToolsAdmin = Lwg.ToolsAdmin || (Lwg.ToolsAdmin = {}));
         let PreLoadAdmin;
         (function (PreLoadAdmin) {
-            PreLoadAdmin._listName = {
-                $scene3D: '$scene3D',
-                $prefab3D: '$prefab3D',
-                $mesh3D: '$mesh3D',
-                $material: '$material',
-                $texture: '$texture',
-                $texture2D: '$texture2D',
-                $pic2D: '$pic2D',
-                $scene2D: '$scene2D',
-                $prefab2D: '$prefab2D',
-                $json: '$json',
-                $skeleton: '$skeleton',
-                $effectTex2D: '$effectTex2D',
-            };
-            let _Event;
-            (function (_Event) {
-                _Event["importList"] = "_PreLoad/importList";
-                _Event["complete"] = "_PreLoad/complete";
-                _Event["stepLode"] = "_PreLoad/stepLode";
-                _Event["progress"] = "_PreLoad/progress";
-            })(_Event = PreLoadAdmin._Event || (PreLoadAdmin._Event = {}));
             class _PreLoadScene extends SceneAdmin._SceneBase {
                 constructor() {
                     super(...arguments);
@@ -7769,86 +7728,72 @@
                     this.$mesh3D = [];
                     this.$json = [];
                     this.$skeleton = [];
-                    this._sumProgress = 0;
                     this._loadOrder = [this.$pic2D, this.$texture, this.$prefab2D, this.$scene2D, this.$prefab3D, this.$texture2D, this.$effectsTex2D, this.$material, this.$mesh3D, this.$scene3D, this.$json, this.$skeleton];
                     this._loadOrderIndex = 0;
+                    this._sumProgress = 0;
+                    this._currentProgress = 0;
                 }
-                get _currentProgress() {
-                    return this['currentProgress'] ? this['currentProgress'] : 0;
+                lwgStartLoding(listObj) {
+                    listObj['$effectsTex2D'] = Eff3DAdmin._tex2D;
+                    for (const typeName in listObj) {
+                        if (Object.prototype.hasOwnProperty.call(listObj, typeName)) {
+                            for (const resObj in listObj[typeName]) {
+                                if (Object.prototype.hasOwnProperty.call(listObj[typeName], resObj)) {
+                                    const obj = listObj[typeName][resObj];
+                                    this[typeName].push(obj);
+                                }
+                            }
+                        }
+                    }
+                    for (let index = 0; index < this._loadOrder.length; index++) {
+                        this._sumProgress += this._loadOrder[index].length;
+                        if (this._loadOrder[index].length <= 0) {
+                            this._loadOrder.splice(index, 1);
+                            index--;
+                        }
+                    }
+                    let time = this.lwgOpenAni();
+                    Laya.timer.once(time ? time : 0, this, () => {
+                        this.lode();
+                    });
                 }
+                lwgStepComplete() { }
+                lwgAllComplete() { return 0; }
                 ;
-                set _currentProgress(val) {
-                    this['currentProgress'] = val;
-                    if (this['currentProgress'] >= this._sumProgress) {
+                stepComplete() {
+                    this._currentProgress++;
+                    console.log('当前进度条进度:', this._currentProgress / this._sumProgress);
+                    if (this._currentProgress >= this._sumProgress) {
                         if (this._sumProgress == 0) {
                             return;
                         }
-                        console.log(`当前进度条进度为: ${this['currentProgress'] / this._sumProgress}`);
                         console.log(`所有资源加载完成！此时所有资源可通过例如:Laya.loader.getRes("url")获取`);
-                        EventAdmin._notify(PreLoadAdmin._Event.complete);
+                        this.allComplete();
                     }
                     else {
                         let number = 0;
                         for (let index = 0; index <= this._loadOrderIndex; index++) {
                             number += this._loadOrder[index].length;
                         }
-                        if (this['currentProgress'] == number) {
+                        if (this._currentProgress === number) {
                             this._loadOrderIndex++;
                         }
-                        EventAdmin._notify(PreLoadAdmin._Event.stepLode);
+                        this.lode();
+                        this.lwgStepComplete();
                     }
                 }
-                ;
-                moduleEvent() {
-                    EventAdmin._registerOnce(_Event.importList, this, (listObj) => {
-                        listObj[PreLoadAdmin._listName.$effectTex2D] = Eff3DAdmin._tex2D;
-                        for (const typeName in listObj) {
-                            if (Object.prototype.hasOwnProperty.call(listObj, typeName)) {
-                                for (const resObj in listObj[typeName]) {
-                                    if (Object.prototype.hasOwnProperty.call(listObj[typeName], resObj)) {
-                                        const obj = listObj[typeName][resObj];
-                                        console.log(this[typeName]);
-                                        this[typeName].push(obj);
-                                    }
-                                }
-                            }
+                allComplete() {
+                    Laya.timer.once(this.lwgAllComplete(), this, () => {
+                        if (this._Owner.name == LwgScene._BaseName.PreLoadCutIn) {
+                            this._openScene(LwgScene._PreLoadCutIn.openName);
                         }
-                        for (let index = 0; index < this._loadOrder.length; index++) {
-                            this._sumProgress += this._loadOrder[index].length;
-                            if (this._loadOrder[index].length <= 0) {
-                                this._loadOrder.splice(index, 1);
-                                index--;
-                            }
-                        }
-                        let time = this.lwgOpenAni();
-                        Laya.timer.once(time ? time : 0, this, () => {
-                            EventAdmin._notify(PreLoadAdmin._Event.stepLode);
-                        });
-                    });
-                    EventAdmin._register(_Event.stepLode, this, () => { this.lode(); });
-                    EventAdmin._registerOnce(_Event.complete, this, () => {
-                        Laya.timer.once(this.lwgAllComplete(), this, () => {
-                            if (this._Owner.name == LwgScene._BaseName.PreLoadCutIn) {
-                                this._openScene(LwgScene._PreLoadCutIn.openName);
-                            }
-                            else {
-                                AudioAdmin._playMusic();
-                                this._openScene(LwgScene._BaseName.Start);
-                            }
-                        });
-                    });
-                    EventAdmin._register(_Event.progress, this, () => {
-                        this._currentProgress++;
-                        if (this._currentProgress < this._sumProgress) {
-                            console.log('当前进度条进度为:', this._currentProgress / this._sumProgress);
-                            this.lwgStepComplete();
+                        else {
+                            AudioAdmin._playMusic();
+                            this._openScene(LwgScene._BaseName.Start);
                         }
                     });
                 }
-                lwgStartLoding(any) {
-                    EventAdmin._notify(PreLoadAdmin._Event.importList, (any));
-                }
-                endLode(resArr, index, res, typeName, completeFunc) {
+                lodeFunc(resArr, index, res, typeName, completeFunc) {
                     const url = resArr[index].url;
                     if (typeof url === 'object') {
                         console.log(typeName, url, `数组加载完成，为数组对象，只能从getRes（url）中逐个获取`);
@@ -7862,12 +7807,12 @@
                             completeFunc && completeFunc();
                         }
                     }
-                    EventAdmin._notify(_Event.progress);
+                    this.stepComplete();
                 }
                 lode() {
                     if (this._loadOrder.length <= 0) {
                         console.log('没有加载项');
-                        EventAdmin._notify(PreLoadAdmin._Event.complete);
+                        this.allComplete();
                         return;
                     }
                     let alreadyPro = 0;
@@ -7878,66 +7823,66 @@
                     switch (this._loadOrder[this._loadOrderIndex]) {
                         case this.$pic2D:
                             Laya.loader.load(this.$pic2D[index].url, Laya.Handler.create(this, (res) => {
-                                this.endLode(this._loadOrder[this._loadOrderIndex], index, res, '2D图片', null);
+                                this.lodeFunc(this._loadOrder[this._loadOrderIndex], index, res, '2D图片', null);
                             }));
                             break;
                         case this.$scene2D:
                             Laya.loader.load(this.$scene2D[index].url, Laya.Handler.create(this, (res) => {
-                                this.endLode(this._loadOrder[this._loadOrderIndex], index, res, '2D场景', null);
+                                this.lodeFunc(this._loadOrder[this._loadOrderIndex], index, res, '2D场景', null);
                             }), null, Laya.Loader.JSON);
                             break;
                         case this.$scene3D:
                             Laya.Scene3D.load(this.$scene3D[index].url, Laya.Handler.create(this, (Scene3D) => {
-                                this.endLode(this._loadOrder[this._loadOrderIndex], index, Scene3D, '3D场景', () => {
+                                this.lodeFunc(this._loadOrder[this._loadOrderIndex], index, Scene3D, '3D场景', () => {
                                     this.$scene3D[index].scene3D = Scene3D;
                                 });
                             }));
                             break;
                         case this.$prefab3D:
                             Laya.Sprite3D.load(this.$prefab3D[index].url, Laya.Handler.create(this, (Sp3D) => {
-                                this.endLode(this._loadOrder[this._loadOrderIndex], index, Sp3D, '3D预制体', () => {
+                                this.lodeFunc(this._loadOrder[this._loadOrderIndex], index, Sp3D, '3D预制体', () => {
                                     this.$prefab3D[index].prefab3D = Sp3D;
                                 });
                             }));
                             break;
                         case this.$mesh3D:
                             Laya.Mesh.load(this.$mesh3D[index].url, Laya.Handler.create(this, (Mesh3D) => {
-                                this.endLode(this._loadOrder[this._loadOrderIndex], index, Mesh3D, '3D网格', () => {
+                                this.lodeFunc(this._loadOrder[this._loadOrderIndex], index, Mesh3D, '3D网格', () => {
                                     this.$mesh3D[index].mesh3D = Mesh3D;
                                 });
                             }));
                             break;
                         case this.$texture:
                             Laya.loader.load(this.$texture[index].url, Laya.Handler.create(this, (tex) => {
-                                this.endLode(this._loadOrder[this._loadOrderIndex], index, tex, '纹理', () => {
+                                this.lodeFunc(this._loadOrder[this._loadOrderIndex], index, tex, '纹理', () => {
                                     this.$texture[index].texture = tex;
                                 });
                             }));
                             break;
                         case this.$texture2D:
                             Laya.Texture2D.load(this.$texture2D[index].url, Laya.Handler.create(this, (tex2D) => {
-                                this.endLode(this._loadOrder[this._loadOrderIndex], index, tex2D, '3D纹理', () => {
+                                this.lodeFunc(this._loadOrder[this._loadOrderIndex], index, tex2D, '3D纹理', () => {
                                     this.$texture2D[index].texture2D = tex2D;
                                 });
                             }));
                             break;
                         case this.$effectsTex2D:
                             Laya.Texture2D.load(this.$effectsTex2D[index].url, Laya.Handler.create(this, (tex2D) => {
-                                this.endLode(this._loadOrder[this._loadOrderIndex], index, tex2D, '3D纹理', () => {
+                                this.lodeFunc(this._loadOrder[this._loadOrderIndex], index, tex2D, '3D纹理', () => {
                                     this.$effectsTex2D[index].texture2D = tex2D;
                                 });
                             }));
                             break;
                         case this.$material:
                             Laya.Material.load(this.$material[index].url, Laya.Handler.create(this, (Material) => {
-                                this.endLode(this._loadOrder[this._loadOrderIndex], index, Material, '3D纹理', () => {
+                                this.lodeFunc(this._loadOrder[this._loadOrderIndex], index, Material, '3D纹理', () => {
                                     this.$material[index].material = Material;
                                 });
                             }));
                             break;
                         case this.$json:
                             Laya.loader.load(this.$json[index].url, Laya.Handler.create(this, (Json) => {
-                                this.endLode(this._loadOrder[this._loadOrderIndex], index, Json, '3D纹理', () => {
+                                this.lodeFunc(this._loadOrder[this._loadOrderIndex], index, Json, '3D纹理', () => {
                                     this.$json[index].dataArr = Json["RECORDS"];
                                 });
                             }), null, Laya.Loader.JSON);
@@ -7945,17 +7890,17 @@
                         case this.$skeleton:
                             this.$skeleton[index].templet.on(Laya.Event.ERROR, this, () => {
                                 console.log('XXXXXXXXXXX骨骼动画' + this.$skeleton[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
-                                EventAdmin._notify(_Event.progress);
+                                this.stepComplete();
                             });
                             this.$skeleton[index].templet.on(Laya.Event.COMPLETE, this, () => {
                                 console.log('骨骼动画', this.$skeleton[index].templet.url, '加载完成！', '数组下标为：', index);
-                                EventAdmin._notify(_Event.progress);
+                                this.stepComplete();
                             });
                             this.$skeleton[index].templet.loadAni(this.$skeleton[index].url);
                             break;
                         case this.$prefab2D:
                             Laya.loader.load(this.$prefab2D[index].url, Laya.Handler.create(this, (prefab2d) => {
-                                this.endLode(this._loadOrder[this._loadOrderIndex], index, prefab2d, '3D纹理', () => {
+                                this.lodeFunc(this._loadOrder[this._loadOrderIndex], index, prefab2d, '3D纹理', () => {
                                     let _prefab = new Laya.Prefab();
                                     _prefab.json = prefab2d;
                                     this.$prefab2D[index].prefab2D = _prefab;
@@ -7966,9 +7911,6 @@
                             break;
                     }
                 }
-                lwgStepComplete() { }
-                lwgAllComplete() { return 0; }
-                ;
             }
             PreLoadAdmin._PreLoadScene = _PreLoadScene;
             class _PreLoadCutInScene extends _PreLoadScene {
@@ -8380,10 +8322,6 @@
         class $skeleton {
         }
         _Res.$skeleton = $skeleton;
-        ;
-        class $effectTex2D {
-        }
-        _Res.$effectTex2D = $effectTex2D;
         ;
     })(_Res || (_Res = {}));
     var _CutInRes;
@@ -11067,10 +11005,11 @@
                         }
                     }
                 }, () => {
-                    if (this['Pulldown'])
-                        this['Pulldown']++;
+                    if (!this['Pulldown'])
+                        this['Pulldown'] = 1;
+                    this['Pulldown']++;
                 }, () => {
-                    if (_Guide.MmakeTailorPulldownSwicth && this['Pulldown'] && this['Pulldown'] > 2) {
+                    if (_Guide.MmakeTailorPulldownSwicth && this['Pulldown'] && this['Pulldown'] >= 2) {
                         let index;
                         if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
                             index = 3;
@@ -11255,7 +11194,7 @@
             });
         }
         lwgOpenAniAfter() {
-            LwgClick._absoluteSwitch = false;
+            LwgClick._filter.value = LwgClick._filterType.none;
             for (let index = 0; index < this._ImgVar('BtnParent').numChildren; index++) {
                 const element = this._ImgVar('BtnParent').getChildAt(index);
                 element.visible = true;
@@ -11263,7 +11202,7 @@
                 LwgAni2D.bombs_Appear(element, 0, 1, 1.2, 0, 200, () => {
                     if (index === this._ImgVar('BtnParent').numChildren - 1) {
                         LwgTimer._once(500, this, () => {
-                            LwgClick._absoluteSwitch = true;
+                            LwgClick._filter.value = LwgClick._filterType.all;
                             if (_Start._whereFrom === _SceneName.MakePattern) {
                                 this._evNotify(_Start.Event.photo);
                                 _Start._whereFrom = null;
@@ -11301,7 +11240,7 @@
                 this._LabelVar('RankNum').text = `${obj[_Ranking._Data._ins()._mergePro.rankNum]}/50`;
             });
             this._evReg(_Start.Event.photo, () => {
-                LwgClick._absoluteSwitch = false;
+                LwgClick._filter.value = LwgClick._filterType.none;
                 const sp = _3DScene._ins().cameraToSprite(this._Owner);
                 LwgTimer._frameOnce(10, this, () => {
                     _Tweeting._photo.take(this._Owner, 2);
@@ -11657,6 +11596,9 @@
                 rDiffX: 0,
                 rDiffY: 0,
                 setImgPos: () => {
+                    if (!this.Tex.Img) {
+                        return;
+                    }
                     let posArr = this.Tex.setPosArr();
                     let indexArr = [];
                     let outArr = [];
@@ -11735,6 +11677,9 @@
                     }
                 },
                 addTex: () => {
+                    if (!this.Tex.Img) {
+                        return;
+                    }
                     this.Tex.disMove();
                     let out = this.Tex.setImgPos();
                     if (!out) {
@@ -12156,9 +12101,19 @@
             else {
                 if (!this.Tex.checkInside()) {
                     this.Tex.close();
+                    console.log(_Guide._complete.value);
+                    if (!_Guide._complete.value) {
+                        if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame1) {
+                            this._evNotify(_Guide.Event.MakePatternPattern1);
+                        }
+                        else if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame2) {
+                            this._evNotify(_Guide.Event.MakePatternPattern2);
+                        }
+                    }
+                    ;
                 }
                 else {
-                    if (!_Guide._complete.value) {
+                    if (!_Guide._complete.value && this._ImgVar('Wireframe').visible) {
                         if (_Guide.MakePatternState === _Guide.MakePatternStateType.Pattern1) {
                             this._evNotify(_Guide.Event.MakePatternFrame1, [this._ImgVar('Wireframe')]);
                         }
@@ -12600,7 +12555,7 @@
             const baseTime = 150;
             const baseDelay = 200;
             _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-                LwgClick._absoluteSwitch = true;
+                LwgClick._filter.value = LwgClick._filterType.all;
                 LwgAni2D.scale(this._ImgVar('Top'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 1);
                 LwgAni2D.scale(this._ImgVar('BtnSet'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 2);
                 LwgAni2D.scale(this._ImgVar('Body'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 3);
@@ -13183,7 +13138,7 @@
             LwgSceneAni._closeSwitch.value = true;
             LwgSceneAni._Use.value = {
                 class: LwgSceneAni._shutters.Close,
-                type: LwgSceneAni._shutters.Close._type.random,
+                type: LwgSceneAni._shutters.Close._type.randomCroAndVer,
             };
             LwgClick._Use.value = LwgClick._Type.reduce;
             LwgAdaptive._Use.value = [1280, 720];

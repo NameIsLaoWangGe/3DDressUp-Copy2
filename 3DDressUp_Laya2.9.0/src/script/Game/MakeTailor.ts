@@ -292,7 +292,7 @@ class _Item extends LwgData._Item {
         this._LableChild('UnlockWayNum').visible = false;
         if (this.$data.name == 'ads') {
             if (!this._BoxChild('NativeRoot')) {
-                LwgTools._Node.createPrefab(  _Res.$prefab2D.NativeRoot.prefab2D, this._Owner);
+                LwgTools._Node.createPrefab(_Res.$prefab2D.NativeRoot.prefab2D, this._Owner);
             }
             this._ImgChild('Mask').visible = this._LableChild('UnlockWay').visible = this._ImgChild('AdsSign').visible = this._ImgChild('Icon').visible = this._ImgChild('Board').visible = false;
         } else {
@@ -407,10 +407,11 @@ export default class MakeTailor extends LwgScene._SceneBase {
                     }
                 },
                 () => {
-                    if (this['Pulldown']) this['Pulldown']++;
+                    if (!this['Pulldown']) this['Pulldown'] = 1;
+                    this['Pulldown']++;
                 },
                 () => {
-                    if (_Guide.MmakeTailorPulldownSwicth && this['Pulldown'] && this['Pulldown'] > 2) {
+                    if (_Guide.MmakeTailorPulldownSwicth && this['Pulldown'] && this['Pulldown'] >= 2) {
                         let index: number;
                         if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
                             index = 3;

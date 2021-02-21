@@ -26,7 +26,7 @@ export default class LwgInit extends LwgAdmin._InitScene {
         LwgSceneAni._closeSwitch.value = true;
         LwgSceneAni._Use.value = {
             class: LwgSceneAni._shutters.Close,
-            type: LwgSceneAni._shutters.Close._type.random,
+            type: LwgSceneAni._shutters.Close._type.randomCroAndVer,
         };
         LwgClick._Use.value = LwgClick._Type.reduce;
         LwgAdaptive._Use.value = [1280, 720];

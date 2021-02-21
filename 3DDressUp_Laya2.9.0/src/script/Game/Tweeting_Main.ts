@@ -78,7 +78,7 @@ export default class Tweeting_Main extends LwgScene._SceneBase {
         const baseTime = 150;
         const baseDelay = 200;
         _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
-            LwgClick._absoluteSwitch = true;
+            LwgClick._filter.value = LwgClick._filterType.all;
             LwgAni2D.scale(this._ImgVar('Top'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 1);
             LwgAni2D.scale(this._ImgVar('BtnSet'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 2);
             LwgAni2D.scale(this._ImgVar('Body'), 0, 0, 1, 1, baseTime * 1.5, baseDelay * 3);

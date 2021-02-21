@@ -1,6 +1,6 @@
 import ADManager, { TaT } from "../../TJ/Admanager";
 import RecordManager from "../../TJ/RecordManager";
-import { LwgScene, LwgAni2D, LwgAni3D, LwgData, LwgDialogue, LwgStorage, LwgTimer, LwgTools, LwgPlatform } from "../Lwg/Lwg";
+import { LwgScene, LwgAni2D, LwgAni3D, LwgData, LwgDialogue, LwgStorage, LwgTimer, LwgTools, LwgPlatform, LwgClick } from "../Lwg/Lwg";
 import { LwgOPPO } from "../Lwg/LwgOPPO";
 import { _3DDIYCloth, _3DScene } from "./_3D";
 import { _GameAni } from "./_GameAni";
@@ -424,6 +424,9 @@ export default class MakePattern extends LwgScene._SceneBase {
         rDiffX: 0,
         rDiffY: 0,
         setImgPos: (): boolean => {
+            if (!this.Tex.Img) {
+                return;
+            }
             let posArr = this.Tex.setPosArr();
             let indexArr: Array<Laya.Point> = [];
             let outArr: Laya.HitResult[] = [];
@@ -534,6 +537,9 @@ export default class MakePattern extends LwgScene._SceneBase {
             }
         },
         addTex: () => {
+            if (!this.Tex.Img) {
+                return;
+            }
             this.Tex.disMove();
             let out = this.Tex.setImgPos();
             if (!out) {
@@ -743,8 +749,16 @@ export default class MakePattern extends LwgScene._SceneBase {
             // 在列表上抬起则关闭
             if (!this.Tex.checkInside()) {
                 this.Tex.close();
-            } else {
+                console.log(_Guide._complete.value);
                 if (!_Guide._complete.value) {
+                    if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame1) {
+                        this._evNotify(_Guide.Event.MakePatternPattern1);
+                    } else if (_Guide.MakePatternState === _Guide.MakePatternStateType.Frame2) {
+                        this._evNotify(_Guide.Event.MakePatternPattern2);
+                    }
+                };
+            } else {
+                if (!_Guide._complete.value && this._ImgVar('Wireframe').visible) {
                     if (_Guide.MakePatternState === _Guide.MakePatternStateType.Pattern1) {
                         this._evNotify(_Guide.Event.MakePatternFrame1, [this._ImgVar('Wireframe')]);
                     } else if (_Guide.MakePatternState === _Guide.MakePatternStateType.Pattern2) {

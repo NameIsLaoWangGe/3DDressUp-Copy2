@@ -15,7 +15,7 @@ export class _UI {
         this.Scene = _Scene;
         this.Operation = _Scene['Operation'];
 
-        this.BtnAgain = LwgTools._Node.createPrefab(  _Res.$prefab2D.BtnAgain.prefab2D, _Scene, [200, 79]) as Laya.Image;
+        this.BtnAgain = LwgTools._Node.createPrefab(_Res.$prefab2D.BtnAgain.prefab2D, _Scene, [200, 79]) as Laya.Image;
         LwgClick._on(LwgClick._Use.value, this.BtnAgain, this, null, null, () => {
             ADManager.TAPoint(TaT.BtnShow, 'next_lose');
             this.btnAgainClick && this.btnAgainClick();
@@ -27,7 +27,7 @@ export class _UI {
             this.btnCompleteClick && this.btnCompleteClick();
         })
 
-        this.BtnBack = LwgTools._Node.createPrefab(  _Res.$prefab2D.BtnBack.prefab2D, _Scene, [77, 79]) as Laya.Image;
+        this.BtnBack = LwgTools._Node.createPrefab(_Res.$prefab2D.BtnBack.prefab2D, _Scene, [77, 79]) as Laya.Image;
         LwgClick._on(LwgClick._Use.value, this.BtnBack, this, null, null, () => {
             if (!_Guide._complete) return;
 
@@ -40,15 +40,15 @@ export class _UI {
                 LwgScene._openScene(_SceneName.BackHint);
             } else if (LwgPlatform._Ues.value === LwgPlatform._Tpye.Bytedance) {
                 _PreLoadCutIn._fromBack = true;
-                LwgTimer._frameOnce(10,this,()=>{
+                LwgTimer._frameOnce(10, this, () => {
                     this.Scene[this.Scene.name]._openScene(_SceneName.Start, true, true);
                 })
             }
         })
 
-        this.BtnRollback = LwgTools._Node.createPrefab(  _Res.$prefab2D.BtnRollback.prefab2D, _Scene, [200, 79]) as Laya.Image;
+        this.BtnRollback = LwgTools._Node.createPrefab(_Res.$prefab2D.BtnRollback.prefab2D, _Scene, [200, 79]) as Laya.Image;
         LwgClick._on(LwgClick._Use.value, this.BtnRollback, this, null, null, () => {
-            if (!_Guide._complete) return;
+            if (!_Guide._complete.value) return;
             this.btnRollbackClick && this.btnRollbackClick();
         })
 

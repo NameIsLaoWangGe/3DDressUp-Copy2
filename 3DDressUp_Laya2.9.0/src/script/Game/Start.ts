@@ -26,7 +26,7 @@ export default class Start extends LwgScene._SceneBase {
     }
 
     lwgOpenAniAfter(): void {
-        LwgClick._absoluteSwitch = false;
+        LwgClick._filter.value = LwgClick._filterType.none;
         for (let index = 0; index < this._ImgVar('BtnParent').numChildren; index++) {
             const element = this._ImgVar('BtnParent').getChildAt(index) as Laya.Image;
             element.visible = true;
@@ -34,7 +34,7 @@ export default class Start extends LwgScene._SceneBase {
             LwgAni2D.bombs_Appear(element, 0, 1, 1.2, 0, 200, () => {
                 if (index === this._ImgVar('BtnParent').numChildren - 1) {
                     LwgTimer._once(500, this, () => {
-                        LwgClick._absoluteSwitch = true;
+                        LwgClick._filter.value = LwgClick._filterType.all;
                         if (_Start._whereFrom === _SceneName.MakePattern) {
                             this._evNotify(_Start.Event.photo);
                             _Start._whereFrom = null;
@@ -73,7 +73,7 @@ export default class Start extends LwgScene._SceneBase {
             this._LabelVar('RankNum').text = `${obj[_Ranking._Data._ins()._mergePro.rankNum]}/50`;
         })
         this._evReg(_Start.Event.photo, () => {
-            LwgClick._absoluteSwitch = false;
+            LwgClick._filter.value = LwgClick._filterType.none;
             const sp = _3DScene._ins().cameraToSprite(this._Owner);
             LwgTimer._frameOnce(10, this, () => {
                 _Tweeting._photo.take(this._Owner, 2);

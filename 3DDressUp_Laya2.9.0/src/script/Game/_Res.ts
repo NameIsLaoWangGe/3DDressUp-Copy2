@@ -1,11 +1,17 @@
 import Lwg from "../Lwg/Lwg";
-
 type scene3D = {} & Lwg.PreLoadAdmin.scene3D;
 type texture2D = {} & Lwg.PreLoadAdmin.texture2D;
 type scene2D = {} & Lwg.PreLoadAdmin.scene2D;
 type prefab2D = {} & Lwg.PreLoadAdmin.prefab2D;
 type json = {} & Lwg.PreLoadAdmin.json;
-
+type prefab3D = {} & Lwg.PreLoadAdmin.prefab3D;
+type mesh3D = {} & Lwg.PreLoadAdmin.mesh3D;
+type material = {} & Lwg.PreLoadAdmin.material;
+type texture = {} & Lwg.PreLoadAdmin.texture;
+type pic2D = {} & Lwg.PreLoadAdmin.pic2D;
+type skeleton = {} & Lwg.PreLoadAdmin.skeleton;
+type effectsTex2D = {} & Lwg.PreLoadAdmin.effectsTex2D;
+/**游戏开始前加载*/
 export module _Res {
     export class $scene3D {
         static MakeClothes: scene3D = {
@@ -150,21 +156,15 @@ export module _Res {
             dataArr: null as [],
         }
     };
-
-    export class $prefab3D {
-
-    };
-    export class $mesh3D {
-
-    };
+    export class $prefab3D { };
+    export class $mesh3D { };
     export class $material { };
     export class $texture { };
     export class $pic2D { };
     export class $skeleton { };
-    /**图片需要设置成不打包*/
-    export class $effectTex2D { };
 }
 
+/**页面前加载*/
 export module _CutInRes {
     export module Start {
         export class $texture2D {
