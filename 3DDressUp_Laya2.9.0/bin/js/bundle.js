@@ -1785,7 +1785,7 @@
                 }
                 getSceneVar(name, type) {
                     if (!this[`_Scene${type}${name}`]) {
-                        if (this._Scene[name]) {
+                        if (this._Scene[name].parent) {
                             NodeAdmin._addProperty(this._Scene[name]);
                             return this[`_Scene${type}${name}`] = this._Scene[name];
                         }
@@ -1908,6 +1908,8 @@
             }
             NodeAdmin._Box = _Box;
             function _addProperty(node, nodeType) {
+                if (!node)
+                    return;
                 let _proType;
                 switch (nodeType) {
                     case 'Img':
@@ -6719,6 +6721,9 @@
                 _Node.simpleCopyImg = simpleCopyImg;
                 function leaveStage(_Sprite, func) {
                     let Parent = _Sprite.parent;
+                    if (!Parent) {
+                        return false;
+                    }
                     let gPoint = Parent.localToGlobal(new Laya.Point(_Sprite.x, _Sprite.y));
                     if (gPoint.x > Laya.stage.width + 10 || gPoint.x < -10) {
                         if (func) {
@@ -7165,9 +7170,14 @@
                 _Point.getRoundPosOld = getRoundPosOld;
                 function getRoundPosNew(angle, radius, centerPos) {
                     const radian = angleByRadian(angle);
-                    const x = centerPos.x + Math.cos(radian) * radius;
-                    const y = centerPos.y + Math.sin(radian) * radius;
-                    return new Laya.Point(x, y);
+                    if (centerPos) {
+                        const x = centerPos.x + Math.cos(radian) * radius;
+                        const y = centerPos.y + Math.sin(radian) * radius;
+                        return new Laya.Point(x, y);
+                    }
+                    else {
+                        return new Laya.Point(null, null);
+                    }
                 }
                 _Point.getRoundPosNew = getRoundPosNew;
                 function randomPointByCenter(centerPos, radiusX, radiusY, count) {
@@ -7723,44 +7733,44 @@
         })(ToolsAdmin = Lwg.ToolsAdmin || (Lwg.ToolsAdmin = {}));
         let PreLoadAdmin;
         (function (PreLoadAdmin) {
+            PreLoadAdmin._listName = {
+                $scene3D: '$scene3D',
+                $prefab3D: '$prefab3D',
+                $mesh3D: '$mesh3D',
+                $material: '$material',
+                $texture: '$texture',
+                $texture2D: '$texture2D',
+                $pic2D: '$pic2D',
+                $scene2D: '$scene2D',
+                $prefab2D: '$prefab2D',
+                $json: '$json',
+                $skeleton: '$skeleton',
+                $effectTex2D: '$effectTex2D',
+            };
             let _Event;
             (function (_Event) {
-                _Event["importList"] = "_PreLoad_importList";
-                _Event["complete"] = "_PreLoad_complete";
-                _Event["stepLoding"] = "_PreLoad_startLoding";
-                _Event["progress"] = "_PreLoad_progress";
+                _Event["importList"] = "_PreLoad/importList";
+                _Event["complete"] = "_PreLoad/complete";
+                _Event["stepLode"] = "_PreLoad/stepLode";
+                _Event["progress"] = "_PreLoad/progress";
             })(_Event = PreLoadAdmin._Event || (PreLoadAdmin._Event = {}));
             class _PreLoadScene extends SceneAdmin._SceneBase {
                 constructor() {
                     super(...arguments);
-                    this._listName = {
-                        $scene3D: '$scene3D',
-                        $prefab3D: '$prefab3D',
-                        $mesh3D: '$mesh3D',
-                        $material: '$material',
-                        $texture: '$texture',
-                        $texture2D: '$texture2D',
-                        $pic2D: '$pic2D',
-                        $scene2D: '$scene2D',
-                        $prefab2D: '$prefab2D',
-                        $json: '$json',
-                        $skeleton: '$skeleton',
-                        $effectTex2D: '$effectTex2D',
-                    };
-                    this._scene3D = [];
-                    this._prefab3D = [];
-                    this._mesh3D = [];
-                    this._material = [];
-                    this._texture = [];
-                    this._texture2D = [];
-                    this._pic2D = [];
-                    this._scene2D = [];
-                    this._prefab2D = [];
-                    this._json = [];
-                    this._skeleton = [];
-                    this._effectsTex2D = [];
+                    this.$pic2D = [];
+                    this.$texture = [];
+                    this.$prefab2D = [];
+                    this.$scene2D = [];
+                    this.$scene3D = [];
+                    this.$prefab3D = [];
+                    this.$texture2D = [];
+                    this.$effectsTex2D = [];
+                    this.$material = [];
+                    this.$mesh3D = [];
+                    this.$json = [];
+                    this.$skeleton = [];
                     this._sumProgress = 0;
-                    this._loadOrder = [];
+                    this._loadOrder = [this.$pic2D, this.$texture, this.$prefab2D, this.$scene2D, this.$prefab3D, this.$texture2D, this.$effectsTex2D, this.$material, this.$mesh3D, this.$scene3D, this.$json, this.$skeleton];
                     this._loadOrderIndex = 0;
                 }
                 get _currentProgress() {
@@ -7773,8 +7783,8 @@
                         if (this._sumProgress == 0) {
                             return;
                         }
-                        console.log('当前进度条进度为:', this['currentProgress'] / this._sumProgress);
-                        console.log('所有资源加载完成！此时所有资源可通过例如 Laya.loader.getRes("url")获取');
+                        console.log(`当前进度条进度为: ${this['currentProgress'] / this._sumProgress}`);
+                        console.log(`所有资源加载完成！此时所有资源可通过例如:Laya.loader.getRes("url")获取`);
                         EventAdmin._notify(PreLoadAdmin._Event.complete);
                     }
                     else {
@@ -7785,64 +7795,24 @@
                         if (this['currentProgress'] == number) {
                             this._loadOrderIndex++;
                         }
-                        EventAdmin._notify(PreLoadAdmin._Event.stepLoding);
+                        EventAdmin._notify(PreLoadAdmin._Event.stepLode);
                     }
                 }
                 ;
                 moduleEvent() {
                     EventAdmin._registerOnce(_Event.importList, this, (listObj) => {
-                        console.log(listObj);
-                        listObj[this._listName.$effectTex2D] = Eff3DAdmin._tex2D;
-                        for (const key in listObj) {
-                            if (Object.prototype.hasOwnProperty.call(listObj, key)) {
-                                for (const key1 in listObj[key]) {
-                                    if (Object.prototype.hasOwnProperty.call(listObj[key], key1)) {
-                                        const obj = listObj[key][key1];
-                                        switch (key) {
-                                            case this._listName.$json:
-                                                this._json.push(obj);
-                                                break;
-                                            case this._listName.$material:
-                                                this._material.push(obj);
-                                                break;
-                                            case this._listName.$mesh3D:
-                                                this._mesh3D.push(obj);
-                                                break;
-                                            case this._listName.$pic2D:
-                                                this._pic2D.push(obj);
-                                                break;
-                                            case this._listName.$prefab2D:
-                                                this._prefab2D.push(obj);
-                                                break;
-                                            case this._listName.$prefab3D:
-                                                this._prefab3D.push(obj);
-                                                break;
-                                            case this._listName.$scene2D:
-                                                this._scene2D.push(obj);
-                                                break;
-                                            case this._listName.$scene3D:
-                                                this._scene3D.push(obj);
-                                                break;
-                                            case this._listName.$texture2D:
-                                                this._texture2D.push(obj);
-                                                break;
-                                            case this._listName.$skeleton:
-                                                this._skeleton.push(obj);
-                                                break;
-                                            case this._listName.$texture:
-                                                this._texture.push(obj);
-                                                break;
-                                            case this._listName.$effectTex2D:
-                                                this._effectsTex2D.push(obj);
-                                                break;
-                                            default:
-                                                break;
-                                        }
+                        listObj[PreLoadAdmin._listName.$effectTex2D] = Eff3DAdmin._tex2D;
+                        for (const typeName in listObj) {
+                            if (Object.prototype.hasOwnProperty.call(listObj, typeName)) {
+                                for (const resObj in listObj[typeName]) {
+                                    if (Object.prototype.hasOwnProperty.call(listObj[typeName], resObj)) {
+                                        const obj = listObj[typeName][resObj];
+                                        console.log(this[typeName]);
+                                        this[typeName].push(obj);
                                     }
                                 }
                             }
                         }
-                        this._loadOrder = [this._pic2D, this._scene2D, this._prefab2D, this._prefab3D, this._json, this._texture, this._texture2D, this._mesh3D, this._material, this._skeleton, this._scene3D, this._effectsTex2D];
                         for (let index = 0; index < this._loadOrder.length; index++) {
                             this._sumProgress += this._loadOrder[index].length;
                             if (this._loadOrder[index].length <= 0) {
@@ -7852,10 +7822,10 @@
                         }
                         let time = this.lwgOpenAni();
                         Laya.timer.once(time ? time : 0, this, () => {
-                            EventAdmin._notify(PreLoadAdmin._Event.stepLoding);
+                            EventAdmin._notify(PreLoadAdmin._Event.stepLode);
                         });
                     });
-                    EventAdmin._register(_Event.stepLoding, this, () => { this.start(); });
+                    EventAdmin._register(_Event.stepLode, this, () => { this.lode(); });
                     EventAdmin._registerOnce(_Event.complete, this, () => {
                         Laya.timer.once(this.lwgAllComplete(), this, () => {
                             if (this._Owner.name == LwgScene._BaseName.PreLoadCutIn) {
@@ -7875,14 +7845,26 @@
                         }
                     });
                 }
-                moduleOnStart() {
-                    if (this._Owner.name)
-                        LwgScene._SceneControl[this._Owner.name] = this._Owner;
-                }
                 lwgStartLoding(any) {
                     EventAdmin._notify(PreLoadAdmin._Event.importList, (any));
                 }
-                start() {
+                endLode(resArr, index, res, typeName, completeFunc) {
+                    const url = resArr[index].url;
+                    if (typeof url === 'object') {
+                        console.log(typeName, url, `数组加载完成，为数组对象，只能从getRes（url）中逐个获取`);
+                    }
+                    else {
+                        if (res == null) {
+                            console.log(`XXXXXXXXXXX${typeName}:${url}加载失败！不会停止加载进程！, 数组下标为：${index}, 'XXXXXXXXXXX`);
+                        }
+                        else {
+                            console.log(`${typeName}:${url}加载完成！, 数组下标为${index}`);
+                            completeFunc && completeFunc();
+                        }
+                    }
+                    EventAdmin._notify(_Event.progress);
+                }
+                lode() {
                     if (this._loadOrder.length <= 0) {
                         console.log('没有加载项');
                         EventAdmin._notify(PreLoadAdmin._Event.complete);
@@ -7894,172 +7876,90 @@
                     }
                     let index = this._currentProgress - alreadyPro;
                     switch (this._loadOrder[this._loadOrderIndex]) {
-                        case this._pic2D:
-                            Laya.loader.load(this._pic2D[index].url, Laya.Handler.create(this, (any) => {
-                                if (typeof this._pic2D[index].url === 'object') {
-                                    console.log(`${this._pic2D[index]} 数组加载完成，为数组对象，只能从getRes（url）中逐个获取`);
-                                }
-                                else {
-                                    if (any == null) {
-                                        console.log('XXXXXXXXXXX2D资源' + this._pic2D[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
-                                    }
-                                    else {
-                                        console.log('2D图片' + this._pic2D[index] + '加载完成！', '数组下标为：', index);
-                                    }
-                                }
-                                EventAdmin._notify(_Event.progress);
+                        case this.$pic2D:
+                            Laya.loader.load(this.$pic2D[index].url, Laya.Handler.create(this, (res) => {
+                                this.endLode(this._loadOrder[this._loadOrderIndex], index, res, '2D图片', null);
                             }));
                             break;
-                        case this._scene2D:
-                            Laya.loader.load(this._scene2D[index].url, Laya.Handler.create(this, (any) => {
-                                if (typeof this._scene2D[index].url === 'object') {
-                                    console.log(`${this._scene2D[index].url} 数组加载完成，为数组对象，只能从getRes（url）中逐个获取`);
-                                }
-                                else {
-                                    if (any == null) {
-                                        console.log('XXXXXXXXXXX2D场景' + this._scene2D[index].url + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
-                                    }
-                                    else {
-                                        console.log('2D场景' + this._scene2D[index].url + '加载完成！', '数组下标为：', index);
-                                    }
-                                }
-                                EventAdmin._notify(_Event.progress);
+                        case this.$scene2D:
+                            Laya.loader.load(this.$scene2D[index].url, Laya.Handler.create(this, (res) => {
+                                this.endLode(this._loadOrder[this._loadOrderIndex], index, res, '2D场景', null);
                             }), null, Laya.Loader.JSON);
                             break;
-                        case this._scene3D:
-                            Laya.Scene3D.load(this._scene3D[index].url, Laya.Handler.create(this, (Scene3D) => {
-                                if (Scene3D == null) {
-                                    console.log('XXXXXXXXXXX3D场景' + this._scene3D[index].url + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
-                                }
-                                else {
-                                    this._scene3D[index].scene3D = Scene3D;
-                                    console.log('3D场景' + this._scene3D[index].url + '加载完成！', '数组下标为：', index);
-                                }
-                                EventAdmin._notify(_Event.progress);
+                        case this.$scene3D:
+                            Laya.Scene3D.load(this.$scene3D[index].url, Laya.Handler.create(this, (Scene3D) => {
+                                this.endLode(this._loadOrder[this._loadOrderIndex], index, Scene3D, '3D场景', () => {
+                                    this.$scene3D[index].scene3D = Scene3D;
+                                });
                             }));
                             break;
-                        case this._prefab3D:
-                            Laya.Sprite3D.load(this._prefab3D[index].url, Laya.Handler.create(this, (Sp3D) => {
-                                if (Sp3D == null) {
-                                    console.log('XXXXXXXXXXX3D预设体' + this._prefab3D[index].url + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
-                                }
-                                else {
-                                    this._prefab3D[index].prefab3D = Sp3D;
-                                    console.log('3D预制体' + this._prefab3D[index].url + '加载完成！', '数组下标为：', index);
-                                }
-                                EventAdmin._notify(_Event.progress);
+                        case this.$prefab3D:
+                            Laya.Sprite3D.load(this.$prefab3D[index].url, Laya.Handler.create(this, (Sp3D) => {
+                                this.endLode(this._loadOrder[this._loadOrderIndex], index, Sp3D, '3D预制体', () => {
+                                    this.$prefab3D[index].prefab3D = Sp3D;
+                                });
                             }));
                             break;
-                        case this._mesh3D:
-                            Laya.Mesh.load(this._mesh3D[index].url, Laya.Handler.create(this, (Mesh3D) => {
-                                if (Mesh3D == null) {
-                                    console.log('XXXXXXXXXXX3D网格' + this._mesh3D[index].url + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
-                                }
-                                else {
-                                    this._mesh3D[index].mesh3D = Mesh3D;
-                                    console.log('3D网格' + this._mesh3D[index].url + '加载完成！', '数组下标为：', index);
-                                }
-                                EventAdmin._notify(_Event.progress);
+                        case this.$mesh3D:
+                            Laya.Mesh.load(this.$mesh3D[index].url, Laya.Handler.create(this, (Mesh3D) => {
+                                this.endLode(this._loadOrder[this._loadOrderIndex], index, Mesh3D, '3D网格', () => {
+                                    this.$mesh3D[index].mesh3D = Mesh3D;
+                                });
                             }));
                             break;
-                        case this._texture:
-                            Laya.loader.load(this._texture[index].url, Laya.Handler.create(this, (tex) => {
-                                if (typeof this._texture[index].url === 'object') {
-                                    console.log(`${this._texture[index]} 数组加载完成，为数组对象，只能从getRes（url）中逐个获取`);
-                                }
-                                else {
-                                    if (tex == null) {
-                                        console.log('XXXXXXXXXXX2D纹理' + this._texture[index].url + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
-                                    }
-                                    else {
-                                        this._texture[index].texture = tex;
-                                        console.log('纹理' + this._texture[index].url + '加载完成！', '数组下标为：', index);
-                                    }
-                                }
-                                EventAdmin._notify(_Event.progress);
+                        case this.$texture:
+                            Laya.loader.load(this.$texture[index].url, Laya.Handler.create(this, (tex) => {
+                                this.endLode(this._loadOrder[this._loadOrderIndex], index, tex, '纹理', () => {
+                                    this.$texture[index].texture = tex;
+                                });
                             }));
                             break;
-                        case this._texture2D:
-                            Laya.Texture2D.load(this._texture2D[index].url, Laya.Handler.create(this, (tex2D) => {
-                                if (tex2D == null) {
-                                    console.log('XXXXXXXXXXX2D纹理' + this._texture2D[index].url + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
-                                }
-                                else {
-                                    this._texture2D[index].texture2D = tex2D;
-                                    console.log('3D纹理' + this._texture2D[index].url + '加载完成！', '数组下标为：', index);
-                                }
-                                EventAdmin._notify(_Event.progress);
+                        case this.$texture2D:
+                            Laya.Texture2D.load(this.$texture2D[index].url, Laya.Handler.create(this, (tex2D) => {
+                                this.endLode(this._loadOrder[this._loadOrderIndex], index, tex2D, '3D纹理', () => {
+                                    this.$texture2D[index].texture2D = tex2D;
+                                });
                             }));
                             break;
-                        case this._effectsTex2D:
-                            Laya.Texture2D.load(this._effectsTex2D[index].url, Laya.Handler.create(this, (tex2D) => {
-                                if (tex2D == null) {
-                                    console.log('XXXXXXXXXXX3D纹理' + this._effectsTex2D[index].url + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
-                                }
-                                else {
-                                    this._effectsTex2D[index].texture2D = tex2D;
-                                    console.log('3D纹理' + this._effectsTex2D[index].url + '加载完成！', '数组下标为：', index);
-                                }
-                                EventAdmin._notify(_Event.progress);
+                        case this.$effectsTex2D:
+                            Laya.Texture2D.load(this.$effectsTex2D[index].url, Laya.Handler.create(this, (tex2D) => {
+                                this.endLode(this._loadOrder[this._loadOrderIndex], index, tex2D, '3D纹理', () => {
+                                    this.$effectsTex2D[index].texture2D = tex2D;
+                                });
                             }));
                             break;
-                        case this._material:
-                            Laya.Material.load(this._material[index].url, Laya.Handler.create(this, (Material) => {
-                                if (Material == null) {
-                                    console.log('XXXXXXXXXXX材质' + this._material[index].url + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
-                                }
-                                else {
-                                    this._material[index].material = Material;
-                                    console.log('材质' + this._material[index].url + '加载完成！', '数组下标为：', index);
-                                }
-                                EventAdmin._notify(_Event.progress);
+                        case this.$material:
+                            Laya.Material.load(this.$material[index].url, Laya.Handler.create(this, (Material) => {
+                                this.endLode(this._loadOrder[this._loadOrderIndex], index, Material, '3D纹理', () => {
+                                    this.$material[index].material = Material;
+                                });
                             }));
                             break;
-                        case this._json:
-                            Laya.loader.load(this._json[index].url, Laya.Handler.create(this, (Json) => {
-                                if (typeof this._json[index].url === 'object') {
-                                    console.log(`${this._json[index]} 数组加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
-                                }
-                                else {
-                                    if (Json == null) {
-                                        console.log('XXXXXXXXXXX数据表' + this._json[index].url + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
-                                    }
-                                    else {
-                                        this._json[index].dataArr = Json["RECORDS"];
-                                        console.log('数据表' + this._json[index].url + '加载完成！', '数组下标为：', index);
-                                    }
-                                }
-                                EventAdmin._notify(_Event.progress);
+                        case this.$json:
+                            Laya.loader.load(this.$json[index].url, Laya.Handler.create(this, (Json) => {
+                                this.endLode(this._loadOrder[this._loadOrderIndex], index, Json, '3D纹理', () => {
+                                    this.$json[index].dataArr = Json["RECORDS"];
+                                });
                             }), null, Laya.Loader.JSON);
                             break;
-                        case this._skeleton:
-                            this._skeleton[index].templet.on(Laya.Event.ERROR, this, () => {
-                                console.log('XXXXXXXXXXX骨骼动画' + this._skeleton[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
+                        case this.$skeleton:
+                            this.$skeleton[index].templet.on(Laya.Event.ERROR, this, () => {
+                                console.log('XXXXXXXXXXX骨骼动画' + this.$skeleton[index] + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
                                 EventAdmin._notify(_Event.progress);
                             });
-                            this._skeleton[index].templet.on(Laya.Event.COMPLETE, this, () => {
-                                console.log('骨骼动画', this._skeleton[index].templet.url, '加载完成！', '数组下标为：', index);
+                            this.$skeleton[index].templet.on(Laya.Event.COMPLETE, this, () => {
+                                console.log('骨骼动画', this.$skeleton[index].templet.url, '加载完成！', '数组下标为：', index);
                                 EventAdmin._notify(_Event.progress);
                             });
-                            this._skeleton[index].templet.loadAni(this._skeleton[index].url);
+                            this.$skeleton[index].templet.loadAni(this.$skeleton[index].url);
                             break;
-                        case this._prefab2D:
-                            Laya.loader.load(this._prefab2D[index].url, Laya.Handler.create(this, (prefab2d) => {
-                                if (typeof this._prefab2D[index].url === 'object') {
-                                    console.log(`${this._prefab2D[index]} 加载，完成，为数组对象，只能从getRes（url）中逐个获取`);
-                                }
-                                else {
-                                    if (prefab2d == null) {
-                                        console.log('XXXXXXXXXXX2D预制体' + this._prefab2D[index].url + '加载失败！不会停止加载进程！', '数组下标为：', index, 'XXXXXXXXXXX');
-                                    }
-                                    else {
-                                        let _prefab = new Laya.Prefab();
-                                        _prefab.json = prefab2d;
-                                        this._prefab2D[index].prefab2D = _prefab;
-                                        console.log('2D预制体' + this._prefab2D[index].url + '加载完成！', '数组下标为：', index);
-                                    }
-                                }
-                                EventAdmin._notify(_Event.progress);
+                        case this.$prefab2D:
+                            Laya.loader.load(this.$prefab2D[index].url, Laya.Handler.create(this, (prefab2d) => {
+                                this.endLode(this._loadOrder[this._loadOrderIndex], index, prefab2d, '3D纹理', () => {
+                                    let _prefab = new Laya.Prefab();
+                                    _prefab.json = prefab2d;
+                                    this.$prefab2D[index].prefab2D = _prefab;
+                                });
                             }));
                             break;
                         default:
@@ -8805,36 +8705,36 @@
     (function (_Guide) {
         let Event;
         (function (Event) {
-            Event["closeGuide"] = "GuidecloseGuide";
-            Event["vanishGuide"] = "GuidevanishGuide";
-            Event["StartBtnDress"] = "GuideStartBtnDress";
-            Event["MakeTailorPulldown"] = "GuideMakeTailorPulldown";
-            Event["MakeTailorChangeCloth"] = "GuideMakeTailorChangeCloth";
-            Event["MakeTailorBtnCom"] = "GuideMakeTailorBtnCom";
-            Event["MakeTailorStartTailor"] = "GuideMakeTailorStartTailor";
-            Event["MakeTailorNewTailor"] = "GuideMakeTailorNewTailor";
-            Event["MakeTailorCloseTailor"] = "GuideMakeTailorCloseTailor";
-            Event["MakeTailorOpenTailor"] = "GuideMakeTailorOpenTailor";
-            Event["MakePatternChooseClassify"] = "GuideMakePatternChooseClassify";
-            Event["MakePatternPattern1"] = "GuideMakePatternPattern1";
-            Event["MakePatternFrame1"] = "GuideMakePatternFrame1";
-            Event["MakePatternTurnFace"] = "GuideMakePatternTurnFace";
-            Event["MakePatternFrame2"] = "GuideMakePatternFrame2";
-            Event["MakePatternPattern2"] = "GuideMakePatternPattern2";
-            Event["MakePatternBtnCom"] = "GuideMakePatternBtnCom";
-            Event["TweetingBtnChoosePhoto"] = "GuideTweetingBtnChoosePhoto";
-            Event["TweetingChoosePhoto"] = "GuideTweetingChoosePhoto";
-            Event["TweetingBtnSend"] = "GuideTweetingBtnSend";
-            Event["TweetingBtnDoubleFans"] = "GuideTweetingBtnDoubleFans";
-            Event["RankingCloseBtn"] = "GuideRankingCloseBtn";
-            Event["PersonalInfoBtn"] = "GuidePersonalInfoBtn";
-            Event["PersonalInfoWriteName"] = "GuidePersonalInfoWriteName";
-            Event["PersonalInfoCloseBtn"] = "GuidePersonalInfoCloseBtn";
-            Event["DelayBtnCheckIn"] = "StartDelayBtnCheckIn";
-            Event["BtnCheckIn"] = "GuideBtnCheckIn";
-            Event["CheckInGetReward"] = "GuideCheckInGetReward";
-            Event["CheckInCloseBtn"] = "GuideCheckInBtnClose";
-            Event["StartOtherBtnClick"] = "GuideStartOtherBtnClick";
+            Event["closeGuide"] = "Guide/closeGuide";
+            Event["vanishGuide"] = "Guide/vanishGuide";
+            Event["StartBtnDress"] = "Guide/StartBtnDress";
+            Event["MakeTailorPulldown"] = "Guide/MakeTailorPulldown";
+            Event["MakeTailorChangeCloth"] = "Guide/MakeTailorChangeCloth";
+            Event["MakeTailorBtnCom"] = "Guide/MakeTailorBtnCom";
+            Event["MakeTailorStartTailor"] = "Guide/MakeTailorStartTailor";
+            Event["MakeTailorNewTailor"] = "Guide/MakeTailorNewTailor";
+            Event["MakeTailorCloseTailor"] = "Guide/MakeTailorCloseTailor";
+            Event["MakeTailorOpenTailor"] = "Guide/MakeTailorOpenTailor";
+            Event["MakePatternChooseClassify"] = "Guide/MakePatternChooseClassify";
+            Event["MakePatternPattern1"] = "Guide/MakePatternPattern1";
+            Event["MakePatternFrame1"] = "Guide/MakePatternFrame1";
+            Event["MakePatternTurnFace"] = "Guide/MakePatternTurnFace";
+            Event["MakePatternFrame2"] = "Guide/MakePatternFrame2";
+            Event["MakePatternPattern2"] = "Guide/MakePatternPattern2";
+            Event["MakePatternBtnCom"] = "Guide/MakePatternBtnCom";
+            Event["TweetingBtnChoosePhoto"] = "Guide/TweetingBtnChoosePhoto";
+            Event["TweetingChoosePhoto"] = "Guide/TweetingChoosePhoto";
+            Event["TweetingBtnSend"] = "Guide/TweetingBtnSend";
+            Event["TweetingBtnDoubleFans"] = "Guide/TweetingBtnDoubleFans";
+            Event["RankingCloseBtn"] = "Guide/RankingCloseBtn";
+            Event["PersonalInfoBtn"] = "Guide/PersonalInfoBtn";
+            Event["PersonalInfoWriteName"] = "Guide/PersonalInfoWriteName";
+            Event["PersonalInfoCloseBtn"] = "Guide/PersonalInfoCloseBtn";
+            Event["DelayBtnCheckIn"] = "Start/DelayBtnCheckIn";
+            Event["BtnCheckIn"] = "Guide/BtnCheckIn";
+            Event["CheckInGetReward"] = "Guide/CheckInGetReward";
+            Event["CheckInCloseBtn"] = "Guide/CheckInBtnClose";
+            Event["StartOtherBtnClick"] = "Guide/StartOtherBtnClick";
         })(Event = _Guide.Event || (_Guide.Event = {}));
         _Guide._complete = {
             get value() {
@@ -8881,9 +8781,9 @@
     (function (_Start) {
         let Event;
         (function (Event) {
-            Event["photo"] = "Startphoto";
-            Event["updateRanking"] = "StartupdateRanking";
-            Event["BtnPersonalInfo"] = "StartBtnPersonalInfo";
+            Event["photo"] = "Start/photo";
+            Event["updateRanking"] = "Start/updateRanking";
+            Event["BtnPersonalInfo"] = "Start/BtnPersonalInfo";
         })(Event = _Start.Event || (_Start.Event = {}));
     })(_Start || (_Start = {}));
     class _mergeProAllClothes extends Lwg$1.DataAdmin._BaseProperty {
