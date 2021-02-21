@@ -54,11 +54,13 @@ export module Lwg {
                 if (bool) {
                     _switch = false;
                     TimerAdmin._switch = false;
-                    LwgClick._aniSwitch = true;
+                    LwgClick._filter.value = LwgClick._filterType.all;
+
                 } else {
                     _switch = true;
                     TimerAdmin._switch = true;
-                    LwgClick._aniSwitch = false;
+                    LwgClick._filter.value = LwgClick._filterType.none;
+
                 }
             }
         }
@@ -124,21 +126,21 @@ export module Lwg {
         export let _SceneScript = {};
         /**常用场景的名称，和脚本默认导出类名保持一致*/
         export class _BaseName {
+            static LwgInit = 'LwgInit';
             static PreLoad = 'PreLoad';
             static PreLoadCutIn = 'PreLoadCutIn';
             static Guide = 'Guide';
             static Start = 'Start';
-            static Shop = 'Shop';
-            static Task = 'Task';
-            static Set = 'Set';
-            static Victory = 'Victory';
-            static Defeated = 'Defeated';
-            static CheckIn = 'CheckIn';
-            static LwgInit = 'LwgInit';
             static SelectLevel = 'SelectLevel';
             static Settle = 'Settle';
+            static Victory = 'Victory';
+            static Defeated = 'Defeated';
             static Share = 'Share';
+            static CheckIn = 'CheckIn';
             static Ranking = 'Ranking';
+            static Set = 'Set';
+            static Shop = 'Shop';
+            static Task = 'Task';
         }
         /**预加载完毕后，需要打开的场景信息*/
         export const _PreLoadCutIn = {
@@ -157,20 +159,36 @@ export module Lwg {
             _PreLoadCutIn.closeName = closeName;
             _openScene(_BaseName.PreLoadCutIn, closeName, func, zOrder);
         }
-        /**场景转换站，控制场景打开和关闭的一些事宜*/
+        /**场景转换，场景打开和关闭的一些控制*/
         export class _SceneServe {
+            /**
+             * @static 需要打开的场景，通过打开函数进行赋值
+             */
             static _openScene: Laya.Scene = null;
+            /**
+             * @static 打开场景的层级
+             */
             static _openZOder: number = 1;
+            /**
+             * @static 打开场景后的回调函数
+             */
             static _openFunc: Function = null;
+            /**
+             * @static 需要关闭场景的集合，某种情况下回同时关闭多个场景，于是用直接用数组进行管理
+             */
             static _closeSceneArr: Array<Laya.Scene> = [];
+            /**
+             * @static 需要关闭场景的层级
+             */
             static _closeZOder: number = 0;
-            //场景数量
+            /**
+             * 舞台上场景被打开的数量
+             */
             static _sceneNum: number = 1;
             /**当前打开场景放在最上面*/
             static _openZOderUp(): void {
                 if (SceneAniAdmin._closeSwitch.value) {
                     let num = 0;
-
                     for (const key in _SceneControl) {
                         if (Object.prototype.hasOwnProperty.call(_SceneControl, key)) {
                             const Scene = _SceneControl[key] as Laya.Scene;
@@ -195,7 +213,7 @@ export module Lwg {
                     }
                 }
             };
-            /**当前打开场景放在最上面,如果使用了关闭动画，必然关闭场景在上面*/
+            /**将需要关闭的场景显示在最上面*/
             static _closeZOderUP(CloseScene: Laya.Scene): void {
                 if (SceneAniAdmin._closeSwitch.value) {
                     let num = 0;
@@ -215,13 +233,21 @@ export module Lwg {
                     }
                 }
             };
+
+            /**
+             *设置完毕后打开场景
+             * @static
+             * @memberof _SceneServe
+             */
             static _open(): void {
                 if (this._openScene) {
+                    // 层级
                     if (this._openZOder) {
                         Laya.stage.addChildAt(this._openScene, this._openZOder);
                     } else {
                         Laya.stage.addChild(this._openScene);
                     }
+                    // 添加同名脚本
                     if (_SceneScript[this._openScene.name]) {
                         if (!this._openScene.getComponent(_SceneScript[this._openScene.name])) {
                             this._openScene.addComponent(_SceneScript[this._openScene.name]);
@@ -229,10 +255,17 @@ export module Lwg {
                     } else {
                         console.log(`${this._openScene.name}场景没有同名脚本！,需在LwgInit脚本中导入该脚本！`);
                     }
+                    // 打开场景默认在上面
                     this._openZOderUp();
                     this._openFunc();
                 }
             };
+
+            /**
+             *设置完毕后关闭场景
+             * @static
+             * @memberof _SceneServe
+             */
             static _close(): void {
                 if (this._closeSceneArr.length > 0) {
                     for (let index = 0; index < this._closeSceneArr.length; index++) {
@@ -246,6 +279,11 @@ export module Lwg {
                 }
                 this._remake();
             }
+            /**
+             *重制属性
+             * @static
+             * @memberof _SceneServe
+             */
             static _remake(): void {
                 this._openScene = null;
                 this._openZOder = 1;
@@ -262,13 +300,13 @@ export module Lwg {
           * @param zOrder 指定层级
          */
         export function _openScene(openName: string, closeName?: string, func?: Function, zOrder?: number): void {
-            LwgClick._aniSwitch = false;
+            LwgClick._filter.value = LwgClick._filterType.none;
             Laya.Scene.load('Scene/' + openName + '.json', Laya.Handler.create(this, function (scene: Laya.Scene) {
                 // 如果该场景已经有了，则立即关闭，打开新的
                 const openScene = ToolsAdmin._Node.checkChildren(Laya.stage, openName) as Laya.Scene;
                 if (openScene) {
                     openScene.close();
-                    console.log(`场景${openName}重复出现！前面的场景将会被关闭！`);
+                    console.log(`场景${openName}重复出现！前面的场景被关闭！`);
                 }
                 _SceneServe._openScene = _SceneControl[scene.name = openName] = scene;
                 if (closeName && _SceneControl[closeName]) {
@@ -287,6 +325,7 @@ export module Lwg {
          * @param func 关闭后的回调函数
          * */
         export function _closeScene(closeName?: string, func?: Function): void {
+            // 新建一个节点作为屏蔽点击的节点
             if (!_SceneControl[closeName]) {
                 console.log(`场景${closeName}关闭失败，可能不存在！`);
                 return;
@@ -294,8 +333,8 @@ export module Lwg {
             /**传入的回调函数*/
             var closef = () => {
                 func && func();
-                LwgClick._aniSwitch = true;
                 _SceneControl[closeName].close();
+                LwgClick._filter.value = LwgClick._filterType.all;
             }
             // 如果关闭了场景消失动画，则不会执行任何动画
             if (!SceneAniAdmin._closeSwitch.value) {
@@ -305,16 +344,16 @@ export module Lwg {
                 //如果内部场景消失动画被重写了，则执行内部场景消失动画，而不执行通用动画
                 const script = _SceneControl[closeName][closeName];
                 if (script) {
-                    LwgClick._aniSwitch = false;
+                    // 场景内动画
                     let time0 = script.lwgCloseAni();
                     if (time0 !== null) {
                         SceneAniAdmin._closeAniDelay = time0;
                         script.lwgBeforeCloseAni();
                         Laya.timer.once(time0, this, () => {
                             closef();
-                            LwgClick._aniSwitch = true;
                         })
                     } else {
+                        // 通用动画
                         const delay = SceneAniAdmin._commonCloseAni(_SceneControl[closeName]);
                         Laya.timer.once(delay, this, () => {
                             script.lwgBeforeCloseAni();
@@ -408,18 +447,18 @@ export module Lwg {
             lwgButton(): void { };
 
             private checkBtnClick(target: Laya.Node, clickFunc: Function, e: Laya.Event): void {
-                if (!LwgClick._aniSwitch) {
-                    return;
-                }
-                switch (ClickAdmin._filter.value) {
-                    case ClickAdmin._filterType.all || ClickAdmin._filterType.button:
-                        clickFunc && clickFunc(e);
-                        break;
-                    case ClickAdmin._filterType.someBtnIncludeStage || ClickAdmin._filterType.someBtnExcludeStage:
-                        ClickAdmin._checkTarget(target.name) && clickFunc && clickFunc(e);
-                        break;
-                    default:
-                        break;
+                console.log(ClickAdmin._filter.value);
+                if (ClickAdmin._absolute) {
+                    switch (ClickAdmin._filter.value) {
+                        case ClickAdmin._filterType.all || ClickAdmin._filterType.button:
+                            clickFunc && clickFunc(e);
+                            break;
+                        case ClickAdmin._filterType.someBtnIncludeStage || ClickAdmin._filterType.someBtnExcludeStage:
+                            ClickAdmin._checkTarget(target.name) && clickFunc && clickFunc(e);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             /**
@@ -639,13 +678,15 @@ export module Lwg {
             private btnAndOpenAni(): void {
                 let time = this.lwgOpenAni();
                 if (time !== null) {
+                    // 不使用通用开场动画
                     Laya.timer.once(time, this, () => {
-                        LwgClick._aniSwitch = true;
+                        LwgClick._filter.value = LwgClick._filterType.all;
                         this.lwgOpenAniAfter();
                         this.lwgButton();
                         _SceneServe._close();
                     });
                 } else {
+                    // 使用通用开场动画
                     SceneAniAdmin._commonOpenAni(this._Owner);
                 }
             }
@@ -1963,27 +2004,32 @@ export module Lwg {
 
         /**通用场景进场动画*/
         export function _commonOpenAni(Scene: Laya.Scene): number {
+            /**
+             * 动画结束后执行
+             */
             var afterAni = () => {
-                LwgScene._SceneServe._close();
-                LwgClick._aniSwitch = true;
+                LwgClick._filter.value = LwgClick._filterType.all;
                 if (Scene[Scene.name]) {
                     Scene[Scene.name].lwgOpenAniAfter();
                     Scene[Scene.name].lwgButton();
                 }
             }
             if (!_openSwitch.value) {
+                // 没有进场动画，时用上个场景关闭动画的延时
                 LwgScene._SceneServe._close();
                 Laya.timer.once(_closeAniDelay + _closeAniTime, this, () => {
                     afterAni();
                 })
                 return 0;
+            } else {
+                // 有进场动画
+                const sumDelay = _Use.value.class['_paly'](_Use.value.type, Scene);
+                Laya.timer.once(sumDelay, this, () => {
+                    LwgScene._SceneServe._close();
+                    afterAni();
+                })
+                return sumDelay;
             }
-            let sumDelay: number = 0;//总延迟
-            sumDelay = _Use.value.class['_paly'](_Use.value.type, Scene);
-            Laya.timer.once(sumDelay, this, () => {
-                afterAni();
-            })
-            return sumDelay;
         }
 
         /**通用场景消失动画*/
@@ -5772,29 +5818,49 @@ export module Lwg {
 
     /**点击事件模块 */
     export module ClickAdmin {
-        /**点击事件开关，主要是场景切换动画中控制按钮的点击*/
-        export let _aniSwitch = true;
-        /**如果_filter==someBtnIncludeStage||_filter==someBtnExcludeStage时，可以放入节点名称，那么这些几点即可点击*/
-        export let _nodeSelection: string[] = [];
+        /**绝对开关，不会进行筛选，如果被关闭那么什么都不可以点击*/
+        export let _absolute = true;
         /**筛选级别，分别控制舞台点击和按钮点击*/
         export let _filterType = {
+            // 全部可以点击
             all: 'all',
+            // 全部不可以点击
             none: 'none',
+            // 只有舞台可以点击
             stage: 'stage',
+            // 只有按钮可以点击
             button: 'button',
+            // 某些按钮可以点击，舞台也可以点击
             someBtnIncludeStage: 'someBtnIncludeStage',
+            // 某些按钮可以点击， 舞台不可以点击
             someBtnExcludeStage: 'someBtnExcludeStage',
         }
         /**筛选值*/
         export let _filter = {
             get value(): string {
-                return this['ClickAdmin/filter'] ? this['ClickAdmin/filter'] : 'all';
+                return this['ClickAdmin/filter'] ? this['ClickAdmin/filter'] : _filterType.all;
             },
             set value(val: string) {
                 this['ClickAdmin/filter'] = val;
+                // 自动清空
                 switch (val) {
                     case _filterType.all || _filterType.none || _filterType.stage:
-                        _nodeSelection = [];
+                        _filter._nodeSelection = [];
+                        console.log(`打开事件点击！${val}`)
+                        break;
+                    default:
+                        break;
+                }
+            },
+            /**如果_filter==someBtnIncludeStage||_filter==someBtnExcludeStage时，可以放入节点名称，那么这些几点即可点击，直接加入会默认为_filterType.someBtnExcludeStage*/
+            get _nodeSelection(): string[] {
+                return this['ClickAdmin/_nodeSelection'];
+            },
+            set _nodeSelection(arr: string[]) {
+                this['ClickAdmin/_nodeSelection'] = arr;
+                switch (_filter.value) {
+                    case _filterType.someBtnIncludeStage || _filterType.someBtnExcludeStage:
+                        _filter.value = _filterType.someBtnExcludeStage;
                         break;
                     default:
                         break;
@@ -5809,11 +5875,13 @@ export module Lwg {
          */
         export function _checkTarget(targetName: string): boolean {
             let targetClick = false;
-            if (LwgClick._nodeSelection.length > 0) {
-                for (let index = 0; index < LwgClick._nodeSelection.length; index++) {
-                    const _name = LwgClick._nodeSelection[index];
-                    if (_name === targetName) {
-                        targetClick = true;
+            if (_absolute) {
+                if (_filter._nodeSelection.length > 0) {
+                    for (let index = 0; index < _filter._nodeSelection.length; index++) {
+                        const _name = _filter._nodeSelection[index];
+                        if (_name === targetName) {
+                            targetClick = true;
+                        }
                     }
                 }
             }
@@ -5825,7 +5893,7 @@ export module Lwg {
          */
         export function _checkStage(): boolean {
             let stageClick = false;
-            if (LwgClick._aniSwitch) {
+            if (LwgClick._absolute) {
                 if (_filter.value === _filterType.all || _filter.value === _filterType.stage || _filter.value === _filterType.someBtnIncludeStage) {
                     stageClick = true;
                 }
@@ -6223,7 +6291,7 @@ export module Lwg {
                 delayed = 0;
             }
             if (!click) {
-                LwgClick._aniSwitch = false
+                LwgClick._filter.value = LwgClick._filterType.none;
             }
             Laya.Tween.to(node, { x: node.x - range }, time, null, Laya.Handler.create(this, function () {
                 // AudioAdmin._playSound(Enum.AudioName.commonShake, 1);
@@ -6234,7 +6302,7 @@ export module Lwg {
                             func();
                         }
                         if (!click) {
-                            LwgClick._aniSwitch = true
+                            LwgClick._filter.value = LwgClick._filterType.all;
                         }
                     }))
                 }))
@@ -6330,14 +6398,14 @@ export module Lwg {
         export function fadeOut(node: Laya.Sprite, alpha1: number, alpha2: number, time: number, delayed?: number, func?: Function, stageClick?: boolean): void {
             node.alpha = alpha1;
             if (stageClick) {
-                LwgClick._aniSwitch = false
+                LwgClick._filter.value = LwgClick._filterType.none;
             }
             Laya.Tween.to(node, { alpha: alpha2 }, time, null, Laya.Handler.create(this, function () {
                 if (func) {
                     func();
                 }
                 if (stageClick) {
-                    LwgClick._aniSwitch = true
+                    LwgClick._filter.value = LwgClick._filterType.all;
                 }
             }), delayed ? delayed : 0)
         }

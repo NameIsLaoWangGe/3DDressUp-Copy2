@@ -1154,12 +1154,11 @@
                     if (bool) {
                         GameAdmin._switch = false;
                         TimerAdmin._switch = false;
-                        LwgClick._aniSwitch = true;
                     }
                     else {
                         GameAdmin._switch = true;
                         TimerAdmin._switch = true;
-                        LwgClick._aniSwitch = false;
+                        LwgClick._filter.value = LwgClick._filterType.none;
                     }
                 }
             };
@@ -1218,21 +1217,21 @@
             SceneAdmin._SceneScript = {};
             class _BaseName {
             }
+            _BaseName.LwgInit = 'LwgInit';
             _BaseName.PreLoad = 'PreLoad';
             _BaseName.PreLoadCutIn = 'PreLoadCutIn';
             _BaseName.Guide = 'Guide';
             _BaseName.Start = 'Start';
-            _BaseName.Shop = 'Shop';
-            _BaseName.Task = 'Task';
-            _BaseName.Set = 'Set';
-            _BaseName.Victory = 'Victory';
-            _BaseName.Defeated = 'Defeated';
-            _BaseName.CheckIn = 'CheckIn';
-            _BaseName.LwgInit = 'LwgInit';
             _BaseName.SelectLevel = 'SelectLevel';
             _BaseName.Settle = 'Settle';
+            _BaseName.Victory = 'Victory';
+            _BaseName.Defeated = 'Defeated';
             _BaseName.Share = 'Share';
+            _BaseName.CheckIn = 'CheckIn';
             _BaseName.Ranking = 'Ranking';
+            _BaseName.Set = 'Set';
+            _BaseName.Shop = 'Shop';
+            _BaseName.Task = 'Task';
             SceneAdmin._BaseName = _BaseName;
             SceneAdmin._PreLoadCutIn = {
                 openName: null,
@@ -1342,12 +1341,12 @@
             _SceneServe._sceneNum = 1;
             SceneAdmin._SceneServe = _SceneServe;
             function _openScene(openName, closeName, func, zOrder) {
-                LwgClick._aniSwitch = false;
+                LwgClick._filter.value = LwgClick._filterType.none;
                 Laya.Scene.load('Scene/' + openName + '.json', Laya.Handler.create(this, function (scene) {
                     const openScene = ToolsAdmin._Node.checkChildren(Laya.stage, openName);
                     if (openScene) {
                         openScene.close();
-                        console.log(`场景${openName}重复出现！前面的场景将会被关闭！`);
+                        console.log(`场景${openName}重复出现！前面的场景被关闭！`);
                     }
                     _SceneServe._openScene = SceneAdmin._SceneControl[scene.name = openName] = scene;
                     if (closeName && SceneAdmin._SceneControl[closeName]) {
@@ -1367,7 +1366,6 @@
                 }
                 var closef = () => {
                     func && func();
-                    LwgClick._aniSwitch = true;
                     SceneAdmin._SceneControl[closeName].close();
                 };
                 if (!SceneAniAdmin._closeSwitch.value) {
@@ -1377,14 +1375,12 @@
                     _SceneServe._closeZOderUP(LwgScene._SceneControl[closeName]);
                     const script = SceneAdmin._SceneControl[closeName][closeName];
                     if (script) {
-                        LwgClick._aniSwitch = false;
                         let time0 = script.lwgCloseAni();
                         if (time0 !== null) {
                             SceneAniAdmin._closeAniDelay = time0;
                             script.lwgBeforeCloseAni();
                             Laya.timer.once(time0, this, () => {
                                 closef();
-                                LwgClick._aniSwitch = true;
                             });
                         }
                         else {
@@ -1468,18 +1464,18 @@
                 lwgButton() { }
                 ;
                 checkBtnClick(target, clickFunc, e) {
-                    if (!LwgClick._aniSwitch) {
-                        return;
-                    }
-                    switch (ClickAdmin._filter.value) {
-                        case ClickAdmin._filterType.all || ClickAdmin._filterType.button:
-                            clickFunc && clickFunc(e);
-                            break;
-                        case ClickAdmin._filterType.someBtnIncludeStage || ClickAdmin._filterType.someBtnExcludeStage:
-                            ClickAdmin._checkTarget(target.name) && clickFunc && clickFunc(e);
-                            break;
-                        default:
-                            break;
+                    console.log(ClickAdmin._filter.value);
+                    if (ClickAdmin._absolute) {
+                        switch (ClickAdmin._filter.value) {
+                            case ClickAdmin._filterType.all || ClickAdmin._filterType.button:
+                                clickFunc && clickFunc(e);
+                                break;
+                            case ClickAdmin._filterType.someBtnIncludeStage || ClickAdmin._filterType.someBtnExcludeStage:
+                                ClickAdmin._checkTarget(target.name) && clickFunc && clickFunc(e);
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
                 _btnDown(target, down, effect) {
@@ -1646,7 +1642,6 @@
                     let time = this.lwgOpenAni();
                     if (time !== null) {
                         Laya.timer.once(time, this, () => {
-                            LwgClick._aniSwitch = true;
                             this.lwgOpenAniAfter();
                             this.lwgButton();
                             _SceneServe._close();
@@ -2643,8 +2638,6 @@
             SceneAniAdmin._closeAniTime = 0;
             function _commonOpenAni(Scene) {
                 var afterAni = () => {
-                    LwgScene._SceneServe._close();
-                    LwgClick._aniSwitch = true;
                     if (Scene[Scene.name]) {
                         Scene[Scene.name].lwgOpenAniAfter();
                         Scene[Scene.name].lwgButton();
@@ -2657,12 +2650,14 @@
                     });
                     return 0;
                 }
-                let sumDelay = 0;
-                sumDelay = SceneAniAdmin._Use.value.class['_paly'](SceneAniAdmin._Use.value.type, Scene);
-                Laya.timer.once(sumDelay, this, () => {
-                    afterAni();
-                });
-                return sumDelay;
+                else {
+                    const sumDelay = SceneAniAdmin._Use.value.class['_paly'](SceneAniAdmin._Use.value.type, Scene);
+                    Laya.timer.once(sumDelay, this, () => {
+                        LwgScene._SceneServe._close();
+                        afterAni();
+                    });
+                    return sumDelay;
+                }
             }
             SceneAniAdmin._commonOpenAni = _commonOpenAni;
             function _commonCloseAni(CloseScene) {
@@ -5584,8 +5579,7 @@
         })(Eff2DAdmin = Lwg.Eff2DAdmin || (Lwg.Eff2DAdmin = {}));
         let ClickAdmin;
         (function (ClickAdmin) {
-            ClickAdmin._aniSwitch = true;
-            ClickAdmin._nodeSelection = [];
+            ClickAdmin._absolute = true;
             ClickAdmin._filterType = {
                 all: 'all',
                 none: 'none',
@@ -5596,13 +5590,27 @@
             };
             ClickAdmin._filter = {
                 get value() {
-                    return this['ClickAdmin/filter'] ? this['ClickAdmin/filter'] : 'all';
+                    return this['ClickAdmin/filter'] ? this['ClickAdmin/filter'] : ClickAdmin._filterType.all;
                 },
                 set value(val) {
                     this['ClickAdmin/filter'] = val;
                     switch (val) {
                         case ClickAdmin._filterType.all || ClickAdmin._filterType.none || ClickAdmin._filterType.stage:
-                            ClickAdmin._nodeSelection = [];
+                            ClickAdmin._filter._nodeSelection = [];
+                            console.log(`打开事件点击！${val}`);
+                            break;
+                        default:
+                            break;
+                    }
+                },
+                get _nodeSelection() {
+                    return this['ClickAdmin/_nodeSelection'];
+                },
+                set _nodeSelection(arr) {
+                    this['ClickAdmin/_nodeSelection'] = arr;
+                    switch (ClickAdmin._filter.value) {
+                        case ClickAdmin._filterType.someBtnIncludeStage || ClickAdmin._filterType.someBtnExcludeStage:
+                            ClickAdmin._filter.value = ClickAdmin._filterType.someBtnExcludeStage;
                             break;
                         default:
                             break;
@@ -5611,11 +5619,13 @@
             };
             function _checkTarget(targetName) {
                 let targetClick = false;
-                if (LwgClick._nodeSelection.length > 0) {
-                    for (let index = 0; index < LwgClick._nodeSelection.length; index++) {
-                        const _name = LwgClick._nodeSelection[index];
-                        if (_name === targetName) {
-                            targetClick = true;
+                if (ClickAdmin._absolute) {
+                    if (ClickAdmin._filter._nodeSelection.length > 0) {
+                        for (let index = 0; index < ClickAdmin._filter._nodeSelection.length; index++) {
+                            const _name = ClickAdmin._filter._nodeSelection[index];
+                            if (_name === targetName) {
+                                targetClick = true;
+                            }
                         }
                     }
                 }
@@ -5624,7 +5634,7 @@
             ClickAdmin._checkTarget = _checkTarget;
             function _checkStage() {
                 let stageClick = false;
-                if (LwgClick._aniSwitch) {
+                if (LwgClick._absolute) {
                     if (ClickAdmin._filter.value === ClickAdmin._filterType.all || ClickAdmin._filter.value === ClickAdmin._filterType.stage || ClickAdmin._filter.value === ClickAdmin._filterType.someBtnIncludeStage) {
                         stageClick = true;
                     }
@@ -5889,7 +5899,7 @@
                     delayed = 0;
                 }
                 if (!click) {
-                    LwgClick._aniSwitch = false;
+                    LwgClick._filter.value = LwgClick._filterType.none;
                 }
                 Laya.Tween.to(node, { x: node.x - range }, time, null, Laya.Handler.create(this, function () {
                     Laya.Tween.to(node, { x: node.x + range * 2 }, time, null, Laya.Handler.create(this, function () {
@@ -5898,7 +5908,6 @@
                                 func();
                             }
                             if (!click) {
-                                LwgClick._aniSwitch = true;
                             }
                         }));
                     }));
@@ -5956,14 +5965,13 @@
             function fadeOut(node, alpha1, alpha2, time, delayed, func, stageClick) {
                 node.alpha = alpha1;
                 if (stageClick) {
-                    LwgClick._aniSwitch = false;
+                    LwgClick._filter.value = LwgClick._filterType.none;
                 }
                 Laya.Tween.to(node, { alpha: alpha2 }, time, null, Laya.Handler.create(this, function () {
                     if (func) {
                         func();
                     }
                     if (stageClick) {
-                        LwgClick._aniSwitch = true;
                     }
                 }), delayed ? delayed : 0);
             }
@@ -10491,7 +10499,7 @@
             });
             this.BtnBack = LwgTools._Node.createPrefab(_Res.$prefab2D.BtnBack.prefab2D, _Scene, [77, 79]);
             LwgClick._on(LwgClick._Use.value, this.BtnBack, this, null, null, () => {
-                if (!_Guide._complete)
+                if (!_Guide._complete.value)
                     return;
                 if (_3DScene._ins()._Owner.active) {
                     _BackHint._3dToSp = _3DScene._ins().cameraToSprite(this.Scene);
@@ -10510,7 +10518,7 @@
             });
             this.BtnRollback = LwgTools._Node.createPrefab(_Res.$prefab2D.BtnRollback.prefab2D, _Scene, [200, 79]);
             LwgClick._on(LwgClick._Use.value, this.BtnRollback, this, null, null, () => {
-                if (!_Guide._complete)
+                if (!_Guide._complete.value)
                     return;
                 this.btnRollbackClick && this.btnRollbackClick();
             });
@@ -11030,13 +11038,13 @@
                 this._evNotify(_MakeTailor.Event.scissorRemove, [() => {
                         _TaskClothes._ins().again(this._Owner);
                     }]);
-                LwgClick._aniSwitch = false;
+                LwgClick._filter.value = LwgClick._filterType.none;
                 LwgTimer._frameOnce(60, this, () => {
                     this.UI.operationAppear(() => {
                         this.UI.btnAgainVinish(null, 200);
                         this.UI.btnCompleteAppear();
                     });
-                    LwgClick._aniSwitch = true;
+                    LwgClick._filter.value = LwgClick._filterType.all;
                 });
             };
         }
@@ -13049,7 +13057,7 @@
 
     class Share extends LwgScene._SceneBase {
         lwgOnAwake() {
-            LwgClick._stageSwitch = false;
+            LwgClick._filter.value = LwgClick._filterType.button;
             if (_Share._whereFrom === _SceneName.MakePattern) {
                 this._SpriteVar('Photo').texture = _Tweeting._photo.arr[0];
             }
@@ -13091,7 +13099,7 @@
         lwgCloseAni() {
             return _GameAni._dialogCloseFadeOut(this._ImgVar('Content'), this._ImgVar('Background'), () => {
                 this.closeFunc();
-                LwgClick._stageSwitch = true;
+                LwgClick._filter.value = LwgClick._filterType.all;
             });
         }
     }

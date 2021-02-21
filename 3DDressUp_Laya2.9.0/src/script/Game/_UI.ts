@@ -29,7 +29,7 @@ export class _UI {
 
         this.BtnBack = LwgTools._Node.createPrefab(_Res.$prefab2D.BtnBack.prefab2D, _Scene, [77, 79]) as Laya.Image;
         LwgClick._on(LwgClick._Use.value, this.BtnBack, this, null, null, () => {
-            if (!_Guide._complete) return;
+            if (!_Guide._complete.value) return;
 
             if (_3DScene._ins()._Owner.active) {
                 _BackHint._3dToSp = _3DScene._ins().cameraToSprite(this.Scene);
