@@ -158,72 +158,65 @@ export module Lwg {
              */
             static _openFunc: Function = null;
             /**
-             * @static 需要关闭场景的集合，某种情况下回同时关闭多个场景，于是用直接用数组进行管理
-             */
-            static _closeSceneArr: Array<Laya.Scene> = [];
+           * @static 需要打开的场景，通过打开函数进行赋值
+           */
+            static _closeScene: Laya.Scene = null;
             /**
              * @static 需要关闭场景的层级
              */
             static _closeZOder: number = 0;
             /**
+              * @static 打开场景后的回调函数
+              */
+            static _closeFunc: Function = null;
+            /**
              * 舞台上场景被打开的数量
              */
             static _sceneNum: number = 1;
-            /**当前打开场景放在最上面*/
-            static _openZOderUp(): void {
-                if (SceneAniAdmin._closeSwitch.value) {
-                    let num = 0;
-                    for (const key in _SceneControl) {
-                        if (Object.prototype.hasOwnProperty.call(_SceneControl, key)) {
-                            const Scene = _SceneControl[key] as Laya.Scene;
-                            if (Scene.parent) {
-                                //将现有的场景层级变成零，此时他们还是按照当前顺序排布
-                                Scene.zOrder = 0;
-                                num++;
-                            }
+            /**
+             * 获取场景数量，用于层级排布
+             * @private
+             * @static
+             */
+            private static getSceneNum(): number {
+                let num = 0;
+                for (const key in _SceneControl) {
+                    if (Object.prototype.hasOwnProperty.call(_SceneControl, key)) {
+                        const Scene = _SceneControl[key] as Laya.Scene;
+                        if (Scene.parent) {
+                            //将现有的场景层级变成零，此时他们还是按照当前顺序排布
+                            Scene.zOrder = 0;
+                            num++;
                         }
                     }
-                    if (this._openScene) {
-                        this._openScene.zOrder = num;
-                        for (let index = 0; index < this._closeSceneArr.length; index++) {
-                            const element = this._closeSceneArr[index] as Laya.Scene;
-                            if (element) {
-                                element.zOrder = --num;
-                            } else {
-                                this._closeSceneArr.splice(index, 1);
-                                index--;
-                            }
-                        }
+                }
+                return num;
+            }
+            /**当前打开场景放在最上面*/
+            static _openZOderUp(): void {
+                if (this._openScene) {
+                    this._openScene.zOrder = this.getSceneNum();
+                    if (this._closeScene) {
+                        this._closeScene.zOrder = this._openScene.zOrder - 1;
                     }
                 }
             };
             /**将需要关闭的场景显示在最上面，一般用在使用关闭动画模式中*/
-            static _closeZOderUP(CloseScene: Laya.Scene): void {
-                if (SceneAniAdmin._closeSwitch.value) {
-                    let num = 0;
-                    for (const key in _SceneControl) {
-                        if (Object.prototype.hasOwnProperty.call(_SceneControl, key)) {
-                            const Scene = _SceneControl[key] as Laya.Scene;
-                            if (Scene.parent) {
-                                num++;
-                            }
-                        }
-                    }
-                    if (CloseScene) {
-                        CloseScene.zOrder = num;
-                        if (this._openScene) {
-                            this._openScene.zOrder = --num;
-                        }
+            static _closeZOderUP(): void {
+                if (this._closeScene) {
+                    this._closeScene.zOrder = this.getSceneNum();
+                    if (this._openScene) {
+                        this._openScene.zOrder = this._closeScene.zOrder - 1;
                     }
                 }
             };
-
             /**
              *设置完毕后打开场景
              * @static
              * @memberof _SceneServe
              */
-            static _open(): void {
+            static _addScript(): void {
+
                 if (this._openScene) {
                     // 层级
                     if (this._openZOder) {
@@ -239,30 +232,8 @@ export module Lwg {
                     } else {
                         console.log(`${this._openScene.name}场景没有同名脚本！,需在LwgInit脚本中导入该脚本！`);
                     }
-                    // 打开场景默认在上面
-                    this._openZOderUp();
-                    this._openFunc();
                 }
             };
-
-            /**
-             * 设置完毕后关闭场景，如果没有需要关闭的场景或者场景已经关闭也不影响
-             * @static
-             * @memberof _SceneServe
-             */
-            static _close(): void {
-                if (this._closeSceneArr.length > 0) {
-                    for (let index = 0; index < this._closeSceneArr.length; index++) {
-                        let scene = this._closeSceneArr[index] as Laya.Scene;
-                        if (scene) {
-                            _closeScene(scene.name);
-                            this._closeSceneArr.splice(index, 1)
-                            index--;
-                        }
-                    }
-                }
-                this._remake();
-            }
             /**
              *重制属性
              * @static
@@ -272,7 +243,73 @@ export module Lwg {
                 this._openScene = null;
                 this._openZOder = 1;
                 this._openFunc = null;
+                this._closeScene = null;
+                this._closeFunc = null;
                 this._closeZOder = 0;
+            }
+            /**
+             * 1.当前场景的开场动画和上个场景的关闭动画一般不会同时存在
+             * 2.如果开场动画和关闭动画同时存在，也必然不会同时进行，一定是先关闭后打开，如果倒过来那么被关闭的场景的动画几乎看不到，意义不大，还增加了控制难度，不使用。
+             * 3.最后一定在被打开的场景脚本中收尾。
+             * 4.流程：提升关闭场景的层级=》关闭动画=》关闭事件（先不关闭场景）=》提升打开层级=》开场动画=》开场事件=》关闭场景
+             * @static
+             * @param {Laya.Scene} _closeScene
+             * @param {Laya.Scene} _openScene
+             * @return {*}  {number}
+             * @memberof _SceneServe
+             */
+            static _flow(): void {
+                // 1.初始默认为没有关闭动画closeAniTime=0；
+                let closeAniTime = 0;
+                let closeScript: _SceneBase;
+                if (this._closeScene) {
+                    this._closeZOderUP();
+                    // 2.检查关闭动画内部是否被重写了
+                    closeScript = this._closeScene[this._closeScene.name] as _SceneBase;
+                    closeAniTime = closeScript.lwgCloseAni();
+                    if (closeAniTime === null) {
+                        // 3.如果内部没重写则查看通用关闭动画有没有
+                        if (SceneAniAdmin._closeSwitch.value) {
+                            closeAniTime = SceneAniAdmin._commonCloseAni(this._closeScene);
+                        }
+                    }
+                }
+                // 4.等待关闭动画执行完毕后，执行关闭动画前事件，以及打开下一个场景前的准备
+                Laya.timer.once(closeAniTime, this, () => {
+                    if (this._closeScene) {
+                        closeScript && closeScript.lwgBeforeCloseAni();
+                        this._closeScene.visible = false;
+                        this._closeFunc && this._closeFunc();
+                    }
+                    ClickAdmin._filter.value = ClickAdmin._filterType.all;
+
+                    if (this._openScene) {
+                        ClickAdmin._filter.value = ClickAdmin._filterType.none;
+                        this._addScript();
+                        this._openZOderUp();
+                        // 5.检查被打开的场景的内部开场动画是否被重写了
+                        const openScript = this._openScene[this._openScene.name] as _SceneBase;
+                        let openAniTime = openScript.lwgOpenAni();
+                        if (openAniTime === null) {
+                            // 6.如果内部没重写则查看通用开场动画有没有
+                            if (SceneAniAdmin._openSwitch.value) {
+                                openAniTime = SceneAniAdmin._commonOpenAni(this._openScene);
+                            } else {
+                                // 7.如果什么动画都没有则openAniTime=0；
+                                openAniTime = 0;
+
+                            }
+                        }
+                        // 8.代完成整个流程后进行整理
+                        Laya.timer.once(openAniTime, this, () => {
+                            openScript.lwgOpenAniAfter();
+                            openScript.lwgButton();
+                            this._closeScene && this._closeScene.close();
+                            this._openFunc && this._openFunc();
+                            ClickAdmin._filter.value = ClickAdmin._filterType.all;
+                        })
+                    }
+                })
             }
         }
 
@@ -310,14 +347,16 @@ export module Lwg {
                     openScene.close();
                     console.log(`场景${openName}重复出现！前一个场景被关闭！`);
                 }
+                _SceneServe._remake();
                 _SceneServe._openScene = _SceneControl[scene.name = openName] = scene;
-                if (closeName && _SceneControl[closeName]) {
-                    _SceneServe._closeSceneArr.push(_SceneControl[closeName]);
-                    _SceneServe._closeZOder = _SceneControl[closeName].zOrder;
-                }
                 _SceneServe._openZOder = zOrder ? zOrder : null;
                 _SceneServe._openFunc = func ? func : () => { };
-                _SceneServe._open();
+                if (closeName && _SceneControl[closeName]) {
+                    // _SceneServe._closeSceneArr.push(_SceneControl[closeName]);
+                    _SceneServe._closeScene = _SceneControl[closeName];
+                    _SceneServe._closeZOder = _SceneControl[closeName].zOrder;
+                }
+                _SceneServe._flow();
             }))
         }
 
@@ -333,27 +372,10 @@ export module Lwg {
                 console.log(`场景${closeName}关闭失败，可能不存在！`);
                 return;
             }
-            // 执行优先级为内部关闭动画>通用动画>大于没有动画
-            const script = scene[closeName] as _SceneBase;
-            let aniTime = script.lwgCloseAni();
-            if (aniTime == null) {
-                if (SceneAniAdmin._closeSwitch.value) {
-                    _SceneServe._closeZOderUP(scene);
-                    aniTime = SceneAniAdmin._commonCloseAni(scene);
-                } else {
-                    aniTime = 0;
-                }
-            }
-            // 此时开启场景动画也可能会执行，那么而必须将打开和关闭动画的时间相加
-            SceneAniAdmin._closeAniTime = aniTime;
-            const sumTime = SceneAniAdmin._openAniTime + SceneAniAdmin._closeAniTime;
-            console.log(sumTime);
-            Laya.timer.once(sumTime, this, () => {
-                script.lwgBeforeCloseAni();
-                func && func();
-                scene.close();
-                LwgClick._filter.value = LwgClick._filterType.all;
-            })
+            _SceneServe._remake();
+            _SceneServe._closeScene = scene;
+            _SceneServe._closeFunc = func ? func : () => { };
+            _SceneServe._flow();
         }
 
         /**
@@ -663,37 +685,8 @@ export module Lwg {
             onStart(): void {
                 this.moduleOnStart();
                 this.lwgOnStart();
-                this.btnAndOpenAni();
             }
-            moduleOnStart(): void { }
-            /**通过openAni返回的时间来延时开启点击事件*/
-            private btnAndOpenAni(): void {
-                /**
-                  * 动画结束后执行
-                  */
-                var openAniAfter = () => {
-                    this.lwgOpenAniAfter();
-                    this.lwgButton();
-                    _SceneServe._close();
-                }
-                // 优先级为手写的内部进场动画
-                let aniTime = this.lwgOpenAni();
-                if (aniTime == null) {
-                    if (SceneAniAdmin._openSwitch.value) {
-                        aniTime = SceneAniAdmin._commonOpenAni(this._Owner);
-                    } else {
-                        aniTime = 0;
-                    }
-                }
-                // 此时关闭场景动画也有可能在执行，那么而必须将打开和关闭动画的时间相加
-                SceneAniAdmin._openAniTime = aniTime;
-                const sumTime = SceneAniAdmin._openAniTime + SceneAniAdmin._closeAniTime;
-                // 延迟执行
-                Laya.timer.once(sumTime, this, () => {
-                    LwgClick._filter.value = LwgClick._filterType.all;
-                    openAniAfter();
-                });
-            }
+            moduleOnStart(): void { };
             /**开场动画,返回的数字为时间倒计时，倒计时结束后开启点击事件,也可以用来屏蔽通用动画，只需返回一个数字即可,如果场景内节点是以prefab添加进去的，那么必须卸载lwgOpenAni之前*/
             lwgOpenAni(): number { return null };
             /**开场动画之后执行*/
@@ -2044,7 +2037,7 @@ export module Lwg {
                  */
                 static _paly(type: string, Scene: Laya.Scene): number {
                     _fadeOut_Open(Scene);
-                    return _time + _delay;
+                    return _closeAniTime = _time + _delay;
                 };
             }
             function _fadeOut_Open(Scene: Laya.Scene): number {
@@ -2300,7 +2293,7 @@ export module Lwg {
                         break;
                 }
             }
-            /**关闭，推荐*/
+            /**关闭，推荐使用*/
             export class Close {
                 /**播放类型*/
                 static _type = {
@@ -2324,7 +2317,7 @@ export module Lwg {
                         _shutters[`_${type}`](Scene, false);
                         Scene.visible = false;
                     })
-                    return _delay + _time;
+                    return _closeAniTime = _delay + _time;
                 };
             }
             /**开场*/
@@ -2353,7 +2346,7 @@ export module Lwg {
                             Scene.visible = true;
                         })
                     })
-                    return _time + _delay;
+                    return _closeAniTime = _time + _delay;
                 };
             }
         }

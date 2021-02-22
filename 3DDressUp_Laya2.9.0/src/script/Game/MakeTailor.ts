@@ -340,6 +340,7 @@ class _Item extends LwgData._Item {
 }
 
 export default class MakeTailor extends LwgScene._SceneBase {
+    UI: _UI;
     lwgOnAwake(): void {
         RecordManager.startAutoRecord();
         ADManager.TAPoint(TaT.PageShow, 'jiancaipage');
@@ -355,10 +356,9 @@ export default class MakeTailor extends LwgScene._SceneBase {
         _DIYClothes._ins()._listArray = arr;
         _DIYClothes._ins()._setPitch(arr[0][_DIYClothes._ins()._property.name]);
         if (!_Guide._complete.value) _DIYClothes._ins()._List.scrollBar.touchScrollEnable = false;
-    }
-    UI: _UI;
-    lwgOnStart(): void {
         this.UI = new _UI(this._Owner);
+    }
+    lwgOnStart(): void {
         LwgTimer._frameOnce(40, this, () => {
             this.UI.operationAppear(() => {
                 this.UI.btnAgainVinish(null, 200);

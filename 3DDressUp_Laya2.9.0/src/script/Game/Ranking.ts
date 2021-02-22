@@ -41,7 +41,7 @@ export default class Ranking extends LwgScene._SceneBase {
         } else {
             _GameAni._dialogOpenFadeOut(this._ImgVar('Content'), this._ImgVar('Background'));
         }
-        return 200;
+        return 1000;
     }
 
     lwgOpenAniAfter(): void {
