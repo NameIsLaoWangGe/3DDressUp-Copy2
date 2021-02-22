@@ -14,8 +14,8 @@ export default class PersonalInfo extends  LwgScene._SceneBase {
     }
 
     lwgOpenAni(): number {
+        console.log('个人信息！')
         return _GameAni._dialogOpenFadeOut(this._ImgVar('Background'), this._ImgVar('Content'), () => {
-
             !_Guide._complete.value && this._openScene('Guide', false, false, () => {
                 const gP = this._ImgVar('Name').localToGlobal(new Laya.Point(this._ImgVar('NameValue').x, this._ImgVar('NameValue').y));
                 this._evNotify(_Guide.Event.PersonalInfoWriteName, [gP.x, gP.y]);

@@ -110,7 +110,7 @@ export default class Tweeting_Dynamic extends  LwgScene._SceneBase {
     }
     lwgButton(): void {
         this._btnUp(this._ImgVar('Content'), () => {
-            console.log('防止穿透！')
+            console.log('防止穿透！');
         }, 'null');
     }
     lwgCloseAni(): number {

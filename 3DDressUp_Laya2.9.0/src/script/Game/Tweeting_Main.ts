@@ -88,6 +88,7 @@ export default class Tweeting_Main extends LwgScene._SceneBase {
             LwgAni2D.bombs_Appear(this._ImgVar('BtnChoosePhotos'), 0, 1, 1.08, 0, baseTime * 2, () => {
                 LwgTimer._once(300, this, () => {
                     this.BtnChoosePhotosClick();
+                    LwgClick._absolute = true;
                     !_Guide._complete.value && this._openScene('Guide', false, false, () => {
                         this._evNotify(_Guide.Event.TweetingBtnChoosePhoto, [this._ImgVar('BtnChoosePhotos')._lwg.gPoint.x, this._ImgVar('BtnChoosePhotos')._lwg.gPoint.y, this._ImgVar('Photo2')._lwg.gPoint.x + 65, this._ImgVar('Photo2')._lwg.gPoint.y + 65]);
                     })
@@ -107,7 +108,7 @@ export default class Tweeting_Main extends LwgScene._SceneBase {
     lwgButton(): void {
     }
     lwgCloseAni(): number {
-        return 100;
+        return 10;
     }
     lwgOnDisable(): void {
         ADManager.TAPoint(TaT.PageLeave, 'weibopage');
