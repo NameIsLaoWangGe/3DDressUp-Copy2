@@ -1234,128 +1234,85 @@
             _BaseName.Shop = 'Shop';
             _BaseName.Task = 'Task';
             SceneAdmin._BaseName = _BaseName;
-            class _SceneServe {
-                static getSceneNum() {
-                    let num = 0;
-                    for (const key in SceneAdmin._SceneControl) {
-                        if (Object.prototype.hasOwnProperty.call(SceneAdmin._SceneControl, key)) {
-                            const Scene = SceneAdmin._SceneControl[key];
-                            if (Scene.parent) {
-                                Scene.zOrder = 0;
-                                num++;
-                            }
-                        }
-                    }
-                    return num;
-                }
-                static _openZOderUp() {
-                    if (this._openScene) {
-                        this._openScene.zOrder = this.getSceneNum();
-                        if (this._closeScene) {
-                            this._closeScene.zOrder = this._openScene.zOrder - 1;
+            function _sceneZOderUp(upScene) {
+                let num = 0;
+                for (const key in SceneAdmin._SceneControl) {
+                    if (Object.prototype.hasOwnProperty.call(SceneAdmin._SceneControl, key)) {
+                        const Scene = SceneAdmin._SceneControl[key];
+                        if (Scene.parent) {
+                            Scene.zOrder = 0;
+                            num++;
                         }
                     }
                 }
-                ;
-                static _closeZOderUP() {
-                    if (this._closeScene) {
-                        this._closeScene.zOrder = this.getSceneNum();
-                        if (this._openScene) {
-                            this._openScene.zOrder = this._closeScene.zOrder - 1;
-                        }
-                    }
-                }
-                ;
-                static _addOpenScript() {
-                    if (this._openScene) {
-                        if (this._openZOder) {
-                            Laya.stage.addChildAt(this._openScene, this._openZOder);
-                        }
-                        else {
-                            Laya.stage.addChild(this._openScene);
-                        }
-                        if (SceneAdmin._SceneScript[this._openScene.name]) {
-                            if (!this._openScene.getComponent(SceneAdmin._SceneScript[this._openScene.name])) {
-                                this._openScene.addComponent(SceneAdmin._SceneScript[this._openScene.name]);
-                            }
-                        }
-                        else {
-                            console.log(`${this._openScene.name}场景没有同名脚本！,需在LwgInit脚本中导入该脚本！`);
-                        }
-                    }
-                }
-                ;
-                static _close() {
-                    if (this._closeSceneArr.length > 0) {
-                        for (let index = 0; index < this._closeSceneArr.length; index++) {
-                            let scene = this._closeSceneArr[index];
-                            scene.close();
-                            this._closeSceneArr.splice(index, 1);
-                            index--;
-                        }
-                    }
-                }
-                static _remake() {
-                    this._openScene = null;
-                    this._openZOder = 0;
-                    this._openFunc = null;
-                    this._closeScene = null;
-                    this._closeFunc = null;
-                    this._closeZOder = 0;
-                }
-                static _flow() {
-                    let closeAniTime = 0;
-                    let closeScript;
-                    if (this._closeScene) {
-                        this._closeSceneArr.push(this._closeScene);
-                        this._closeZOderUP();
-                        closeScript = this._closeScene[this._closeScene.name];
-                        closeAniTime = closeScript.lwgCloseAni();
-                        if (closeAniTime === null) {
-                            if (SceneAniAdmin._closeSwitch.value) {
-                                closeAniTime = SceneAniAdmin._commonCloseAni(this._closeScene);
-                            }
-                        }
-                    }
-                    Laya.timer.once(closeAniTime, this, () => {
-                        if (this._closeScene) {
-                            closeScript && closeScript.lwgBeforeCloseAni();
-                            this._closeFunc && this._closeFunc();
-                            this._close();
-                        }
-                        ClickAdmin._filter.value = ClickAdmin._filterType.all;
-                        if (this._openScene) {
-                            ClickAdmin._filter.value = ClickAdmin._filterType.none;
-                            this._openZOderUp();
-                            const openScript = this._openScene[this._openScene.name];
-                            let openAniTime = openScript.lwgOpenAni();
-                            if (openAniTime === null) {
-                                if (SceneAniAdmin._openSwitch.value) {
-                                    openAniTime = SceneAniAdmin._commonOpenAni(this._openScene);
-                                }
-                                else {
-                                    openAniTime = 0;
-                                }
-                            }
-                            Laya.timer.once(openAniTime, this, () => {
-                                openScript.lwgOpenAniAfter();
-                                openScript.lwgButton();
-                                this._openFunc && this._openFunc();
-                                ClickAdmin._filter.value = ClickAdmin._filterType.all;
-                            });
-                        }
-                    });
+                if (upScene) {
+                    upScene.zOrder = num;
                 }
             }
-            _SceneServe._openScene = null;
-            _SceneServe._openZOder = 1;
-            _SceneServe._openFunc = null;
-            _SceneServe._closeScene = null;
-            _SceneServe._closeSceneArr = [];
-            _SceneServe._closeZOder = 0;
-            _SceneServe._closeFunc = null;
-            _SceneServe._sceneNum = 1;
-            SceneAdmin._SceneServe = _SceneServe;
+            SceneAdmin._sceneZOderUp = _sceneZOderUp;
+            function _addToStage(_openScene, _openZOder) {
+                if (_openScene) {
+                    if (_openZOder) {
+                        Laya.stage.addChildAt(_openScene, _openZOder);
+                    }
+                    else {
+                        Laya.stage.addChild(_openScene);
+                    }
+                    if (SceneAdmin._SceneScript[_openScene.name]) {
+                        if (!_openScene.getComponent(SceneAdmin._SceneScript[_openScene.name])) {
+                            _openScene.addComponent(SceneAdmin._SceneScript[_openScene.name]);
+                        }
+                    }
+                    else {
+                        console.log(`${_openScene.name}场景没有同名脚本！,需在LwgInit脚本中导入该脚本！`);
+                    }
+                }
+            }
+            SceneAdmin._addToStage = _addToStage;
+            ;
+            function _aniFlow(_openScene, _closeScene, _openFunc, _closeFunc) {
+                let closeAniTime = 0;
+                let closeScript;
+                if (_closeScene) {
+                    _sceneZOderUp(_closeScene);
+                    closeScript = _closeScene[_closeScene.name];
+                    closeAniTime = closeScript.lwgCloseAni();
+                    if (closeAniTime === null) {
+                        if (SceneAniAdmin._closeSwitch.value) {
+                            closeAniTime = SceneAniAdmin._commonCloseAni(_closeScene);
+                        }
+                    }
+                }
+                Laya.timer.once(closeAniTime, this, () => {
+                    if (_closeScene) {
+                        closeScript && closeScript.lwgBeforeCloseAni();
+                        _closeScene.close();
+                        _closeFunc && _closeFunc();
+                    }
+                    ClickAdmin._filter.value = ClickAdmin._filterType.all;
+                    if (_openScene) {
+                        ClickAdmin._filter.value = ClickAdmin._filterType.none;
+                        _sceneZOderUp(_openScene);
+                        const openScript = _openScene[_openScene.name];
+                        let openAniTime = openScript.lwgOpenAni();
+                        if (openAniTime === null) {
+                            if (SceneAniAdmin._openSwitch.value) {
+                                openAniTime = SceneAniAdmin._commonOpenAni(_openScene);
+                            }
+                            else {
+                                openAniTime = 0;
+                            }
+                        }
+                        Laya.timer.once(openAniTime, this, () => {
+                            openScript.lwgOpenAniAfter();
+                            openScript.lwgButton();
+                            _openFunc && _openFunc();
+                            ClickAdmin._filter.value = ClickAdmin._filterType.all;
+                        });
+                    }
+                });
+            }
+            SceneAdmin._aniFlow = _aniFlow;
             SceneAdmin._PreLoadCutIn = {
                 openName: null,
                 closeName: null,
@@ -1366,37 +1323,27 @@
                 _openScene(_BaseName.PreLoadCutIn, closeName, func, zOrder);
             }
             SceneAdmin._preLoadOpenScene = _preLoadOpenScene;
-            function _openScene(openName, closeName, func, zOrder) {
+            function _openScene(openName, closeName, openfunc, zOrder) {
                 LwgClick._filter.value = LwgClick._filterType.none;
                 Laya.Scene.load('Scene/' + openName + '.json', Laya.Handler.create(this, function (scene) {
-                    const openScene = ToolsAdmin._Node.checkChildren(Laya.stage, openName);
+                    let openScene = ToolsAdmin._Node.checkChildren(Laya.stage, openName);
                     if (openScene) {
                         openScene.close();
                         console.log(`场景${openName}重复出现！前一个场景被关闭！`);
                     }
-                    _SceneServe._remake();
-                    _SceneServe._openScene = SceneAdmin._SceneControl[scene.name = openName] = scene;
-                    _SceneServe._openZOder = zOrder ? zOrder : null;
-                    _SceneServe._openFunc = func ? func : () => { };
-                    _SceneServe._addOpenScript();
-                    if (closeName && SceneAdmin._SceneControl[closeName]) {
-                        _SceneServe._closeScene = SceneAdmin._SceneControl[closeName];
-                        _SceneServe._closeZOder = SceneAdmin._SceneControl[closeName].zOrder;
-                    }
-                    _SceneServe._flow();
+                    openScene = SceneAdmin._SceneControl[scene.name = openName] = scene;
+                    _addToStage(openScene, zOrder);
+                    _aniFlow(openScene, SceneAdmin._SceneControl[closeName], openfunc, null);
                 }));
             }
             SceneAdmin._openScene = _openScene;
-            function _closeScene(closeName, func) {
-                const scene = SceneAdmin._SceneControl[closeName];
-                if (!scene) {
+            function _closeScene(closeName, closefunc) {
+                const closeScene = SceneAdmin._SceneControl[closeName];
+                if (!closeScene) {
                     console.log(`场景${closeName}关闭失败，可能不存在！`);
                     return;
                 }
-                _SceneServe._remake();
-                _SceneServe._closeScene = scene;
-                _SceneServe._closeFunc = func ? func : () => { };
-                _SceneServe._flow();
+                _aniFlow(null, closeScene, null, closefunc);
             }
             SceneAdmin._closeScene = _closeScene;
             class _ScriptBase extends Laya.Script {
@@ -1469,7 +1416,6 @@
                 lwgButton() { }
                 ;
                 checkBtnClick(target, clickFunc, e) {
-                    console.log(ClickAdmin._filter.value);
                     if (ClickAdmin._absolute) {
                         switch (ClickAdmin._filter.value) {
                             case ClickAdmin._filterType.all || ClickAdmin._filterType.button:
@@ -5575,7 +5521,6 @@
                     switch (val) {
                         case ClickAdmin._filterType.all || ClickAdmin._filterType.none || ClickAdmin._filterType.stage:
                             ClickAdmin._filter._nodeSelection = [];
-                            console.log(`打开事件点击！${val}`);
                             break;
                         default:
                             break;
@@ -11167,9 +11112,6 @@
                     const element = this._ImgVar('BtnParent').getChildAt(index);
                     element.visible = false;
                 }
-            });
-            Laya.timer.frameLoop(100, this, () => {
-                console.log(LwgClick._absolute);
             });
         }
         lwgOpenAniAfter() {

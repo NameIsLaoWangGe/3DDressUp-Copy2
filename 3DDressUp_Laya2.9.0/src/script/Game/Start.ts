@@ -23,10 +23,6 @@ export default class Start extends LwgScene._SceneBase {
                 element.visible = false;
             }
         });
-
-        Laya.timer.frameLoop(100, this, () => {
-            console.log(LwgClick._absolute);
-        })
     }
 
     lwgOpenAniAfter(): void {
