@@ -6,17 +6,6 @@ import P405 from "./TJ/Promo/script/P405"
 import P201 from "./TJ/Promo/script/P201"
 import LwgInit from "./script/Lwg/LwgInit"
 import P402 from "./TJ/Promo/script/P402"
-import nativeAd from "./nativeAd"
-import demo from "./demo"
-import PromoOpen from "./TJ/Promo/script/PromoOpen"
-import P202 from "./TJ/Promo/script/P202"
-import P103 from "./TJ/Promo/script/P103"
-import P204 from "./TJ/Promo/script/P204"
-import P205 from "./TJ/Promo/script/P205"
-import P106 from "./TJ/Promo/script/P106"
-import P302 from "./TJ/Promo/script/P302"
-import P305 from "./TJ/Promo/script/P305"
-import GameUI from "./script/GameUI"
 /*
 * 游戏初始化配置;
 */
@@ -43,17 +32,6 @@ export default class GameConfig{
         reg("TJ/Promo/script/P201.ts",P201);
         reg("script/Lwg/LwgInit.ts",LwgInit);
         reg("TJ/Promo/script/P402.ts",P402);
-        reg("nativeAd.ts",nativeAd);
-        reg("demo.ts",demo);
-        reg("TJ/Promo/script/PromoOpen.ts",PromoOpen);
-        reg("TJ/Promo/script/P202.ts",P202);
-        reg("TJ/Promo/script/P103.ts",P103);
-        reg("TJ/Promo/script/P204.ts",P204);
-        reg("TJ/Promo/script/P205.ts",P205);
-        reg("TJ/Promo/script/P106.ts",P106);
-        reg("TJ/Promo/script/P302.ts",P302);
-        reg("TJ/Promo/script/P305.ts",P305);
-        reg("script/GameUI.ts",GameUI);
     }
 }
 GameConfig.init();

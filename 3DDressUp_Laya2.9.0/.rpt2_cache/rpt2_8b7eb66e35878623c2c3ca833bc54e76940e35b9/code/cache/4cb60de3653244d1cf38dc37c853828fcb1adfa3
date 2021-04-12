@@ -1,0 +1,6 @@
+{
+  "code": "import { LwgScene } from \"../Lwg/Lwg\";\r\nexport class _SceneName extends LwgScene._BaseName {\r\n}\r\n_SceneName.MakeTailor = 'MakeTailor';\r\n_SceneName.MakePattern = 'MakePattern';\r\n_SceneName.DressingRoom = 'DressingRoom';\r\n_SceneName.Tweeting_ChoosePhotos = 'Tweeting_ChoosePhotos';\r\n_SceneName.Tweeting_Dynamic = 'Tweeting_Dynamic';\r\n_SceneName.Tweeting_GetFans = 'Tweeting_GetFans';\r\n_SceneName.Tweeting_Main = 'Tweeting_Main';\r\n_SceneName.AdsHint = 'AdsHint';\r\n_SceneName.BackHint = 'BackHint';\r\n_SceneName.PersonalInfo = 'PersonalInfo';\r\n",
+  "references": [
+    "D:/Game/project/3DDressUp/Project_Laya2.9.0/3DDressUp_Laya2.9.0/src/script/Lwg/Lwg.ts"
+  ]
+}
